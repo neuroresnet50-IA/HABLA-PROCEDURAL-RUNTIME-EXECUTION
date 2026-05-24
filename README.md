@@ -8,6 +8,35 @@ La idea central es esta: un agente puede generar codigo, pero un proyecto serio 
 
 Esa es la diferencia entre HABLA y un asistente de programacion normal.
 
+## Tesis Tecnico-Cientifica Del Proyecto
+
+La lectura del paper tecnico-cientifico del repositorio define este proyecto como una **plataforma de ejecucion autonoma de proyectos** nacida de HABLA Agentic Engine V5 + LACE. Su unidad real de avance no es la conversacion ni el archivo abierto, sino la **tarea verificable** dentro de un proyecto persistente.
+
+La tesis operacional es:
+
+```text
+intencion humana -> HABLA/LACE -> proyecto ejecutable -> runtime persistente
+```
+
+Desde ahi, el sistema convierte informacion humana, tecnica y runtime en estado verificable:
+
+```text
+Solicitud humana
+  -> lectura HABLA/LACE
+  -> requerimiento normalizado
+  -> proyecto y runtime
+  -> plan de tareas
+  -> cola persistente
+  -> directiva por tarea
+  -> worker aislado
+  -> resultado estructurado
+  -> validacion
+  -> historial/checkpoint
+  -> Observer/sandbox/scanner/HAR
+```
+
+Por eso la contribucion principal no es solo generar codigo. La contribucion es epistemica: transformar una conversacion de IA en un proceso de ejecucion auditable, con memoria, evidencia, validacion y cierre reanudable.
+
 ## Que Es HABLA
 
 HABLA es un runtime cognitivo y procedural por capas para ejecucion agentica de software.
@@ -67,6 +96,21 @@ Razones concretas:
 6. **Puede recuperar estado.** Frozen Sniper restaura archivos generados modificados o eliminados desde baseline y pone archivos no registrados en cuarentena.
 7. **La UI es un workbench operativo.** React, Three.js y Socket.IO exponen mapa, workbench, Observer, scanner, sandbox e integridad.
 8. **La seguridad es parte del harness.** CyberLACE vigila memoria, prompt, tools, salida y acciones externas.
+
+## Ciclo De Cierre Auditable
+
+El sistema no deberia marcar un proyecto como terminado solo porque el worker termino sus tareas. El cierre correcto exige evidencia material:
+
+- tareas completadas con archivos y validaciones;
+- `task_history.jsonl`, `failures.jsonl` y checkpoints actualizados;
+- scanner final valido con lectura hasta ultima linea;
+- typewriter final persistido;
+- sandbox local corriendo con HTTP ready y URL embebible;
+- reporte de integridad sin contradicciones criticas;
+- Observer sin gates pendientes;
+- Human Alignment Review creada o resuelta segun politica.
+
+Si falta evidencia, el estado correcto no es "terminado sin reservas". Debe ser `verifying_scanner`, `verifying_sandbox`, `blocked`, `human_alignment_pending` o el estado degradado que corresponda.
 
 ## Componentes Reales Del Repositorio
 
@@ -138,6 +182,18 @@ Ejemplos:
 
 El Observer plane esta disenado para detectar contradicciones que un agente normal puede no ver.
 
+Segun `docs/observer_engine_algorithm.md`, Observer Engine **no es un worker, no es un chat y no es un scanner infinito**. Es un motor de procesamiento de evidencia que abre incidentes finitos, mira el estado real, clasifica lo que ocurre, propone una accion y cierra con razon auditable.
+
+Su ciclo canonico es:
+
+```text
+trigger -> incidente -> snapshot -> clasificacion -> inspeccion -> decision -> evidencia -> cierre
+```
+
+Observer solo debe abrir incidentes por triggers permitidos como `agent_started`, `agent_closed`, `observe_now`, `scanner_requested`, `sandbox_check_requested`, `integrity_scan_requested` o `runtime_contradiction_detected`. No debe abrir incidentes por polling de UI, heartbeat de Socket.IO, navegador abierto o lectura de status.
+
+Cada incidente tiene presupuesto, deadline, fingerprint y estado terminal. Si no hay una pregunta activa, Observer debe estar en `idle`; si encuentra un problema repetido, debe dejar evidencia y pasar a `waiting_human`, `blocked`, `completed` o `expired`, no quedarse barriendo lineas indefinidamente.
+
 Revisa:
 
 - estado del proyecto,
@@ -157,6 +213,16 @@ Archivos importantes:
 - `backend/integrity_service.py`
 - `frontend/src/components/AppObserverPanel.jsx`
 - `frontend/src/components/CodeWorkbenchIntegrityAlert.jsx`
+
+Estados y salidas relevantes del algoritmo Observer:
+
+- `idle`: no hay incidente activo.
+- `snapshotting`, `classifying`, `inspecting`, `deciding`: ciclo finito de evidencia.
+- `waiting_human`: hay evidencia y se requiere decision humana.
+- `completed`, `blocked`, `expired`, `cancelled`: estados terminales.
+- `close_clean`, `close_with_findings`, `propose_repair_task`, `propose_sandbox_restart`, `propose_typewriter_binary_fix`: decisiones posibles.
+
+El criterio final es que Observer demuestra inteligencia cuando sabe parar: mirar mejor, explicar evidencia, proponer el siguiente paso correcto y cerrar el ciclo.
 
 ### 6. CyberLACE Security Engine
 
@@ -266,6 +332,25 @@ python scripts/run_api.py
 ## Estado Actual Del Proyecto
 
 Este repositorio contiene prototipos funcionales, servicios runtime, pruebas, documentacion, evidencia generada de workspace y modulos de seguridad. Debe leerse como un proyecto avanzado de investigacion e ingenieria de harness, no como un producto empaquetado final.
+
+La auditoria de la seccion 19, documentada en `docs/reporte_cierre_auditoria_seccion_19_2026-05-20.md`, registro el cierre de las seis deudas tecnicas que el paper habia observado como riesgos:
+
+| ID | Deuda auditada | Estado |
+| --- | --- | --- |
+| 19.1 | Drift entre contratos Python y schemas JSON | Cerrada |
+| 19.2 | Ambiguedad entre runtime raiz y runtime por proyecto | Cerrada |
+| 19.3 | Backend monolitico | Cerrada |
+| 19.4 | Doble ruta de worker | Cerrada |
+| 19.5 | Frontend con componentes grandes | Cerrada |
+| 19.6 | Frontera de seguridad de validaciones | Cerrada |
+
+La evidencia de cierre incluye checkpoints por fase, pruebas backend, build frontend, test frontend, validacion de checkpoints y el workflow `.github/workflows/audit.yml`. El riesgo residual aceptado es que `backend/app.py` sigue siendo composition root Flask/Socket.IO, pero los dominios pesados auditados fueron extraidos a servicios o rutas dedicadas.
+
+Documentos base para esta descripcion:
+
+- `docs/paper_cientifico_orquestador_autonomo_habla_observer_ia.md`
+- `docs/observer_engine_algorithm.md`
+- `docs/reporte_cierre_auditoria_seccion_19_2026-05-20.md`
 
 La verdad arquitectonica mas importante es esta:
 
