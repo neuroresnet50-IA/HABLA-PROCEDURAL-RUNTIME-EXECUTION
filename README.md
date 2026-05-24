@@ -8,6 +8,25 @@ La idea central es esta: un agente puede generar codigo, pero un proyecto serio 
 
 Esa es la diferencia entre HABLA y un asistente de programacion normal. HABLA no se presenta como una extension debil de un editor existente; se presenta como una categoria distinta: un harness autonomo capaz de sostener ejecucion, evidencia, recuperacion y cierre sobre proyectos completos.
 
+## Demo Visual Del Sistema
+
+<p align="center">
+  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-build-evidence-city.png" alt="Drone War City ejecutado por HABLA Engine V5" width="100%">
+</p>
+
+<p align="center">
+  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-build-night.png" alt="Validacion nocturna del mundo 3D" width="49%">
+  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/browser_render_smoke.png" alt="Smoke test visual del navegador" width="49%">
+</p>
+
+<p align="center">
+  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-smoke-day.png" alt="Validacion movil del juego 3D" width="24%">
+  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-smoke-evidence-mobile.png" alt="Evidencia movil del sandbox" width="24%">
+  <img src="vista_IA/architecture-react-three-flask-socketio/frontend/public/assets/img/HABLA_Observer_IA_ojo_random_giro_guino_parpadeo.gif" alt="HABLA Observer IA animado" width="24%">
+</p>
+
+Estas imagenes no son mockups. Son artefactos versionados de validacion del runtime, el sandbox, el juego 3D autonomo y el Observer visual.
+
 ## Tesis Tecnico-Cientifica Del Proyecto
 
 La lectura del paper tecnico-cientifico del repositorio define este proyecto como una **plataforma de ejecucion autonoma de proyectos** nacida de HABLA Agentic Engine V5 + LACE. Su unidad real de avance no es la conversacion ni el archivo abierto, sino la **tarea verificable** dentro de un proyecto persistente.
