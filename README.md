@@ -11,21 +11,26 @@ Esa es la diferencia entre HABLA y un asistente de programacion normal. HABLA no
 ## Demo Visual Del Sistema
 
 <p align="center">
-  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-build-evidence-city.png" alt="Drone War City ejecutado por HABLA Engine V5" width="100%">
+  <img src="docs/media/system-real-overview.png" alt="HABLA Engine V5 corriendo con runtime, Observer, CyberLACE y workbench" width="100%">
 </p>
 
 <p align="center">
-  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-build-night.png" alt="Validacion nocturna del mundo 3D" width="49%">
-  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/browser_render_smoke.png" alt="Smoke test visual del navegador" width="49%">
+  <img src="docs/media/system-real-observer.png" alt="Observer Plane real de HABLA" width="49%">
+  <img src="docs/media/system-real-workbench.png" alt="Code Workbench real de HABLA" width="49%">
 </p>
 
 <p align="center">
-  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-smoke-day.png" alt="Validacion movil del juego 3D" width="24%">
-  <img src="vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/validation-smoke-evidence-mobile.png" alt="Evidencia movil del sandbox" width="24%">
-  <img src="vista_IA/architecture-react-three-flask-socketio/frontend/public/assets/img/HABLA_Observer_IA_ojo_random_giro_guino_parpadeo.gif" alt="HABLA Observer IA animado" width="24%">
+  <img src="docs/media/system-real-scanner.png" alt="Scanner final real en el workbench HABLA" width="49%">
+  <img src="docs/media/system-real-integrity.png" alt="Integridad y huellas reales en HABLA" width="49%">
 </p>
 
-Estas imagenes no son mockups. Son artefactos versionados de validacion del runtime, el sandbox, el juego 3D autonomo y el Observer visual.
+<p align="center">
+  <img src="docs/media/game-city.png" alt="Juego 3D autonomo generado y validado por HABLA" width="49%">
+  <img src="docs/media/observer-eye.gif" alt="HABLA Observer IA animado" width="24%">
+  <img src="docs/media/mobile-evidence.png" alt="Evidencia movil del sandbox generado" width="24%">
+</p>
+
+Las primeras capturas son del sistema HABLA real corriendo: runtime, Observer, scanner, workbench, integridad y huellas. El juego 3D aparece despues como evidencia de un proyecto ejecutado por el harness, no como sustituto de la plataforma.
 
 Video corto de evidencia visual: [`docs/media/habla-evidence-reel.mp4`](docs/media/habla-evidence-reel.mp4)
 
