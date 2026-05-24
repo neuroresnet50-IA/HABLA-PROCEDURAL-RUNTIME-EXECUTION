@@ -31,6 +31,8 @@ Video corto de evidencia visual: [`docs/media/habla-evidence-reel.mp4`](docs/med
 
 Imagen lista para social preview: [`docs/media/social-preview.png`](docs/media/social-preview.png)
 
+Galeria operacional completa: [`docs/index.html`](docs/index.html)
+
 ## Tesis Tecnico-Cientifica Del Proyecto
 
 La lectura del paper tecnico-cientifico del repositorio define este proyecto como una **plataforma de ejecucion autonoma de proyectos** nacida de HABLA Agentic Engine V5 + LACE. Su unidad real de avance no es la conversacion ni el archivo abierto, sino la **tarea verificable** dentro de un proyecto persistente.
