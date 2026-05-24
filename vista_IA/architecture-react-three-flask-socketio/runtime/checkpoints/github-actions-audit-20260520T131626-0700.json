@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "checkpoint": "github-actions-audit",
+  "created_at": "2026-05-20T13:16:26-07:00",
+  "status": "workflow_created_and_locally_validated",
+  "workflow": ".github/workflows/audit.yml",
+  "jobs": {
+    "backend": [
+      "setup Python 3.11",
+      "install backend/requirements.txt",
+      "py_compile backend modules",
+      "run backend unittest audit suite"
+    ],
+    "frontend": [
+      "setup Node 20",
+      "npm ci",
+      "npm run build",
+      "npm test"
+    ],
+    "checkpoints": [
+      "validate runtime/checkpoints JSON files",
+      "assert phase 5 closes 19.3",
+      "assert PLANS.md marks all Section 19 debts closed"
+    ],
+    "audit-summary": [
+      "fail workflow if backend, frontend, or checkpoint jobs fail"
+    ]
+  },
+  "files_created": [
+    ".github/workflows/audit.yml",
+    "runtime/checkpoints/github-actions-audit-20260520T131626-0700.json"
+  ],
+  "files_modified": [
+    "PLANS.md",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "local_validations": [
+    {
+      "command": "python3 -c \"import yaml; yaml.safe_load(open('.github/workflows/audit.yml', encoding='utf-8')); print('workflow yaml ok')\"",
+      "result": "passed"
+    },
+    {
+      "command": "python3 checkpoint audit script from .github/workflows/audit.yml",
+      "result": "passed",
+      "checkpoint_json_files": 13
+    },
+    {
+      "command": "python3 -m py_compile backend/app.py backend/editor_routes.py backend/integrity_routes.py backend/human_alignment_routes.py backend/observer_runtime_service.py backend/integrity_service.py backend/runtime_admin_routes.py backend/runtime_admin_service.py backend/sandbox_routes.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m unittest backend.test_app_lint backend.test_code_scanner backend.test_code_scanner_service backend.test_agent_repair_service backend.test_runtime_sandbox backend.test_runtime_clean_workspace backend.test_observer_auto_shutdown backend.test_human_alignment_review backend.test_security_policy backend.test_validator_security backend.test_project_state_schema_contract",
+      "result": "passed",
+      "tests": 45
+    },
+    {
+      "command": "npm run build",
+      "working_directory": "frontend",
+      "result": "passed"
+    },
+    {
+      "command": "npm test",
+      "working_directory": "frontend",
+      "result": "passed"
+    }
+  ],
+  "limitations": [
+    "actionlint, yq, and ruby were not available locally; workflow syntax was validated with PyYAML instead.",
+    "The folder is not initialized as a Git repository, so git diff/status evidence is unavailable.",
+    "The workflow itself will execute after this directory is pushed to a GitHub repository with Actions enabled."
+  ],
+  "next_recommendation": "Push the repository to GitHub and verify the first Audit workflow run."
+}

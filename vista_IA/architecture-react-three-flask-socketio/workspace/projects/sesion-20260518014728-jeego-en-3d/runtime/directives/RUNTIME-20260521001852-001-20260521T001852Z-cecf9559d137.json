@@ -1,0 +1,228 @@
+{
+  "directive_type": "worker_operational_directive",
+  "generated_at": "2026-05-21T00:18:52Z",
+  "operational_directive": {
+    "active_restrictions": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables."
+    ],
+    "closure_criteria": [
+      "TaskResult.completed can be true only with real disk evidence.",
+      "TaskResult.blockers must be empty before closing the task.",
+      "Every expected file must exist under the repository root.",
+      "Every declared validation command must run and return code 0.",
+      "Validation results must be represented in the task result history."
+    ],
+    "control_plane_guardrails": [
+      "No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.",
+      "No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.",
+      "El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.",
+      "No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide."
+    ],
+    "controlled_sprint_scope": {
+      "out_of_scope_deliverables": [],
+      "sprint_acceptance": [
+        "Every expected task file must exist under the task workspace root.",
+        "Every validation command must run in the task workspace root and return code 0."
+      ],
+      "sprint_deliverables": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ]
+    },
+    "current_operational_objective": {
+      "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 446 archivos detectados en el proyecto seleccionado MODO REPARACION AGENTICA EN VIVO. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. El juego 3D qued\u00f3 roto: la pantalla est\u00e1 negra y el canvas no renderiza. Revisar.",
+      "mode": "build",
+      "task_id": "RUNTIME-20260521001852-001",
+      "timeout_seconds": 900
+    },
+    "expected_validation": {
+      "acceptance_criteria": [],
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ],
+      "validation_ran_must_be_recorded": true
+    },
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    ],
+    "habla": {
+      "directive_generator_ready": true,
+      "guide_type": "habla_basic_procedure",
+      "objective": {
+        "operational_goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 446 archivos detectados en el proyecto seleccionado MODO REPARACION AGENTICA EN VIVO. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. El juego 3D qued\u00f3 roto: la pantalla est\u00e1 negra y el canvas no renderiza. Revisar.",
+        "sprint_objective": "",
+        "task_title": "Build runnable static web app"
+      },
+      "task_id": "RUNTIME-20260521001852-001"
+    },
+    "known_risks_or_blockers": [],
+    "lace": {
+      "available": true,
+      "execution_model": "session_level_control_plane_cycles",
+      "log_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE_LOG.md",
+      "log_preview": "# LACE_LOG.md\n\n[INIT]\nFecha UTC: 2026-05-18T01:50:00.242667+00:00\nLACE le\u00eddo desde: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md\nRegla activa: 10 ciclos obligatorios antes de cierre.\n\n[COMPRENSI\u00d3N DEL PROYECTO]\nCRWEAME UN JUEGO  EN  3D  NESECITO UN DRONE  QUE VUELE  EN UN MUNDO PROCEDIRAL  QUE  NEVEGUE VUELE  Y PASE ONSTACULOS  DEBE DE SER AURONOMO GUIADO POR UN AJENTE  IA   DQN    REINFORCED LEARNING  CON RECOMPENSA  Y CARTIGO  DEBE DE ESQUIVAR ARBOLES   EDIFICIOS  TODA UN ACOIUDAD COMPLETA EL DRONE ES AUTONOMO  Y NO NESECITA DE  EJECUSION HUMANA\n\n[PLAN PARA 10 CICLOS]\n1. Bugs cr\u00edticos.\n2. Limpieza y organizaci\u00f3n.\n3. Interfaz de usuario.\n4. Documentaci\u00f3n.\n5. Rendimiento.\n6. Errores y casos extremos.\n7. Seguridad b\u00e1sica.\n8. Funcionalidad adicional de valor real.\n9. Experiencia de usuario punta a punta.\n10. Revisi\u00f3n integral final.\n\n[BASE]\nConstrucci\u00f3n inicial completada para la tarea RUNTIME-20260518015000-001-SPLIT-001.",
+      "policy_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md",
+      "required_cycles": 10,
+      "worker_guardrails": [
+        "do_not_run_all_lace_cycles_inside_one_worker_task",
+        "update_only_the_cycle_supported_by_current_task_evidence",
+        "do_not_extend_task_timeout_for_missing_lace_cycles",
+        "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+        "lace_progress_requires_lace_log_or_product_file_evidence"
+      ]
+    },
+    "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "out_of_scope": [],
+    "required_evidence": {
+      "disk_records": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/index.html",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/index.html",
+          "size": 4035
+        },
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/styles.css",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/styles.css",
+          "size": 13196
+        },
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/app.js",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/app.js",
+          "size": 64250
+        }
+      ],
+      "evidence_found": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ],
+      "evidence_missing": [],
+      "expected_files": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ]
+    },
+    "sprint_deliverables": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "starting_checkpoint": {
+      "available": true,
+      "checkpoint_key": "repair-20260519210000-split-008-checkpoint",
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/checkpoints/repair-20260519210000-split-008-checkpoint.json",
+      "source": "project_state.checkpoints"
+    },
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "task_validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ],
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "visual_bridge": {
+      "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+      "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+      "environment_variables": [
+        "VISTA_AGENT_SESSION_ID",
+        "VISTA_AGENT_PROJECT_SLUG",
+        "VISTA_AGENT_PROJECT_DIR",
+        "VISTA_AGENT_EVENT_FILE",
+        "VISTA_AGENT_BRIDGE"
+      ],
+      "expected_live_artifacts": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css"
+      ],
+      "required_commands": [
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+      ],
+      "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+      "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    }
+  },
+  "persistence": {
+    "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260521001852-001-20260521T001852Z-cecf9559d137.json",
+    "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260521001852-001-20260521T001852Z-cecf9559d137.md"
+  },
+  "rendered_instruction": "Task: RUNTIME-20260521001852-001 - Build runnable static web app\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 446 archivos detectados en el proyecto seleccionado MODO REPARACION AGENTICA EN VIVO. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. El juego 3D qued\u00f3 roto: la pantalla est\u00e1 negra y el canvas no renderiza. Revisar.\nExact deliverables:\n- frontend/index.html\n- frontend/styles.css\n- frontend/app.js\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- frontend/index.html\n- frontend/styles.css\n- frontend/app.js\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"\n- python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE_LOG.md\n- Ciclos LACE requeridos: 10\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes los 10 ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- repair-20260519210000-split-008-checkpoint\nKnown risks or blockers:\n- none\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+  "repository": {
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    ],
+    "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+  },
+  "schema_version": 1,
+  "sprint": {
+    "number": null,
+    "objective": ""
+  },
+  "task": {
+    "checkpoint_key": "runtime-20260521001852-001-checkpoint",
+    "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 446 archivos detectados en el proyecto seleccionado MODO REPARACION AGENTICA EN VIVO. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. El juego 3D qued\u00f3 roto: la pantalla est\u00e1 negra y el canvas no renderiza. Revisar.",
+    "id": "RUNTIME-20260521001852-001",
+    "max_retries": 3,
+    "mode": "build",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app"
+  },
+  "task_id": "RUNTIME-20260521001852-001",
+  "traceability": {
+    "checkpoint_key": "repair-20260519210000-split-008-checkpoint",
+    "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/checkpoints/repair-20260519210000-split-008-checkpoint.json",
+    "checkpoint_source": "project_state.checkpoints",
+    "context_degraded": false,
+    "context_type": "directive_context",
+    "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+    "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime",
+    "runtime_errors": [],
+    "source_hash": "cecf9559d13788348a6f48b8a3bb947a8b24791b8d02ba26db8696b585b50d2b"
+  }
+}

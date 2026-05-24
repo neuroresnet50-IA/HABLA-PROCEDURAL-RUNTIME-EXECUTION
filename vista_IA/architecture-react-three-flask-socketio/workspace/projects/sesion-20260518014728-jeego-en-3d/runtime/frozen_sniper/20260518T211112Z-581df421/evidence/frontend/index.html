@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neurodriver IA Evidence Drone</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app-shell">
+      <canvas id="world" aria-label="Simulacion 3D de drone autonomo"></canvas>
+      <div id="scanner-reticle" class="scanner-reticle" aria-hidden="true" hidden>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <header class="hud hud-top">
+        <div class="brand">
+          <span class="status-light" aria-hidden="true"></span>
+          <div>
+            <p>NEURODRIVER IA</p>
+            <h1>Evidence Drone City</h1>
+          </div>
+        </div>
+
+        <nav class="mode-switch" aria-label="Modo explicito de simulacion">
+          <button type="button" data-mode="smoke">smoke</button>
+          <button type="buttvvvvvvvvvvvvvon" data-mode="build">build</button>
+          <button type="button" data-mode="medium">medium</button>
+          <button type="button" data-mode="long-run">long-run</button>
+        </nav>
+      </header>
+
+      <section class="telemetry panel" aria-label="Telemetria del vuelo">
+        <div class="metric">
+          <span>Distancia</span>
+          <strong id="distancbbbbbbbbbbbbbbbbbbbe-value">0 m</strong>
+        </div>
+        <div class="metric">
+          <span>Altitud</span>
+          <strong id="altitude-value">0 m</strong>
+        </div>
+        <div class="metric">
+          <span>Velocidad</span>
+          <strong id="speed-value">0 m/s</strong>
+        </div>
+        <div class="metric">
+          <span>Episodio</span>
+          <strong id="episode-value">1</strong>
+        </div>
+      </section>
+
+      <aside class="agent panel" aria-label="Estado del agente DQN">
+        <div class="panel-title">
+          <span>AGENTE IA</span>
+          <strong id="mode-value">build</strong>
+        </div>
+        <div class="reward-line">
+          <div>
+            <span>Recompensa</span>
+            <strong id="reward-value">0.00</strong>
+          </div>
+          <div>
+            <span>Castigo</span>
+            <strong id="penalty-value">0.00</strong>
+          </div>
+        </div>
+        <div class="q-bars" id="q-bars"></div>
+        <canvas id="reward-chart" width="320" height="80" aria-label="Historial de recompensa"></canvas>
+      </aside>
+
+      <aside class="scanner panel" aria-label="Objetivo de evidencia del drone">
+        <div class="panel-title">
+          <span>SCANNER FORENSE</span>
+          <strong id="target-kind-value">sin target</strong>
+        </div>
+        <div class="target-card">
+          <span id="target-id-value">NEURODRIVER-SEARCH</span>
+          <strong id="target-detail-value">buscando rostro o placa</strong>
+        </div>
+        <div class="scanner-grid">
+          <div>
+            <span>Zoom</span>
+            <strong id="target-zoom-value">1.0x</strong>
+          </div>
+          <div>
+            <span>Confianza</span>
+            <strong id="target-confidence-value">0%</strong>
+          </div>
+        </div>
+        <div class="lock-track" aria-hidden="true">
+          <div id="target-lock-value"></div>
+        </div>
+      </aside>
+
+      <div id="flight-alert" class="flight-alert" aria-live="polite" hidden></div>
+
+      <footer class="flight-strip" aria-label="Estado del corredor de vuelo">
+        <span id="policy-value">politica: explorando</span>
+        <span id="clearance-value">clearance: --</span>
+        <span id="event-value">ciudad procedural activa</span>
+      </footer>
+    </main>
+
+    <noscript>
+      <div class="noscript">JavaScript es requerido para ejecutar la simulacion.</div>
+    </noscript>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

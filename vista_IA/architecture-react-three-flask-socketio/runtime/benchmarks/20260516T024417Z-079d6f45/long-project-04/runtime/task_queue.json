@@ -1,0 +1,105 @@
+[
+  {
+    "checkpoint_key": "long-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/phase-1.md"
+    ],
+    "goal": "Advance long project through isolated phase 1.",
+    "id": "LONG-001",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 59,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Complete long project phase 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/phase-1.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('docs/phase-1.md').read_text(encoding='utf-8'); assert 'phase 1' in text, 'phase 1'\""
+    ]
+  },
+  {
+    "checkpoint_key": "long-002-checkpoint",
+    "dependencies": [
+      "LONG-001"
+    ],
+    "expected_files": [
+      "docs/phase-2.md"
+    ],
+    "goal": "Advance long project through isolated phase 2.",
+    "id": "LONG-002",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 58,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Complete long project phase 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/phase-2.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('docs/phase-2.md').read_text(encoding='utf-8'); assert 'phase 2' in text, 'phase 2'\""
+    ]
+  },
+  {
+    "checkpoint_key": "long-003-checkpoint",
+    "dependencies": [
+      "LONG-002"
+    ],
+    "expected_files": [
+      "docs/phase-3.md"
+    ],
+    "goal": "Advance long project through isolated phase 3.",
+    "id": "LONG-003",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 57,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Complete long project phase 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/phase-3.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('docs/phase-3.md').read_text(encoding='utf-8'); assert 'phase 3' in text, 'phase 3'\""
+    ]
+  },
+  {
+    "checkpoint_key": "long-004-checkpoint",
+    "dependencies": [
+      "LONG-003"
+    ],
+    "expected_files": [
+      "docs/phase-4.md"
+    ],
+    "goal": "Advance long project through isolated phase 4.",
+    "id": "LONG-004",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 56,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Complete long project phase 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/phase-4.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('docs/phase-4.md').read_text(encoding='utf-8'); assert 'phase 4' in text, 'phase 4'\""
+    ]
+  },
+  {
+    "checkpoint_key": "long-005-checkpoint",
+    "dependencies": [
+      "LONG-004"
+    ],
+    "expected_files": [
+      "docs/phase-5.md"
+    ],
+    "goal": "Advance long project through isolated phase 5.",
+    "id": "LONG-005",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 55,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Complete long project phase 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/phase-5.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('docs/phase-5.md').read_text(encoding='utf-8'); assert 'phase 5' in text, 'phase 5'\""
+    ]
+  }
+]

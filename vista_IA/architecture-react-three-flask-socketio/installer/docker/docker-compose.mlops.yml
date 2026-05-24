@@ -1,0 +1,36 @@
+services:
+  habla-redis:
+    image: redis:7
+    container_name: habla-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+
+  habla-mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.17.2
+    container_name: habla-mlflow
+    restart: unless-stopped
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --default-artifact-root /mlflow/artifacts
+    ports:
+      - "${MLFLOW_PORT:-5500}:5000"
+    volumes:
+      - habla_mlflow_data:/mlflow
+
+  habla-jupyter:
+    image: jupyter/scipy-notebook:latest
+    container_name: habla-jupyter
+    restart: unless-stopped
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    volumes:
+      - ../../workspace:/home/jovyan/work
+    environment:
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-habla-demo}
+
+volumes:
+  habla_mlflow_data:

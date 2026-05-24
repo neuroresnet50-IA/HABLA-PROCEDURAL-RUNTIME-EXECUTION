@@ -1,0 +1,43 @@
+{
+  "checkpoint": "observer-engine-algorithm-20260519T084152-0700",
+  "createdAt": "2026-05-19T08:41:52-07:00",
+  "scope": "observer_algorithm",
+  "reason": "El usuario pidio aterrizar inmediatamente el algoritmo funcional completo del motor Observer como rutina de procesamiento de datos con inicio, decision y fin.",
+  "filesCreated": [
+    "docs/observer_engine_algorithm.md",
+    "runtime/checkpoints/observer-engine-algorithm-20260519T084152-0700.json"
+  ],
+  "filesModified": [
+    "PLANS.md"
+  ],
+  "algorithmSummary": {
+    "cycle": "trigger -> incidente -> snapshot -> clasificacion -> inspeccion -> decision -> evidencia -> cierre",
+    "coreRule": "Observer demuestra inteligencia cuando sabe cuando parar.",
+    "terminalStates": [
+      "completed",
+      "blocked",
+      "expired",
+      "cancelled",
+      "waiting_human"
+    ],
+    "implementationTasks": [
+      "OBSERVER-LIFECYCLE-001",
+      "OBSERVER-LIFECYCLE-002",
+      "OBSERVER-LIFECYCLE-003",
+      "OBSERVER-LIFECYCLE-004",
+      "OBSERVER-LIFECYCLE-005",
+      "OBSERVER-LIFECYCLE-006",
+      "OBSERVER-LIFECYCLE-007"
+    ]
+  },
+  "validation": {
+    "status": "passed",
+    "commands": [
+      "rg -n \"Rutina completa|Pseudocodigo canonico|Aplicacion al caso actual|Contrato de salida|Pruebas obligatorias|OBSERVER-LIFECYCLE-001\" docs/observer_engine_algorithm.md",
+      "rg -n \"docs/observer_engine_algorithm.md\" PLANS.md",
+      "jq . runtime/checkpoints/observer-engine-algorithm-20260519T084152-0700.json"
+    ],
+    "result": "El documento contiene rutina completa, pseudocodigo, aplicacion al caso actual, contrato de salida, pruebas y tareas de implementacion; PLANS.md referencia el documento canonico.",
+    "nextValidation": "Implementar OBSERVER-LIFECYCLE-001 y ejecutar pruebas del ciclo finito."
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "checkpoint_key": "recovery-001-checkpoint",
+  "created_at": "2026-05-15T17:12:05Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.md",
+      "source_hash": "a66cfea7316261e6b8bc0d279e0649e9d7f1182af74e2a473bff32e8632e932c"
+    },
+    "task": {
+      "checkpoint_key": "recovery-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "recovery/output.txt"
+      ],
+      "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+      "id": "RECOVERY-001",
+      "max_retries": 2,
+      "mode": "build",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 10,
+      "title": "Recover failed task through retry",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "recovery/output.txt"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RECOVERY-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+          "duration_seconds": 0.026075,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "recovery/output.txt",
+            "reported_created": true,
+            "reported_modified": false,
+            "size": 22
+          }
+        ],
+        "found": [
+          "recovery/output.txt"
+        ],
+        "missing": [],
+        "reported_created": [
+          "recovery/output.txt"
+        ],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RECOVERY-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+    }
+  }
+}

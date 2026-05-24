@@ -1,0 +1,20 @@
+[
+  {
+    "checkpoint_key": "smoke-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "smoke-output.txt"
+    ],
+    "goal": "Create one expected smoke evidence file through the control plane.",
+    "id": "SMOKE-001",
+    "max_retries": 2,
+    "mode": "smoke",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Create smoke evidence",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; assert Path('smoke-output.txt').is_file(), 'smoke-output.txt'\""
+    ]
+  }
+]

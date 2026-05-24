@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runtime-orchestrator.local/schemas/task_result.schema.json",
+  "title": "TaskResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "task_id",
+    "completed",
+    "files_created",
+    "files_modified",
+    "validation_ran",
+    "validation_passed",
+    "blockers",
+    "next_recommendation"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "completed": {
+      "type": "boolean"
+    },
+    "files_created": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "files_modified": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validation_ran": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validation_passed": {
+      "type": "boolean"
+    },
+    "blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "next_recommendation": {
+      "type": "string"
+    }
+  }
+}

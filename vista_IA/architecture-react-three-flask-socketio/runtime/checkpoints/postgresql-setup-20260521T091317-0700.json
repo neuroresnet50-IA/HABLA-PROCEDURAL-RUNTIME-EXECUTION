@@ -1,0 +1,117 @@
+{
+  "id": "postgresql-setup-20260521T091317-0700",
+  "recorded_at": "2026-05-21T09:13:17-07:00",
+  "task_id": "POSTGRESQL-SETUP",
+  "title": "Configurar PostgreSQL local para HABLA Observer IA",
+  "status": "completed",
+  "completed": true,
+  "summary": "PostgreSQL del sistema ya estaba instalado y activo, pero no administrable desde el usuario actual. Se creo una instancia Docker local persistente para el proyecto en 127.0.0.1:55432 y se conecto el backend mediante backend/.env.",
+  "postgres": {
+    "system_version": "PostgreSQL 16.13 Ubuntu 16.13-0ubuntu0.24.04.1",
+    "system_cluster": "16/main online en puerto 5432, owner postgres",
+    "project_container": "habla-postgres",
+    "project_image": "postgres:16-alpine",
+    "project_host": "127.0.0.1",
+    "project_port": 55432,
+    "project_database": "habla_observer",
+    "project_user": "habla_user",
+    "database_url_redacted": "postgresql://habla_user:***@127.0.0.1:55432/habla_observer",
+    "schema_tables_verified": [
+      "users",
+      "user_profiles",
+      "payment_methods",
+      "sessions"
+    ]
+  },
+  "files_created": [
+    "backend/.env",
+    ".gitignore",
+    "runtime/checkpoints/postgresql-setup-20260521T091317-0700.json"
+  ],
+  "files_modified": [
+    "start.sh"
+  ],
+  "validation_ran": [
+    {
+      "command": "psql --version",
+      "ok": true,
+      "evidence": "psql (PostgreSQL) 16.13"
+    },
+    {
+      "command": "pg_lsclusters",
+      "ok": true,
+      "evidence": "16/main online postgres /var/lib/postgresql/16/main"
+    },
+    {
+      "command": "systemctl is-active postgresql",
+      "ok": true,
+      "evidence": "active"
+    },
+    {
+      "command": "sudo -n -u postgres psql -tAc SELECT 1",
+      "ok": false,
+      "evidence": "sudo: a password is required"
+    },
+    {
+      "command": "runuser -u postgres -- psql -tAc SELECT 1",
+      "ok": false,
+      "evidence": "runuser may not be used by non-root users"
+    },
+    {
+      "command": "docker run ... postgres:16-alpine",
+      "ok": true,
+      "evidence": "container habla-postgres created"
+    },
+    {
+      "command": "pg_isready -h 127.0.0.1 -p 55432 -U habla_user -d habla_observer",
+      "ok": true,
+      "evidence": "127.0.0.1:55432 - accepting connections"
+    },
+    {
+      "command": "psql <project-url> SELECT COUNT(*) FROM information_schema.tables",
+      "ok": true,
+      "evidence": "4 expected auth tables present"
+    },
+    {
+      "command": "bash -n start.sh",
+      "ok": true,
+      "evidence": "syntax ok"
+    },
+    {
+      "command": "/home/neurodriver/ferrari_env/bin/python -c import psycopg",
+      "ok": true,
+      "evidence": "psycopg 3.3.4"
+    },
+    {
+      "command": "Flask test_client GET /api/health",
+      "ok": true,
+      "evidence": {
+        "configured": true,
+        "driver": "psycopg",
+        "ready": true
+      }
+    },
+    {
+      "command": "jq . runtime/checkpoints/postgresql-setup-20260521T091317-0700.json",
+      "ok": true,
+      "evidence": "checkpoint JSON valid"
+    },
+    {
+      "command": "python3 -c substring check for runtime/ in .gitignore",
+      "ok": false,
+      "evidence": "false positive because .runtime/ contains runtime/ as substring; validation corrected to exact-line check"
+    },
+    {
+      "command": "python3 -c exact-line check: runtime/ not ignored and .runtime/ ignored",
+      "ok": true,
+      "evidence": "gitignore runtime policy ok"
+    }
+  ],
+  "blockers": [
+    "Sandbox por defecto falla con bwrap: loopback Failed RTM_NEWADDR; se requirio ejecucion escalada para comandos locales.",
+    "No hay permiso sudo/runuser para administrar el PostgreSQL del sistema como usuario postgres.",
+    "python3 orchestrator/agent_tools.py health respondio 404 del backend local; se uso validacion directa alternativa.",
+    "git status --short falla porque esta carpeta no es un repositorio Git valido aunque existe un directorio .git."
+  ],
+  "next_recommendation": "Arrancar la app con ./start.sh start; el backend cargara backend/.env y /api/health debe reportar PostgreSQL ready=true."
+}

@@ -1,0 +1,198 @@
+{
+  "schema_version": 1,
+  "mode": "guarded-autonomy",
+  "description": "Security plane formal. Las capacidades de alto riesgo quedan activadas como categorias reconocidas, pero no se ejecutan en modo autonomo sin una regla especifica de allow.",
+  "default_decision": "ask",
+  "security_events_log": "runtime/security_events.jsonl",
+  "operator_context": {
+    "requested_by_user": true,
+    "requested_at": "2026-05-17",
+    "human_intent": "Reducir aprobaciones repetitivas durante ejecucion larga sin perder trazabilidad ni control.",
+    "global_allow_requested": true,
+    "global_allow_granted": false,
+    "reason_global_allow_not_granted": "Autorizar shell, red, borrado, permisos, procesos y Docker sin scope ni expiracion eliminaria la funcion del security plane."
+  },
+  "operator_approval": {
+    "enabled": true,
+    "approval_file": "runtime/operator_approval.json",
+    "password_hash_algorithm": "pbkdf2_sha256",
+    "scope": "one persisted plan file by SHA-256 plus workspace plus command fingerprints",
+    "effect": "Una aprobacion valida puede convertir decisiones ask en allow solo para comandos que ya existian en el plan aprobado."
+  },
+  "first_interaction": {
+    "enabled": true,
+    "module": "orchestrator.first_interaction",
+    "launcher": "codex_first_interaction.sh",
+    "behavior": "Al iniciar el workspace, leer politica, plan y aprobacion; pedir password una vez; crear o reutilizar operator_approval; ejecutar el plan autonomo."
+  },
+  "risk_categories": {
+    "read": {
+      "activated": true,
+      "decision": "allow",
+      "risk_level": "low"
+    },
+    "test_or_build": {
+      "activated": true,
+      "decision": "allow",
+      "risk_level": "low"
+    },
+    "shell": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "network": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "delete": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "permissions": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "processes": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "docker": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "high"
+    },
+    "unknown": {
+      "activated": true,
+      "decision": "ask",
+      "risk_level": "medium"
+    }
+  },
+  "allow_prefixes": [
+    [
+      "date"
+    ],
+    [
+      "find"
+    ],
+    [
+      "ls"
+    ],
+    [
+      "rg"
+    ],
+    [
+      "sed"
+    ],
+    [
+      "python3",
+      "-m",
+      "py_compile"
+    ],
+    [
+      "python3",
+      "-m",
+      "unittest"
+    ],
+    [
+      "/home/neurodriver/ferrari_env/bin/python",
+      "-m",
+      "py_compile"
+    ],
+    [
+      "/home/neurodriver/ferrari_env/bin/python",
+      "-m",
+      "unittest"
+    ],
+    [
+      "npm",
+      "run",
+      "build"
+    ]
+  ],
+  "ask_prefixes": [
+    [
+      "bash"
+    ],
+    [
+      "sh"
+    ],
+    [
+      "curl"
+    ],
+    [
+      "wget"
+    ],
+    [
+      "ssh"
+    ],
+    [
+      "scp"
+    ],
+    [
+      "npm",
+      "install"
+    ],
+    [
+      "npm",
+      "add"
+    ],
+    [
+      "rm"
+    ],
+    [
+      "rmdir"
+    ],
+    [
+      "chmod"
+    ],
+    [
+      "chown"
+    ],
+    [
+      "kill"
+    ],
+    [
+      "pkill"
+    ],
+    [
+      "pgrep"
+    ],
+    [
+      "ps"
+    ],
+    [
+      "docker"
+    ]
+  ],
+  "deny_prefixes": [
+    [
+      "sudo"
+    ],
+    [
+      "dd"
+    ],
+    [
+      "mkfs"
+    ],
+    [
+      "rm",
+      "-rf",
+      "/"
+    ],
+    [
+      "rm",
+      "-fr",
+      "/"
+    ],
+    [
+      "docker",
+      "system",
+      "prune"
+    ]
+  ]
+}

@@ -1,0 +1,2451 @@
+[
+  {
+    "checkpoint_key": "runtime-20260518015000-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "CRWEAME UN JUEGO EN 3D NESECITO UN DRONE QUE VUELE EN UN MUNDO PROCEDIRAL QUE NEVEGUE VUELE Y PASE ONSTACULOS DEBE DE SER AURONOMO GUIADO POR UN AJENTE IA DQN REINFORCED LEARNING CON RECOMPENSA Y CARTIGO DEBE DE ESQUIVAR ARBOLES EDIFICIOS TODA UN ACOIUDAD COMPLETA EL DRONE ES AUTONOMO Y NO NESECITA DE EJECUSION HUMANA",
+    "id": "RUNTIME-20260518015000-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518015000-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518015000-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518015000-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518015000-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518015000-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518015000-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518063258-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "OK AHORA ARRANQUE EL JUEGO QUE HICIERON EN sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d carpeta nueva preparada; al iniciar se trabajara solo sobre esta escena vacia NESECITAMOS VERLO CORRER EN VIVO YTILICEN EN SANBOX DE AQUI PARA ARRANCAR EL CODIGO HAGANLO RRAPIDA MENTE NO QUIERO EXPLICASIONES NI NARRATIVA NO EJECUTEN ESTENCIONES DE INTENCIAON SOLO HAGANLO RAPIDO",
+    "id": "RUNTIME-20260518063258-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/index.html\nLinea reportada: 1\nSeveridad: error\nCodigo del hallazgo: algorithm_unreachable_step\nMensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.\nHint: Conecta este bloque al flujo principal o eliminalo si quedo aislado.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/index.html\n\nTrabajo obligatorio:\n- Corregir frontend/index.html alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/index.html\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518072331",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Continua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Proyecto existente: sesion-20260518014728-jeego-en-3d. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-004-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Archivo con punto rojo: frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-004",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-005-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Linea reportada: 1. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-005",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-006-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Severidad: error. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-006",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-007-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Codigo del hallazgo: algorithm_unreachable_step. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-007",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 93,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 7",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-008-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Mensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-008",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 8",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-009-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Hint: Conecta este bloque al flujo principal o eliminalo si quedo aislado. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-009",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 91,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 9",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-010-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Entregables permitidos/esperados para esta reparacion. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-010",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 90,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 10",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-011-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-011",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 89,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 11",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-012-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Trabajo obligatorio. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-012",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 88,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 12",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-013-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Corregir frontend/index.html alrededor de la linea 1 atacando la causa real del punto rojo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-013",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 87,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 13",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-014-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-014",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 86,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 14",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-015-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-015",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 85,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 15",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-016-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-016",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 84,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 16",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-017-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-017",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 83,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 17",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-018-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Deja evidencia de validacion en el resultado de la tarea. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-018",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 82,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 18",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-019-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Validaciones obligatorias sugeridas. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-019",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 81,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 19",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-020-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- python3 -m py_compile frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-020",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 80,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 20",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-021-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-021",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 79,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 21",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518072331-split-022-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Instruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518072331-SPLIT-022",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 78,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html split 22",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/styles.css\nLinea reportada: 1\nSeveridad: error\nCodigo del hallazgo: algorithm_unreachable_step\nMensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.\nHint: Conecta este bloque al flujo principal o eliminalo si quedo aislado.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/styles.css\n\nTrabajo obligatorio:\n- Corregir frontend/styles.css alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/styles.css\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518081542",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Continua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Proyecto existente: sesion-20260518014728-jeego-en-3d. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-004-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Archivo con punto rojo: frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-004",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-005-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Linea reportada: 1. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-005",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-006-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Severidad: error. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-006",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-007-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Codigo del hallazgo: algorithm_unreachable_step. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-007",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 93,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 7",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-008-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Mensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-008",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 8",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-009-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Hint: Conecta este bloque al flujo principal o eliminalo si quedo aislado. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-009",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 91,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 9",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-010-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Entregables permitidos/esperados para esta reparacion. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-010",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 90,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 10",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-011-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-011",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 89,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 11",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-012-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Trabajo obligatorio. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-012",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 88,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 12",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-013-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Corregir frontend/styles.css alrededor de la linea 1 atacando la causa real del punto rojo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-013",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 87,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 13",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-014-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-014",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 86,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 14",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-015-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-015",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 85,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 15",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-016-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-016",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 84,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 16",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-017-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-017",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 83,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 17",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-018-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Deja evidencia de validacion en el resultado de la tarea. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-018",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 82,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 18",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-019-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Validaciones obligatorias sugeridas. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-019",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 81,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 19",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-020-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- python3 -m py_compile frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-020",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 80,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 20",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-021-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-021",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 79,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 21",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518081542-split-022-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Instruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260518081542-SPLIT-022",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 78,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/styles.css split 22",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518084441-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REVISEN EL ISTEMA sesion-20260518014728 JEEGO EN 3D Y POR FAVOR LANCENLO EN EL SANDOX INTERNO QUIERO VERLO CORRIRNDO EN EL JUEGO",
+    "id": "RUNTIME-20260518084441-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518084441-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518084441-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518084441-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518084441-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518084441-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518084441-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518090450-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/app.js\nLinea reportada: 1\nSeveridad: error\nCodigo del hallazgo: algorithm_unreachable_step\nMensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.\nHint: Conecta este bloque al flujo principal o eliminalo si quedo aislado.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/app.js\n\nTrabajo obligatorio:\n- Corregir frontend/app.js alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/app.js\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518090450",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/app.js",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518091611-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/app.js\nLinea reportada: 1\nSeveridad: error\nCodigo del hallazgo: algorithm_unreachable_step\nMensaje: Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.\nHint: Conecta este bloque al flujo principal o eliminalo si quedo aislado.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/app.js\n\nTrabajo obligatorio:\n- Corregir frontend/app.js alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/app.js\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518091611",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/app.js",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518092641-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/app.js\nLinea reportada: 1\nSeveridad: warning\nCodigo del hallazgo: algorithm_dead_end\nMensaje: El bloque interno termina sin salida y puede haber un corte en el harness del algoritmo.\nHint: Conecta este bloque con el siguiente paso logico o con el fin del flujo.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/app.js\n\nTrabajo obligatorio:\n- Corregir frontend/app.js alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/app.js\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518092641",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/app.js",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518093149-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/app.js\nLinea reportada: 1\nSeveridad: warning\nCodigo del hallazgo: algorithm_dead_end\nMensaje: El bloque interno termina sin salida y puede haber un corte en el harness del algoritmo.\nHint: Conecta este bloque con el siguiente paso logico o con el fin del flujo.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/app.js\n\nTrabajo obligatorio:\n- Corregir frontend/app.js alrededor de la linea 1 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/app.js\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara este error en esta linea y valida que el punto rojo desaparezca.\n",
+    "id": "REPAIR-20260518093149",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/app.js",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "perecto les quedo muy bien el proyecto sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 220 archivos detectados en el proyecto seleccionado pero nesecito que el dron tenga lus frontal de noche y lus parpadeante en el dia en la noche indicando la lus frontal para que alumbre edificios y demas codasas obtaculos y el en dia la luz roja parapadeante como la de los aviones en el dia ademas nesecitamos orbitcontrolsy cada ves que choque que salga un mensaje fugas en el aire que imforma cuantola penalidad en rojo y lo mismo cuando se felicita",
+    "id": "RUNTIME-20260518105334-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-004-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/artifacts/final_code_scanner_report.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-004",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 6,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-005-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/artifacts/final_typewriter_report.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-005",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 5,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518105334-001-split-006-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/sandbox.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518105334-001-SPLIT-006",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 4,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "perecto les quedo muy bien el proyecto sesion-20260518014728 split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados en el proyecto seleccionado perfecto neseciamos ponerle a la ciudad carros trafico debemos hacer un averdadera ciudad edificoas con ventanas reales personas caminando en la calle y debemos poner un target donde esta viendo el dron osea si el drone esta scaneando un acarro un apersona este dron es especializado en ehacer zoom al rostro de personas y placas o plates de los carros es un drone buscardor de evidencias y trabaja para Neurodriver IA",
+    "id": "RUNTIME-20260518140434-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-004-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/artifacts/final_code_scanner_report.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-004",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 6,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-005-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/artifacts/final_typewriter_report.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-005",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 5,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260518140434-001-split-006-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "runtime/sandbox.json"
+    ],
+    "goal": "Produce expected file runtime/sandbox.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260518140434-001-SPLIT-006",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 4,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 243 archivos detectados split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/sandbox.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260518195600-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/index.html\nLinea reportada: 43\nSeveridad: error\nCodigo del hallazgo: char_inserted\nMensaje: Caracter o segmento insertado externamente.\nHint: Cambio externo no registrado contra la baseline sellada. Revisa la evidencia antes de aceptar baseline.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/index.html\n\nTrabajo obligatorio:\n- Corregir frontend/index.html alrededor de la linea 43 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/index.html\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara o restaura este cambio externo usando la evidencia de integridad y valida que Verificar integridad quede limpio. No aceptes baseline.\n",
+    "id": "REPAIR-20260518195600",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en frontend/index.html",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519141529-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 296 archivos detectados en el proyecto seleccionado perfecto si arranca pero estamos teniendo problemas con la pantalla negra no se muestra el render de la animacion 3d verifique todo el programa y por favor lances el juego y tomen screens tomas de pantalla para que se den cuanta de la falla",
+    "id": "RUNTIME-20260519141529-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519162225-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 306 archivos detectados en el proyecto seleccionado todavia continia pantalla negra en el juego 3d no se ve el render no se ha solucionado el problema por favor snannee todos los archivos revisen con observer y el scanner que esta pasando y reparenlo",
+    "id": "RUNTIME-20260519162225-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519164259-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "no se que pasa ajentes es imposible continua la pantalla negra en el juego 3d sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 308 archivos detectados en el proyecto seleccionado por favor revisen utilicen las herramientas internas de scanner y observer sniper para reparar los danos que enciantresn en el render parce que es el treejs o soket io",
+    "id": "RUNTIME-20260519164259-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519202033-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "todavia no hemos podido solucioaner el problema con sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 319 archivos detectados en el proyecto seleccionado pamtalla negra no hay render del juego no hay datos del juego ni vista 3d",
+    "id": "RUNTIME-20260519202033-001",
+    "max_retries": 3,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519202033-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260519202033-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "long-run",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519202033-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260519202033-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "long-run",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260519202033-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260519202033-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "long-run",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-001",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-002-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-002",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-003-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-003",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-004-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_file_manifest.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-004",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-005-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_file_manifest.seal.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-005",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-006-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_resistant_anchor_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-006",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 93,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-007-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/anti_hacking_test_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-007",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 7",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260519-001-split-008-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260519202033-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/baseline_guardian_implementation_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260519-001-SPLIT-008",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 91,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01 split 8",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: docs/habla-session.md\nLinea reportada: 4\nSeveridad: error\nCodigo del hallazgo: char_inserted\nMensaje: Caracter o segmento insertado externamente.\nHint: Cambio externo no registrado contra la baseline sellada. Revisa la evidencia antes de aceptar baseline.\n\nEntregables permitidos/esperados para esta reparacion:\n- docs/habla-session.md\n\nTrabajo obligatorio:\n- Corregir docs/habla-session.md alrededor de la linea 4 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile docs/habla-session.md\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara o restaura este cambio externo usando la evidencia de integridad y valida que Verificar integridad quede limpio. No aceptes baseline.\n",
+    "id": "REPAIR-20260519210000",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-004-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_file_manifest.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-004",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-005-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_file_manifest.seal.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-005",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-006-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/agent_resistant_anchor_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-006",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-007-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/anti_hacking_test_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-007",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 93,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 7",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "repair-20260519210000-split-008-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md",
+      "runtime/artifacts/anti_hacking_test_20260518.md",
+      "runtime/artifacts/baseline_guardian_implementation_20260518.md"
+    ],
+    "goal": "Produce expected file runtime/artifacts/baseline_guardian_implementation_20260518.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "REPAIR-20260519210000-SPLIT-008",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Reparar punto rojo en docs/habla-session.md split 8",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md', 'runtime/artifacts/anti_hacking_test_20260518.md', 'runtime/artifacts/baseline_guardian_implementation_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260521001852-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "sesion-20260518014728 JEEGO EN 3D workspace/projects/sesion-20260518014728-jeego-en-3d 446 archivos detectados en el proyecto seleccionado MODO REPARACION AGENTICA EN VIVO. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. El juego 3D qued\u00f3 roto: la pantalla est\u00e1 negra y el canvas no renderiza. Revisar.",
+    "id": "RUNTIME-20260521001852-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260521033457-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "MODO CHAT AGENTICO DESDE EDITOR. Proyecto existente: sesion-20260518014728-jeego-en-3d. No crear proyecto nuevo. No cambiar de workspace. Archivo abierto en editor: frontend/app.js. Puedes responder, inspeccionar y modificar archivos si la solicitud lo requiere. Si modificas archivos, deja evidencia clara y valida el resultado con las pruebas disponibles. Solicitud del usuario: hola como estas",
+    "id": "RUNTIME-20260521033457-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260521172436-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "ok ajentes quedo muy bien el juego ahora es momento de dar realismo nesecitamos ahora que el mundo procedural tome otro vector tanjente y cree el mundo procedural hacia la derecha y hacia la izquierda en este momento solo esta hacia adelante nesecitamos que el mundo 3d se generalice en todas las doreciones para que los drones tengan mas espacio para conbatir por que neseitamos poner un dron mas de color azul que es otro policia que ba a combatir con el dron enemigo la mision del dron policia azul es derrumbar o hacerlo estrellar contralos edificios para neutralizarlo claro esta que el dron rojo enemigo tiene mucha mas inteligencia artificial y mucho mas poder que los drones policias por eso nesecitanmas policias para quelo buedan derribar al dron delincuente rojo se nesecuta poner armas con aureolas rojas circulars que simulan energia electrostatica que para liza los aviones policias eso ramas sedene de ber como ondas circulars que salen de la narin del dron y se ban en forma de onda haciel onjetivo cada vea que algun dron dispare o genere omdas se dene de ver la esplocion donde callo el impacto se debe de ver la destruccuion que causo y las explacion en llamas el delincuente humano ahora ya no es solo uno son tres que se salen de las calles y tienen rokets par aderrumvar los drones policias nesecitamos un averdadera guerra que comineza facil pero a MEDIAD QUE PASA EL TIEMPOSE PONE MAS COMPLICADA LA GUERRA PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 8 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. - S07 Performance (turno 7): Revisa estabilidad, tamanos, bucles largos y uso de recursos. - S08 Recovery (turno 8): Prepara rollback, recuperacion y diagnostico cuando algo falla. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260521172436-001",
+    "max_retries": 3,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260521172436-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-001",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-002-checkpoint",
+    "dependencies": [
+      "LACE-20260521-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 02 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-002",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 02",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-02.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-003-checkpoint",
+    "dependencies": [
+      "LACE-20260521-002"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 03 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-003",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 03",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-03.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-004-checkpoint",
+    "dependencies": [
+      "LACE-20260521-003"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 04 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-004",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 04",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-04.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-005-checkpoint",
+    "dependencies": [
+      "LACE-20260521-004"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 05 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-005",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 05",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-05.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-006-checkpoint",
+    "dependencies": [
+      "LACE-20260521-005"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 06 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-006",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 06",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-06.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-007-checkpoint",
+    "dependencies": [
+      "LACE-20260521-006"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 07 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-007",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 93,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 07",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-07.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-008-checkpoint",
+    "dependencies": [
+      "LACE-20260521-007"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 08 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-008",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 08",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-08.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-009-checkpoint",
+    "dependencies": [
+      "LACE-20260521-008"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 09 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-009",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 91,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 09",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-09.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-010-checkpoint",
+    "dependencies": [
+      "LACE-20260521-009"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/agent_resistant_anchor_20260518.md"
+    ],
+    "goal": "Completar el ciclo LACE 10 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260521-010",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 90,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 10",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/agent_resistant_anchor_20260518.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-10.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8').lower(); assert 'valido para cierre lace: si' in text or 'v\u00e1lido para cierre lace: si' in text, 'cycle is not valid for LACE closure'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260522153527-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "PROMPT 1 - FACIL / SMOKE Resultado estimado: facil, 1 agente, 2 ciclos LACE, 3 tareas m\u00e1x. MODO FACIL / SMOKE. Proyecto objetivo existente y obligatorio: workspace/projects/sesion-20260518014728-jeego-en-3d Mantener el mismo slug. Si el sistema intenta abrir otro slug o crear otra carpeta de proyecto, detener. Parche minimo de un archivo, sin refactor y sin cambiar arquitectura. En el juego 3D de drones agrega en el HUD una se\u00f1al compacta visible que diga: \"patrulla lista\" Debe usar el flight strip o un texto existente. No tocar fisica, DQN, ciudad procedural, rockets, combate, LACE ni runtime. Validar: - node --check frontend/app.js - browser smoke PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 2 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260522153527-001",
+    "max_retries": 3,
+    "mode": "smoke",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 300,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260522170239-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "PROMPT 2 - MEDIO / BUILD Resultado estimado: medio, 3 agentes, 4 ciclos LACE, 10 tareas m\u00e1x. MODO MEDIO / BUILD. Proyecto objetivo existente y obligatorio: workspace/projects/sesion-20260518014728-jeego-en-3d Mantener el mismo slug. Si el sistema intenta abrir otro slug o crear otra carpeta de proyecto, detener. Mejorar el frontend del juego 3D de drones agregando un panel de briefing tactico conectado a datos existentes: - dron policia - dron azul - amenaza - placa buscada - rostro buscado El panel debe actualizarse desde app.js, tener estilos responsive y no alterar fisica, DQN ni combate. Validar: - HTML/CSS/JS existentes - node --check frontend/app.js - browser smoke PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 4 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260522170239-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260522170239-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260522170239-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260522170239-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260522170239-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260522170239-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260522170239-001-SPLIT-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  }
+]

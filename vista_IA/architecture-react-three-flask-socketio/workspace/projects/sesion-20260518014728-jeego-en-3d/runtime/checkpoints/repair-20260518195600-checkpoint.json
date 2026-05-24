@@ -1,0 +1,80 @@
+{
+  "checkpoint_key": "repair-20260518195600-checkpoint",
+  "created_at": "2026-05-18T20:02:17Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/REPAIR-20260518195600-20260518T195600Z-2fa4534a4a9d.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/REPAIR-20260518195600-20260518T195600Z-2fa4534a4a9d.md",
+      "source_hash": "2fa4534a4a9d01bb555a328e26d08aace649218eb441f0901bff2857219c397b"
+    },
+    "task": {
+      "checkpoint_key": "repair-20260518195600-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html"
+      ],
+      "goal": "MODO REPARACION AGENTICA EN VIVO.\nContinua el proyecto existente. No crees un proyecto nuevo y no cambies de workspace.\n\nProyecto existente: sesion-20260518014728-jeego-en-3d\nArchivo con punto rojo: frontend/index.html\nLinea reportada: 43\nSeveridad: error\nCodigo del hallazgo: char_inserted\nMensaje: Caracter o segmento insertado externamente.\nHint: Cambio externo no registrado contra la baseline sellada. Revisa la evidencia antes de aceptar baseline.\n\nEntregables permitidos/esperados para esta reparacion:\n- frontend/index.html\n\nTrabajo obligatorio:\n- Corregir frontend/index.html alrededor de la linea 43 atacando la causa real del punto rojo.\n- Crear o modificar solo los archivos necesarios listados arriba cuando la reparacion lo requiera.\n- No hagas refactors esteticos ni cambies partes no relacionadas del proyecto.\n- Usa el bridge visual: phase antes de trabajar, focus-node sobre el archivo, sync-file despues de cada archivo escrito.\n- Si creas un archivo nuevo, sincronizalo con sync-file para que el editor lo pueda mostrar en vivo.\n- Deja evidencia de validacion en el resultado de la tarea.\n\nValidaciones obligatorias sugeridas:\n- python3 -m py_compile frontend/index.html\n- Reauditar el mapa debe eliminar o reducir el punto rojo seleccionado.\n\nInstruccion humana adicional: Repara o restaura este cambio externo usando la evidencia de integridad y valida que Verificar integridad quede limpio. No aceptes baseline.\n",
+      "id": "REPAIR-20260518195600",
+      "max_retries": 2,
+      "mode": "build",
+      "priority": 100,
+      "status": "pending",
+      "timeout_seconds": 900,
+      "title": "Reparar punto rojo en frontend/index.html",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "frontend/index.html"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "REPAIR-20260518195600",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.085451,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": true,
+            "size": 4016
+          }
+        ],
+        "found": [
+          "frontend/index.html"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [
+          "frontend/index.html"
+        ],
+        "reported_outside_expected": []
+      },
+      "task_id": "REPAIR-20260518195600",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    }
+  }
+}

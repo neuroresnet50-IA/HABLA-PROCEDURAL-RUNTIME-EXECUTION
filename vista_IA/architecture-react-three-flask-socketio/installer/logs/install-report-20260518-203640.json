@@ -1,0 +1,262 @@
+{
+  "generatedAt": "2026-05-19T03:36:40.450178+00:00",
+  "profile": "base",
+  "execute": false,
+  "allowSystem": false,
+  "mode": "CPU/base",
+  "degraded": true,
+  "system": {
+    "os": "Linux 6.17.0-23-generic",
+    "architecture": "x86_64",
+    "python": "3.12.3",
+    "package_manager": "apt-get",
+    "git": "yes",
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "docker": "Docker version 29.4.1, build 055a478",
+    "psql": "missing",
+    "sqlcmd": "missing",
+    "gpu": "Not detected",
+    "cuda": "Not detected"
+  },
+  "components": [
+    [
+      "Git",
+      "yes"
+    ],
+    [
+      "Python",
+      "3.12.3"
+    ],
+    [
+      "Node",
+      "v24.14.1"
+    ],
+    [
+      "npm",
+      "11.11.0"
+    ],
+    [
+      "Flask backend",
+      "planned"
+    ],
+    [
+      "Vite/React frontend",
+      "planned"
+    ]
+  ],
+  "steps": [
+    {
+      "title": "Preflight: detect OS, GPU and tools",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "OS: Linux 6.17.0-23-generic",
+        "GPU: Not detected",
+        "Package manager: apt-get"
+      ]
+    },
+    {
+      "title": "Install system packages",
+      "status": "completed",
+      "records": [
+        {
+          "label": "apt update",
+          "command": [
+            "sudo",
+            "apt-get",
+            "update"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "apt install base packages",
+          "command": [
+            "sudo",
+            "apt-get",
+            "install",
+            "-y",
+            "git",
+            "curl",
+            "ca-certificates",
+            "build-essential",
+            "python3",
+            "python3-venv",
+            "python3-pip",
+            "nodejs",
+            "npm"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Create Python virtual environment",
+      "status": "completed",
+      "records": [
+        {
+          "label": "create .venv",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-m",
+            "venv",
+            ".venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "upgrade pip",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "install backend requirements",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "backend/requirements.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install and build frontend",
+      "status": "completed",
+      "records": [
+        {
+          "label": "npm install frontend",
+          "command": [
+            "npm",
+            "install"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "npm build frontend",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Run smoke checks",
+      "status": "completed",
+      "records": [
+        {
+          "label": "compile backend",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "py_compile",
+            "backend/app.py",
+            "backend/auth_routes.py"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "import Flask",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-c",
+            "import flask, flask_socketio, psycopg; print('backend imports ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "frontend bundle exists",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-c",
+            "from pathlib import Path; assert Path('frontend/dist/index.html').is_file(); print('frontend build ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Write installation report",
+      "status": "noted",
+      "records": [],
+      "notes": []
+    }
+  ]
+}

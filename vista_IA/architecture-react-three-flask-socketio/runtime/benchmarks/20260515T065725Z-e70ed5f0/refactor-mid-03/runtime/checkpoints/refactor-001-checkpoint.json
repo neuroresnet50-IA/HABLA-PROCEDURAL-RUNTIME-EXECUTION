@@ -1,0 +1,80 @@
+{
+  "checkpoint_key": "refactor-001-checkpoint",
+  "created_at": "2026-05-15T06:57:25Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/REFACTOR-001-20260515T065725Z-4f2bde814025.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/REFACTOR-001-20260515T065725Z-4f2bde814025.md",
+      "source_hash": "4f2bde814025d45d41199ac3ce0e39df25e46e1b412f26cb377418784b3fd155"
+    },
+    "task": {
+      "checkpoint_key": "refactor-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "src/module.py"
+      ],
+      "goal": "Modify an existing artifact and validate the new behavior marker.",
+      "id": "REFACTOR-001",
+      "max_retries": 2,
+      "mode": "medium",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 10,
+      "title": "Refactor existing module",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; text=Path('src/module.py').read_text(encoding='utf-8'); assert 'return value * 2' in text, 'return value * 2'\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "src/module.py"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "REFACTOR-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; text=Path('src/module.py').read_text(encoding='utf-8'); assert 'return value * 2' in text, 'return value * 2'\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; text=Path('src/module.py').read_text(encoding='utf-8'); assert 'return value * 2' in text, 'return value * 2'\"",
+          "duration_seconds": 0.016886,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "src/module.py",
+            "reported_created": false,
+            "reported_modified": true,
+            "size": 43
+          }
+        ],
+        "found": [
+          "src/module.py"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [
+          "src/module.py"
+        ],
+        "reported_outside_expected": []
+      },
+      "task_id": "REFACTOR-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T065725Z-e70ed5f0/refactor-mid-03/workspace"
+    }
+  }
+}

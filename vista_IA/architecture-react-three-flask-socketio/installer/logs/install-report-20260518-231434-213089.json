@@ -1,0 +1,428 @@
+{
+  "generatedAt": "2026-05-19T06:14:34.213113+00:00",
+  "profile": "recipe:data-dashboard",
+  "groups": [
+    "base",
+    "db",
+    "web-dev",
+    "ml-cpu",
+    "data-viz-ml-nlp-extended"
+  ],
+  "requirementPlan": {
+    "profile": "recipe:data-dashboard",
+    "description": "Dashboard de datos, graficas, estadistica, PostgreSQL y frontend.",
+    "groups": [
+      "base",
+      "db",
+      "web-dev",
+      "ml-cpu",
+      "data-viz-ml-nlp-extended"
+    ],
+    "evidence": [
+      {
+        "type": "recipe",
+        "id": "data-dashboard",
+        "groups": [
+          "base",
+          "db",
+          "web-dev",
+          "ml-cpu",
+          "data-viz-ml-nlp-extended"
+        ]
+      }
+    ],
+    "requirementPreview": ""
+  },
+  "execute": false,
+  "allowSystem": false,
+  "mode": "CPU/base",
+  "degraded": false,
+  "system": {
+    "os": "Linux 6.17.0-23-generic",
+    "architecture": "x86_64",
+    "python": "3.12.3",
+    "package_manager": "apt-get",
+    "git": "yes",
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "docker": "Docker version 29.4.1, build 055a478",
+    "psql": "yes",
+    "sqlcmd": "missing",
+    "gpu": "Not detected",
+    "cuda": "Not detected"
+  },
+  "components": [
+    [
+      "Git",
+      "yes"
+    ],
+    [
+      "Python",
+      "3.12.3"
+    ],
+    [
+      "Node",
+      "v24.14.1"
+    ],
+    [
+      "npm",
+      "11.11.0"
+    ],
+    [
+      "Flask backend",
+      "planned"
+    ],
+    [
+      "Vite/React frontend",
+      "planned"
+    ],
+    [
+      "PostgreSQL",
+      "yes"
+    ],
+    [
+      "SQL Server",
+      "missing"
+    ],
+    [
+      "PyTorch CPU",
+      "planned"
+    ],
+    [
+      "OpenCV",
+      "planned"
+    ],
+    [
+      "Jupyter",
+      "planned"
+    ],
+    [
+      "Data viz/stat/AutoML/NLP extended",
+      "best-effort planned"
+    ],
+    [
+      "Matplotlib ecosystem",
+      "best-effort planned"
+    ]
+  ],
+  "steps": [
+    {
+      "title": "Preflight: detect OS, GPU and tools",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "OS: Linux 6.17.0-23-generic",
+        "GPU: Not detected",
+        "Package manager: apt-get"
+      ]
+    },
+    {
+      "title": "Install system packages",
+      "status": "completed",
+      "records": [
+        {
+          "label": "apt update",
+          "command": [
+            "sudo",
+            "apt-get",
+            "update"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "apt install base packages",
+          "command": [
+            "sudo",
+            "apt-get",
+            "install",
+            "-y",
+            "ca-certificates",
+            "build-essential",
+            "python3-venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Create Python virtual environment",
+      "status": "completed",
+      "records": [
+        {
+          "label": "create .venv",
+          "command": [
+            "/usr/bin/python3",
+            "-m",
+            "venv",
+            ".venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "upgrade pip",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "install backend requirements",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "backend/requirements.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install ML CPU requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install ML CPU stack",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-ml-cpu.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install data-viz-ml-nlp-extended Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install data-viz-ml-nlp-extended",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-data-viz-ml-nlp-extended.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install and build frontend",
+      "status": "completed",
+      "records": [
+        {
+          "label": "npm install frontend",
+          "command": [
+            "npm",
+            "install"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "npm build frontend",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install web developer extras",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install Angular CLI",
+          "command": [
+            "npm",
+            "install",
+            "-g",
+            "@angular/cli"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": false,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Prepare Docker services",
+      "status": "completed",
+      "records": [
+        {
+          "label": "validate docker",
+          "command": [
+            "docker",
+            "--version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "validate compose",
+          "command": [
+            "docker",
+            "compose",
+            "version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": [
+        "Use installer/docker/docker-compose.db.yml for PostgreSQL and SQL Server.",
+        "Use installer/docker/docker-compose.mlops.yml for MLflow/Jupyter/Redis."
+      ]
+    },
+    {
+      "title": "Run smoke checks",
+      "status": "completed",
+      "records": [
+        {
+          "label": "compile backend",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "py_compile",
+            "backend/app.py",
+            "backend/auth_routes.py"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "import Flask",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-c",
+            "import flask, flask_socketio, psycopg; print('backend imports ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "frontend bundle exists",
+          "command": [
+            "/usr/bin/python3",
+            "-c",
+            "from pathlib import Path; assert Path('frontend/dist/index.html').is_file(); print('frontend build ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": false,
+          "reason": "dry-run",
+          "ok": true,
+          "output": ""
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Write installation report",
+      "status": "noted",
+      "records": [],
+      "notes": []
+    }
+  ]
+}

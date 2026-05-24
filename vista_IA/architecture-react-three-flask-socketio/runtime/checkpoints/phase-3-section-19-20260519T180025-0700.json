@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "checkpoint_type": "section_19_phase_3",
+  "created_at": "2026-05-19T18:00:25-07:00",
+  "status": "mitigated_not_full_closure",
+  "phase": 3,
+  "scope": [
+    "19.3 backend monolitico",
+    "19.5 frontend con componentes grandes"
+  ],
+  "summary": {
+    "backend": "Se extrajeron servicios testeables de scanner final y reparacion agentica fuera de backend/app.py.",
+    "frontend": "Se extrajeron utilidades de App, CodeWorkbench y AgentStudio; LiveReviewerPanel quedo como componente separado.",
+    "audit_position": "No declarar cierre total si la auditoria exige limite estricto de tamano por archivo; app.py y algunos componentes siguen grandes."
+  },
+  "files_created": [
+    "backend/code_scanner_service.py",
+    "backend/agent_repair_service.py",
+    "backend/test_code_scanner_service.py",
+    "backend/test_agent_repair_service.py",
+    "frontend/src/appUtils.js",
+    "frontend/src/components/codeWorkbenchUtils.js",
+    "frontend/src/components/agentStudioUtils.js",
+    "frontend/src/components/LiveReviewerPanel.jsx"
+  ],
+  "files_modified": [
+    "backend/app.py",
+    "frontend/src/App.jsx",
+    "frontend/src/components/CodeWorkbench.jsx",
+    "frontend/src/components/AgentStudio.jsx",
+    "PLANS.md"
+  ],
+  "line_counts_after": {
+    "backend/app.py": 6721,
+    "backend/code_scanner_service.py": 133,
+    "backend/agent_repair_service.py": 171,
+    "frontend/src/App.jsx": 2207,
+    "frontend/src/appUtils.js": 834,
+    "frontend/src/components/CodeWorkbench.jsx": 2337,
+    "frontend/src/components/codeWorkbenchUtils.js": 259,
+    "frontend/src/components/AgentStudio.jsx": 1754,
+    "frontend/src/components/agentStudioUtils.js": 237,
+    "frontend/src/components/LiveReviewerPanel.jsx": 151
+  },
+  "validations": [
+    {
+      "command": "python3 -m py_compile backend/app.py backend/code_scanner_service.py backend/agent_repair_service.py backend/test_code_scanner_service.py backend/test_agent_repair_service.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m unittest backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint",
+      "result": "passed",
+      "tests": 20
+    },
+    {
+      "command": "npm run build",
+      "cwd": "frontend",
+      "result": "passed"
+    },
+    {
+      "command": "npm test",
+      "cwd": "frontend",
+      "result": "passed"
+    }
+  ],
+  "remaining_risks": [
+    "backend/app.py todavia concentra rutas y responsabilidades de sandbox, HAR, integridad, observer, editor, reset y blanqueo.",
+    "App.jsx y CodeWorkbench.jsx siguen superando 2000 lineas.",
+    "La carpeta actual no tiene repositorio Git inicializado, por lo que no hubo evidencia por git diff/status."
+  ],
+  "next_step": "Fase 4 debe extraer sandbox/integrity/HAR/observer del backend y paneles de CodeWorkbench/App si la auditoria exige cierre total de 19.3 y 19.5."
+}

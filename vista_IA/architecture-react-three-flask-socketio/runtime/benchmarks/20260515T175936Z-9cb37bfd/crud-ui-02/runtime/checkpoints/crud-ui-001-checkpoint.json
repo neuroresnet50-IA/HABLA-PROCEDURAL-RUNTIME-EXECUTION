@@ -1,0 +1,80 @@
+{
+  "checkpoint_key": "crud-ui-001-checkpoint",
+  "created_at": "2026-05-15T17:59:37Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/CRUD-UI-001-20260515T175937Z-fc9988ab2280.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/CRUD-UI-001-20260515T175937Z-fc9988ab2280.md",
+      "source_hash": "fc9988ab22803cd49e7ab52ecacacd6bc3bd4554ab6ad1629309242416988915"
+    },
+    "task": {
+      "checkpoint_key": "crud-ui-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html"
+      ],
+      "goal": "Create the first UI artifact.",
+      "id": "CRUD-UI-001",
+      "max_retries": 2,
+      "mode": "build",
+      "priority": 30,
+      "status": "pending",
+      "timeout_seconds": 10,
+      "title": "Create HTML shell",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "frontend/index.html"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "CRUD-UI-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\"",
+          "duration_seconds": 0.03089,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": true,
+            "reported_modified": false,
+            "size": 23
+          }
+        ],
+        "found": [
+          "frontend/index.html"
+        ],
+        "missing": [],
+        "reported_created": [
+          "frontend/index.html"
+        ],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "CRUD-UI-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T175936Z-9cb37bfd/crud-ui-02/workspace"
+    }
+  }
+}

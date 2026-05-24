@@ -1,0 +1,216 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans); }
+.wrap { padding: 1rem 0; }
+.header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 1.5rem; }
+.title { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+.subtitle { font-size: 12px; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.07em; }
+.phases { display: flex; flex-direction: column; gap: 0; }
+.phase { display: grid; grid-template-columns: 48px 1fr; gap: 0; }
+.phase-line { display: flex; flex-direction: column; align-items: center; }
+.phase-dot { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; flex-shrink: 0; border: 1.5px solid; }
+.phase-connector { width: 1.5px; flex: 1; min-height: 12px; }
+.phase-body { padding: 0 0 0 12px; padding-bottom: 20px; }
+.phase-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.phase-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.5; }
+.sub-items { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+.sub-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+.sub-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.iter-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin: 1.25rem 0; }
+.iter-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 8px; text-align: center; cursor: pointer; transition: all 0.15s; }
+.iter-card:hover { border-color: var(--color-border-secondary); }
+.iter-card.active { border-color: #534AB7; background: #EEEDFE; }
+.iter-num { font-size: 18px; font-weight: 500; color: var(--color-text-primary); }
+.iter-name { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.06em; }
+.iter-status { font-size: 10px; margin-top: 6px; padding: 2px 6px; border-radius: 10px; display: inline-block; }
+.detail-box { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 1rem 1.25rem; min-height: 100px; }
+.detail-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 8px; }
+.detail-actions { display: flex; flex-direction: column; gap: 6px; }
+.action-row { display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--color-text-secondary); }
+.action-icon { font-size: 14px; width: 20px; text-align: center; flex-shrink: 0; margin-top: 1px; }
+.md-box { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 14px; font-family: var(--font-mono); font-size: 11px; color: var(--color-text-secondary); margin-top: 1rem; }
+.md-line { color: var(--color-text-primary); font-weight: 500; }
+.md-comment { color: var(--color-text-tertiary); }
+.divider { height: 0.5px; background: var(--color-border-tertiary); margin: 1.25rem 0; }
+.gate { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); font-size: 12px; color: var(--color-text-secondary); }
+.gate-icon { font-size: 16px; }
+</style>
+
+<h2 class="sr-only">LACE — Loop de Autocrítica y Creatividad Evolutiva: mecanismo de iteración forzada para agentes de IA</h2>
+
+<div class="wrap">
+
+<div class="header">
+  <span class="title">LACE</span>
+  <span class="subtitle">Loop de autocrítica y creatividad evolutiva</span>
+</div>
+
+<div class="phases">
+
+  <div class="phase">
+    <div class="phase-line">
+      <div class="phase-dot" style="background:#E1F5EE;border-color:#1D9E75;color:#085041">0</div>
+      <div class="phase-connector" style="background:#1D9E75;opacity:0.25"></div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-label" style="color:#0F6E56">Fase 0 — arranque dirigido por .md</div>
+      <div class="phase-desc">El agente NO empieza a ciegas. Lee el archivo <code>LACE.md</code> que contiene el mapa completo de lo que debe hacer. Sin ese archivo, el agente no actúa.</div>
+      <div class="md-box">
+        <div class="md-line"># LACE.md — instrucciones globales</div>
+        <div class="md-comment">## obligaciones del agente</div>
+        <div>- ejecutar mínimo 5 ciclos completos</div>
+        <div>- no cerrar sin pasar la puerta de calidad</div>
+        <div>- documentar cada decisión en LACE_LOG.md</div>
+        <div class="md-comment">## orden de ejecución: [0] leer → [1] crear → [2..5] iterar</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-line">
+      <div class="phase-dot" style="background:#E6F1FB;border-color:#378ADD;color:#0C447C">1</div>
+      <div class="phase-connector" style="background:#378ADD;opacity:0.25"></div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-label" style="color:#185FA5">Fase 1 — creación base (plan A)</div>
+      <div class="phase-desc">El agente construye la versión inicial del proyecto. Cuando termina, NO cierra. En cambio, activa automáticamente el primer ciclo LACE.</div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-line">
+      <div class="phase-dot" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">2</div>
+      <div class="phase-connector" style="background:#534AB7;opacity:0.25"></div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-label" style="color:#534AB7">Fases 2–6 — ciclos LACE (mínimo 5 iteraciones)</div>
+      <div class="phase-desc">Cada ciclo tiene exactamente 4 pasos en orden fijo. El agente no puede saltarlos.</div>
+
+      <div class="iter-row" id="iter-row">
+        <div class="iter-card active" onclick="showIter(0,this)">
+          <div class="iter-num">1</div>
+          <div class="iter-name">Analizar</div>
+          <div class="iter-status" style="background:#E1F5EE;color:#0F6E56">activo</div>
+        </div>
+        <div class="iter-card" onclick="showIter(1,this)">
+          <div class="iter-num">2</div>
+          <div class="iter-name">Criticar</div>
+          <div class="iter-status" style="background:#F1EFE8;color:#5F5E5A">en espera</div>
+        </div>
+        <div class="iter-card" onclick="showIter(2,this)">
+          <div class="iter-num">3</div>
+          <div class="iter-name">Mejorar</div>
+          <div class="iter-status" style="background:#F1EFE8;color:#5F5E5A">en espera</div>
+        </div>
+        <div class="iter-card" onclick="showIter(3,this)">
+          <div class="iter-num">4</div>
+          <div class="iter-name">Validar</div>
+          <div class="iter-status" style="background:#F1EFE8;color:#5F5E5A">en espera</div>
+        </div>
+        <div class="iter-card" onclick="showIter(4,this)">
+          <div class="iter-num">5</div>
+          <div class="iter-name">Decidir</div>
+          <div class="iter-status" style="background:#F1EFE8;color:#5F5E5A">en espera</div>
+        </div>
+      </div>
+
+      <div class="detail-box" id="detail-box">
+        <div class="detail-title" id="detail-title">Paso 1 — Analizar</div>
+        <div class="detail-actions" id="detail-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-line">
+      <div class="phase-dot" style="background:#FAEEDA;border-color:#BA7517;color:#633806">7</div>
+      <div class="phase-connector" style="background:#BA7517;opacity:0.25"></div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-label" style="color:#854F0B">Puerta de calidad — ¿cerrar o iterar más?</div>
+      <div class="phase-desc">Después de 5 ciclos, el agente evalúa contra los criterios del LACE.md. Si no pasa, inicia otro ciclo. No hay límite superior excepto el que define el humano.</div>
+      <div class="gate" style="margin-top:10px">
+        <i class="ti ti-git-branch gate-icon" style="color:#BA7517" aria-hidden="true"></i>
+        <span>¿Pasó todos los criterios? → <strong>Cerrar</strong> &nbsp;|&nbsp; ¿Algo falló? → <strong>Ciclo adicional</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-line">
+      <div class="phase-dot" style="background:#EAF3DE;border-color:#3B6D11;color:#27500A">✓</div>
+      <div style="flex:1"></div>
+    </div>
+    <div class="phase-body">
+      <div class="phase-label" style="color:#3B6D11">Cierre — entrega con LACE_LOG.md</div>
+      <div class="phase-desc">El agente cierra entregando el proyecto + un log completo de cada decisión, cada mejora y cada razón. El humano nunca ve solo código — ve el razonamiento.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="divider"></div>
+
+<div style="font-size:12px;color:var(--color-text-secondary);line-height:1.7">
+  El nombre clave del comportamiento que describes: <strong style="color:var(--color-text-primary);font-weight:500">iteración forzada con autocrítica estructurada</strong>. Lo que diferencia LACE de una ejecución normal es que el agente tiene <em>prohibido</em> cerrar antes de completar los ciclos, y cada ciclo tiene que producir algo diferente al anterior.
+</div>
+
+</div>
+
+<script>
+const data = [
+  {
+    title: "Paso 1 — Analizar",
+    actions: [
+      { icon: "ti-scan", text: "Lee todo el proyecto generado: archivos, estructura, código" },
+      { icon: "ti-bug", text: "Detecta errores, bugs y comportamientos inesperados" },
+      { icon: "ti-report", text: "Documenta el estado actual en LACE_LOG.md" }
+    ]
+  },
+  {
+    title: "Paso 2 — Criticar",
+    actions: [
+      { icon: "ti-eye-off", text: "Evalúa lo que quedó demasiado básico o incompleto" },
+      { icon: "ti-mood-sad", text: "¿El frontend es simple? ¿Falta funcionalidad? ¿El UX es pobre?" },
+      { icon: "ti-list-check", text: "Genera lista priorizada de deficiencias — sin excusas" }
+    ]
+  },
+  {
+    title: "Paso 3 — Mejorar",
+    actions: [
+      { icon: "ti-wand", text: "Aplica las mejoras identificadas en el paso anterior" },
+      { icon: "ti-users", text: "Puede agregar: multiusuario, auth, mejor UI, nuevas features" },
+      { icon: "ti-code", text: "Escribe código nuevo — no parchea, refactoriza si es necesario" }
+    ]
+  },
+  {
+    title: "Paso 4 — Validar",
+    actions: [
+      { icon: "ti-player-play", text: "Ejecuta el proyecto mejorado y verifica que funciona" },
+      { icon: "ti-check", text: "Compara contra la versión anterior: ¿mejoró concretamente?" },
+      { icon: "ti-arrow-back-up", text: "Si algo se rompió, repara antes de continuar al paso 5" }
+    ]
+  },
+  {
+    title: "Paso 5 — Decidir",
+    actions: [
+      { icon: "ti-git-branch", text: "¿Se han completado 5 ciclos? → ir a puerta de calidad" },
+      { icon: "ti-refresh", text: "¿No se han completado? → volver al paso 1 con nuevo ciclo" },
+      { icon: "ti-notes", text: "Registrar decisión en LACE_LOG.md con justificación" }
+    ]
+  }
+];
+
+function showIter(idx, el) {
+  document.querySelectorAll('.iter-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const d = data[idx];
+  document.getElementById('detail-title').textContent = d.title;
+  document.getElementById('detail-actions').innerHTML = d.actions.map(a =>
+    `<div class="action-row"><i class="ti ${a.icon} action-icon" aria-hidden="true"></i><span>${a.text}</span></div>`
+  ).join('');
+}
+
+showIter(0, document.querySelector('.iter-card'));
+</script>

@@ -1,0 +1,38 @@
+{
+  "id": "start-sh-repair-20260518T185312-pdt",
+  "created_at": "2026-05-18 18:53:12 PDT",
+  "task": "Reparar start.sh cuando el servidor no arranca",
+  "status": "validated",
+  "root_cause": "El backend real seguia escuchando en el puerto 5000 con PID 761303, pero .runtime/pids/backend.pid tenia un PID viejo 860937. start.sh solo confiaba en el PID persistido, no detenía el proceso huerfano y luego el nuevo backend fallaba con Address already in use.",
+  "files_modified": [
+    "start.sh",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "recuperacioncontexto.md",
+    "runtime/task_history.jsonl",
+    "runtime/failures.jsonl"
+  ],
+  "evidence": {
+    "before": {
+      "pid_file": "860937",
+      "actual_backend_pid": "761303",
+      "backend_log_error": "Address already in use / Port 5000 is in use"
+    },
+    "after": {
+      "backend_pid": "876517",
+      "app_url": "http://127.0.0.1:5000/",
+      "http_status": 200,
+      "health_ok": true
+    }
+  },
+  "validations": [
+    {"command": "bash -n start.sh", "passed": true},
+    {"command": "env OPEN_BROWSER=0 ./start.sh status", "passed": true},
+    {"command": "env OPEN_BROWSER=0 ./start.sh restart", "passed": true},
+    {"command": "curl -s -o /dev/null -w %{http_code} http://127.0.0.1:5000/", "passed": true, "output": "200"},
+    {"command": "curl -s http://127.0.0.1:5000/api/health", "passed": true, "output_contains": "\"ok\":true"}
+  ],
+  "blockers": [
+    "El sandbox de comandos fallo con bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted; las validaciones se ejecutaron con aprobacion fuera del sandbox."
+  ],
+  "next_step": "Abrir o refrescar http://127.0.0.1:5000/."
+}

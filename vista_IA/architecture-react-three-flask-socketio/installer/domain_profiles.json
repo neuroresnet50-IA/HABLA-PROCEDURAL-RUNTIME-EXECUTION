@@ -1,0 +1,121 @@
+{
+  "version": "0.1.0",
+  "defaultGroups": ["base"],
+  "groupOrder": [
+    "base",
+    "db",
+    "web-dev",
+    "ml-cpu",
+    "ml-nvidia",
+    "gen-ai",
+    "vision-industrial",
+    "agents",
+    "mlops",
+    "hardware-io-utils",
+    "data-viz-ml-nlp-extended"
+  ],
+  "recipes": {
+    "base-app": {
+      "description": "Aplicacion HABLA base con backend Flask y frontend React/Vite.",
+      "groups": ["base", "web-dev"]
+    },
+    "industrial-vision": {
+      "description": "Vision artificial industrial con camaras, OpenCV, YOLO, sensores y reportes.",
+      "groups": ["base", "db", "web-dev", "ml-cpu", "vision-industrial", "hardware-io-utils", "data-viz-ml-nlp-extended"]
+    },
+    "agent-platform": {
+      "description": "Plataforma de agentes IA con APIs LLM, memoria, orquestacion y servicios.",
+      "groups": ["base", "db", "web-dev", "gen-ai", "agents", "mlops"]
+    },
+    "ml-research": {
+      "description": "Entorno de investigacion ML con notebooks, datasets, visualizacion y tracking.",
+      "groups": ["base", "db", "ml-cpu", "gen-ai", "mlops", "data-viz-ml-nlp-extended"]
+    },
+    "data-dashboard": {
+      "description": "Dashboard de datos, graficas, estadistica, PostgreSQL y frontend.",
+      "groups": ["base", "db", "web-dev", "ml-cpu", "data-viz-ml-nlp-extended"]
+    },
+    "iot-control": {
+      "description": "Control de hardware, serial, USB, BLE, MQTT, sensores y tablero web.",
+      "groups": ["base", "db", "web-dev", "hardware-io-utils", "data-viz-ml-nlp-extended"]
+    },
+    "document-ai": {
+      "description": "Procesamiento de documentos, OCR, PDF, NLP, LLM y almacenamiento.",
+      "groups": ["base", "db", "web-dev", "ml-cpu", "gen-ai", "vision-industrial", "agents", "data-viz-ml-nlp-extended"]
+    },
+    "security-observer": {
+      "description": "Observer de seguridad con auditoria, agentes, hashes, bases de datos y reportes.",
+      "groups": ["base", "db", "web-dev", "agents", "mlops", "hardware-io-utils", "data-viz-ml-nlp-extended"]
+    },
+    "rtx-vision": {
+      "description": "Vision y ML optimizado para estaciones con NVIDIA RTX/CUDA.",
+      "groups": ["base", "db", "web-dev", "ml-cpu", "ml-nvidia", "vision-industrial", "mlops", "hardware-io-utils"]
+    },
+    "full": {
+      "description": "Stack completo HABLA Observer IA.",
+      "groups": ["base", "db", "web-dev", "ml-cpu", "ml-nvidia", "gen-ai", "vision-industrial", "agents", "mlops", "hardware-io-utils", "data-viz-ml-nlp-extended"]
+    }
+  },
+  "keywordRules": [
+    {
+      "id": "database",
+      "groups": ["db"],
+      "keywords": ["postgres", "postgresql", "sql server", "database", "base de datos", "db", "psql", "mssql", "persistencia", "sesiones"]
+    },
+    {
+      "id": "web_frontend",
+      "groups": ["web-dev"],
+      "keywords": ["frontend", "react", "vite", "angular", "node", "npm", "web", "dashboard", "interfaz", "ui", "pantalla", "modal", "login"]
+    },
+    {
+      "id": "ml_cpu",
+      "groups": ["ml-cpu"],
+      "keywords": ["machine learning", "ml", "torch", "pytorch", "sklearn", "scikit", "numpy", "pandas", "notebook", "jupyter", "entrenamiento", "inferencia"]
+    },
+    {
+      "id": "gpu_rtx_cuda",
+      "groups": ["ml-cpu", "ml-nvidia"],
+      "keywords": ["gpu", "cuda", "nvidia", "rtx", "4060", "4070", "4090", "tensor core", "torch cuda", "cudnn"]
+    },
+    {
+      "id": "generative_ai",
+      "groups": ["gen-ai"],
+      "keywords": ["llm", "generativa", "generative", "transformers", "diffusers", "datasets", "huggingface", "chatbot", "modelo de lenguaje", "embeddings"]
+    },
+    {
+      "id": "industrial_vision",
+      "groups": ["ml-cpu", "vision-industrial"],
+      "keywords": ["vision artificial", "computer vision", "opencv", "cv2", "yolo", "ultralytics", "deteccion", "segmentacion", "clasificacion", "camara", "camaras", "ocr", "tesseract", "qr", "barcode", "codigo de barras", "imagen", "video"]
+    },
+    {
+      "id": "agents",
+      "groups": ["gen-ai", "agents"],
+      "keywords": ["agente", "agentes", "agent", "tools", "tool calling", "orquestacion", "openai", "anthropic", "memoria", "razonamiento", "planner"]
+    },
+    {
+      "id": "mlops",
+      "groups": ["db", "mlops"],
+      "keywords": ["docker", "compose", "mlflow", "wandb", "redis", "tensorboard", "servicio", "servicios", "monitoring", "observabilidad", "mlops", "deploy"]
+    },
+    {
+      "id": "hardware_io",
+      "groups": ["hardware-io-utils"],
+      "keywords": ["serial", "pyserial", "usb", "hid", "bluetooth", "ble", "mqtt", "sensor", "sensores", "arduino", "raspberry", "plc", "pygame", "joystick", "gamepad", "automatizacion", "pyautogui"]
+    },
+    {
+      "id": "data_viz_stats",
+      "groups": ["data-viz-ml-nlp-extended"],
+      "keywords": ["matplotlib", "matploit", "seaborn", "plotly", "graficas", "grafico", "charts", "reportes", "estadistica", "series de tiempo", "finanzas", "automl", "xgboost", "lightgbm", "catboost", "nlp", "spacy", "nltk", "vector", "faiss", "scraping", "pdf"]
+    },
+    {
+      "id": "documents",
+      "groups": ["vision-industrial", "data-viz-ml-nlp-extended"],
+      "keywords": ["documento", "documentos", "pdf", "excel", "docx", "pptx", "ocr", "formularios", "facturas", "readability"]
+    },
+    {
+      "id": "security_observer",
+      "groups": ["db", "agents", "hardware-io-utils", "data-viz-ml-nlp-extended"],
+      "keywords": ["seguridad", "hacking", "anti hacking", "sha256", "hash", "integridad", "forense", "auditoria", "corrupto", "corrupcion", "tamper", "malicioso"]
+    }
+  ]
+}

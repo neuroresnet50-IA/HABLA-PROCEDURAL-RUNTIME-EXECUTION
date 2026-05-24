@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "purpose": "Ejemplo documental. No es una aprobacion real porque no contiene hash de password ni comandos aprobados.",
+  "activation_command": "/home/neurodriver/ferrari_env/bin/python -m orchestrator.security_policy approve-plan --plan runtime/autonomous_commands.json --workspace . --approval-file runtime/operator_approval.json --categories shell network delete permissions processes docker unknown --expires-hours 10",
+  "run_command": "/home/neurodriver/ferrari_env/bin/python -m orchestrator.autonomous_runner --plan runtime/autonomous_commands.json --policy runtime/auto_approval_policy.json --workspace . --run",
+  "notes": [
+    "El password se escribe en la terminal o se pasa por SECURITY_APPROVAL_PASSWORD.",
+    "La aprobacion real queda atada al SHA-256 del plan.",
+    "Si el plan cambia, la aprobacion deja de coincidir."
+  ]
+}

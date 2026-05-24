@@ -1,0 +1,32 @@
+{
+  "checkpoint": "observer-lifecycle-plan-20260519T082937-0700",
+  "createdAt": "2026-05-19T08:29:37-07:00",
+  "scope": "plan",
+  "reason": "El usuario reporto que Observer Engine quedo trabajando durante horas despues de una tarea de pantalla negra y pidio reorganizar un algoritmo funcional con inicio y fin.",
+  "filesModified": [
+    "PLANS.md"
+  ],
+  "diagnosis": {
+    "projectHasActiveTask": false,
+    "currentTaskId": null,
+    "observedFailure": "Observer/Workbench emiten actividad repetida aunque no hay worker activo.",
+    "rootDesignIssue": "ObserverPlane.run_forever no modela incidentes finitos con maxRuntimeSeconds, maxTicks, deduplicacion y stopReason."
+  },
+  "plannedTasks": [
+    "OBSERVER-LIFECYCLE-001",
+    "OBSERVER-LIFECYCLE-002",
+    "OBSERVER-LIFECYCLE-003",
+    "OBSERVER-LIFECYCLE-004",
+    "OBSERVER-LIFECYCLE-005"
+  ],
+  "validation": {
+    "type": "documentation_checkpoint",
+    "status": "passed",
+    "commands": [
+      "rg -n \"PLAN DE CICLO DE VIDA FINITO|OBSERVER-LIFECYCLE-001|Condiciones de parada|Contrato de salida\" PLANS.md",
+      "jq . runtime/checkpoints/observer-lifecycle-plan-20260519T082937-0700.json"
+    ],
+    "result": "PLANS.md contiene el plan finito del Observer y el checkpoint JSON es valido.",
+    "nextValidation": "Implementar OBSERVER-LIFECYCLE-001 con pruebas enfocadas del ciclo de incidente."
+  }
+}

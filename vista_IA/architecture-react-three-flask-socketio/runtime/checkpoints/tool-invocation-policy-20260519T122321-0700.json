@@ -1,0 +1,47 @@
+{
+  "backend": {
+    "pid": 1308324,
+    "url": "http://127.0.0.1:5000/"
+  },
+  "checkpoint_type": "tool_invocation_policy_implementation",
+  "created_at": "2026-05-19T12:23:21-07:00",
+  "files_created": [
+    "orchestrator/tool_invocation_policy.py",
+    "backend/test_tool_invocation_policy.py"
+  ],
+  "files_modified": [
+    "orchestrator/agent_tools.py",
+    "backend/agent_runtime.py",
+    "orchestrator/validator.py",
+    "PLANS.md",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "recuperacioncontexto.md"
+  ],
+  "implemented": [
+    "orchestrator.tool_invocation_policy con fases preflight, postflight, task_completion_gate, recovery_preview y project_completion_gate",
+    "AgentRuntime invoca la politica automaticamente alrededor de cada tarea del control plane",
+    "cierre final de proyecto ejecuta scanner, integrity y findings por politica",
+    "Sniper automatico queda limitado a dry-run en recovery_preview",
+    "agent_tools.py acepta --timeout-seconds para no bloquear el runtime",
+    "artefactos de ToolInvocationPolicy se marcan como internos y no cuentan como evidencia de producto"
+  ],
+  "request": "Ejecutar el plan para integrar Observer/Scanner/Integrity/Findings/Sniper al ciclo real del orquestador.",
+  "result": "implemented_and_validated",
+  "risks": [
+    "Las herramientas HTTP son no bloqueantes por defecto salvo HABLA_TOOL_POLICY_STRICT=1.",
+    "Si el proyecto no existe en el backend API, la politica registra warning y continua con validacion local."
+  ],
+  "schema_version": 1,
+  "validations": [
+    "python3 -m py_compile orchestrator/tool_invocation_policy.py orchestrator/agent_tools.py orchestrator/validator.py backend/agent_runtime.py backend/test_tool_invocation_policy.py",
+    "python3 -m unittest backend.test_tool_invocation_policy",
+    "python3 -m unittest backend.test_control_plane_visual_bridge.ControlPlaneVisualBridgeTest.test_smoke_recovery_split_continues_with_recovery_budget",
+    "python3 -m unittest backend.test_control_plane_visual_bridge",
+    "python3 -m unittest backend.test_observer_plane",
+    "python3 -m unittest backend.test_executor_pipe_drain",
+    "env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla",
+    "env OPEN_BROWSER=0 ./start.sh restart",
+    "python3 orchestrator/agent_tools.py --timeout-seconds 2 health",
+    "python3 orchestrator/agent_tools.py --timeout-seconds 2 observer-status"
+  ]
+}

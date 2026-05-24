@@ -1,0 +1,64 @@
+{
+  "checkpoint_key": "phase-1-section-19-20260519T131739-0700",
+  "created_at": "2026-05-19T13:17:39-07:00",
+  "scope": "section-19-phase-1",
+  "closed_debts": [
+    {
+      "id": "19.1",
+      "title": "Drift entre contratos Python y schemas JSON",
+      "status": "closed",
+      "evidence": [
+        "schemas/project_state.schema.json now includes human_alignment_pending.",
+        "schemas/project_state.schema.json now includes pending_human_alignment_tasks.",
+        "backend/test_project_state_schema_contract.py compares schema status enum and optional fields against orchestrator/contracts.py."
+      ]
+    },
+    {
+      "id": "19.6",
+      "title": "Frontera de seguridad de validaciones",
+      "status": "closed",
+      "evidence": [
+        "orchestrator/validator.py evaluates every validation command with orchestrator.security_policy.decide_command before subprocess execution.",
+        "orchestrator/validator.py runs allowed validation commands with shell=False.",
+        "orchestrator/validator.py persists validation security decisions in runtime/validation_security_events.jsonl.",
+        "backend/test_validator_security.py proves allowed Python validation, shell blocking, unknown-command denial and invalid-command blocking."
+      ]
+    }
+  ],
+  "validation": {
+    "commands": [
+      {
+        "command": "python3 -m py_compile orchestrator/validator.py orchestrator/security_policy.py backend/test_project_state_schema_contract.py backend/test_validator_security.py",
+        "result": "passed"
+      },
+      {
+        "command": "python3 -m unittest backend.test_project_state_schema_contract backend.test_validator_security",
+        "result": "passed",
+        "tests": 7
+      },
+      {
+        "command": "python3 -m unittest backend.test_security_policy backend.test_human_alignment_review backend.test_project_state_runtime_metadata",
+        "result": "passed",
+        "tests": 10
+      },
+      {
+        "command": "python3 -m unittest backend.test_tool_invocation_policy backend.test_control_plane_visual_bridge",
+        "result": "passed",
+        "tests": 32
+      },
+      {
+        "command": "jq . schemas/project_state.schema.json",
+        "result": "passed"
+      },
+      {
+        "command": "env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_executor_pipe_drain",
+        "result": "passed",
+        "tests": 27
+      }
+    ]
+  },
+  "notes": [
+    "Git status/diff could not be used because the working directory is not a git repository.",
+    "The new validation security log is treated as control-plane/internal evidence and cannot satisfy expected_files."
+  ]
+}

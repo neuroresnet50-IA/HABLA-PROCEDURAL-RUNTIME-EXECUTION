@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "checkpoint": "phase-5-section-19",
+  "created_at": "2026-05-20T09:45:39-07:00",
+  "status": "backend_monolith_decomposed",
+  "section_19_status": {
+    "closed": ["19.3"],
+    "still_open": [],
+    "notes": [
+      "backend/app.py no longer owns scanner, integrity/sniper implementation, HAR routes, editor routes, sandbox routes, sandbox runtime logic, runtime reset/clean-workspace implementation, observer runtime snapshot construction, or agent repair service logic.",
+      "backend/app.py remains the Flask/SocketIO composition root for architecture, reverse-engineering, email commands, agent sessions, and socket handlers."
+    ]
+  },
+  "files_created": [
+    "backend/integrity_service.py",
+    "backend/integrity_routes.py",
+    "backend/observer_runtime_service.py",
+    "backend/human_alignment_routes.py",
+    "backend/editor_routes.py",
+    "backend/runtime_admin_service.py",
+    "backend/runtime_admin_routes.py",
+    "backend/sandbox_routes.py"
+  ],
+  "files_modified": [
+    "backend/app.py",
+    "PLANS.md",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "line_counts": {
+    "backend/app.py": 4566,
+    "backend/integrity_service.py": 1126,
+    "backend/integrity_routes.py": 333,
+    "backend/editor_routes.py": 252,
+    "backend/observer_runtime_service.py": 186,
+    "backend/runtime_admin_routes.py": 126,
+    "backend/runtime_admin_service.py": 118,
+    "backend/human_alignment_routes.py": 116,
+    "backend/sandbox_routes.py": 74,
+    "backend/sandbox_service.py": 440,
+    "backend/code_scanner_service.py": 133,
+    "backend/agent_repair_service.py": 171,
+    "frontend/src/App.jsx": 1992,
+    "frontend/src/components/CodeWorkbench.jsx": 1994,
+    "frontend/src/components/AgentStudio.jsx": 1754
+  },
+  "validations": [
+    {
+      "command": "python3 -m py_compile backend/app.py backend/editor_routes.py backend/integrity_routes.py backend/human_alignment_routes.py backend/observer_runtime_service.py backend/integrity_service.py backend/runtime_admin_routes.py backend/runtime_admin_service.py backend/sandbox_routes.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m unittest backend.test_code_scanner",
+      "result": "passed",
+      "tests": 9
+    },
+    {
+      "command": "python3 -m unittest backend.test_runtime_clean_workspace backend.test_code_scanner backend.test_runtime_sandbox backend.test_observer_auto_shutdown backend.test_human_alignment_review",
+      "result": "passed",
+      "tests": 20
+    },
+    {
+      "command": "python3 -m unittest backend.test_app_lint backend.test_code_scanner backend.test_code_scanner_service backend.test_agent_repair_service backend.test_runtime_sandbox backend.test_runtime_clean_workspace backend.test_observer_auto_shutdown backend.test_human_alignment_review backend.test_security_policy backend.test_validator_security backend.test_project_state_schema_contract",
+      "result": "passed",
+      "tests": 45
+    }
+  ],
+  "residual_risks": [
+    "The folder is not initialized as a Git repository, so git diff/status evidence was unavailable.",
+    "backend/app.py is still the composition root and still owns broad architecture/reverse/email/agent-session/socket registration, but the Section 19.3 named heavy domains have been separated into services or route modules."
+  ],
+  "next_recommendation": "Create GitHub Actions audit workflow to run py_compile, backend unittest suites, frontend build/test, and checkpoint JSON validation automatically."
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "context-check",
+    "title": "Verificar registro de recuperacion",
+    "command": [
+      "rg",
+      "-n",
+      "recuperacioncontexto.md",
+      "recuperacioncontexto.md"
+    ],
+    "cwd": ".",
+    "timeout_seconds": 30
+  },
+  {
+    "id": "short-runtime-tests",
+    "title": "Ejecutar validacion corta del runtime",
+    "command": [
+      "/home/neurodriver/ferrari_env/bin/python",
+      "-m",
+      "unittest",
+      "backend.test_planner_scope",
+      "backend.test_control_plane_visual_bridge"
+    ],
+    "cwd": ".",
+    "timeout_seconds": 120
+  }
+]

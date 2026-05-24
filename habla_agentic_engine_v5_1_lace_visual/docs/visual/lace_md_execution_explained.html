@@ -1,0 +1,113 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.wrap { padding: 1rem 0; font-family: var(--font-sans); }
+.step { display: grid; grid-template-columns: 36px 1fr; gap: 0; margin-bottom: 0; }
+.step-left { display: flex; flex-direction: column; align-items: center; }
+.step-num { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.step-line { width: 2px; flex: 1; min-height: 16px; }
+.step-body { padding: 0 0 24px 14px; }
+.step-title { font-size: 14px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; margin-top: 8px; }
+.step-desc { font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; }
+.bubble { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 10px 14px; margin-top: 10px; font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+.bubble b { color: var(--color-text-primary); font-weight: 500; }
+.code { font-family: var(--font-mono); font-size: 11px; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 8px 12px; margin-top: 8px; color: var(--color-text-primary); line-height: 1.7; }
+.code .c { color: var(--color-text-tertiary); }
+.code .k { color: #534AB7; }
+.divider { height: 0.5px; background: var(--color-border-tertiary); margin: 8px 0 20px; }
+.key-insight { border-left: 2px solid #1D9E75; padding: 10px 14px; margin-top: 12px; font-size: 13px; color: var(--color-text-secondary); line-height: 1.6; border-radius: 0; }
+.key-insight b { color: #0F6E56; font-weight: 500; }
+</style>
+
+<h2 class="sr-only">Cómo funciona LACE en la realidad: explicación técnica de cómo un agente LLM procesa el archivo .md</h2>
+
+<div class="wrap">
+
+<div class="step">
+  <div class="step-left">
+    <div class="step-num" style="background:#E6F1FB;color:#0C447C;border:1.5px solid #378ADD">1</div>
+    <div class="step-line" style="background:#378ADD;opacity:0.2"></div>
+  </div>
+  <div class="step-body">
+    <div class="step-title">Tú le das al agente dos cosas al mismo tiempo</div>
+    <div class="step-desc">Cuando usas Claude Code o Codex en una terminal, el agente recibe el prompt del humano y también puede leer los archivos del proyecto. Son dos inputs separados que el agente combina.</div>
+    <div class="bubble">
+      <b>Prompt del humano:</b> "Crea un sistema de registro de procesos con HTML, JS y base de datos"<br><br>
+      <b>Archivo en el proyecto:</b> <code>LACE.md</code> — las instrucciones de comportamiento
+    </div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-left">
+    <div class="step-num" style="background:#EEEDFE;color:#3C3489;border:1.5px solid #534AB7">2</div>
+    <div class="step-line" style="background:#534AB7;opacity:0.2"></div>
+  </div>
+  <div class="step-body">
+    <div class="step-title">El agente lee el .md y lo convierte en contexto</div>
+    <div class="step-desc">Un LLM como Claude o GPT-4 no "ejecuta" el archivo como si fuera código. Lo <b>lee como texto</b> y ese texto pasa a formar parte de su contexto — su "memoria de trabajo" para esa sesión. Es exactamente igual a cuando tú lees un manual antes de operar una máquina.</div>
+    <div class="code">
+      <span class="c"># Lo que el agente procesa internamente:</span><br>
+      <span class="k">contexto</span> = prompt_del_humano + contenido_de_LACE.md<br>
+      <span class="c"># Ahora el agente "sabe" las reglas antes de actuar</span>
+    </div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-left">
+    <div class="step-num" style="background:#E1F5EE;color:#085041;border:1.5px solid #1D9E75">3</div>
+    <div class="step-line" style="background:#1D9E75;opacity:0.2"></div>
+  </div>
+  <div class="step-body">
+    <div class="step-title">El agente combina la tarea real con las reglas del .md</div>
+    <div class="step-desc">Aquí está la magia. El agente no hace la tarea ignorando el LACE.md. Hace la tarea <b>a través del filtro</b> de las reglas. Es como darle a un cocinero una receta (el prompt) más un manual de calidad (el LACE.md). El cocinero cocina la receta, pero con los estándares del manual.</div>
+    <div class="bubble">
+      <b>Sin LACE.md:</b> "Crear sistema de registro" → lo crea → cierra → espera al humano<br><br>
+      <b>Con LACE.md:</b> "Crear sistema de registro" → lo crea → lee las reglas → se pregunta: ¿cumplí los 10 ciclos? No → vuelve a analizar → mejora → vuelve a preguntar → ...
+    </div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-left">
+    <div class="step-num" style="background:#FAEEDA;color:#633806;border:1.5px solid #BA7517">4</div>
+    <div class="step-line" style="background:#BA7517;opacity:0.2"></div>
+  </div>
+  <div class="step-body">
+    <div class="step-title">¿Cómo "obliga" el archivo al agente? — la clave real</div>
+    <div class="step-desc">El .md no es código que se ejecuta. Es lenguaje natural muy claro y directo. Los LLMs son extremadamente buenos siguiendo instrucciones escritas en texto cuando estas son específicas. El LACE.md dice cosas como:</div>
+    <div class="code">
+      <span class="c">"No puedes cerrar este proyecto hasta completar 10 ciclos"</span><br>
+      <span class="c">"Después de cada ciclo pregúntate: ¿mejoró? Si no, repite"</span><br>
+      <span class="c">"Documenta cada decisión en LACE_LOG.md"</span>
+    </div>
+    <div class="step-desc" style="margin-top:10px">El agente lee esas frases, las interpreta, y las convierte en comportamiento. No porque haya código que lo fuerce — sino porque su entrenamiento le enseñó a seguir instrucciones de texto con precisión.</div>
+  </div>
+</div>
+
+<div class="step">
+  <div class="step-left">
+    <div class="step-num" style="background:#EAF3DE;color:#27500A;border:1.5px solid #3B6D11">5</div>
+    <div style="flex:1"></div>
+  </div>
+  <div class="step-body">
+    <div class="step-title">Resultado: el agente hace la comparación internamente</div>
+    <div class="step-desc">En cada ciclo, el agente compara lo que tiene ahora contra los criterios del LACE.md. Esa comparación no es magia — es predicción de texto. El agente predice qué texto viene después de "analicé el proyecto y encontré que..." y esa predicción lo lleva a identificar deficiencias.</div>
+    <div class="bubble">
+      <b>Ciclo 1:</b> Proyecto creado. LACE dice: analiza. → "El frontend es básico, falta validación"<br>
+      <b>Ciclo 2:</b> Mejoré frontend. LACE dice: critica. → "Falta multiusuario, manejo de errores"<br>
+      <b>Ciclo 3:</b> Agregué errores. LACE dice: valida. → "Funciona. ¿Cumplí 10 ciclos? No. Sigo."<br>
+      <b>...</b><br>
+      <b>Ciclo 10:</b> Todo mejorado. LACE dice: evalúa criterios finales. → "Sí. Cierro."
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="key-insight">
+  <b>La respuesta corta a tu pregunta:</b> el LACE.md no es una guía metafórica para ti el humano. Es un conjunto de instrucciones de texto que el agente lee, interpreta y sigue como si fueran órdenes directas — porque para un LLM, leer instrucciones claras en texto es exactamente lo mismo que recibir órdenes. El archivo convierte al agente en un trabajador que no puede cerrar su turno hasta completar el checklist.
+</div>
+
+</div>

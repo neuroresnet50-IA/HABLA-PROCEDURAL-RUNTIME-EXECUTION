@@ -1,0 +1,11 @@
+{
+  "profile": "full",
+  "description": "Complete HABLA Observer IA stack for DB, web development, ML, generative AI, vision, agents, MLOps, hardware/IO utilities and extended data-viz/ML/NLP.",
+  "groups": ["base", "db", "web-dev", "ml-cpu", "ml-nvidia", "gen-ai", "vision-industrial", "agents", "mlops", "hardware-io-utils", "data-viz-ml-nlp-extended"],
+  "requires": ["git", "python", "node", "npm", "docker"],
+  "degrades": {
+    "ml-nvidia": "Falls back to CPU/Docker plan when nvidia-smi is unavailable.",
+    "hardware-io-utils": "Best effort because some hardware packages require OS libraries or physical devices.",
+    "data-viz-ml-nlp-extended": "Best effort because some scientific/geospatial packages require compiled OS libraries."
+  }
+}

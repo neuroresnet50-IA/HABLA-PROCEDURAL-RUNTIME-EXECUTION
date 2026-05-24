@@ -1,0 +1,21 @@
+[
+  {
+    "checkpoint_key": "refactor-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "src/module.py"
+    ],
+    "goal": "Modify an existing artifact and validate the new behavior marker.",
+    "id": "REFACTOR-001",
+    "max_retries": 2,
+    "mode": "medium",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Refactor existing module",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['src/module.py'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; text=Path('src/module.py').read_text(encoding='utf-8'); assert 'return value * 2' in text, 'return value * 2'\""
+    ]
+  }
+]

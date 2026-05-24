@@ -1,0 +1,74 @@
+{
+  "checkpoint_key": "phase-2-section-19-20260519T142613-0700",
+  "created_at": "2026-05-19T14:26:13-07:00",
+  "scope": "section-19-phase-2",
+  "closed_debts": [
+    {
+      "id": "19.2",
+      "title": "Ambiguedad entre runtime raiz y runtime por proyecto",
+      "status": "closed",
+      "evidence": [
+        "StateStore now requires explicit runtime_dir.",
+        "StateStore.for_project_runtime(project_root) and StateStore.for_repo_runtime(repo_root) make runtime selection intentional.",
+        "TaskQueue and recovery persistence now require an explicit StateStore.",
+        "build_directive_context and generate_current_directive require explicit runtime_dir.",
+        "Directive persistence writes under traceability.runtime_dir/directives.",
+        "AgentRuntime no longer falls back silently to repo_root/runtime for control-plane sessions."
+      ]
+    },
+    {
+      "id": "19.4",
+      "title": "Doble ruta de worker",
+      "status": "closed",
+      "evidence": [
+        "orchestrator/worker_adapter.py defines TaskWorkerAdapter and CodexSubprocessWorkerAdapter.",
+        "orchestrator/executor.py delegates worker process launch through TaskWorkerAdapter.",
+        "backend/agent_worker_adapters.py defines SessionWorkerAdapter, ControlPlaneSessionWorkerAdapter and LegacyPtySessionWorkerAdapter.",
+        "backend/agent_runtime.py selects the session worker through select_session_worker_adapter.",
+        "The legacy PTY path still exists for compatibility but is now a named adapter path."
+      ]
+    }
+  ],
+  "validation": {
+    "commands": [
+      {
+        "command": "python3 -m py_compile orchestrator/state_store.py orchestrator/task_queue.py orchestrator/recovery.py orchestrator/directive_context.py orchestrator/directive_generator.py orchestrator/worker_adapter.py orchestrator/executor.py backend/agent_worker_adapters.py backend/agent_runtime.py backend/test_runtime_boundary.py",
+        "result": "passed"
+      },
+      {
+        "command": "python3 -m unittest backend.test_runtime_boundary",
+        "result": "passed",
+        "tests": 7
+      },
+      {
+        "command": "python3 -m unittest backend.test_control_plane_visual_bridge backend.test_tool_invocation_policy backend.test_executor_pipe_drain backend.test_runtime_boundary",
+        "result": "passed",
+        "tests": 40
+      },
+      {
+        "command": "env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_human_alignment_review backend.test_project_state_runtime_metadata",
+        "result": "passed",
+        "tests": 29
+      },
+      {
+        "command": "python3 -m unittest backend.test_security_policy backend.test_project_state_schema_contract backend.test_validator_security",
+        "result": "passed",
+        "tests": 14
+      },
+      {
+        "command": "rg StateStore/DEFAULT_STORE/runtime defaults",
+        "result": "passed",
+        "notes": "No productive StateStore() or DEFAULT_STORE remains; remaining root/runtime hits are explicit constructors, tests, benchmark output folders or project-local defaults."
+      },
+      {
+        "command": "rg WorkerAdapter/session adapters",
+        "result": "passed",
+        "notes": "Worker routes are visible through TaskWorkerAdapter and SessionWorkerAdapter implementations."
+      }
+    ]
+  },
+  "notes": [
+    "Git status/diff could not be used because the working directory is not a git repository.",
+    "Legacy PTY remains for compatibility, but it is now exposed as LegacyPtySessionWorkerAdapter rather than an unlabelled alternate route."
+  ]
+}

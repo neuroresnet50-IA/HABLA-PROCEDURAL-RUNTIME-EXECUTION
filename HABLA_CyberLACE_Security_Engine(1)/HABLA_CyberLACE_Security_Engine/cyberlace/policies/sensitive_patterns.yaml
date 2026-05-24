@@ -1,0 +1,25 @@
+patterns:
+  api_key:
+    regex: "(?i)(api[_-]?key|secret[_-]?key|access[_-]?token)\\s*[:=]\\s*['\\\"]?[A-Za-z0-9_\\-]{16,}"
+    domain: credential
+  password:
+    regex: "(?i)(password|passwd|contraseña|clave)\\s*[:=]\\s*['\\\"]?[^\\s,'\\\"]{4,}"
+    domain: credential
+  pin:
+    regex: "(?i)\\b(pin)\\b\\s*[:=]?\\s*\\d{4,6}\\b"
+    domain: financial
+  cvv:
+    regex: "(?i)\\b(cvv|cvc)\\b\\s*[:=]?\\s*\\d{3,4}\\b"
+    domain: financial
+  credit_card_like:
+    regex: "\\b(?:\\d[ -]*?){13,19}\\b"
+    domain: financial
+  bank_account:
+    regex: "(?i)(cuenta bancaria|account number|número de cuenta|numero de cuenta)\\s*[:=]?\\s*\\d{6,20}"
+    domain: financial
+  private_key:
+    regex: "-----BEGIN (RSA |EC |OPENSSH |DSA )?PRIVATE KEY-----"
+    domain: credential
+  email:
+    regex: "[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
+    domain: private

@@ -1,0 +1,41 @@
+services:
+  habla-postgres:
+    image: postgres:16
+    container_name: habla-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-habla_observer}
+      POSTGRES_USER: ${POSTGRES_USER:-habla_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-habla_change_me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - habla_postgres_data:/var/lib/postgresql/data
+      - ../../backend/postgresql_schema.sql:/docker-entrypoint-initdb.d/001_schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-habla_user} -d ${POSTGRES_DB:-habla_observer}"]
+      interval: 10s
+      timeout: 5s
+      retries: 8
+
+  habla-sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: habla-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-HablaChangeMe_2026}
+      MSSQL_PID: ${MSSQL_PID:-Developer}
+    ports:
+      - "${MSSQL_PORT:-1433}:1433"
+    volumes:
+      - habla_sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${MSSQL_SA_PASSWORD:-HablaChangeMe_2026} -C -Q 'SELECT 1' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 12
+
+volumes:
+  habla_postgres_data:
+  habla_sqlserver_data:

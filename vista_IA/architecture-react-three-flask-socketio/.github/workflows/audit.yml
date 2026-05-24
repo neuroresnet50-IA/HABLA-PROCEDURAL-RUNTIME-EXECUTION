@@ -1,0 +1,166 @@
+name: Audit
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/backend
+      NEURO_LACE_SOCKET_ASYNC_MODE: threading
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/requirements.txt
+
+      - name: Compile backend modules
+        run: |
+          python -m py_compile \
+            backend/app.py \
+            backend/editor_routes.py \
+            backend/integrity_routes.py \
+            backend/human_alignment_routes.py \
+            backend/observer_runtime_service.py \
+            backend/integrity_service.py \
+            backend/runtime_admin_routes.py \
+            backend/runtime_admin_service.py \
+            backend/sandbox_routes.py \
+            backend/sandbox_service.py \
+            backend/code_scanner_service.py \
+            backend/agent_repair_service.py
+
+      - name: Run backend audit tests
+        run: |
+          python -m unittest \
+            backend.test_app_lint \
+            backend.test_code_scanner \
+            backend.test_code_scanner_service \
+            backend.test_agent_repair_service \
+            backend.test_runtime_sandbox \
+            backend.test_runtime_clean_workspace \
+            backend.test_observer_auto_shutdown \
+            backend.test_human_alignment_review \
+            backend.test_security_policy \
+            backend.test_validator_security \
+            backend.test_project_state_schema_contract
+
+  frontend:
+    name: Frontend Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Run frontend tests
+        run: npm test
+
+  checkpoints:
+    name: Checkpoint Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate checkpoint JSON and section 19 closure
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path(".")
+          checkpoint_dir = root / "runtime" / "checkpoints"
+          checkpoints = sorted(checkpoint_dir.glob("*.json"))
+          if not checkpoints:
+              raise SystemExit("No checkpoint JSON files found under runtime/checkpoints")
+
+          for checkpoint in checkpoints:
+              with checkpoint.open("r", encoding="utf-8") as handle:
+                  json.load(handle)
+
+          phase_5 = checkpoint_dir / "phase-5-section-19-20260520T094539-0700.json"
+          if not phase_5.is_file():
+              raise SystemExit(f"Missing required checkpoint: {phase_5}")
+
+          payload = json.loads(phase_5.read_text(encoding="utf-8"))
+          section_status = payload.get("section_19_status") or {}
+          closed = set(section_status.get("closed") or [])
+          if "19.3" not in closed:
+              raise SystemExit("Phase 5 checkpoint does not close 19.3")
+          if section_status.get("still_open"):
+              raise SystemExit("Phase 5 checkpoint still reports open Section 19 items")
+
+          plans = (root / "PLANS.md").read_text(encoding="utf-8")
+          required_markers = [
+              "- 19.1 Drift entre contratos Python y schemas JSON.",
+              "- 19.2 Ambiguedad entre runtime raiz y runtime por proyecto.",
+              "- 19.3 Backend monolitico.",
+              "- 19.4 Doble ruta de worker.",
+              "- 19.5 Frontend con componentes grandes.",
+              "- 19.6 Frontera de seguridad de validaciones.",
+              "Ninguna de las seis deudas de la seccion 19 queda abierta",
+          ]
+          missing = [marker for marker in required_markers if marker not in plans]
+          if missing:
+              raise SystemExit("Missing Section 19 markers in PLANS.md: " + ", ".join(missing))
+
+          print(f"Validated {len(checkpoints)} checkpoint JSON files and Section 19 closure evidence.")
+          PY
+
+  audit-summary:
+    name: Audit Summary
+    runs-on: ubuntu-latest
+    needs:
+      - backend
+      - frontend
+      - checkpoints
+    if: always()
+    steps:
+      - name: Verify all audit jobs passed
+        run: |
+          test "${{ needs.backend.result }}" = "success"
+          test "${{ needs.frontend.result }}" = "success"
+          test "${{ needs.checkpoints.result }}" = "success"
+          echo "Backend, frontend, and checkpoint audits passed."

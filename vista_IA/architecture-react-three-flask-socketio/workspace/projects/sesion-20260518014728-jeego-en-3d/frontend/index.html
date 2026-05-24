@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neurodriver IA Drone War</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main id="app-shell">
+      <canvas id="world" aria-label="Simulacion 3D de guerra de drones autonomos"></canvas>
+      <div id="scanner-reticle" class="scanner-reticle" aria-hidden="true" hidden>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+      <header class="hud hud-top">
+        <div class="brand">
+          <span class="status-light" aria-hidden="true"></span>
+          <div>
+            <p>NEURODRIVER IA</p>
+            <h1>Drone War City</h1>
+          </div>
+        </div>
+
+        <nav class="mode-switch" aria-label="Modo explicito de simulacion" aria-describedby="mode-summary-value">
+          <button type="button" data-mode="smoke" aria-pressed="false">smoke</button>
+          <button type="button" data-mode="build" aria-pressed="false">build</button>
+          <button type="button" data-mode="medium" aria-pressed="false">medium</button>
+          <button type="button" data-mode="long-run" aria-pressed="false">long-run</button>
+          <span id="mode-summary-value" class="visually-hidden" aria-live="polite">
+            Modo build activo; configuracion explicita seleccionada.
+          </span>
+        </nav>
+      </header>
+
+      <section class="telemetry panel" aria-label="Telemetria del vuelo">
+        <div class="metric">
+          <span>Distancia</span>
+          <strong id="distance-value">0 m</strong>
+        </div>
+        <div class="metric">
+          <span>Altitud</span>
+          <strong id="altitude-value">0 m</strong>
+        </div>
+        <div class="metric">
+          <span>Velocidad</span>
+          <strong id="speed-value">0 m/s</strong>
+        </div>
+        <div class="metric">
+          <span>Episodio</span>
+          <strong id="episode-value">1</strong>
+        </div>
+      </section>
+
+      <aside class="mission panel" aria-label="Mision de guerra de drones">
+        <div class="panel-title">
+          <span>GUERRA DE DRONES</span>
+          <strong id="combat-state-value">activo</strong>
+        </div>
+        <div class="mission-grid">
+          <div>
+            <span>Dron policia</span>
+            <strong id="police-hull-value">100%</strong>
+          </div>
+          <div>
+            <span>Dron rojo</span>
+            <strong id="enemy-lock-value">0%</strong>
+          </div>
+          <div>
+            <span>Dron azul</span>
+            <strong id="blue-hull-value">100%</strong>
+          </div>
+          <div>
+            <span>Amenaza</span>
+            <strong id="threat-level-value">nivel 1</strong>
+          </div>
+          <div>
+            <span>Placa buscada</span>
+            <strong id="mission-plate-value">ND-742K</strong>
+          </div>
+          <div>
+            <span>Rostro buscado</span>
+            <strong id="mission-face-value">FACE-ALPHA-19</strong>
+          </div>
+        </div>
+        <div class="escape-track" aria-hidden="true">
+          <div id="escape-risk-value"></div>
+        </div>
+        <p id="mission-status-value">auto autonomo llamado por celular</p>
+      </aside>
+
+      <aside class="briefing panel" aria-label="Briefing tactico de patrulla">
+        <div class="panel-title">
+          <span>BRIEFING TACTICO</span>
+          <strong id="briefing-state-value">sincronizando</strong>
+        </div>
+        <div class="briefing-grid">
+          <div class="briefing-card">
+            <span>Dron policia</span>
+            <strong id="briefing-police-value">100%</strong>
+          </div>
+          <div class="briefing-card">
+            <span>Dron azul</span>
+            <strong id="briefing-blue-value">100%</strong>
+          </div>
+          <div class="briefing-card">
+            <span>Amenaza</span>
+            <strong id="briefing-threat-value">nivel 1.0</strong>
+          </div>
+          <div class="briefing-card">
+            <span>Placa buscada</span>
+            <strong id="briefing-plate-value">ND-742K</strong>
+          </div>
+          <div class="briefing-card">
+            <span>Rostro buscado</span>
+            <strong id="briefing-face-value">FACE-ALPHA-19</strong>
+          </div>
+          <div class="briefing-card briefing-card-wide">
+            <span>Prioridad</span>
+            <strong id="briefing-priority-value">patrulla lista</strong>
+          </div>
+        </div>
+      </aside>
+
+      <aside class="agent panel" aria-label="Estado del agente DQN">
+        <div class="panel-title">
+          <span>AGENTE IA</span>
+          <strong id="mode-value">build</strong>
+        </div>
+        <div class="reward-line">
+          <div>
+            <span>Recompensa</span>
+            <strong id="reward-value">0.00</strong>
+          </div>
+          <div>
+            <span>Castigo</span>
+            <strong id="penalty-value">0.00</strong>
+          </div>
+        </div>
+        <div class="q-bars" id="q-bars"></div>
+        <canvas id="reward-chart" width="320" height="80" aria-label="Historial de recompensa"></canvas>
+      </aside>
+
+      <aside class="scanner panel" aria-label="Objetivo de evidencia del drone">
+        <div class="panel-title">
+          <span>SCANNER FORENSE</span>
+          <strong id="target-kind-value">sin target</strong>
+        </div>
+        <div class="target-card">
+          <span id="target-id-value">NEURODRIVER-SEARCH</span>
+          <strong id="target-detail-value">buscando rostro o placa</strong>
+        </div>
+        <div class="scanner-grid">
+          <div>
+            <span>Zoom</span>
+            <strong id="target-zoom-value">1.0x</strong>
+          </div>
+          <div>
+            <span>Confianza</span>
+            <strong id="target-confidence-value">0%</strong>
+          </div>
+        </div>
+        <div class="lock-track" aria-hidden="true">
+          <div id="target-lock-value"></div>
+        </div>
+      </aside>
+
+      <div id="flight-alert" class="flight-alert" aria-live="polite" hidden></div>
+
+      <footer class="flight-strip" aria-label="Estado del corredor de vuelo">
+        <span id="policy-value">politica: explorando</span>
+        <span id="clearance-value">clearance: --</span>
+        <span id="event-value">ciudad procedural activa</span>
+        <span id="render-audit-value" class="render-audit">render: inicializando</span>
+        <span id="performance-audit-value" class="performance-audit">perf: inicializando</span>
+        <span id="resilience-audit-value" class="resilience-audit">errores: verificando</span>
+        <span id="security-audit-value" class="security-audit">query: verificando</span>
+        <span id="battle-audit-value" class="battle-audit visually-hidden">combate: verificando</span>
+        <span id="ux-audit-value" class="ux-audit visually-hidden">ux: verificando</span>
+        <span id="lace-final-audit-value" class="lace-final-audit visually-hidden">lace: verificando</span>
+        <span id="contract-audit-value" class="contract-audit visually-hidden">contrato runtime pendiente</span>
+      </footer>
+    </main>
+
+    <noscript>
+      <div class="noscript">JavaScript es requerido para ejecutar la simulacion.</div>
+    </noscript>
+
+    <script id="runtime-contract" type="application/json">
+      {
+        "schemaVersion": 1,
+        "laceCycle": 10,
+        "modeSource": "query:mode",
+        "allowedModes": ["smoke", "build", "medium", "long-run"],
+        "dqnInputSize": 18,
+        "renderEvidence": ["data-render-status", "data-render-frames"],
+        "performanceEvidence": ["data-performance-tier", "data-pixel-ratio", "data-fps-average"],
+        "errorEvidence": ["data-dom-contract", "data-runtime-error", "data-viewport-guard"],
+        "securityEvidence": ["data-query-contract", "data-mode-source", "data-light-source", "data-invalid-query-params"],
+        "combatEvidence": ["data-combat-state", "data-police-hull", "data-enemy-lock", "data-mission-escape-risk", "data-mission-targets"],
+        "briefingEvidence": ["data-briefing-state", "data-briefing-assets", "data-briefing-priority"],
+        "uxEvidence": ["data-ux-evidence", "data-ux-flow", "data-ux-target", "data-ux-ready"],
+        "finalReviewEvidence": ["data-lace-final", "data-lace-cycles", "data-lace-ready", "data-lace-review"],
+        "description": "Contrato runtime auditable para modos explicitos, dimension DQN, evidencia WebGL, resiliencia de arranque, seguridad basica de query, guerra de drones, briefing tactico, experiencia punta a punta y revision integral LACE 10."
+      }
+    </script>
+
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js"
+        }
+      }
+    </script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

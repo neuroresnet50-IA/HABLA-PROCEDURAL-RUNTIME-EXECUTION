@@ -1,0 +1,37 @@
+{
+  "id": "start-sh-followup-20260518T191831-pdt",
+  "created_at": "2026-05-18 19:18:31 PDT",
+  "task": "Responder a reclamo de arranque roto y verificar estado real",
+  "status": "validated",
+  "root_cause": "El servidor podia arrancar, pero el Workbench intentaba WebSocket contra Flask-SocketIO/Werkzeug y generaba errores 500. Durante la reparacion se agrego temporalmente threaded=True en socketio.run; esa opcion fue incorrecta porque Flask-SocketIO ya la pasa internamente y causaba TypeError. Se retiro de inmediato.",
+  "files_modified": [
+    "frontend/src/components/CodeWorkbench.jsx",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "recuperacioncontexto.md",
+    "runtime/task_history.jsonl",
+    "runtime/failures.jsonl"
+  ],
+  "files_touched_without_final_functional_change": [
+    "backend/app.py"
+  ],
+  "evidence": {
+    "bad_intermediate_error": "TypeError: flask.app.Flask.run() got multiple values for keyword argument 'threaded'",
+    "final_backend_pid": "936813",
+    "app_url": "http://127.0.0.1:5000/",
+    "bundle": "/assets/index-evsJWtdC.js"
+  },
+  "validations": [
+    {"command": "python3 -m py_compile backend/app.py", "passed": true},
+    {"command": "env OPEN_BROWSER=0 ./start.sh restart", "passed": true},
+    {"command": "env OPEN_BROWSER=0 /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/start.sh start", "passed": true},
+    {"command": "curl -s -o /dev/null -w '%{http_code} %{time_total}\\n' http://127.0.0.1:5000/", "passed": true, "output": "200"},
+    {"command": "curl -s -o /dev/null -w '%{http_code} %{time_total}\\n' http://127.0.0.1:5000/api/health", "passed": true, "output": "200"},
+    {"command": "curl -s -o /dev/null -w '%{http_code} %{time_total}\\n' 'http://127.0.0.1:5000/socket.io/?EIO=4&transport=polling'", "passed": true, "output": "200"},
+    {"command": "curl -s -o /dev/null -w '%{http_code} %{time_total}\\n' http://127.0.0.1:5000/assets/index-evsJWtdC.js", "passed": true, "output": "200"}
+  ],
+  "blockers": [
+    "El sandbox de comandos falla con bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted.",
+    "Al ejecutar por ruta absoluta aparece un aviso de /home/neurodriver/.profile sobre snap/code env inexistente, pero el script termina OK."
+  ],
+  "next_step": "Refrescar fuerte http://127.0.0.1:5000/ para cargar el bundle index-evsJWtdC.js."
+}

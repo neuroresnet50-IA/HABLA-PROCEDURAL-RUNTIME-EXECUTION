@@ -1,0 +1,17 @@
+PROTOCOLO ejemplo_calculo:
+OBJETIVO: resolver cálculo exacto sin usar memoria del LLM.
+ENTRADA:
+-> DEFINE pregunta_usuario COMO "Calcula cuánto es 1250 * 14 + 300"
+FASE 0: SEMANTIC_CLASSIFIER
+-> CLASIFICA pregunta como CALCULO
+FASE 1: THOUGHT
+-> DEFINE estrategia COMO calcular_exactamente
+FASE 2: ACTION
+-> USA calculadora
+FASE 3: OBSERVATION
+-> RECIBE resultado
+FASE 6: CONSTITUTIONAL_CHECK
+-> VERIFICA que el resultado venga de herramienta matemática
+FASE 7: ANSWER
+-> RESPONDE solo el resultado y operación
+FIN PROTOCOLO

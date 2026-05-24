@@ -1,0 +1,93 @@
+Lee primero AGENTS.md y PLANS.md completos y obedécelos como contrato del repositorio.
+
+Tu misión en esta corrida es implementar SOLO el Sprint 1.
+
+OBJETIVO DEL SPRINT 1
+Crear la base persistente del runtime y los contratos mínimos del sistema.
+
+ALCANCE EXACTO
+Debes crear o dejar listos únicamente estos elementos:
+
+1. Directorio:
+- schemas/
+
+2. Archivos:
+- orchestrator/state_store.py
+- orchestrator/contracts.py
+- runtime/project_state.json
+- runtime/task_queue.json
+
+3. Si hace falta para consistencia mínima, puedes crear stubs pequeños y seguros, pero no avances Sprint 2 ni posteriores salvo lo estrictamente necesario para que Sprint 1 quede coherente.
+
+REQUISITOS FUNCIONALES
+1. state_store.py debe incluir funciones mínimas para:
+   - cargar estado desde runtime/project_state.json
+   - guardar estado en runtime/project_state.json
+   - cargar cola desde runtime/task_queue.json
+   - guardar cola en runtime/task_queue.json
+   - guardar checkpoints en runtime/checkpoints/
+   - registrar historial en runtime/task_history.jsonl
+   - registrar failures en runtime/failures.jsonl
+
+2. contracts.py debe incluir validación mínima para:
+   - Task
+   - TaskResult
+   - ProjectState
+
+3. Debes dejar la persistencia funcionando con JSON y JSONL de forma simple, clara y segura.
+
+4. Debes respetar estas reglas:
+   - no contar progreso sin evidencia real,
+   - no inventar éxito,
+   - no acoplar fuerte a Codex,
+   - dejar la base lista para task runtime.
+
+ESTRUCTURA ESPERADA
+runtime/
+  project_state.json
+  task_queue.json
+  task_history.jsonl
+  failures.jsonl
+  checkpoints/
+  artifacts/
+  logs/
+
+orchestrator/
+  state_store.py
+  contracts.py
+
+schemas/
+  task.schema.json
+  task_result.schema.json
+  project_state.schema.json
+
+ENTREGABLES ESPERADOS
+- archivos creados o modificados,
+- breve resumen técnico,
+- riesgos o pendientes detectados,
+- evidencia de validación ejecutada.
+
+VALIDACIONES MÍNIMAS
+- verificar que project_state.json y task_queue.json se pueden leer y escribir,
+- verificar que contracts.py valida campos mínimos obligatorios,
+- si creas tests, mantenlos acotados al Sprint 1.
+
+RESTRICCIONES
+- no implementar planner.py todavía,
+- no implementar executor.py todavía,
+- no implementar recovery.py todavía,
+- no tocar benchmarks todavía,
+- no refactorizar agent_runtime.py todavía salvo stubs mínimos inevitables.
+
+CRITERIO DE ÉXITO
+Sprint 1 queda completo si:
+- existe persistencia base funcional,
+- existen contratos mínimos funcionales,
+- los archivos de runtime quedan listos para que Sprint 2 construya planner y task_queue sobre ellos.
+
+AL FINAL
+Devuelve:
+1. lista de archivos tocados,
+2. qué quedó implementado,
+3. qué falta para Sprint 2,
+4. cualquier riesgo técnico real.

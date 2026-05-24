@@ -1,0 +1,511 @@
+{
+  "generatedAt": "2026-05-19T04:55:56.662794+00:00",
+  "profile": "full",
+  "execute": true,
+  "allowSystem": true,
+  "mode": "degraded CPU fallback",
+  "degraded": true,
+  "system": {
+    "os": "Linux 6.17.0-23-generic",
+    "architecture": "x86_64",
+    "python": "3.12.3",
+    "package_manager": "apt-get",
+    "git": "yes",
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "docker": "Docker version 29.4.1, build 055a478",
+    "psql": "yes",
+    "sqlcmd": "missing",
+    "gpu": "Not detected",
+    "cuda": "Not detected"
+  },
+  "components": [
+    [
+      "Git",
+      "yes"
+    ],
+    [
+      "Python",
+      "3.12.3"
+    ],
+    [
+      "Node",
+      "v24.14.1"
+    ],
+    [
+      "npm",
+      "11.11.0"
+    ],
+    [
+      "Flask backend",
+      "planned"
+    ],
+    [
+      "Vite/React frontend",
+      "planned"
+    ],
+    [
+      "PostgreSQL",
+      "yes"
+    ],
+    [
+      "SQL Server",
+      "missing"
+    ],
+    [
+      "Docker",
+      "Docker version 29.4.1, build 055a478"
+    ],
+    [
+      "Docker Compose",
+      "planned"
+    ],
+    [
+      "PyTorch CPU",
+      "planned"
+    ],
+    [
+      "OpenCV",
+      "planned"
+    ],
+    [
+      "Jupyter",
+      "planned"
+    ],
+    [
+      "NVIDIA GPU",
+      "Not detected"
+    ],
+    [
+      "PyTorch CUDA",
+      "degraded"
+    ],
+    [
+      "Transformers",
+      "planned"
+    ],
+    [
+      "Accelerate",
+      "planned"
+    ],
+    [
+      "Ultralytics",
+      "planned"
+    ],
+    [
+      "Albumentations",
+      "planned"
+    ],
+    [
+      "Agent tooling",
+      "planned"
+    ],
+    [
+      "Tool registry",
+      "planned"
+    ]
+  ],
+  "steps": [
+    {
+      "title": "Preflight: detect OS, GPU and tools",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "OS: Linux 6.17.0-23-generic",
+        "GPU: Not detected",
+        "Package manager: apt-get"
+      ]
+    },
+    {
+      "title": "Install system packages",
+      "status": "completed",
+      "records": [
+        {
+          "label": "apt update",
+          "command": [
+            "sudo",
+            "apt-get",
+            "update"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Hit:1 https://download.docker.com/linux/ubuntu noble InRelease\nHit:2 https://dl.google.com/linux/chrome-stable/deb stable InRelease\nHit:3 http://security.ubuntu.com/ubuntu noble-security InRelease\nHit:4 http://archive.ubuntu.com/ubuntu noble InRelease\nHit:5 https://downloads.cursor.com/aptrepo stable InRelease\nHit:6 http://archive.ubuntu.com/ubuntu noble-updates InRelease\nHit:7 https://deb.anydesk.com all InRelease\nHit:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease\nHit:9 https://ppa.launchpadcontent.net/obsproject/obs-studio/ubuntu noble InRelease\nReading package lists..."
+        },
+        {
+          "label": "apt install base packages",
+          "command": [
+            "sudo",
+            "apt-get",
+            "install",
+            "-y",
+            "ca-certificates",
+            "build-essential",
+            "python3-venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Reading package lists...\nBuilding dependency tree...\nReading state information...\nca-certificates is already the newest version (20240203).\nbuild-essential is already the newest version (12.10ubuntu1).\npython3-venv is already the newest version (3.12.3-0ubuntu2.1).\nThe following package was automatically installed and is no longer required:\n  libllvm19\nUse 'sudo apt autoremove' to remove it.\n0 upgraded, 0 newly installed, 0 to remove and 31 not upgraded."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Create Python virtual environment",
+      "status": "completed",
+      "records": [
+        {
+          "label": "create .venv",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-m",
+            "venv",
+            ".venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "upgrade pip",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (26.1.1)"
+        },
+        {
+          "label": "install backend requirements",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "backend/requirements.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Requirement already satisfied: flask in ./.venv/lib/python3.12/site-packages (from -r backend/requirements.txt (line 1)) (3.1.3)\nRequirement already satisfied: flask-cors in ./.venv/lib/python3.12/site-packages (from -r backend/requirements.txt (line 2)) (6.0.2)\nRequirement already satisfied: flask-socketio in ./.venv/lib/python3.12/site-packages (from -r backend/requirements.txt (line 3)) (5.6.1)\nRequirement already satisfied: eventlet in ./.venv/lib/python3.12/site-packages (from -r backend/requirements.txt (line 4)) (0.41.0)\nRequirement already satisfied: psycopg[binary] in ./.venv/lib/python3.12/site-packages (from -r backend/requirements.txt (line 5)) (3.3.4)\nRequirement already satisfied: blinker>=1.9.0 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (1.9.0)\nRequirement already satisfied: click>=8.1.3 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (8.4.0)\nRequirement already satisfied: itsdangerous>=2.2.0 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (2.2.0)\nRequirement already satisfied: jinja2>=3.1.2 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (3.1.6)\nRequirement already satisfied: markupsafe>=2.1.1 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (3.0.3)\nRequirement already satisfied: werkzeug>=3.1.0 in ./.venv/lib/python3.12/site-packages (from flask->-r backend/requirements.txt (line 1)) (3.1.8)\nRequirement already satisfied: python-socketio>=5.12.0 in ./.venv/lib/python3.12/site-packages (from flask-socketio->-r backend/requirements.txt (line 3)) (5.16.1)\nRequirement already satisfied: dnspython>=1.15.0 in ./.venv/lib/python3.12/site-packages (from eventlet->-r backend/requirements.txt (line 4)) (2.8.0)\nRequirement already satisfied: greenlet>=1.0 in ./.venv/lib/python3.12/site-packages (from eventlet->-r backend/requirements.txt (line 4)) (3.5.0)\nRequirement already satisfied: typing-extensions>=4.6 in ./.venv/lib/python3.12/site-packages (from psycopg[binary]->-r backend/requirements.txt (line 5)) (4.15.0)\nRequirement already satisfied: psycopg-binary==3.3.4 in ./.venv/lib/python3.12/site-packages (from psycopg[binary]->-r backend/requirements.txt (line 5)) (3.3.4)\nRequirement already satisfied: bidict>=0.21.0 in ./.venv/lib/python3.12/site-packages (from python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3)) (0.23.1)\nRequirement already satisfied: python-engineio>=4.11.0 in ./.venv/lib/python3.12/site-packages (from python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3)) (4.13.1)\nRequirement already satisfied: simple-websocket>=0.10.0 in ./.venv/lib/python3.12/site-packages (from python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3)) (1.1.0)\nRequirement already satisfied: wsproto in ./.venv/lib/python3.12/site-packages (from simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3)) (1.3.2)\nRequirement already satisfied: h11<1,>=0.16.0 in ./.venv/lib/python3.12/site-packages (from wsproto->simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3)) (0.16.0)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install ML CPU requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install ML CPU stack",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-ml-cpu.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "nts-ml-cpu.txt (line 11)) (0.10.4)\nRequirement already satisfied: pandocfilters>=1.4.1 in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (1.5.1)\nRequirement already satisfied: webencodings in ./.venv/lib/python3.12/site-packages (from bleach!=5.0.0->bleach[css]!=5.0.0->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (0.5.1)\nRequirement already satisfied: tinycss2<1.5,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from bleach[css]!=5.0.0->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (1.4.0)\nRequirement already satisfied: fastjsonschema>=2.15 in ./.venv/lib/python3.12/site-packages (from nbformat>=5.3.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (2.21.2)\nRequirement already satisfied: ptyprocess>=0.5 in ./.venv/lib/python3.12/site-packages (from pexpect>4.6->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (0.7.0)\nRequirement already satisfied: six>=1.5 in ./.venv/lib/python3.12/site-packages (from python-dateutil>=2.8.2->pandas->-r installer/requirements/requirements-ml-cpu.txt (line 7)) (1.17.0)\nRequirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.12/site-packages (from requests>=2.31->jupyterlab-server<3,>=2.28.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (3.4.7)\nRequirement already satisfied: urllib3<3,>=1.26 in ./.venv/lib/python3.12/site-packages (from requests>=2.31->jupyterlab-server<3,>=2.28.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (2.7.0)\nRequirement already satisfied: lark>=1.2.2 in ./.venv/lib/python3.12/site-packages (from rfc3987-syntax>=1.1.0->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (1.3.1)\nRequirement already satisfied: executing>=1.2.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (2.2.1)\nRequirement already satisfied: asttokens>=2.1.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (3.0.1)\nRequirement already satisfied: pure-eval in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (0.2.3)\nRequirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from sympy>=1.13.3->torch->-r installer/requirements/requirements-ml-cpu.txt (line 2)) (1.3.0)\nRequirement already satisfied: cffi>=1.0.1 in ./.venv/lib/python3.12/site-packages (from argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (2.0.0)\nRequirement already satisfied: pycparser in ./.venv/lib/python3.12/site-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (3.0)\nRequirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (2.8.3)\nRequirement already satisfied: arrow>=0.15.0 in ./.venv/lib/python3.12/site-packages (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-ml-cpu.txt (line 11)) (1.4.0)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "NVIDIA ML profile degraded",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "nvidia-smi was not detected. Installer will not install CUDA wheels automatically on this host."
+      ]
+    },
+    {
+      "title": "Install gen-ai Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install gen-ai",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-gen-ai.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "7.0 in ./.venv/lib/python3.12/site-packages (from aiohttp!=4.0.0a0,!=4.0.0a1->fsspec[http]<=2026.2.0,>=2023.1.0->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (1.23.0)\nRequirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.12/site-packages (from requests>=2.32.2->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (3.4.7)\nRequirement already satisfied: urllib3<3,>=1.26 in ./.venv/lib/python3.12/site-packages (from requests>=2.32.2->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (2.7.0)\nRequirement already satisfied: setuptools<82 in ./.venv/lib/python3.12/site-packages (from torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (81.0.0)\nRequirement already satisfied: sympy>=1.13.3 in ./.venv/lib/python3.12/site-packages (from torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (1.14.0)\nRequirement already satisfied: networkx>=2.5.1 in ./.venv/lib/python3.12/site-packages (from torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (3.6.1)\nRequirement already satisfied: jinja2 in ./.venv/lib/python3.12/site-packages (from torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (3.1.6)\nRequirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from sympy>=1.13.3->torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (1.3.0)\nRequirement already satisfied: click>=8.2.1 in ./.venv/lib/python3.12/site-packages (from typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (8.4.0)\nRequirement already satisfied: shellingham>=1.3.0 in ./.venv/lib/python3.12/site-packages (from typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (1.5.4)\nRequirement already satisfied: rich>=13.8.0 in ./.venv/lib/python3.12/site-packages (from typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (15.0.0)\nRequirement already satisfied: annotated-doc>=0.0.2 in ./.venv/lib/python3.12/site-packages (from typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (0.0.4)\nRequirement already satisfied: markdown-it-py>=2.2.0 in ./.venv/lib/python3.12/site-packages (from rich>=13.8.0->typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (4.2.0)\nRequirement already satisfied: pygments<3.0.0,>=2.13.0 in ./.venv/lib/python3.12/site-packages (from rich>=13.8.0->typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (2.20.0)\nRequirement already satisfied: mdurl~=0.1 in ./.venv/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich>=13.8.0->typer->transformers->-r installer/requirements/requirements-gen-ai.txt (line 1)) (0.1.2)\nRequirement already satisfied: zipp>=3.20 in ./.venv/lib/python3.12/site-packages (from importlib_metadata->diffusers->-r installer/requirements/requirements-gen-ai.txt (line 8)) (4.1.0)\nRequirement already satisfied: MarkupSafe>=2.0 in ./.venv/lib/python3.12/site-packages (from jinja2->torch>=2.0.0->accelerate->-r installer/requirements/requirements-gen-ai.txt (line 3)) (3.0.3)\nRequirement already satisfied: python-dateutil>=2.8.2 in ./.venv/lib/python3.12/site-packages (from pandas->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (2.9.0.post0)\nRequirement already satisfied: pytz>=2020.1 in ./.venv/lib/python3.12/site-packages (from pandas->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (2026.2)\nRequirement already satisfied: tzdata>=2022.7 in ./.venv/lib/python3.12/site-packages (from pandas->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (2026.2)\nRequirement already satisfied: six>=1.5 in ./.venv/lib/python3.12/site-packages (from python-dateutil>=2.8.2->pandas->datasets->-r installer/requirements/requirements-gen-ai.txt (line 2)) (1.17.0)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install vision-industrial Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install vision-industrial",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-vision.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "==2.46.4 in ./.venv/lib/python3.12/site-packages (from pydantic>=2.9.2->albumentations->-r installer/requirements/requirements-vision.txt (line 3)) (2.46.4)\nRequirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.12/site-packages (from pydantic>=2.9.2->albumentations->-r installer/requirements/requirements-vision.txt (line 3)) (0.4.2)\nRequirement already satisfied: six>=1.5 in ./.venv/lib/python3.12/site-packages (from python-dateutil>=2.8.2->jupyter-client>=7.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (1.17.0)\nRequirement already satisfied: charset_normalizer<4,>=2 in ./.venv/lib/python3.12/site-packages (from requests>=2.23.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (3.4.7)\nRequirement already satisfied: urllib3<3,>=1.26 in ./.venv/lib/python3.12/site-packages (from requests>=2.23.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (2.7.0)\nRequirement already satisfied: lark>=1.2.2 in ./.venv/lib/python3.12/site-packages (from rfc3987-syntax>=1.1.0->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (1.3.1)\nRequirement already satisfied: executing>=1.2.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2.2.1)\nRequirement already satisfied: asttokens>=2.1.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (3.0.1)\nRequirement already satisfied: pure-eval in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (0.2.3)\nRequirement already satisfied: filelock in ./.venv/lib/python3.12/site-packages (from torch>=1.8.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (3.29.0)\nRequirement already satisfied: sympy>=1.13.3 in ./.venv/lib/python3.12/site-packages (from torch>=1.8.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (1.14.0)\nRequirement already satisfied: fsspec>=0.8.5 in ./.venv/lib/python3.12/site-packages (from torch>=1.8.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (2026.2.0)\nRequirement already satisfied: mpmath<1.4,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from sympy>=1.13.3->torch>=1.8.0->ultralytics->-r installer/requirements/requirements-vision.txt (line 2)) (1.3.0)\nRequirement already satisfied: cffi>=1.0.1 in ./.venv/lib/python3.12/site-packages (from argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2.0.0)\nRequirement already satisfied: pycparser in ./.venv/lib/python3.12/site-packages (from cffi>=1.0.1->argon2-cffi-bindings->argon2-cffi>=21.1->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (3.0)\nRequirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2.8.3)\nRequirement already satisfied: arrow>=0.15.0 in ./.venv/lib/python3.12/site-packages (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (1.4.0)\nRequirement already satisfied: tzdata in ./.venv/lib/python3.12/site-packages (from arrow>=0.15.0->isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2026.2)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install agents Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install agents",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-agents.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "python3.12/site-packages (from -r installer/requirements/requirements-agents.txt (line 5)) (9.1.4)\nRequirement already satisfied: python-dotenv in ./.venv/lib/python3.12/site-packages (from -r installer/requirements/requirements-agents.txt (line 6)) (1.2.2)\nRequirement already satisfied: rich in ./.venv/lib/python3.12/site-packages (from -r installer/requirements/requirements-agents.txt (line 7)) (15.0.0)\nRequirement already satisfied: typer in ./.venv/lib/python3.12/site-packages (from -r installer/requirements/requirements-agents.txt (line 8)) (0.25.1)\nRequirement already satisfied: anyio<5,>=3.5.0 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (4.13.0)\nRequirement already satisfied: distro<2,>=1.7.0 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (1.9.0)\nRequirement already satisfied: jiter<1,>=0.10.0 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (0.14.0)\nRequirement already satisfied: sniffio in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (1.3.1)\nRequirement already satisfied: tqdm>4 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (4.67.3)\nRequirement already satisfied: typing-extensions<5,>=4.11 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (4.15.0)\nRequirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (0.7.0)\nRequirement already satisfied: pydantic-core==2.46.4 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (2.46.4)\nRequirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (0.4.2)\nRequirement already satisfied: certifi in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (2026.4.22)\nRequirement already satisfied: httpcore==1.* in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (1.0.9)\nRequirement already satisfied: idna in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (3.15)\nRequirement already satisfied: h11>=0.16 in ./.venv/lib/python3.12/site-packages (from httpcore==1.*->httpx->-r installer/requirements/requirements-agents.txt (line 4)) (0.16.0)\nRequirement already satisfied: docstring-parser<1,>=0.15 in ./.venv/lib/python3.12/site-packages (from anthropic->-r installer/requirements/requirements-agents.txt (line 2)) (0.18.0)\nRequirement already satisfied: markdown-it-py>=2.2.0 in ./.venv/lib/python3.12/site-packages (from rich->-r installer/requirements/requirements-agents.txt (line 7)) (4.2.0)\nRequirement already satisfied: pygments<3.0.0,>=2.13.0 in ./.venv/lib/python3.12/site-packages (from rich->-r installer/requirements/requirements-agents.txt (line 7)) (2.20.0)\nRequirement already satisfied: click>=8.2.1 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (8.4.0)\nRequirement already satisfied: shellingham>=1.3.0 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (1.5.4)\nRequirement already satisfied: annotated-doc>=0.0.2 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (0.0.4)\nRequirement already satisfied: mdurl~=0.1 in ./.venv/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich->-r installer/requirements/requirements-agents.txt (line 7)) (0.1.2)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install mlops Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install mlops",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-mlops.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "equirement already satisfied: bleach!=5.0.0 in ./.venv/lib/python3.12/site-packages (from bleach[css]!=5.0.0->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (6.3.0)\nRequirement already satisfied: defusedxml in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.7.1)\nRequirement already satisfied: jupyterlab-pygments in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.3.0)\nRequirement already satisfied: mistune<4,>=2.0.3 in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (3.2.1)\nRequirement already satisfied: nbclient>=0.5.0 in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.10.4)\nRequirement already satisfied: pandocfilters>=1.4.1 in ./.venv/lib/python3.12/site-packages (from nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (1.5.1)\nRequirement already satisfied: webencodings in ./.venv/lib/python3.12/site-packages (from bleach!=5.0.0->bleach[css]!=5.0.0->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.5.1)\nRequirement already satisfied: tinycss2<1.5,>=1.1.0 in ./.venv/lib/python3.12/site-packages (from bleach[css]!=5.0.0->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (1.4.0)\nRequirement already satisfied: fastjsonschema>=2.15 in ./.venv/lib/python3.12/site-packages (from nbformat>=5.3.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (2.21.2)\nRequirement already satisfied: ptyprocess>=0.5 in ./.venv/lib/python3.12/site-packages (from pexpect>4.6->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.7.0)\nRequirement already satisfied: pyasn1<0.7.0,>=0.6.1 in ./.venv/lib/python3.12/site-packages (from pyasn1-modules>=0.2.1->google-auth~=2.0->databricks-sdk<1,>=0.20.0->mlflow-skinny==3.12.0->mlflow->-r installer/requirements/requirements-mlops.txt (line 1)) (0.6.3)\nRequirement already satisfied: lark>=1.2.2 in ./.venv/lib/python3.12/site-packages (from rfc3987-syntax>=1.1.0->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (1.3.1)\nRequirement already satisfied: executing>=1.2.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (2.2.1)\nRequirement already satisfied: asttokens>=2.1.0 in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (3.0.1)\nRequirement already satisfied: pure-eval in ./.venv/lib/python3.12/site-packages (from stack_data>=0.6.0->ipython>=7.23.1->ipykernel!=6.30.0,>=6.5.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (0.2.3)\nRequirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (2.8.3)\nRequirement already satisfied: arrow>=0.15.0 in ./.venv/lib/python3.12/site-packages (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-mlops.txt (line 2)) (1.4.0)"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install and build frontend",
+      "status": "completed",
+      "records": [
+        {
+          "label": "npm install frontend",
+          "command": [
+            "npm",
+            "install"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "up to date, audited 31 packages in 820ms\n\n8 packages are looking for funding\n  run `npm fund` for details\n\n3 moderate severity vulnerabilities\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force\n\nRun `npm audit` for details."
+        },
+        {
+          "label": "npm build frontend",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "> architecture-view-react-three-socketio@1.0.0 build\n> vite build\n\nvite v8.0.11 building client environment for production...\n\u001b[2K\ntransforming...\u2713 51 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.40 kB \u2502 gzip:   0.27 kB\ndist/assets/index-CJWeTsEN.css   71.69 kB \u2502 gzip:  13.89 kB\ndist/assets/index-evsJWtdC.js   430.88 kB \u2502 gzip: 125.91 kB\n\n\u2713 built in 426ms"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install web developer extras",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install Angular CLI",
+          "command": [
+            "npm",
+            "install",
+            "-g",
+            "@angular/cli"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "changed 288 packages in 7s\n\n70 packages are looking for funding\n  run `npm fund` for details"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Prepare Docker services",
+      "status": "completed",
+      "records": [
+        {
+          "label": "validate docker",
+          "command": [
+            "docker",
+            "--version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Docker version 29.4.1, build 055a478"
+        },
+        {
+          "label": "validate compose",
+          "command": [
+            "docker",
+            "compose",
+            "version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Docker Compose version v5.1.3"
+        }
+      ],
+      "notes": [
+        "Use installer/docker/docker-compose.db.yml for PostgreSQL and SQL Server.",
+        "Use installer/docker/docker-compose.mlops.yml for MLflow/Jupyter/Redis."
+      ]
+    },
+    {
+      "title": "Run smoke checks",
+      "status": "completed",
+      "records": [
+        {
+          "label": "compile backend",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "py_compile",
+            "backend/app.py",
+            "backend/auth_routes.py"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "import Flask",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-c",
+            "import flask, flask_socketio, psycopg; print('backend imports ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "backend imports ok"
+        },
+        {
+          "label": "frontend bundle exists",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-c",
+            "from pathlib import Path; assert Path('frontend/dist/index.html').is_file(); print('frontend build ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "frontend build ok"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Write installation report",
+      "status": "noted",
+      "records": [],
+      "notes": []
+    }
+  ]
+}

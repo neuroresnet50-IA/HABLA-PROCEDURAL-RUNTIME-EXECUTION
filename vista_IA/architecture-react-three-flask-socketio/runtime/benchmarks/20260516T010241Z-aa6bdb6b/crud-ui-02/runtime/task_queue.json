@@ -1,0 +1,60 @@
+[
+  {
+    "checkpoint_key": "crud-ui-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Create the first UI artifact.",
+    "id": "CRUD-UI-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 30,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Create HTML shell",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\""
+    ]
+  },
+  {
+    "checkpoint_key": "crud-ui-002-checkpoint",
+    "dependencies": [
+      "CRUD-UI-001"
+    ],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Create the second UI artifact after the shell exists.",
+    "id": "CRUD-UI-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 20,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Create UI behavior",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; text=Path('frontend/app.js').read_text(encoding='utf-8'); assert 'renderItems' in text, 'renderItems'\""
+    ]
+  },
+  {
+    "checkpoint_key": "crud-ui-003-checkpoint",
+    "dependencies": [
+      "CRUD-UI-002"
+    ],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Create the third UI artifact after behavior exists.",
+    "id": "CRUD-UI-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 10,
+    "title": "Create UI styles",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; text=Path('frontend/styles.css').read_text(encoding='utf-8'); assert '.item' in text, '.item'\""
+    ]
+  }
+]

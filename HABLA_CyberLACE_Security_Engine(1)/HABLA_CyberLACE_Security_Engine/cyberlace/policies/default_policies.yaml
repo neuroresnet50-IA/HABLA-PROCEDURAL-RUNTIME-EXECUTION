@@ -1,0 +1,46 @@
+policies:
+  block_sensitive_memory_exfiltration:
+    description: "Bloquea memoria financiera o credencial cuando se intenta enviar fuera del sistema."
+    when:
+      memory_domain:
+        - financial
+        - credential
+        - restricted
+      target_action:
+        - send_email
+        - post_social
+        - external_request
+        - publish
+    then:
+      action: BLOCK
+      severity: CRITICAL
+
+  require_approval_for_filesystem_write:
+    description: "Requiere aprobación para escritura en filesystem con riesgo medio/alto."
+    when:
+      tool_category: filesystem
+      operation: write
+      risk_gte: 60
+    then:
+      action: REQUIRE_APPROVAL
+      severity: HIGH
+
+  block_prompt_injection:
+    description: "Bloquea intentos claros de prompt injection."
+    when:
+      category:
+        - prompt_injection
+        - jailbreak
+        - system_prompt_extraction
+      risk_gte: 80
+    then:
+      action: BLOCK
+      severity: CRITICAL
+
+  redact_sensitive_output:
+    description: "Redacta secretos en salidas del modelo."
+    when:
+      output_contains_sensitive: true
+    then:
+      action: REDACT
+      severity: HIGH

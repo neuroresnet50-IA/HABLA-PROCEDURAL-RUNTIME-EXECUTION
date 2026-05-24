@@ -1,0 +1,1231 @@
+{
+  "checks": [
+    {
+      "details": {
+        "checkpoint": {
+          "checkpoint_key": "recovery-001-retry-0-recovery",
+          "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-retry-0-recovery.json"
+        },
+        "directive": {
+          "directive_type": "worker_operational_directive",
+          "generated_at": "2026-05-15T17:12:04Z",
+          "operational_directive": {
+            "active_restrictions": [
+              "El modo smoke no puede inferirse por palabras sueltas.",
+              "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+              "Deben existir modos expl\u00edcitos:",
+              "smoke",
+              "build",
+              "medium",
+              "long-run",
+              "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+              "Cada tarea debe lanzar un worker propio.",
+              "Cada tarea debe tener timeout propio.",
+              "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+              "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+              "long-run no puede comportarse igual que smoke.",
+              "El progreso solo vale si existe evidencia real.",
+              "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+              "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+              "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+              "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+              "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+              "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+              "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+              "Respect the selected sprint deliverables and do not advance future deliverables."
+            ],
+            "closure_criteria": [
+              "TaskResult.completed can be true only with real disk evidence.",
+              "TaskResult.blockers must be empty before closing the task.",
+              "Every expected file must exist under the repository root.",
+              "Every declared validation command must run and return code 0.",
+              "Validation results must be represented in the task result history."
+            ],
+            "controlled_sprint_scope": {
+              "out_of_scope_deliverables": [],
+              "sprint_acceptance": [
+                "no se despliega si falla la bater\u00eda oficial."
+              ],
+              "sprint_deliverables": [
+                "`orchestrator/benchmark.py`"
+              ]
+            },
+            "current_operational_objective": {
+              "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+              "mode": "build",
+              "task_id": "RECOVERY-001",
+              "timeout_seconds": 10
+            },
+            "expected_validation": {
+              "acceptance_criteria": [
+                "no se despliega si falla la bater\u00eda oficial."
+              ],
+              "validation_commands": [
+                "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+              ],
+              "validation_ran_must_be_recorded": true
+            },
+            "forbidden_paths": [
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects"
+            ],
+            "habla": {
+              "directive_generator_ready": true,
+              "guide_type": "habla_basic_procedure",
+              "objective": {
+                "operational_goal": "Fail once, persist recovery, retry the same task, then complete it.",
+                "sprint_objective": "Benchmarks y puerta de despliegue.",
+                "task_title": "Recover failed task through retry"
+              },
+              "task_id": "RECOVERY-001"
+            },
+            "known_risks_or_blockers": [
+              "Missing required evidence before execution: recovery/output.txt",
+              "Missing expected file: recovery/output.txt"
+            ],
+            "lace": {
+              "available": false,
+              "execution_model": "session_level_control_plane_cycles",
+              "log_path": null,
+              "log_preview": "",
+              "policy_path": null,
+              "required_cycles": null,
+              "worker_guardrails": [
+                "do_not_run_all_lace_cycles_inside_one_worker_task",
+                "update_only_the_cycle_supported_by_current_task_evidence",
+                "do_not_extend_task_timeout_for_missing_lace_cycles",
+                "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+                "lace_progress_requires_lace_log_or_product_file_evidence"
+              ]
+            },
+            "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "out_of_scope": [],
+            "required_evidence": {
+              "disk_records": [
+                {
+                  "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/recovery/output.txt",
+                  "exists": false,
+                  "is_file": false,
+                  "path": "recovery/output.txt",
+                  "size": null
+                }
+              ],
+              "evidence_found": [],
+              "evidence_missing": [
+                "recovery/output.txt"
+              ],
+              "expected_files": [
+                "recovery/output.txt"
+              ]
+            },
+            "sprint_deliverables": [
+              "`orchestrator/benchmark.py`"
+            ],
+            "starting_checkpoint": {
+              "available": false,
+              "checkpoint_key": null,
+              "path": null,
+              "source": "none"
+            },
+            "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "task_expected_files": [
+              "recovery/output.txt"
+            ],
+            "task_validation_commands": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ],
+            "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "visual_bridge": {
+              "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+              "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+              "environment_variables": [
+                "VISTA_AGENT_SESSION_ID",
+                "VISTA_AGENT_PROJECT_SLUG",
+                "VISTA_AGENT_PROJECT_DIR",
+                "VISTA_AGENT_EVENT_FILE",
+                "VISTA_AGENT_BRIDGE"
+              ],
+              "expected_live_artifacts": [
+                "frontend/index.html",
+                "frontend/app.js",
+                "frontend/styles.css"
+              ],
+              "required_commands": [
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+              ],
+              "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+              "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+            }
+          },
+          "persistence": {
+            "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-2a4a8af029e4.json",
+            "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-2a4a8af029e4.md"
+          },
+          "rendered_instruction": "Task: RECOVERY-001 - Recover failed task through retry\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects\nSprint: 10 - Benchmarks y puerta de despliegue.\nGoal: Fail once, persist recovery, retry the same task, then complete it.\nExact deliverables:\n- `orchestrator/benchmark.py`\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- recovery/output.txt\nExpected validation:\n- python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE no detectado en el workspace de tarea para esta directiva.\nStarting checkpoint:\n- none\nKnown risks or blockers:\n- Missing required evidence before execution: recovery/output.txt\n- Missing expected file: recovery/output.txt\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+          "repository": {
+            "forbidden_paths": [
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects"
+            ],
+            "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+          },
+          "schema_version": 1,
+          "sprint": {
+            "number": 10,
+            "objective": "Benchmarks y puerta de despliegue."
+          },
+          "task": {
+            "checkpoint_key": "recovery-001-checkpoint",
+            "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+            "id": "RECOVERY-001",
+            "max_retries": 2,
+            "mode": "build",
+            "timeout_seconds": 10,
+            "title": "Recover failed task through retry"
+          },
+          "task_id": "RECOVERY-001",
+          "traceability": {
+            "checkpoint_key": null,
+            "checkpoint_path": null,
+            "checkpoint_source": "none",
+            "context_degraded": false,
+            "context_type": "directive_context",
+            "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+            "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+            "runtime_errors": [],
+            "source_hash": "2a4a8af029e4b1f952b4d3c8cf7fabdfbc62e498a10e017199ced1c906242d9b"
+          }
+        },
+        "directive_json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-2a4a8af029e4.json",
+        "directive_markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-2a4a8af029e4.md",
+        "enqueued_split_tasks": [],
+        "execution": {
+          "execution": {
+            "child_pid": 3329217,
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "-c",
+              "import sys\nsys.stderr.write('intentional recovery benchmark failure' + '\\n')\nsys.exit(7)"
+            ],
+            "duration_seconds": 0.011474,
+            "returncode": 7,
+            "shell": false,
+            "stderr": "intentional recovery benchmark failure\n",
+            "stdout": "",
+            "task_id": "RECOVERY-001",
+            "timed_out": false,
+            "timeout_seconds": 10,
+            "worker_duration_seconds": 0.040685,
+            "worker_pid": 3329214,
+            "worker_process_stderr": "",
+            "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329217, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"import sys\\nsys.stderr.write('intentional recovery benchmark failure' + '\\\\n')\\nsys.exit(7)\"], \"duration_seconds\": 0.011474, \"returncode\": 7, \"shell\": false, \"stderr\": \"intentional recovery benchmark failure\\n\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329214, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [\"Missing expected evidence files: recovery/output.txt\", \"Process exited with return code 7\"], \"completed\": false, \"files_created\": [], \"files_modified\": [], \"next_recommendation\": \"Inspect stdout/stderr and retry this isolated task after fixing the cause.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+            "worker_returncode": 0,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+          },
+          "task_result": {
+            "blockers": [
+              "Missing expected evidence files: recovery/output.txt",
+              "Process exited with return code 7"
+            ],
+            "completed": false,
+            "files_created": [],
+            "files_modified": [],
+            "next_recommendation": "Inspect stdout/stderr and retry this isolated task after fixing the cause.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": false,
+            "validation_ran": []
+          }
+        },
+        "history_event": {
+          "recorded_at": "2026-05-15T17:12:04Z",
+          "result": {
+            "blockers": [
+              "Missing expected evidence files: recovery/output.txt",
+              "Process exited with return code 7",
+              "Missing expected file: recovery/output.txt",
+              "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ],
+            "completed": false,
+            "files_created": [],
+            "files_modified": [],
+            "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": false,
+            "validation_ran": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ]
+          }
+        },
+        "recovery": {
+          "checkpoint": {
+            "checkpoint_key": "recovery-001-retry-0-recovery",
+            "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-retry-0-recovery.json"
+          },
+          "decision": {
+            "action": "retry",
+            "next_retry_count": 1,
+            "reason": "Retries remain for this task.",
+            "retry_count": 0
+          },
+          "failure_event": {
+            "failure": {
+              "decision": {
+                "action": "retry",
+                "next_retry_count": 1,
+                "reason": "Retries remain for this task.",
+                "retry_count": 0
+              },
+              "failure": {
+                "execution": {
+                  "child_pid": 3329217,
+                  "command": [
+                    "/usr/bin/python3",
+                    "-B",
+                    "-c",
+                    "import sys\nsys.stderr.write('intentional recovery benchmark failure' + '\\n')\nsys.exit(7)"
+                  ],
+                  "duration_seconds": 0.011474,
+                  "returncode": 7,
+                  "shell": false,
+                  "stderr": "intentional recovery benchmark failure\n",
+                  "stdout": "",
+                  "task_id": "RECOVERY-001",
+                  "timed_out": false,
+                  "timeout_seconds": 10,
+                  "worker_duration_seconds": 0.040685,
+                  "worker_pid": 3329214,
+                  "worker_process_stderr": "",
+                  "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329217, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"import sys\\nsys.stderr.write('intentional recovery benchmark failure' + '\\\\n')\\nsys.exit(7)\"], \"duration_seconds\": 0.011474, \"returncode\": 7, \"shell\": false, \"stderr\": \"intentional recovery benchmark failure\\n\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329214, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [\"Missing expected evidence files: recovery/output.txt\", \"Process exited with return code 7\"], \"completed\": false, \"files_created\": [], \"files_modified\": [], \"next_recommendation\": \"Inspect stdout/stderr and retry this isolated task after fixing the cause.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+                  "worker_returncode": 0,
+                  "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+                },
+                "task_result": {
+                  "blockers": [
+                    "Missing expected evidence files: recovery/output.txt",
+                    "Process exited with return code 7",
+                    "Missing expected file: recovery/output.txt",
+                    "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                  ],
+                  "completed": false,
+                  "files_created": [],
+                  "files_modified": [],
+                  "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+                  "task_id": "RECOVERY-001",
+                  "validation_passed": false,
+                  "validation_ran": [
+                    "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                  ]
+                },
+                "validation": {
+                  "commands": [
+                    {
+                      "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                      "duration_seconds": 0.108642,
+                      "returncode": 1,
+                      "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'recovery/output.txt'\n",
+                      "stdout": "",
+                      "timed_out": false
+                    }
+                  ],
+                  "evidence": {
+                    "blockers": [
+                      "Missing expected file: recovery/output.txt"
+                    ],
+                    "expected_files": [
+                      {
+                        "exists": false,
+                        "is_file": false,
+                        "path": "recovery/output.txt",
+                        "reported_created": false,
+                        "reported_modified": false,
+                        "size": null
+                      }
+                    ],
+                    "found": [],
+                    "missing": [
+                      "recovery/output.txt"
+                    ],
+                    "reported_created": [],
+                    "reported_modified": [],
+                    "reported_outside_expected": []
+                  },
+                  "task_id": "RECOVERY-001",
+                  "validation_passed": false,
+                  "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+                }
+              },
+              "max_retries": 2,
+              "retry_count": 0,
+              "task_id": "RECOVERY-001"
+            },
+            "recorded_at": "2026-05-15T17:12:04Z"
+          },
+          "task_id": "RECOVERY-001"
+        },
+        "retry_count": 0,
+        "status": "retry",
+        "task": {
+          "checkpoint_key": "recovery-001-checkpoint",
+          "dependencies": [],
+          "expected_files": [
+            "recovery/output.txt"
+          ],
+          "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+          "id": "RECOVERY-001",
+          "max_retries": 2,
+          "mode": "build",
+          "priority": 10,
+          "status": "pending",
+          "timeout_seconds": 10,
+          "title": "Recover failed task through retry",
+          "validation_commands": [
+            "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ]
+        },
+        "task_result": {
+          "blockers": [
+            "Missing expected evidence files: recovery/output.txt",
+            "Process exited with return code 7",
+            "Missing expected file: recovery/output.txt",
+            "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "RECOVERY-001",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ]
+        },
+        "validation": {
+          "task_result": {
+            "blockers": [
+              "Missing expected evidence files: recovery/output.txt",
+              "Process exited with return code 7",
+              "Missing expected file: recovery/output.txt",
+              "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ],
+            "completed": false,
+            "files_created": [],
+            "files_modified": [],
+            "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": false,
+            "validation_ran": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ]
+          },
+          "validation": {
+            "commands": [
+              {
+                "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                "duration_seconds": 0.108642,
+                "returncode": 1,
+                "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'recovery/output.txt'\n",
+                "stdout": "",
+                "timed_out": false
+              }
+            ],
+            "evidence": {
+              "blockers": [
+                "Missing expected file: recovery/output.txt"
+              ],
+              "expected_files": [
+                {
+                  "exists": false,
+                  "is_file": false,
+                  "path": "recovery/output.txt",
+                  "reported_created": false,
+                  "reported_modified": false,
+                  "size": null
+                }
+              ],
+              "found": [],
+              "missing": [
+                "recovery/output.txt"
+              ],
+              "reported_created": [],
+              "reported_modified": [],
+              "reported_outside_expected": []
+            },
+            "task_id": "RECOVERY-001",
+            "validation_passed": false,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+          }
+        }
+      },
+      "name": "first run requested retry",
+      "passed": true
+    },
+    {
+      "details": [
+        {
+          "failure": {
+            "decision": {
+              "action": "retry",
+              "next_retry_count": 1,
+              "reason": "Retries remain for this task.",
+              "retry_count": 0
+            },
+            "failure": {
+              "execution": {
+                "child_pid": 3329217,
+                "command": [
+                  "/usr/bin/python3",
+                  "-B",
+                  "-c",
+                  "import sys\nsys.stderr.write('intentional recovery benchmark failure' + '\\n')\nsys.exit(7)"
+                ],
+                "duration_seconds": 0.011474,
+                "returncode": 7,
+                "shell": false,
+                "stderr": "intentional recovery benchmark failure\n",
+                "stdout": "",
+                "task_id": "RECOVERY-001",
+                "timed_out": false,
+                "timeout_seconds": 10,
+                "worker_duration_seconds": 0.040685,
+                "worker_pid": 3329214,
+                "worker_process_stderr": "",
+                "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329217, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"import sys\\nsys.stderr.write('intentional recovery benchmark failure' + '\\\\n')\\nsys.exit(7)\"], \"duration_seconds\": 0.011474, \"returncode\": 7, \"shell\": false, \"stderr\": \"intentional recovery benchmark failure\\n\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329214, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [\"Missing expected evidence files: recovery/output.txt\", \"Process exited with return code 7\"], \"completed\": false, \"files_created\": [], \"files_modified\": [], \"next_recommendation\": \"Inspect stdout/stderr and retry this isolated task after fixing the cause.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+                "worker_returncode": 0,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+              },
+              "task_result": {
+                "blockers": [
+                  "Missing expected evidence files: recovery/output.txt",
+                  "Process exited with return code 7",
+                  "Missing expected file: recovery/output.txt",
+                  "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                ],
+                "completed": false,
+                "files_created": [],
+                "files_modified": [],
+                "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+                "task_id": "RECOVERY-001",
+                "validation_passed": false,
+                "validation_ran": [
+                  "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                ]
+              },
+              "validation": {
+                "commands": [
+                  {
+                    "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                    "duration_seconds": 0.108642,
+                    "returncode": 1,
+                    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'recovery/output.txt'\n",
+                    "stdout": "",
+                    "timed_out": false
+                  }
+                ],
+                "evidence": {
+                  "blockers": [
+                    "Missing expected file: recovery/output.txt"
+                  ],
+                  "expected_files": [
+                    {
+                      "exists": false,
+                      "is_file": false,
+                      "path": "recovery/output.txt",
+                      "reported_created": false,
+                      "reported_modified": false,
+                      "size": null
+                    }
+                  ],
+                  "found": [],
+                  "missing": [
+                    "recovery/output.txt"
+                  ],
+                  "reported_created": [],
+                  "reported_modified": [],
+                  "reported_outside_expected": []
+                },
+                "task_id": "RECOVERY-001",
+                "validation_passed": false,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+              }
+            },
+            "max_retries": 2,
+            "retry_count": 0,
+            "task_id": "RECOVERY-001"
+          },
+          "recorded_at": "2026-05-15T17:12:04Z"
+        }
+      ],
+      "name": "failure persisted",
+      "passed": true
+    },
+    {
+      "details": [
+        {
+          "failure": {
+            "decision": {
+              "action": "retry",
+              "next_retry_count": 1,
+              "reason": "Retries remain for this task.",
+              "retry_count": 0
+            },
+            "failure": {
+              "execution": {
+                "child_pid": 3329217,
+                "command": [
+                  "/usr/bin/python3",
+                  "-B",
+                  "-c",
+                  "import sys\nsys.stderr.write('intentional recovery benchmark failure' + '\\n')\nsys.exit(7)"
+                ],
+                "duration_seconds": 0.011474,
+                "returncode": 7,
+                "shell": false,
+                "stderr": "intentional recovery benchmark failure\n",
+                "stdout": "",
+                "task_id": "RECOVERY-001",
+                "timed_out": false,
+                "timeout_seconds": 10,
+                "worker_duration_seconds": 0.040685,
+                "worker_pid": 3329214,
+                "worker_process_stderr": "",
+                "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329217, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"import sys\\nsys.stderr.write('intentional recovery benchmark failure' + '\\\\n')\\nsys.exit(7)\"], \"duration_seconds\": 0.011474, \"returncode\": 7, \"shell\": false, \"stderr\": \"intentional recovery benchmark failure\\n\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329214, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [\"Missing expected evidence files: recovery/output.txt\", \"Process exited with return code 7\"], \"completed\": false, \"files_created\": [], \"files_modified\": [], \"next_recommendation\": \"Inspect stdout/stderr and retry this isolated task after fixing the cause.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+                "worker_returncode": 0,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+              },
+              "task_result": {
+                "blockers": [
+                  "Missing expected evidence files: recovery/output.txt",
+                  "Process exited with return code 7",
+                  "Missing expected file: recovery/output.txt",
+                  "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                ],
+                "completed": false,
+                "files_created": [],
+                "files_modified": [],
+                "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+                "task_id": "RECOVERY-001",
+                "validation_passed": false,
+                "validation_ran": [
+                  "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+                ]
+              },
+              "validation": {
+                "commands": [
+                  {
+                    "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                    "duration_seconds": 0.108642,
+                    "returncode": 1,
+                    "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'recovery/output.txt'\n",
+                    "stdout": "",
+                    "timed_out": false
+                  }
+                ],
+                "evidence": {
+                  "blockers": [
+                    "Missing expected file: recovery/output.txt"
+                  ],
+                  "expected_files": [
+                    {
+                      "exists": false,
+                      "is_file": false,
+                      "path": "recovery/output.txt",
+                      "reported_created": false,
+                      "reported_modified": false,
+                      "size": null
+                    }
+                  ],
+                  "found": [],
+                  "missing": [
+                    "recovery/output.txt"
+                  ],
+                  "reported_created": [],
+                  "reported_modified": [],
+                  "reported_outside_expected": []
+                },
+                "task_id": "RECOVERY-001",
+                "validation_passed": false,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+              }
+            },
+            "max_retries": 2,
+            "retry_count": 0,
+            "task_id": "RECOVERY-001"
+          },
+          "recorded_at": "2026-05-15T17:12:04Z"
+        }
+      ],
+      "name": "retry decision persisted next count",
+      "passed": true
+    },
+    {
+      "details": {
+        "RECOVERY-001": 2
+      },
+      "name": "same task executed twice",
+      "passed": true
+    },
+    {
+      "details": {
+        "checkpoint": {
+          "checkpoint_key": "recovery-001-checkpoint",
+          "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-checkpoint.json"
+        },
+        "directive": {
+          "directive_type": "worker_operational_directive",
+          "generated_at": "2026-05-15T17:12:04Z",
+          "operational_directive": {
+            "active_restrictions": [
+              "El modo smoke no puede inferirse por palabras sueltas.",
+              "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+              "Deben existir modos expl\u00edcitos:",
+              "smoke",
+              "build",
+              "medium",
+              "long-run",
+              "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+              "Cada tarea debe lanzar un worker propio.",
+              "Cada tarea debe tener timeout propio.",
+              "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+              "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+              "long-run no puede comportarse igual que smoke.",
+              "El progreso solo vale si existe evidencia real.",
+              "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+              "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+              "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+              "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+              "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+              "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+              "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+              "Respect the selected sprint deliverables and do not advance future deliverables."
+            ],
+            "closure_criteria": [
+              "TaskResult.completed can be true only with real disk evidence.",
+              "TaskResult.blockers must be empty before closing the task.",
+              "Every expected file must exist under the repository root.",
+              "Every declared validation command must run and return code 0.",
+              "Validation results must be represented in the task result history."
+            ],
+            "controlled_sprint_scope": {
+              "out_of_scope_deliverables": [],
+              "sprint_acceptance": [
+                "no se despliega si falla la bater\u00eda oficial."
+              ],
+              "sprint_deliverables": [
+                "`orchestrator/benchmark.py`"
+              ]
+            },
+            "current_operational_objective": {
+              "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+              "mode": "build",
+              "task_id": "RECOVERY-001",
+              "timeout_seconds": 10
+            },
+            "expected_validation": {
+              "acceptance_criteria": [
+                "no se despliega si falla la bater\u00eda oficial."
+              ],
+              "validation_commands": [
+                "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+              ],
+              "validation_ran_must_be_recorded": true
+            },
+            "forbidden_paths": [
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects"
+            ],
+            "habla": {
+              "directive_generator_ready": true,
+              "guide_type": "habla_basic_procedure",
+              "objective": {
+                "operational_goal": "Fail once, persist recovery, retry the same task, then complete it.",
+                "sprint_objective": "Benchmarks y puerta de despliegue.",
+                "task_title": "Recover failed task through retry"
+              },
+              "task_id": "RECOVERY-001"
+            },
+            "known_risks_or_blockers": [
+              "Missing required evidence before execution: recovery/output.txt",
+              "Missing expected file: recovery/output.txt",
+              "Prior failure for active task: Missing expected evidence files: recovery/output.txt; Process exited with return code 7; Missing expected file: recovery/output.txt; Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ],
+            "lace": {
+              "available": false,
+              "execution_model": "session_level_control_plane_cycles",
+              "log_path": null,
+              "log_preview": "",
+              "policy_path": null,
+              "required_cycles": null,
+              "worker_guardrails": [
+                "do_not_run_all_lace_cycles_inside_one_worker_task",
+                "update_only_the_cycle_supported_by_current_task_evidence",
+                "do_not_extend_task_timeout_for_missing_lace_cycles",
+                "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+                "lace_progress_requires_lace_log_or_product_file_evidence"
+              ]
+            },
+            "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "out_of_scope": [],
+            "required_evidence": {
+              "disk_records": [
+                {
+                  "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/recovery/output.txt",
+                  "exists": false,
+                  "is_file": false,
+                  "path": "recovery/output.txt",
+                  "size": null
+                }
+              ],
+              "evidence_found": [],
+              "evidence_missing": [
+                "recovery/output.txt"
+              ],
+              "expected_files": [
+                "recovery/output.txt"
+              ]
+            },
+            "sprint_deliverables": [
+              "`orchestrator/benchmark.py`"
+            ],
+            "starting_checkpoint": {
+              "available": true,
+              "checkpoint_key": "recovery-001-retry-0-recovery",
+              "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-retry-0-recovery.json",
+              "source": "project_state.checkpoints"
+            },
+            "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "task_expected_files": [
+              "recovery/output.txt"
+            ],
+            "task_validation_commands": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ],
+            "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "visual_bridge": {
+              "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+              "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+              "environment_variables": [
+                "VISTA_AGENT_SESSION_ID",
+                "VISTA_AGENT_PROJECT_SLUG",
+                "VISTA_AGENT_PROJECT_DIR",
+                "VISTA_AGENT_EVENT_FILE",
+                "VISTA_AGENT_BRIDGE"
+              ],
+              "expected_live_artifacts": [
+                "frontend/index.html",
+                "frontend/app.js",
+                "frontend/styles.css"
+              ],
+              "required_commands": [
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+                "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+              ],
+              "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+              "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+            }
+          },
+          "persistence": {
+            "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.json",
+            "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.md"
+          },
+          "rendered_instruction": "Task: RECOVERY-001 - Recover failed task through retry\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects\nSprint: 10 - Benchmarks y puerta de despliegue.\nGoal: Fail once, persist recovery, retry the same task, then complete it.\nExact deliverables:\n- `orchestrator/benchmark.py`\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- recovery/output.txt\nExpected validation:\n- python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE no detectado en el workspace de tarea para esta directiva.\nStarting checkpoint:\n- recovery-001-retry-0-recovery\nKnown risks or blockers:\n- Missing required evidence before execution: recovery/output.txt\n- Missing expected file: recovery/output.txt\n- Prior failure for active task: Missing expected evidence files: recovery/output.txt; Process exited with return code 7; Missing expected file: recovery/output.txt; Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+          "repository": {
+            "forbidden_paths": [
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects"
+            ],
+            "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+            "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+          },
+          "schema_version": 1,
+          "sprint": {
+            "number": 10,
+            "objective": "Benchmarks y puerta de despliegue."
+          },
+          "task": {
+            "checkpoint_key": "recovery-001-checkpoint",
+            "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+            "id": "RECOVERY-001",
+            "max_retries": 2,
+            "mode": "build",
+            "timeout_seconds": 10,
+            "title": "Recover failed task through retry"
+          },
+          "task_id": "RECOVERY-001",
+          "traceability": {
+            "checkpoint_key": "recovery-001-retry-0-recovery",
+            "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-retry-0-recovery.json",
+            "checkpoint_source": "project_state.checkpoints",
+            "context_degraded": false,
+            "context_type": "directive_context",
+            "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+            "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+            "runtime_errors": [],
+            "source_hash": "a66cfea7316261e6b8bc0d279e0649e9d7f1182af74e2a473bff32e8632e932c"
+          }
+        },
+        "directive_json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.json",
+        "directive_markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.md",
+        "execution": {
+          "execution": {
+            "child_pid": 3329276,
+            "command": [
+              "/usr/bin/python3",
+              "-B",
+              "-c",
+              "from pathlib import Path\nfiles = {'recovery/output.txt': 'recovered after retry\\n'}\nfor name, content in files.items():\n    path = Path(name)\n    path.parent.mkdir(parents=True, exist_ok=True)\n    path.write_text(content, encoding='utf-8')"
+            ],
+            "duration_seconds": 0.028747,
+            "returncode": 0,
+            "shell": false,
+            "stderr": "",
+            "stdout": "",
+            "task_id": "RECOVERY-001",
+            "timed_out": false,
+            "timeout_seconds": 10,
+            "worker_duration_seconds": 0.07078,
+            "worker_pid": 3329236,
+            "worker_process_stderr": "",
+            "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329276, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"from pathlib import Path\\nfiles = {'recovery/output.txt': 'recovered after retry\\\\n'}\\nfor name, content in files.items():\\n    path = Path(name)\\n    path.parent.mkdir(parents=True, exist_ok=True)\\n    path.write_text(content, encoding='utf-8')\"], \"duration_seconds\": 0.028747, \"returncode\": 0, \"shell\": false, \"stderr\": \"\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329236, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"recovery/output.txt\"], \"files_modified\": [], \"next_recommendation\": \"Run Sprint 4 validation before marking project progress as verified.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+            "worker_returncode": 0,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+          },
+          "task_result": {
+            "blockers": [],
+            "completed": true,
+            "files_created": [
+              "recovery/output.txt"
+            ],
+            "files_modified": [],
+            "next_recommendation": "Run Sprint 4 validation before marking project progress as verified.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": false,
+            "validation_ran": []
+          }
+        },
+        "history_event": {
+          "recorded_at": "2026-05-15T17:12:05Z",
+          "result": {
+            "blockers": [],
+            "completed": true,
+            "files_created": [
+              "recovery/output.txt"
+            ],
+            "files_modified": [],
+            "next_recommendation": "Task evidence and validation commands passed.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": true,
+            "validation_ran": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ]
+          }
+        },
+        "recovery": null,
+        "status": "completed",
+        "task": {
+          "checkpoint_key": "recovery-001-checkpoint",
+          "dependencies": [],
+          "expected_files": [
+            "recovery/output.txt"
+          ],
+          "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+          "id": "RECOVERY-001",
+          "max_retries": 2,
+          "mode": "build",
+          "priority": 10,
+          "status": "pending",
+          "timeout_seconds": 10,
+          "title": "Recover failed task through retry",
+          "validation_commands": [
+            "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ]
+        },
+        "task_result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [
+            "recovery/output.txt"
+          ],
+          "files_modified": [],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "RECOVERY-001",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ]
+        },
+        "validation": {
+          "task_result": {
+            "blockers": [],
+            "completed": true,
+            "files_created": [
+              "recovery/output.txt"
+            ],
+            "files_modified": [],
+            "next_recommendation": "Task evidence and validation commands passed.",
+            "task_id": "RECOVERY-001",
+            "validation_passed": true,
+            "validation_ran": [
+              "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+            ]
+          },
+          "validation": {
+            "commands": [
+              {
+                "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                "duration_seconds": 0.026075,
+                "returncode": 0,
+                "stderr": "",
+                "stdout": "",
+                "timed_out": false
+              }
+            ],
+            "evidence": {
+              "blockers": [],
+              "expected_files": [
+                {
+                  "exists": true,
+                  "is_file": true,
+                  "path": "recovery/output.txt",
+                  "reported_created": true,
+                  "reported_modified": false,
+                  "size": 22
+                }
+              ],
+              "found": [
+                "recovery/output.txt"
+              ],
+              "missing": [],
+              "reported_created": [
+                "recovery/output.txt"
+              ],
+              "reported_modified": [],
+              "reported_outside_expected": []
+            },
+            "task_id": "RECOVERY-001",
+            "validation_passed": true,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+          }
+        }
+      },
+      "name": "second run completed",
+      "passed": true
+    },
+    {
+      "details": [
+        {
+          "checkpoint_key": "recovery-001-checkpoint",
+          "dependencies": [],
+          "expected_files": [
+            "recovery/output.txt"
+          ],
+          "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+          "id": "RECOVERY-001",
+          "max_retries": 2,
+          "mode": "build",
+          "priority": 10,
+          "status": "completed",
+          "timeout_seconds": 10,
+          "title": "Recover failed task through retry",
+          "validation_commands": [
+            "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+          ]
+        }
+      ],
+      "name": "task ended completed in queue",
+      "passed": true
+    },
+    {
+      "details": {
+        "checkpoint_key": "recovery-001-checkpoint",
+        "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints/recovery-001-checkpoint.json"
+      },
+      "name": "checkpoint exists",
+      "passed": true
+    }
+  ],
+  "duration_seconds": 0.27545,
+  "ended_at": "2026-05-15T17:12:05Z",
+  "evidence": {
+    "attempts": {
+      "RECOVERY-001": 2
+    },
+    "benchmark_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05",
+    "checkpoints_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/checkpoints",
+    "directive_json_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-2a4a8af029e4.json",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/RECOVERY-001-20260515T171204Z-a66cfea73162.json"
+    ],
+    "expected_files": [
+      {
+        "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace/recovery/output.txt",
+        "exists": true,
+        "path": "recovery/output.txt",
+        "size": 22
+      }
+    ],
+    "failure_events": [
+      {
+        "failure": {
+          "decision": {
+            "action": "retry",
+            "next_retry_count": 1,
+            "reason": "Retries remain for this task.",
+            "retry_count": 0
+          },
+          "failure": {
+            "execution": {
+              "child_pid": 3329217,
+              "command": [
+                "/usr/bin/python3",
+                "-B",
+                "-c",
+                "import sys\nsys.stderr.write('intentional recovery benchmark failure' + '\\n')\nsys.exit(7)"
+              ],
+              "duration_seconds": 0.011474,
+              "returncode": 7,
+              "shell": false,
+              "stderr": "intentional recovery benchmark failure\n",
+              "stdout": "",
+              "task_id": "RECOVERY-001",
+              "timed_out": false,
+              "timeout_seconds": 10,
+              "worker_duration_seconds": 0.040685,
+              "worker_pid": 3329214,
+              "worker_process_stderr": "",
+              "worker_process_stdout": "{\"execution\": {\"child_pid\": 3329217, \"command\": [\"/usr/bin/python3\", \"-B\", \"-c\", \"import sys\\nsys.stderr.write('intentional recovery benchmark failure' + '\\\\n')\\nsys.exit(7)\"], \"duration_seconds\": 0.011474, \"returncode\": 7, \"shell\": false, \"stderr\": \"intentional recovery benchmark failure\\n\", \"stdout\": \"\", \"task_id\": \"RECOVERY-001\", \"timed_out\": false, \"timeout_seconds\": 10, \"worker_pid\": 3329214, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace\"}, \"task_result\": {\"blockers\": [\"Missing expected evidence files: recovery/output.txt\", \"Process exited with return code 7\"], \"completed\": false, \"files_created\": [], \"files_modified\": [], \"next_recommendation\": \"Inspect stdout/stderr and retry this isolated task after fixing the cause.\", \"task_id\": \"RECOVERY-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+              "worker_returncode": 0,
+              "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+            },
+            "task_result": {
+              "blockers": [
+                "Missing expected evidence files: recovery/output.txt",
+                "Process exited with return code 7",
+                "Missing expected file: recovery/output.txt",
+                "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+              ],
+              "completed": false,
+              "files_created": [],
+              "files_modified": [],
+              "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+              "task_id": "RECOVERY-001",
+              "validation_passed": false,
+              "validation_ran": [
+                "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+              ]
+            },
+            "validation": {
+              "commands": [
+                {
+                  "command": "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\"",
+                  "duration_seconds": 0.108642,
+                  "returncode": 1,
+                  "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\n  File \"/usr/lib/python3.12/pathlib.py\", line 1029, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/pathlib.py\", line 1015, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'recovery/output.txt'\n",
+                  "stdout": "",
+                  "timed_out": false
+                }
+              ],
+              "evidence": {
+                "blockers": [
+                  "Missing expected file: recovery/output.txt"
+                ],
+                "expected_files": [
+                  {
+                    "exists": false,
+                    "is_file": false,
+                    "path": "recovery/output.txt",
+                    "reported_created": false,
+                    "reported_modified": false,
+                    "size": null
+                  }
+                ],
+                "found": [],
+                "missing": [
+                  "recovery/output.txt"
+                ],
+                "reported_created": [],
+                "reported_modified": [],
+                "reported_outside_expected": []
+              },
+              "task_id": "RECOVERY-001",
+              "validation_passed": false,
+              "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+            }
+          },
+          "max_retries": 2,
+          "retry_count": 0,
+          "task_id": "RECOVERY-001"
+        },
+        "recorded_at": "2026-05-15T17:12:04Z"
+      }
+    ],
+    "failures_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/failures.jsonl",
+    "history_count": 2,
+    "project_state_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/project_state.json",
+    "queue": [
+      {
+        "checkpoint_key": "recovery-001-checkpoint",
+        "dependencies": [],
+        "expected_files": [
+          "recovery/output.txt"
+        ],
+        "goal": "Fail once, persist recovery, retry the same task, then complete it.",
+        "id": "RECOVERY-001",
+        "max_retries": 2,
+        "mode": "build",
+        "priority": 10,
+        "status": "completed",
+        "timeout_seconds": 10,
+        "title": "Recover failed task through retry",
+        "validation_commands": [
+          "python3 -B -c \"from pathlib import Path; text=Path('recovery/output.txt').read_text(encoding='utf-8'); assert 'recovered' in text, 'recovered'\""
+        ]
+      }
+    ],
+    "retry_decision": {
+      "action": "retry",
+      "next_retry_count": 1,
+      "reason": "Retries remain for this task.",
+      "retry_count": 0
+    },
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime",
+    "task_history_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/task_history.jsonl",
+    "task_queue_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/runtime/task_queue.json",
+    "task_statuses": [
+      {
+        "status": "retry",
+        "task_id": "RECOVERY-001"
+      },
+      {
+        "status": "completed",
+        "task_id": "RECOVERY-001"
+      }
+    ],
+    "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/workspace"
+  },
+  "failures": [],
+  "name": "recovery-05",
+  "recommendations": [
+    "Keep this benchmark in the deployment gate."
+  ],
+  "result_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T171203Z-a2951add/recovery-05/result.json",
+  "schema_version": 1,
+  "started_at": "2026-05-15T17:12:04Z",
+  "status": "passed"
+}

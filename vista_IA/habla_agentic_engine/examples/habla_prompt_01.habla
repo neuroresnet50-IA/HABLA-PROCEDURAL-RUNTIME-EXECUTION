@@ -1,0 +1,21 @@
+PROTOCOLO ejemplo_poblacion_mexico:
+OBJETIVO: responder una pregunta temporal con evidencia y margen.
+ENTRADA:
+-> DEFINE pregunta_usuario COMO "¿Cuánta gente vive en México?"
+FASE 0: SEMANTIC_CLASSIFIER
+-> CLASIFICA pregunta como HECHO_TEMPORAL
+FASE 1: THOUGHT
+-> DEFINE estrategia COMO buscar_fuentes_actualizadas_y_contrastar
+FASE 2: ACTION
+-> USA RAG o fuente actualizada
+FASE 3: OBSERVATION
+-> RECIBE evidencia
+FASE 4: TRIANGULATE
+-> COMPARA fuentes
+FASE 5: CONFIDENCE_PER_COMPONENT
+-> ASIGNA confianza por dato, fecha y fuente
+FASE 6: CONSTITUTIONAL_CHECK
+-> NO inventar ni ocultar incertidumbre
+FASE 7: ANSWER
+-> RESPONDE con rango y limite
+FIN PROTOCOLO

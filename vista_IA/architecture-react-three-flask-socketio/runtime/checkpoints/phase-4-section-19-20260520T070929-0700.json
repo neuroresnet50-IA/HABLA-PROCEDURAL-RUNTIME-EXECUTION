@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "checkpoint_type": "section_19_phase_4",
+  "created_at": "2026-05-20T07:09:29-07:00",
+  "status": "frontend_closed_backend_advanced",
+  "phase": 4,
+  "scope": [
+    "19.3 backend monolitico",
+    "19.5 frontend con componentes grandes"
+  ],
+  "summary": {
+    "backend": "Sandbox runtime fue extraido a SandboxService. backend/app.py conserva wrappers compatibles para endpoints y tests.",
+    "frontend": "App.jsx y CodeWorkbench.jsx bajaron de 2000 lineas con componentes dedicados. AgentStudio.jsx ya estaba bajo 2000 desde Fase 3.",
+    "audit_position": "19.5 queda cerrada por componente dividido y conteo bajo umbral. 19.3 queda avanzada, pero no cerrada totalmente porque app.py conserva integridad, HAR, observer, editor, reset y blanqueo."
+  },
+  "files_created": [
+    "backend/sandbox_service.py",
+    "frontend/src/components/AppAgentPresenceLayer.jsx",
+    "frontend/src/components/AppStatusbar.jsx",
+    "frontend/src/components/AppRuntimeWorkbenches.jsx",
+    "frontend/src/components/AppTopbar.jsx",
+    "frontend/src/components/AppLintPanel.jsx",
+    "frontend/src/components/AppObserverPanel.jsx",
+    "frontend/src/components/CodeWorkbenchTopMenu.jsx",
+    "frontend/src/components/CodeWorkbenchActivityBar.jsx",
+    "frontend/src/components/CodeWorkbenchActions.jsx",
+    "frontend/src/components/CodeWorkbenchSidebar.jsx",
+    "frontend/src/components/CodeWorkbenchEditorHeader.jsx",
+    "frontend/src/components/CodeWorkbenchEditorOverlays.jsx",
+    "frontend/src/components/CodeWorkbenchGutter.jsx",
+    "frontend/src/components/CodeWorkbenchTextarea.jsx"
+  ],
+  "files_modified": [
+    "backend/app.py",
+    "frontend/src/App.jsx",
+    "frontend/src/components/CodeWorkbench.jsx",
+    "PLANS.md"
+  ],
+  "line_counts_after": {
+    "backend/app.py": 6400,
+    "backend/sandbox_service.py": 440,
+    "backend/code_scanner_service.py": 133,
+    "backend/agent_repair_service.py": 171,
+    "frontend/src/App.jsx": 1992,
+    "frontend/src/components/CodeWorkbench.jsx": 1994,
+    "frontend/src/components/AgentStudio.jsx": 1754
+  },
+  "validations": [
+    {
+      "command": "python3 -m py_compile backend/app.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m unittest backend.test_runtime_sandbox backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint",
+      "result": "passed",
+      "tests": 22
+    },
+    {
+      "command": "npm run build",
+      "cwd": "frontend",
+      "result": "passed"
+    },
+    {
+      "command": "npm test",
+      "cwd": "frontend",
+      "result": "passed"
+    }
+  ],
+  "closed": [
+    "19.5"
+  ],
+  "still_open": [
+    "19.3"
+  ],
+  "remaining_risks": [
+    "backend/app.py todavia conserva integridad/sniper, HAR, observer, editor, reset, blanqueo, rutas y sockets.",
+    "La carpeta actual no tiene repositorio Git inicializado, por lo que no hubo evidencia por git diff/status."
+  ],
+  "next_step": "Fase 5 debe extraer integrity/sniper service, HAR route module, observer facade y editor routes si se quiere cerrar 19.3 completamente."
+}

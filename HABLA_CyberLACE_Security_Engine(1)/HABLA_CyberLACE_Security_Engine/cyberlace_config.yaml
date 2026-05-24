@@ -1,0 +1,29 @@
+enabled: true
+mode: monitor
+
+risk_thresholds:
+  monitor: 35
+  require_approval: 60
+  block: 80
+  quarantine: 92
+
+risk_weights:
+  prompt: 0.20
+  memory: 0.20
+  tool: 0.20
+  context: 0.15
+  behavior: 0.10
+  autonomy: 0.10
+  output: 0.05
+
+storage:
+  evidence_jsonl: data/evidence/evidence.jsonl
+  events_jsonl: data/evidence/events.jsonl
+
+sensitive_domains:
+  - financial
+  - credential
+  - private
+  - restricted
+
+default_action: MONITOR

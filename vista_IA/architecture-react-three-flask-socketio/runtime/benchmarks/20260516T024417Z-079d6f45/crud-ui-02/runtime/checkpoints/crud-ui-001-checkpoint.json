@@ -1,0 +1,90 @@
+{
+  "checkpoint_key": "crud-ui-001-checkpoint",
+  "created_at": "2026-05-16T02:44:18Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/CRUD-UI-001-20260516T024418Z-ba98db390f7e.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/CRUD-UI-001-20260516T024418Z-ba98db390f7e.md",
+      "source_hash": "ba98db390f7e8dbb4ce4feb8597279dd6342e69aa9424dd806a8da1f16400f9e"
+    },
+    "task": {
+      "checkpoint_key": "crud-ui-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html"
+      ],
+      "goal": "Create the first UI artifact.",
+      "id": "CRUD-UI-001",
+      "max_retries": 2,
+      "mode": "build",
+      "priority": 30,
+      "status": "pending",
+      "timeout_seconds": 10,
+      "title": "Create HTML shell",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "frontend/index.html"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "CRUD-UI-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.024098,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B -c \"from pathlib import Path; text=Path('frontend/index.html').read_text(encoding='utf-8'); assert '<main' in text, '<main'\"",
+          "duration_seconds": 0.016575,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": true,
+            "reported_modified": false,
+            "size": 23
+          }
+        ],
+        "found": [
+          "frontend/index.html"
+        ],
+        "missing": [],
+        "reported_created": [
+          "frontend/index.html"
+        ],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "CRUD-UI-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260516T024417Z-079d6f45/crud-ui-02/workspace"
+    }
+  }
+}

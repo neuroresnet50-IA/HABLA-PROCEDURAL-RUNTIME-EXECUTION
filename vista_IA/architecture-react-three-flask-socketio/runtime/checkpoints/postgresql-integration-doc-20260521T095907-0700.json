@@ -1,0 +1,77 @@
+{
+  "id": "postgresql-integration-doc-20260521T095907-0700",
+  "recorded_at": "2026-05-21T09:59:07-07:00",
+  "task_id": "POSTGRESQL-INTEGRATION-DOCUMENTATION",
+  "title": "Documentar evidencia completa de integracion PostgreSQL local",
+  "status": "completed",
+  "completed": true,
+  "summary": "Se creo y corrigio un reporte Markdown de transferencia tecnica que explica instalacion, decision Docker vs PostgreSQL del sistema, conexion backend/.env, cambio start.sh, validaciones test_client y HTTP temporal en 5051, blockers y pasos reproducibles para un ingeniero humano.",
+  "artifactPath": "docs/integracion_postgresql_local_2026-05-21.md",
+  "relatedCheckpoint": "runtime/checkpoints/postgresql-setup-20260521T091317-0700.json",
+  "files_created": [
+    "docs/integracion_postgresql_local_2026-05-21.md",
+    "runtime/checkpoints/postgresql-integration-doc-20260521T095907-0700.json"
+  ],
+  "files_modified": [
+    "runtime/task_history.jsonl",
+    "runtime/failures.jsonl",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "validation_ran": [
+    {
+      "command": "wc -l docs/integracion_postgresql_local_2026-05-21.md",
+      "ok": true,
+      "evidence": "568 lines"
+    },
+    {
+      "command": "rg key sections in docs/integracion_postgresql_local_2026-05-21.md",
+      "ok": true,
+      "evidence": "Resultado final, Estado inicial, Contenedor, Configuracion, Conexion Flask, Healthcheck, Reproduccion, Incidentes, Checklist"
+    },
+    {
+      "command": "python3 marker/format validation for docs/integracion_postgresql_local_2026-05-21.md",
+      "ok": true,
+      "evidence": "postgres integration md validation ok"
+    },
+    {
+      "command": "pg_isready -h 127.0.0.1 -p 55432 -U habla_user -d habla_observer",
+      "ok": true,
+      "evidence": "127.0.0.1:55432 - accepting connections"
+    },
+    {
+      "command": "jq . runtime/checkpoints/postgresql-integration-doc-20260521T095907-0700.json",
+      "ok": true,
+      "evidence": "checkpoint JSON valid"
+    },
+    {
+      "command": "HTTP /api/health on temporary backend port 5051 with PYTHONPATH=$PWD",
+      "ok": true,
+      "evidence": "returned {\"auth\":{\"postgres\":{\"configured\":true,\"driver\":\"psycopg\",\"ready\":true}},\"ok\":true,\"service\":\"HABLA Observer IA\"}"
+    },
+    {
+      "command": "ss -ltnp sport = :5051",
+      "ok": true,
+      "evidence": "no listener after temporary validation; process cleaned up"
+    },
+    {
+      "command": "ss -ltnp sport = :5000",
+      "ok": true,
+      "evidence": "port 5000 occupied by external Downloads/habla_voxel_face_3d Flask app, pids 4154548/4154582"
+    },
+    {
+      "command": "rg -n '5051|puerto `5000`|Resultado HTTP real|PYTHONPATH|auth\\.postgres\\.ready' docs/integracion_postgresql_local_2026-05-21.md",
+      "ok": true,
+      "evidence": "safe rg quoting validated HTTP evidence markers"
+    }
+  ],
+  "blockers": [
+    "Primer intento de escritura del MD fallo por choque de delimitador heredoc con un bloque de ejemplo PY; no se creo archivo parcial y se corrigio con delimitador unico.",
+    "apply_patch no pudo usarse porque el sandbox falla con bwrap: loopback Failed RTM_NEWADDR; se escribio el archivo con ejecucion escalada aprobada.",
+    "HTTP en puerto 5000 no valida este backend porque el puerto esta ocupado por una app Flask externa en Downloads; la evidencia HTTP real de PostgreSQL se tomo en puerto temporal 5051.",
+    "Primer intento de backend temporal en 5051 fallo sin PYTHONPATH porque no encontraba orchestrator; se reintento con PYTHONPATH=$PWD y paso.",
+    "Una validacion rg uso comillas dobles con backticks y disparo sustitucion de shell; se repitio con comillas simples y paso.",
+    "Un primer script de actualizacion de checkpoint fallo por SyntaxError antes de escribir cambios; se reejecuto simplificado y paso."
+  ],
+  "next_recommendation": "Usar docs/integracion_postgresql_local_2026-05-21.md como guia humana de reproduccion y evidencia de auditoria de la integracion PostgreSQL."
+}

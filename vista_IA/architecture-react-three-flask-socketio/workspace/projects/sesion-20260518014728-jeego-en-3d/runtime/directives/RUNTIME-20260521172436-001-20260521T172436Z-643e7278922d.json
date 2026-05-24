@@ -1,0 +1,293 @@
+{
+  "directive_type": "worker_operational_directive",
+  "generated_at": "2026-05-21T17:24:36Z",
+  "operational_directive": {
+    "active_restrictions": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables.",
+      "Out of scope for current sprint: `orchestrator/planner.py`",
+      "Out of scope for current sprint: `orchestrator/task_queue.py`",
+      "Out of scope for current sprint: `workers/codex_worker.py`",
+      "Out of scope for current sprint: `orchestrator/executor.py`",
+      "Out of scope for current sprint: `orchestrator/validator.py`",
+      "Out of scope for current sprint: `orchestrator/recovery.py`",
+      "Out of scope for current sprint: `orchestrator/policy_loader.py`",
+      "Out of scope for current sprint: `orchestrator/plan_loader.py`",
+      "Out of scope for current sprint: `orchestrator/directive_context.py`",
+      "Out of scope for current sprint: `orchestrator/habla_adapter.py`",
+      "Out of scope for current sprint: `orchestrator/directive_generator.py`",
+      "Out of scope for current sprint: `runtime/directives/`",
+      "Out of scope for current sprint: modificaci\u00f3n acotada de `agent_runtime.py`",
+      "Out of scope for current sprint: modos expl\u00edcitos,",
+      "Out of scope for current sprint: fin de smoke heur\u00edstico,",
+      "Out of scope for current sprint: timeout por tarea,",
+      "Out of scope for current sprint: consumo de directivas generadas.",
+      "Out of scope for current sprint: `orchestrator/benchmark.py`"
+    ],
+    "closure_criteria": [
+      "TaskResult.completed can be true only with real disk evidence.",
+      "TaskResult.blockers must be empty before closing the task.",
+      "Every expected file must exist under the repository root.",
+      "Every declared validation command must run and return code 0.",
+      "Validation results must be represented in the task result history."
+    ],
+    "control_plane_guardrails": [
+      "No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.",
+      "No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.",
+      "El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.",
+      "No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide."
+    ],
+    "controlled_sprint_scope": {
+      "out_of_scope_deliverables": [
+        "`orchestrator/planner.py`",
+        "`orchestrator/task_queue.py`",
+        "`workers/codex_worker.py`",
+        "`orchestrator/executor.py`",
+        "`orchestrator/validator.py`",
+        "`orchestrator/recovery.py`",
+        "`orchestrator/policy_loader.py`",
+        "`orchestrator/plan_loader.py`",
+        "`orchestrator/directive_context.py`",
+        "`orchestrator/habla_adapter.py`",
+        "`orchestrator/directive_generator.py`",
+        "`runtime/directives/`",
+        "modificaci\u00f3n acotada de `agent_runtime.py`",
+        "modos expl\u00edcitos,",
+        "fin de smoke heur\u00edstico,",
+        "timeout por tarea,",
+        "consumo de directivas generadas.",
+        "`orchestrator/benchmark.py`"
+      ],
+      "sprint_acceptance": [
+        "existe persistencia base;",
+        "existen contratos m\u00ednimos;",
+        "la cola y el estado pueden cargarse y guardarse."
+      ],
+      "sprint_deliverables": [
+        "`schemas/`",
+        "`orchestrator/state_store.py`",
+        "`orchestrator/contracts.py`",
+        "`runtime/project_state.json`",
+        "`runtime/task_queue.json`"
+      ]
+    },
+    "current_operational_objective": {
+      "goal": "ok ajentes quedo muy bien el juego ahora es momento de dar realismo nesecitamos ahora que el mundo procedural tome otro vector tanjente y cree el mundo procedural hacia la derecha y hacia la izquierda en este momento solo esta hacia adelante nesecitamos que el mundo 3d se generalice en todas las doreciones para que los drones tengan mas espacio para conbatir por que neseitamos poner un dron mas de color azul que es otro policia que ba a combatir con el dron enemigo la mision del dron policia azul es derrumbar o hacerlo estrellar contralos edificios para neutralizarlo claro esta que el dron rojo enemigo tiene mucha mas inteligencia artificial y mucho mas poder que los drones policias por eso nesecitanmas policias para quelo buedan derribar al dron delincuente rojo se nesecuta poner armas con aureolas rojas circulars que simulan energia electrostatica que para liza los aviones policias eso ramas sedene de ber como ondas circulars que salen de la narin del dron y se ban en forma de onda haciel onjetivo cada vea que algun dron dispare o genere omdas se dene de ver la esplocion donde callo el impacto se debe de ver la destruccuion que causo y las explacion en llamas el delincuente humano ahora ya no es solo uno son tres que se salen de las calles y tienen rokets par aderrumvar los drones policias nesecitamos un averdadera guerra que comineza facil pero a MEDIAD QUE PASA EL TIEMPOSE PONE MAS COMPLICADA LA GUERRA PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 8 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. - S07 Performance (turno 7): Revisa estabilidad, tamanos, bucles largos y uso de recursos. - S08 Recovery (turno 8): Prepara rollback, recuperacion y diagnostico cuando algo falla. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+      "mode": "long-run",
+      "task_id": "RUNTIME-20260521172436-001",
+      "timeout_seconds": 3600
+    },
+    "expected_validation": {
+      "acceptance_criteria": [
+        "existe persistencia base;",
+        "existen contratos m\u00ednimos;",
+        "la cola y el estado pueden cargarse y guardarse."
+      ],
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ],
+      "validation_ran_must_be_recorded": true
+    },
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    ],
+    "habla": {
+      "directive_generator_ready": true,
+      "guide_type": "habla_basic_procedure",
+      "objective": {
+        "operational_goal": "ok ajentes quedo muy bien el juego ahora es momento de dar realismo nesecitamos ahora que el mundo procedural tome otro vector tanjente y cree el mundo procedural hacia la derecha y hacia la izquierda en este momento solo esta hacia adelante nesecitamos que el mundo 3d se generalice en todas las doreciones para que los drones tengan mas espacio para conbatir por que neseitamos poner un dron mas de color azul que es otro policia que ba a combatir con el dron enemigo la mision del dron policia azul es derrumbar o hacerlo estrellar contralos edificios para neutralizarlo claro esta que el dron rojo enemigo tiene mucha mas inteligencia artificial y mucho mas poder que los drones policias por eso nesecitanmas policias para quelo buedan derribar al dron delincuente rojo se nesecuta poner armas con aureolas rojas circulars que simulan energia electrostatica que para liza los aviones policias eso ramas sedene de ber como ondas circulars que salen de la narin del dron y se ban en forma de onda haciel onjetivo cada vea que algun dron dispare o genere omdas se dene de ver la esplocion donde callo el impacto se debe de ver la destruccuion que causo y las explacion en llamas el delincuente humano ahora ya no es solo uno son tres que se salen de las calles y tienen rokets par aderrumvar los drones policias nesecitamos un averdadera guerra que comineza facil pero a MEDIAD QUE PASA EL TIEMPOSE PONE MAS COMPLICADA LA GUERRA PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 8 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. - S07 Performance (turno 7): Revisa estabilidad, tamanos, bucles largos y uso de recursos. - S08 Recovery (turno 8): Prepara rollback, recuperacion y diagnostico cuando algo falla. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+        "sprint_objective": "Crear la base persistente del runtime y los contratos m\u00ednimos.",
+        "task_title": "Build runnable static web app"
+      },
+      "task_id": "RUNTIME-20260521172436-001"
+    },
+    "known_risks_or_blockers": [],
+    "lace": {
+      "available": true,
+      "execution_model": "session_level_control_plane_cycles",
+      "log_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE_LOG.md",
+      "log_preview": "# LACE_LOG.md\n\n[INIT]\nFecha UTC: 2026-05-18T01:50:00.242667+00:00\nLACE le\u00eddo desde: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md\nRegla activa: 10 ciclos obligatorios antes de cierre.\n\n[COMPRENSI\u00d3N DEL PROYECTO]\nCRWEAME UN JUEGO  EN  3D  NESECITO UN DRONE  QUE VUELE  EN UN MUNDO PROCEDIRAL  QUE  NEVEGUE VUELE  Y PASE ONSTACULOS  DEBE DE SER AURONOMO GUIADO POR UN AJENTE  IA   DQN    REINFORCED LEARNING  CON RECOMPENSA  Y CARTIGO  DEBE DE ESQUIVAR ARBOLES   EDIFICIOS  TODA UN ACOIUDAD COMPLETA EL DRONE ES AUTONOMO  Y NO NESECITA DE  EJECUSION HUMANA\n\n[PLAN PARA 10 CICLOS]\n1. Bugs cr\u00edticos.\n2. Limpieza y organizaci\u00f3n.\n3. Interfaz de usuario.\n4. Documentaci\u00f3n.\n5. Rendimiento.\n6. Errores y casos extremos.\n7. Seguridad b\u00e1sica.\n8. Funcionalidad adicional de valor real.\n9. Experiencia de usuario punta a punta.\n10. Revisi\u00f3n integral final.\n\n[BASE]\nConstrucci\u00f3n inicial completada para la tarea RUNTIME-20260518015000-001-SPLIT-001.",
+      "policy_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md",
+      "required_cycles": 10,
+      "worker_guardrails": [
+        "do_not_run_all_lace_cycles_inside_one_worker_task",
+        "update_only_the_cycle_supported_by_current_task_evidence",
+        "do_not_extend_task_timeout_for_missing_lace_cycles",
+        "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+        "lace_progress_requires_lace_log_or_product_file_evidence"
+      ]
+    },
+    "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "out_of_scope": [
+      "`orchestrator/planner.py`",
+      "`orchestrator/task_queue.py`",
+      "`workers/codex_worker.py`",
+      "`orchestrator/executor.py`",
+      "`orchestrator/validator.py`",
+      "`orchestrator/recovery.py`",
+      "`orchestrator/policy_loader.py`",
+      "`orchestrator/plan_loader.py`",
+      "`orchestrator/directive_context.py`",
+      "`orchestrator/habla_adapter.py`",
+      "`orchestrator/directive_generator.py`",
+      "`runtime/directives/`",
+      "modificaci\u00f3n acotada de `agent_runtime.py`",
+      "modos expl\u00edcitos,",
+      "fin de smoke heur\u00edstico,",
+      "timeout por tarea,",
+      "consumo de directivas generadas.",
+      "`orchestrator/benchmark.py`"
+    ],
+    "required_evidence": {
+      "disk_records": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/index.html",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/index.html",
+          "size": 5020
+        },
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/styles.css",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/styles.css",
+          "size": 14666
+        },
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/app.js",
+          "exists": true,
+          "is_file": true,
+          "path": "frontend/app.js",
+          "size": 83612
+        }
+      ],
+      "evidence_found": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ],
+      "evidence_missing": [],
+      "expected_files": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ]
+    },
+    "sprint_deliverables": [
+      "`schemas/`",
+      "`orchestrator/state_store.py`",
+      "`orchestrator/contracts.py`",
+      "`runtime/project_state.json`",
+      "`runtime/task_queue.json`"
+    ],
+    "starting_checkpoint": {
+      "available": true,
+      "checkpoint_key": "stale-running-recovered-20260518071959",
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/checkpoints/stale-running-recovered-20260518071959.json",
+      "source": "runtime/checkpoints"
+    },
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "task_validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ],
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "visual_bridge": {
+      "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+      "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+      "environment_variables": [
+        "VISTA_AGENT_SESSION_ID",
+        "VISTA_AGENT_PROJECT_SLUG",
+        "VISTA_AGENT_PROJECT_DIR",
+        "VISTA_AGENT_EVENT_FILE",
+        "VISTA_AGENT_BRIDGE"
+      ],
+      "expected_live_artifacts": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css"
+      ],
+      "required_commands": [
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+      ],
+      "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+      "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    }
+  },
+  "persistence": {
+    "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260521172436-001-20260521T172436Z-643e7278922d.json",
+    "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260521172436-001-20260521T172436Z-643e7278922d.md"
+  },
+  "rendered_instruction": "Task: RUNTIME-20260521172436-001 - Build runnable static web app\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: 1 - Crear la base persistente del runtime y los contratos m\u00ednimos.\nGoal: ok ajentes quedo muy bien el juego ahora es momento de dar realismo nesecitamos ahora que el mundo procedural tome otro vector tanjente y cree el mundo procedural hacia la derecha y hacia la izquierda en este momento solo esta hacia adelante nesecitamos que el mundo 3d se generalice en todas las doreciones para que los drones tengan mas espacio para conbatir por que neseitamos poner un dron mas de color azul que es otro policia que ba a combatir con el dron enemigo la mision del dron policia azul es derrumbar o hacerlo estrellar contralos edificios para neutralizarlo claro esta que el dron rojo enemigo tiene mucha mas inteligencia artificial y mucho mas poder que los drones policias por eso nesecitanmas policias para quelo buedan derribar al dron delincuente rojo se nesecuta poner armas con aureolas rojas circulars que simulan energia electrostatica que para liza los aviones policias eso ramas sedene de ber como ondas circulars que salen de la narin del dron y se ban en forma de onda haciel onjetivo cada vea que algun dron dispare o genere omdas se dene de ver la esplocion donde callo el impacto se debe de ver la destruccuion que causo y las explacion en llamas el delincuente humano ahora ya no es solo uno son tres que se salen de las calles y tienen rokets par aderrumvar los drones policias nesecitamos un averdadera guerra que comineza facil pero a MEDIAD QUE PASA EL TIEMPOSE PONE MAS COMPLICADA LA GUERRA PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 8 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. - S07 Performance (turno 7): Revisa estabilidad, tamanos, bucles largos y uso de recursos. - S08 Recovery (turno 8): Prepara rollback, recuperacion y diagnostico cuando algo falla. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.\nExact deliverables:\n- `schemas/`\n- `orchestrator/state_store.py`\n- `orchestrator/contracts.py`\n- `runtime/project_state.json`\n- `runtime/task_queue.json`\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\n- Out of scope for current sprint: `orchestrator/planner.py`\n- Out of scope for current sprint: `orchestrator/task_queue.py`\n- Out of scope for current sprint: `workers/codex_worker.py`\n- Out of scope for current sprint: `orchestrator/executor.py`\n- Out of scope for current sprint: `orchestrator/validator.py`\n- Out of scope for current sprint: `orchestrator/recovery.py`\n- Out of scope for current sprint: `orchestrator/policy_loader.py`\n- Out of scope for current sprint: `orchestrator/plan_loader.py`\n- Out of scope for current sprint: `orchestrator/directive_context.py`\n- Out of scope for current sprint: `orchestrator/habla_adapter.py`\n- Out of scope for current sprint: `orchestrator/directive_generator.py`\n- Out of scope for current sprint: `runtime/directives/`\n- Out of scope for current sprint: modificaci\u00f3n acotada de `agent_runtime.py`\n- Out of scope for current sprint: modos expl\u00edcitos,\n- Out of scope for current sprint: fin de smoke heur\u00edstico,\n- Out of scope for current sprint: timeout por tarea,\n- Out of scope for current sprint: consumo de directivas generadas.\n- Out of scope for current sprint: `orchestrator/benchmark.py`\nRequired evidence:\n- frontend/index.html\n- frontend/styles.css\n- frontend/app.js\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"\n- python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/LACE_LOG.md\n- Ciclos LACE requeridos: 10\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes los 10 ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- stale-running-recovered-20260518071959\nKnown risks or blockers:\n- none\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+  "repository": {
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    ],
+    "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+  },
+  "schema_version": 1,
+  "sprint": {
+    "number": 1,
+    "objective": "Crear la base persistente del runtime y los contratos m\u00ednimos."
+  },
+  "task": {
+    "checkpoint_key": "runtime-20260521172436-001-checkpoint",
+    "goal": "ok ajentes quedo muy bien el juego ahora es momento de dar realismo nesecitamos ahora que el mundo procedural tome otro vector tanjente y cree el mundo procedural hacia la derecha y hacia la izquierda en este momento solo esta hacia adelante nesecitamos que el mundo 3d se generalice en todas las doreciones para que los drones tengan mas espacio para conbatir por que neseitamos poner un dron mas de color azul que es otro policia que ba a combatir con el dron enemigo la mision del dron policia azul es derrumbar o hacerlo estrellar contralos edificios para neutralizarlo claro esta que el dron rojo enemigo tiene mucha mas inteligencia artificial y mucho mas poder que los drones policias por eso nesecitanmas policias para quelo buedan derribar al dron delincuente rojo se nesecuta poner armas con aureolas rojas circulars que simulan energia electrostatica que para liza los aviones policias eso ramas sedene de ber como ondas circulars que salen de la narin del dron y se ban en forma de onda haciel onjetivo cada vea que algun dron dispare o genere omdas se dene de ver la esplocion donde callo el impacto se debe de ver la destruccuion que causo y las explacion en llamas el delincuente humano ahora ya no es solo uno son tres que se salen de las calles y tienen rokets par aderrumvar los drones policias nesecitamos un averdadera guerra que comineza facil pero a MEDIAD QUE PASA EL TIEMPOSE PONE MAS COMPLICADA LA GUERRA PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: El orquestador recomienda 8 subagente(s) para esta tarea. Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. - S07 Performance (turno 7): Revisa estabilidad, tamanos, bucles largos y uso de recursos. - S08 Recovery (turno 8): Prepara rollback, recuperacion y diagnostico cuando algo falla. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260521172436-001",
+    "max_retries": 3,
+    "mode": "long-run",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app"
+  },
+  "task_id": "RUNTIME-20260521172436-001",
+  "traceability": {
+    "checkpoint_key": "stale-running-recovered-20260518071959",
+    "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/checkpoints/stale-running-recovered-20260518071959.json",
+    "checkpoint_source": "runtime/checkpoints",
+    "context_degraded": false,
+    "context_type": "directive_context",
+    "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+    "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime",
+    "runtime_errors": [],
+    "source_hash": "643e7278922dea49432946db2bb1802173a8a643213b8ba48d19f453ffafa2e9"
+  }
+}

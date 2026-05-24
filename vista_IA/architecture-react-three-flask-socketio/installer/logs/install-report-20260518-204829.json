@@ -1,0 +1,513 @@
+{
+  "generatedAt": "2026-05-19T03:48:29.534132+00:00",
+  "profile": "full",
+  "execute": true,
+  "allowSystem": true,
+  "mode": "degraded CPU fallback",
+  "degraded": true,
+  "system": {
+    "os": "Linux 6.17.0-23-generic",
+    "architecture": "x86_64",
+    "python": "3.12.3",
+    "package_manager": "apt-get",
+    "git": "yes",
+    "node": "v24.14.1",
+    "npm": "11.11.0",
+    "docker": "Docker version 29.4.1, build 055a478",
+    "psql": "missing",
+    "sqlcmd": "missing",
+    "gpu": "Not detected",
+    "cuda": "Not detected"
+  },
+  "components": [
+    [
+      "Git",
+      "yes"
+    ],
+    [
+      "Python",
+      "3.12.3"
+    ],
+    [
+      "Node",
+      "v24.14.1"
+    ],
+    [
+      "npm",
+      "11.11.0"
+    ],
+    [
+      "Flask backend",
+      "planned"
+    ],
+    [
+      "Vite/React frontend",
+      "planned"
+    ],
+    [
+      "PostgreSQL",
+      "missing"
+    ],
+    [
+      "SQL Server",
+      "missing"
+    ],
+    [
+      "Docker",
+      "Docker version 29.4.1, build 055a478"
+    ],
+    [
+      "Docker Compose",
+      "planned"
+    ],
+    [
+      "PyTorch CPU",
+      "planned"
+    ],
+    [
+      "OpenCV",
+      "planned"
+    ],
+    [
+      "Jupyter",
+      "planned"
+    ],
+    [
+      "NVIDIA GPU",
+      "Not detected"
+    ],
+    [
+      "PyTorch CUDA",
+      "degraded"
+    ],
+    [
+      "Transformers",
+      "planned"
+    ],
+    [
+      "Accelerate",
+      "planned"
+    ],
+    [
+      "Ultralytics",
+      "planned"
+    ],
+    [
+      "Albumentations",
+      "planned"
+    ],
+    [
+      "Agent tooling",
+      "planned"
+    ],
+    [
+      "Tool registry",
+      "planned"
+    ]
+  ],
+  "steps": [
+    {
+      "title": "Preflight: detect OS, GPU and tools",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "OS: Linux 6.17.0-23-generic",
+        "GPU: Not detected",
+        "Package manager: apt-get"
+      ]
+    },
+    {
+      "title": "Install system packages",
+      "status": "completed",
+      "records": [
+        {
+          "label": "apt update",
+          "command": [
+            "sudo",
+            "apt-get",
+            "update"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Hit:1 https://download.docker.com/linux/ubuntu noble InRelease\nHit:2 https://dl.google.com/linux/chrome-stable/deb stable InRelease\nHit:3 http://security.ubuntu.com/ubuntu noble-security InRelease\nHit:4 http://archive.ubuntu.com/ubuntu noble InRelease\nHit:5 https://downloads.cursor.com/aptrepo stable InRelease\nHit:6 http://archive.ubuntu.com/ubuntu noble-updates InRelease\nHit:7 https://deb.anydesk.com all InRelease\nHit:8 http://archive.ubuntu.com/ubuntu noble-backports InRelease\nHit:9 https://ppa.launchpadcontent.net/obsproject/obs-studio/ubuntu noble InRelease\nReading package lists..."
+        },
+        {
+          "label": "apt install base packages",
+          "command": [
+            "sudo",
+            "apt-get",
+            "install",
+            "-y",
+            "ca-certificates",
+            "build-essential",
+            "python3-venv",
+            "postgresql",
+            "postgresql-client"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "_1.01-1_all.deb ...\nUnpacking libtypes-serialiser-perl (1.01-1) ...\nSelecting previously unselected package libjson-xs-perl.\nPreparing to unpack .../05-libjson-xs-perl_4.040-0ubuntu0.24.04.1_amd64.deb ...\nUnpacking libjson-xs-perl (4.040-0ubuntu0.24.04.1) ...\nSelecting previously unselected package libllvm17t64:amd64.\nPreparing to unpack .../06-libllvm17t64_1%3a17.0.6-9ubuntu1_amd64.deb ...\nUnpacking libllvm17t64:amd64 (1:17.0.6-9ubuntu1) ...\nSelecting previously unselected package postgresql-client-16.\nPreparing to unpack .../07-postgresql-client-16_16.13-0ubuntu0.24.04.1_amd64.deb ...\nUnpacking postgresql-client-16 (16.13-0ubuntu0.24.04.1) ...\nSelecting previously unselected package postgresql-16.\nPreparing to unpack .../08-postgresql-16_16.13-0ubuntu0.24.04.1_amd64.deb ...\nUnpacking postgresql-16 (16.13-0ubuntu0.24.04.1) ...\nSelecting previously unselected package postgresql.\nPreparing to unpack .../09-postgresql_16+257build1.1_all.deb ...\nUnpacking postgresql (16+257build1.1) ...\nSelecting previously unselected package postgresql-client.\nPreparing to unpack .../10-postgresql-client_16+257build1.1_all.deb ...\nUnpacking postgresql-client (16+257build1.1) ...\nSetting up postgresql-client-common (257build1.1) ...\nSetting up postgresql-client-16 (16.13-0ubuntu0.24.04.1) ...\nupdate-alternatives: using /usr/share/postgresql/16/man/man1/psql.1.gz to provide /usr/share/man/man1/psql.1.gz (psql.1.gz) in auto mode\nSetting up libcommon-sense-perl:amd64 (3.75-3build3) ...\nSetting up libllvm17t64:amd64 (1:17.0.6-9ubuntu1) ...\nSetting up libtypes-serialiser-perl (1.01-1) ...\nSetting up libjson-perl (4.10000-1) ...\nSetting up libjson-xs-perl (4.040-0ubuntu0.24.04.1) ...\nSetting up postgresql-client (16+257build1.1) ...\nSetting up postgresql-common (257build1.1) ...\ndebconf: unable to initialize frontend: Dialog\ndebconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\n\nCreating config file /etc/postgresql-common/createcluster.conf with new version\nBuilding PostgreSQL dictionaries from installed myspell/hunspell packages...\n  en_us\nRemoving obsolete dictionary files:\nCreated symlink /etc/systemd/system/multi-user.target.wants/postgresql.service \u2192 /usr/lib/systemd/system/postgresql.service.\n\nSetting up postgresql-16 (16.13-0ubuntu0.24.04.1) ...\ndebconf: unable to initialize frontend: Dialog\ndebconf: (Dialog frontend will not work on a dumb terminal, an emacs shell buffer, or without a controlling terminal.)\ndebconf: falling back to frontend: Readline\ndebconf: unable to initialize frontend: Readline\ndebconf: (This frontend requires a controlling tty.)\ndebconf: falling back to frontend: Teletype\nCreating new PostgreSQL cluster 16/main ...\n/usr/lib/postgresql/16/bin/initdb -D /var/lib/postgresql/16/main --auth-local peer --auth-host scram-sha-256 --no-instructions\nThe files belonging to this database system will be owned by user \"postgres\".\nThis user must also own the server process.\n\nThe database cluster will be initialized with locale \"en_US.UTF-8\".\nThe default database encoding has accordingly been set to \"UTF8\".\nThe default text search configuration will be set to \"english\".\n\nData page checksums are disabled.\n\nfixing permissions on existing directory /var/lib/postgresql/16/main ... ok\ncreating subdirectories ... ok\nselecting dynamic shared memory implementation ... posix\nselecting default max_connections ... 100\nselecting default shared_buffers ... 128MB\nselecting default time zone ... America/Los_Angeles\ncreating configuration files ... ok\nrunning bootstrap script ... ok\nperforming post-bootstrap initialization ... ok\nsyncing data to disk ... ok\nSetting up postgresql (16+257build1.1) ...\nProcessing triggers for man-db (2.12.0-4build2) ...\nProcessing triggers for libc-bin (2.39-0ubuntu8.7) ..."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Create Python virtual environment",
+      "status": "completed",
+      "records": [
+        {
+          "label": "create .venv",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-m",
+            "venv",
+            ".venv"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "upgrade pip",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "--upgrade",
+            "pip"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Requirement already satisfied: pip in ./.venv/lib/python3.12/site-packages (24.0)\nCollecting pip\n  Using cached pip-26.1.1-py3-none-any.whl.metadata (4.6 kB)\nUsing cached pip-26.1.1-py3-none-any.whl (1.8 MB)\nInstalling collected packages: pip\n  Attempting uninstall: pip\n    Found existing installation: pip 24.0\n    Uninstalling pip-24.0:\n      Successfully uninstalled pip-24.0\nSuccessfully installed pip-26.1.1"
+        },
+        {
+          "label": "install backend requirements",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "backend/requirements.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "kzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)\nCollecting python-socketio>=5.12.0 (from flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached python_socketio-5.16.1-py3-none-any.whl.metadata (3.3 kB)\nCollecting dnspython>=1.15.0 (from eventlet->-r backend/requirements.txt (line 4))\n  Downloading dnspython-2.8.0-py3-none-any.whl.metadata (5.7 kB)\nCollecting greenlet>=1.0 (from eventlet->-r backend/requirements.txt (line 4))\n  Downloading greenlet-3.5.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (3.7 kB)\nCollecting typing-extensions>=4.6 (from psycopg[binary]->-r backend/requirements.txt (line 5))\n  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)\nCollecting psycopg-binary==3.3.4 (from psycopg[binary]->-r backend/requirements.txt (line 5))\n  Using cached psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.7 kB)\nCollecting bidict>=0.21.0 (from python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached bidict-0.23.1-py3-none-any.whl.metadata (8.7 kB)\nCollecting python-engineio>=4.11.0 (from python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached python_engineio-4.13.1-py3-none-any.whl.metadata (2.3 kB)\nCollecting simple-websocket>=0.10.0 (from python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached simple_websocket-1.1.0-py3-none-any.whl.metadata (1.5 kB)\nCollecting wsproto (from simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached wsproto-1.3.2-py3-none-any.whl.metadata (5.2 kB)\nCollecting h11<1,>=0.16.0 (from wsproto->simple-websocket>=0.10.0->python-engineio>=4.11.0->python-socketio>=5.12.0->flask-socketio->-r backend/requirements.txt (line 3))\n  Using cached h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)\nUsing cached flask-3.1.3-py3-none-any.whl (103 kB)\nDownloading flask_cors-6.0.2-py3-none-any.whl (13 kB)\nUsing cached flask_socketio-5.6.1-py3-none-any.whl (18 kB)\nDownloading eventlet-0.41.0-py3-none-any.whl (364 kB)\nUsing cached psycopg-3.3.4-py3-none-any.whl (213 kB)\nUsing cached psycopg_binary-3.3.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (5.2 MB)\nUsing cached blinker-1.9.0-py3-none-any.whl (8.5 kB)\nDownloading click-8.4.0-py3-none-any.whl (116 kB)\nDownloading dnspython-2.8.0-py3-none-any.whl (331 kB)\nDownloading greenlet-3.5.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (611 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 611.4/611.4 kB 4.9 MB/s  0:00:00\nUsing cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)\nUsing cached jinja2-3.1.6-py3-none-any.whl (134 kB)\nUsing cached markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)\nUsing cached python_socketio-5.16.1-py3-none-any.whl (82 kB)\nUsing cached bidict-0.23.1-py3-none-any.whl (32 kB)\nUsing cached python_engineio-4.13.1-py3-none-any.whl (59 kB)\nUsing cached simple_websocket-1.1.0-py3-none-any.whl (13 kB)\nUsing cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)\nUsing cached werkzeug-3.1.8-py3-none-any.whl (226 kB)\nUsing cached wsproto-1.3.2-py3-none-any.whl (24 kB)\nUsing cached h11-0.16.0-py3-none-any.whl (37 kB)\nInstalling collected packages: typing-extensions, psycopg-binary, markupsafe, itsdangerous, h11, greenlet, dnspython, click, blinker, bidict, wsproto, werkzeug, psycopg, jinja2, eventlet, simple-websocket, flask, python-engineio, flask-cors, python-socketio, flask-socketio\n\nSuccessfully installed bidict-0.23.1 blinker-1.9.0 click-8.4.0 dnspython-2.8.0 eventlet-0.41.0 flask-3.1.3 flask-cors-6.0.2 flask-socketio-5.6.1 greenlet-3.5.0 h11-0.16.0 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.3 psycopg-3.3.4 psycopg-binary-3.3.4 python-engineio-4.13.1 python-socketio-5.16.1 simple-websocket-1.1.0 typing-extensions-4.15.0 werkzeug-3.1.8 wsproto-1.3.2"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install ML CPU requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install ML CPU stack",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-ml-cpu.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "py3-none-any.whl (9.1 kB)\nDownloading isoduration-20.11.0-py3-none-any.whl (11 kB)\nDownloading arrow-1.4.0-py3-none-any.whl (68 kB)\nDownloading jupyterlab_pygments-0.3.0-py3-none-any.whl (15 kB)\nUsing cached pure_eval-0.2.3-py3-none-any.whl (11 kB)\nUsing cached pycparser-3.0-py3-none-any.whl (48 kB)\nDownloading rfc3339_validator-0.1.4-py2.py3-none-any.whl (3.5 kB)\nDownloading tzdata-2026.2-py2.py3-none-any.whl (349 kB)\nDownloading uri_template-1.3.0-py3-none-any.whl (11 kB)\nDownloading wcwidth-0.7.0-py3-none-any.whl (110 kB)\nInstalling collected packages: webencodings, torchaudio, pure-eval, ptyprocess, mpmath, fastjsonschema, websocket-client, webcolors, wcwidth, urllib3, uri-template, tzdata, traitlets, tornado, tinycss2, threadpoolctl, tensorboard-data-server, sympy, soupsieve, six, setuptools, send2trash, rpds-py, rfc3986-validator, pyzmq, pyyaml, python-json-logger, pyparsing, pygments, pycparser, psutil, protobuf, prometheus-client, platformdirs, pillow, pexpect, parso, pandocfilters, packaging, numpy, networkx, nest-asyncio, mistune, markdown, lark, kiwisolver, jupyterlab-pygments, jsonpointer, json5, joblib, idna, grpcio, fsspec, fqdn, fonttools, filelock, executing, defusedxml, decorator, debugpy, cycler, comm, charset_normalizer, certifi, bleach, babel, attrs, async-lru, asttokens, absl-py, torch, terminado, tensorboard, stack_data, scipy, rfc3987-syntax, rfc3339-validator, requests, referencing, python-dateutil, prompt_toolkit, opencv-contrib-python, matplotlib-inline, jupyter-core, jedi, ipython-pygments-lexers, httpcore, contourpy, cffi, beautifulsoup4, anyio, torchvision, scikit-learn, pandas, matplotlib, jupyter-server-terminals, jupyter-client, jsonschema-specifications, ipython, httpx, arrow, argon2-cffi-bindings, seaborn, jsonschema, isoduration, ipykernel, argon2-cffi, nbformat, nbclient, jupyter-events, nbconvert, jupyter-server, notebook-shim, jupyterlab-server, jupyter-lsp, jupyterlab\n\nSuccessfully installed absl-py-2.4.0 anyio-4.13.0 argon2-cffi-25.1.0 argon2-cffi-bindings-25.1.0 arrow-1.4.0 asttokens-3.0.1 async-lru-2.3.0 attrs-26.1.0 babel-2.18.0 beautifulsoup4-4.14.3 bleach-6.3.0 certifi-2026.4.22 cffi-2.0.0 charset_normalizer-3.4.7 comm-0.2.3 contourpy-1.3.3 cycler-0.12.1 debugpy-1.8.20 decorator-5.3.1 defusedxml-0.7.1 executing-2.2.1 fastjsonschema-2.21.2 filelock-3.29.0 fonttools-4.63.0 fqdn-1.5.1 fsspec-2026.4.0 grpcio-1.80.0 httpcore-1.0.9 httpx-0.28.1 idna-3.15 ipykernel-7.2.0 ipython-9.13.0 ipython-pygments-lexers-1.1.1 isoduration-20.11.0 jedi-0.20.0 joblib-1.5.3 json5-0.14.0 jsonpointer-3.1.1 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 jupyter-client-8.8.0 jupyter-core-5.9.1 jupyter-events-0.12.1 jupyter-lsp-2.3.1 jupyter-server-2.18.2 jupyter-server-terminals-0.5.4 jupyterlab-4.5.7 jupyterlab-pygments-0.3.0 jupyterlab-server-2.28.0 kiwisolver-1.5.0 lark-1.3.1 markdown-3.10.2 matplotlib-3.10.9 matplotlib-inline-0.2.2 mistune-3.2.1 mpmath-1.3.0 nbclient-0.10.4 nbconvert-7.17.1 nbformat-5.10.4 nest-asyncio-1.6.0 networkx-3.6.1 notebook-shim-0.2.4 numpy-2.4.6 opencv-contrib-python-4.13.0.92 packaging-26.2 pandas-3.0.3 pandocfilters-1.5.1 parso-0.8.7 pexpect-4.9.0 pillow-12.2.0 platformdirs-4.9.6 prometheus-client-0.25.0 prompt_toolkit-3.0.52 protobuf-7.34.1 psutil-7.2.2 ptyprocess-0.7.0 pure-eval-0.2.3 pycparser-3.0 pygments-2.20.0 pyparsing-3.3.2 python-dateutil-2.9.0.post0 python-json-logger-4.1.0 pyyaml-6.0.3 pyzmq-27.1.0 referencing-0.37.0 requests-2.34.2 rfc3339-validator-0.1.4 rfc3986-validator-0.1.1 rfc3987-syntax-1.1.0 rpds-py-0.30.0 scikit-learn-1.8.0 scipy-1.17.1 seaborn-0.13.2 send2trash-2.1.0 setuptools-81.0.0 six-1.17.0 soupsieve-2.8.3 stack_data-0.6.3 sympy-1.14.0 tensorboard-2.20.0 tensorboard-data-server-0.7.2 terminado-0.18.1 threadpoolctl-3.6.0 tinycss2-1.4.0 torch-2.12.0+cpu torchaudio-2.11.0+cpu torchvision-0.27.0+cpu tornado-6.5.5 traitlets-5.15.0 tzdata-2026.2 uri-template-1.3.0 urllib3-2.7.0 wcwidth-0.7.0 webcolors-25.10.0 webencodings-0.5.1 websocket-client-1.9.0"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "NVIDIA ML profile degraded",
+      "status": "noted",
+      "records": [],
+      "notes": [
+        "nvidia-smi was not detected. Installer will not install CUDA wheels automatically on this host."
+      ]
+    },
+    {
+      "title": "Install gen-ai Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install gen-ai",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-gen-ai.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "64.whl (3.3 MB)\nDownloading huggingface_hub-1.15.0-py3-none-any.whl (663 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 663.6/663.6 kB 8.2 MB/s  0:00:00\nDownloading hf_xet-1.5.0-cp37-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (4.5 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 4.5/4.5 MB 6.5 MB/s  0:00:00\nDownloading datasets-4.8.5-py3-none-any.whl (528 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 529.0/529.0 kB 3.5 MB/s  0:00:00\nDownloading dill-0.4.1-py3-none-any.whl (120 kB)\nDownloading fsspec-2026.2.0-py3-none-any.whl (202 kB)\nDownloading multiprocess-0.70.19-py312-none-any.whl (150 kB)\nUsing cached accelerate-1.13.0-py3-none-any.whl (383 kB)\nDownloading sentencepiece-0.2.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (1.4 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.4/1.4 MB 6.1 MB/s  0:00:00\nDownloading peft-0.19.1-py3-none-any.whl (680 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 680.7/680.7 kB 8.9 MB/s  0:00:00\nDownloading diffusers-0.38.0-py3-none-any.whl (5.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 5.2/5.2 MB 6.3 MB/s  0:00:00\nDownloading safetensors-0.8.0rc0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (509 kB)\nDownloading aiohttp-3.13.5-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (1.8 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.8/1.8 MB 5.4 MB/s  0:00:00\nDownloading multidict-6.7.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (256 kB)\nDownloading yarl-1.23.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (100 kB)\nDownloading aiohappyeyeballs-2.6.1-py3-none-any.whl (15 kB)\nDownloading aiosignal-1.4.0-py3-none-any.whl (7.5 kB)\nDownloading frozenlist-1.8.0-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (242 kB)\nDownloading propcache-0.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (61 kB)\nDownloading pyarrow-24.0.0-cp312-cp312-manylinux_2_28_x86_64.whl (48.9 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 48.9/48.9 MB 7.4 MB/s  0:00:06\nDownloading regex-2026.5.9-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (801 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 801.2/801.2 kB 10.4 MB/s  0:00:00\nUsing cached tqdm-4.67.3-py3-none-any.whl (78 kB)\nDownloading typer-0.25.1-py3-none-any.whl (58 kB)\nDownloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)\nUsing cached rich-15.0.0-py3-none-any.whl (310 kB)\nUsing cached markdown_it_py-4.2.0-py3-none-any.whl (91 kB)\nUsing cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)\nDownloading shellingham-1.5.4-py2.py3-none-any.whl (9.8 kB)\nDownloading importlib_metadata-9.0.0-py3-none-any.whl (27 kB)\nDownloading zipp-4.1.0-py3-none-any.whl (10 kB)\nDownloading xxhash-3.7.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (193 kB)\nInstalling collected packages: zipp, xxhash, tqdm, shellingham, sentencepiece, safetensors, regex, pyarrow, propcache, multidict, mdurl, hf-xet, fsspec, frozenlist, dill, annotated-doc, aiohappyeyeballs, yarl, multiprocess, markdown-it-py, importlib_metadata, aiosignal, rich, aiohttp, typer, huggingface-hub, tokenizers, diffusers, datasets, accelerate, transformers, peft\n  Attempting uninstall: fsspec\n    Found existing installation: fsspec 2026.4.0\n    Uninstalling fsspec-2026.4.0:\n      Successfully uninstalled fsspec-2026.4.0\n\nSuccessfully installed accelerate-1.13.0 aiohappyeyeballs-2.6.1 aiohttp-3.13.5 aiosignal-1.4.0 annotated-doc-0.0.4 datasets-4.8.5 diffusers-0.38.0 dill-0.4.1 frozenlist-1.8.0 fsspec-2026.2.0 hf-xet-1.5.0 huggingface-hub-1.15.0 importlib_metadata-9.0.0 markdown-it-py-4.2.0 mdurl-0.1.2 multidict-6.7.1 multiprocess-0.70.19 peft-0.19.1 propcache-0.5.2 pyarrow-24.0.0 regex-2026.5.9 rich-15.0.0 safetensors-0.8.0rc0 sentencepiece-0.2.1 shellingham-1.5.4 tokenizers-0.22.2 tqdm-4.67.3 transformers-5.8.1 typer-0.25.1 xxhash-3.7.0 yarl-1.23.0 zipp-4.1.0"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install vision-industrial Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install vision-industrial",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-vision.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "uirement already satisfied: soupsieve>=1.6.1 in ./.venv/lib/python3.12/site-packages (from beautifulsoup4->nbconvert>=6.4.4->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2.8.3)\nRequirement already satisfied: arrow>=0.15.0 in ./.venv/lib/python3.12/site-packages (from isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (1.4.0)\nRequirement already satisfied: tzdata in ./.venv/lib/python3.12/site-packages (from arrow>=0.15.0->isoduration->jsonschema[format-nongpl]>=4.18.0->jupyter-events>=0.11.0->jupyter-server<3,>=2.4.0->jupyterlab->-r installer/requirements/requirements-vision.txt (line 9)) (2026.2)\nDownloading ultralytics-8.4.51-py3-none-any.whl (1.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.2/1.2 MB 7.2 MB/s  0:00:00\nDownloading albumentations-2.0.8-py3-none-any.whl (369 kB)\nDownloading albucore-0.0.24-py3-none-any.whl (15 kB)\nDownloading onnx-1.21.0-cp312-abi3-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (17.6 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 17.6/17.6 MB 6.0 MB/s  0:00:02\nDownloading onnxruntime-1.26.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (18.2 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 18.2/18.2 MB 6.2 MB/s  0:00:02\nDownloading scikit_image-0.26.0-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (13.6 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 13.6/13.6 MB 5.3 MB/s  0:00:02\nDownloading imageio-2.37.3-py3-none-any.whl (317 kB)\nDownloading lazy_loader-0.5-py3-none-any.whl (8.0 kB)\nUsing cached ml_dtypes-0.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (5.0 MB)\nUsing cached opencv_python-4.13.0.92-cp37-abi3-manylinux_2_28_x86_64.whl (72.9 MB)\nDownloading opencv_python_headless-4.13.0.92-cp37-abi3-manylinux_2_28_x86_64.whl (60.4 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 60.4/60.4 MB 5.3 MB/s  0:00:11\nDownloading polars-1.40.1-py3-none-any.whl (828 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 828.7/828.7 kB 5.3 MB/s  0:00:00\nDownloading polars_runtime_32-1.40.1-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (56.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 56.3/56.3 MB 6.4 MB/s  0:00:08\nDownloading pydantic-2.13.4-py3-none-any.whl (472 kB)\nDownloading pydantic_core-2.46.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (2.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.1/2.1 MB 3.7 MB/s  0:00:00\nUsing cached annotated_types-0.7.0-py3-none-any.whl (13 kB)\nDownloading simsimd-6.5.16-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (583 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 583.5/583.5 kB 6.1 MB/s  0:00:00\nDownloading stringzilla-4.6.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl (2.1 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 2.1/2.1 MB 4.1 MB/s  0:00:00\nDownloading tifffile-2026.5.15-py3-none-any.whl (266 kB)\nUsing cached typing_inspection-0.4.2-py3-none-any.whl (14 kB)\nDownloading ultralytics_thop-2.0.19-py3-none-any.whl (28 kB)\nUsing cached flatbuffers-25.12.19-py2.py3-none-any.whl (26 kB)\nInstalling collected packages: simsimd, flatbuffers, typing-inspection, tifffile, stringzilla, pydantic-core, polars-runtime-32, opencv-python-headless, opencv-python, onnxruntime, ml_dtypes, lazy-loader, imageio, annotated-types, scikit-image, pydantic, polars, onnx, albucore, ultralytics-thop, albumentations, ultralytics\n\nSuccessfully installed albucore-0.0.24 albumentations-2.0.8 annotated-types-0.7.0 flatbuffers-25.12.19 imageio-2.37.3 lazy-loader-0.5 ml_dtypes-0.5.4 onnx-1.21.0 onnxruntime-1.26.0 opencv-python-4.13.0.92 opencv-python-headless-4.13.0.92 polars-1.40.1 polars-runtime-32-1.40.1 pydantic-2.13.4 pydantic-core-2.46.4 scikit-image-0.26.0 simsimd-6.5.16 stringzilla-4.6.1 tifffile-2026.5.15 typing-inspection-0.4.2 ultralytics-8.4.51 ultralytics-thop-2.0.19"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install agents Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install agents",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-agents.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "0 (from openai->-r installer/requirements/requirements-agents.txt (line 1))\n  Downloading jiter-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (5.2 kB)\nCollecting sniffio (from openai->-r installer/requirements/requirements-agents.txt (line 1))\n  Downloading sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)\nRequirement already satisfied: tqdm>4 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (4.67.3)\nRequirement already satisfied: typing-extensions<5,>=4.11 in ./.venv/lib/python3.12/site-packages (from openai->-r installer/requirements/requirements-agents.txt (line 1)) (4.15.0)\nRequirement already satisfied: annotated-types>=0.6.0 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (0.7.0)\nRequirement already satisfied: pydantic-core==2.46.4 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (2.46.4)\nRequirement already satisfied: typing-inspection>=0.4.2 in ./.venv/lib/python3.12/site-packages (from pydantic->-r installer/requirements/requirements-agents.txt (line 3)) (0.4.2)\nRequirement already satisfied: certifi in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (2026.4.22)\nRequirement already satisfied: httpcore==1.* in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (1.0.9)\nRequirement already satisfied: idna in ./.venv/lib/python3.12/site-packages (from httpx->-r installer/requirements/requirements-agents.txt (line 4)) (3.15)\nRequirement already satisfied: h11>=0.16 in ./.venv/lib/python3.12/site-packages (from httpcore==1.*->httpx->-r installer/requirements/requirements-agents.txt (line 4)) (0.16.0)\nCollecting docstring-parser<1,>=0.15 (from anthropic->-r installer/requirements/requirements-agents.txt (line 2))\n  Downloading docstring_parser-0.18.0-py3-none-any.whl.metadata (3.5 kB)\nRequirement already satisfied: markdown-it-py>=2.2.0 in ./.venv/lib/python3.12/site-packages (from rich->-r installer/requirements/requirements-agents.txt (line 7)) (4.2.0)\nRequirement already satisfied: pygments<3.0.0,>=2.13.0 in ./.venv/lib/python3.12/site-packages (from rich->-r installer/requirements/requirements-agents.txt (line 7)) (2.20.0)\nRequirement already satisfied: click>=8.2.1 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (8.4.0)\nRequirement already satisfied: shellingham>=1.3.0 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (1.5.4)\nRequirement already satisfied: annotated-doc>=0.0.2 in ./.venv/lib/python3.12/site-packages (from typer->-r installer/requirements/requirements-agents.txt (line 8)) (0.0.4)\nRequirement already satisfied: mdurl~=0.1 in ./.venv/lib/python3.12/site-packages (from markdown-it-py>=2.2.0->rich->-r installer/requirements/requirements-agents.txt (line 7)) (0.1.2)\nDownloading openai-2.37.0-py3-none-any.whl (1.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 1.3/1.3 MB 4.8 MB/s  0:00:00\nDownloading distro-1.9.0-py3-none-any.whl (20 kB)\nDownloading jiter-0.14.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (353 kB)\nDownloading anthropic-0.102.0-py3-none-any.whl (763 kB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 763.1/763.1 kB 3.6 MB/s  0:00:00\nDownloading docstring_parser-0.18.0-py3-none-any.whl (22 kB)\nDownloading tenacity-9.1.4-py3-none-any.whl (28 kB)\nDownloading python_dotenv-1.2.2-py3-none-any.whl (22 kB)\nDownloading sniffio-1.3.1-py3-none-any.whl (10 kB)\nInstalling collected packages: tenacity, sniffio, python-dotenv, jiter, docstring-parser, distro, openai, anthropic\n\nSuccessfully installed anthropic-0.102.0 distro-1.9.0 docstring-parser-0.18.0 jiter-0.14.0 openai-2.37.0 python-dotenv-1.2.2 sniffio-1.3.1 tenacity-9.1.4"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install mlops Python requirements",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install mlops",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "pip",
+            "install",
+            "-r",
+            "installer/requirements/requirements-mlops.txt"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": ".136.1-py3-none-any.whl (117 kB)\nDownloading gitpython-3.1.50-py3-none-any.whl (212 kB)\nDownloading gitdb-4.0.12-py3-none-any.whl (62 kB)\nDownloading google_auth-2.53.0-py3-none-any.whl (246 kB)\nDownloading graphene-3.4.3-py2.py3-none-any.whl (114 kB)\nDownloading graphql_core-3.2.8-py3-none-any.whl (207 kB)\nDownloading graphql_relay-3.2.0-py3-none-any.whl (16 kB)\nDownloading gunicorn-25.3.0-py3-none-any.whl (208 kB)\nDownloading huey-2.6.0-py3-none-any.whl (76 kB)\nDownloading opentelemetry_api-1.41.1-py3-none-any.whl (69 kB)\nDownloading importlib_metadata-8.7.1-py3-none-any.whl (27 kB)\nDownloading opentelemetry_proto-1.41.1-py3-none-any.whl (72 kB)\nDownloading opentelemetry_sdk-1.41.1-py3-none-any.whl (180 kB)\nDownloading opentelemetry_semantic_conventions-0.62b1-py3-none-any.whl (231 kB)\nDownloading pandas-2.3.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (12.4 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 12.4/12.4 MB 5.8 MB/s  0:00:02\nDownloading protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl (323 kB)\nUsing cached pyarrow-23.0.1-cp312-cp312-manylinux_2_28_x86_64.whl (47.6 MB)\nDownloading skops-0.14.0-py3-none-any.whl (132 kB)\nDownloading smmap-5.0.3-py3-none-any.whl (24 kB)\nDownloading sqlalchemy-2.0.49-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (3.4 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 3.4/3.4 MB 6.5 MB/s  0:00:00\nDownloading sqlparse-0.5.5-py3-none-any.whl (46 kB)\nDownloading starlette-0.52.1-py3-none-any.whl (74 kB)\nDownloading uvicorn-0.47.0-py3-none-any.whl (71 kB)\nDownloading wandb-0.27.0-py3-none-manylinux_2_28_x86_64.whl (27.3 MB)\n   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 27.3/27.3 MB 5.9 MB/s  0:00:04\nDownloading redis-7.4.0-py3-none-any.whl (409 kB)\nDownloading prettytable-3.17.0-py3-none-any.whl (34 kB)\nDownloading pyasn1_modules-0.4.2-py3-none-any.whl (181 kB)\nDownloading pyasn1-0.6.3-py3-none-any.whl (83 kB)\nDownloading pytz-2026.2-py2.py3-none-any.whl (510 kB)\nDownloading sentry_sdk-2.60.0-py3-none-any.whl (475 kB)\nDownloading mako-1.3.12-py3-none-any.whl (78 kB)\nInstalling collected packages: pytz, huey, uvicorn, sqlparse, sqlalchemy, smmap, sentry-sdk, redis, pyasn1, pyarrow, protobuf, prettytable, Mako, importlib_metadata, gunicorn, graphql-core, cloudpickle, cachetools, starlette, pyasn1-modules, pandas, opentelemetry-proto, opentelemetry-api, graphql-relay, gitdb, docker, cryptography, alembic, skops, opentelemetry-semantic-conventions, graphene, google-auth, gitpython, fastapi, wandb, opentelemetry-sdk, databricks-sdk, mlflow-tracing, mlflow-skinny, mlflow\n  Attempting uninstall: pyarrow\n    Found existing installation: pyarrow 24.0.0\n    Uninstalling pyarrow-24.0.0:\n      Successfully uninstalled pyarrow-24.0.0\n  Attempting uninstall: protobuf\n    Found existing installation: protobuf 7.34.1\n    Uninstalling protobuf-7.34.1:\n      Successfully uninstalled protobuf-7.34.1\n  Attempting uninstall: importlib_metadata\n    Found existing installation: importlib_metadata 9.0.0\n    Uninstalling importlib_metadata-9.0.0:\n      Successfully uninstalled importlib_metadata-9.0.0\n  Attempting uninstall: pandas\n    Found existing installation: pandas 3.0.3\n    Uninstalling pandas-3.0.3:\n      Successfully uninstalled pandas-3.0.3\n\nSuccessfully installed Mako-1.3.12 alembic-1.18.4 cachetools-7.1.3 cloudpickle-3.1.2 cryptography-46.0.7 databricks-sdk-0.109.0 docker-7.1.0 fastapi-0.136.1 gitdb-4.0.12 gitpython-3.1.50 google-auth-2.53.0 graphene-3.4.3 graphql-core-3.2.8 graphql-relay-3.2.0 gunicorn-25.3.0 huey-2.6.0 importlib_metadata-8.7.1 mlflow-3.12.0 mlflow-skinny-3.12.0 mlflow-tracing-3.12.0 opentelemetry-api-1.41.1 opentelemetry-proto-1.41.1 opentelemetry-sdk-1.41.1 opentelemetry-semantic-conventions-0.62b1 pandas-2.3.3 prettytable-3.17.0 protobuf-6.33.6 pyarrow-23.0.1 pyasn1-0.6.3 pyasn1-modules-0.4.2 pytz-2026.2 redis-7.4.0 sentry-sdk-2.60.0 skops-0.14.0 smmap-5.0.3 sqlalchemy-2.0.49 sqlparse-0.5.5 starlette-0.52.1 uvicorn-0.47.0 wandb-0.27.0"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install and build frontend",
+      "status": "completed",
+      "records": [
+        {
+          "label": "npm install frontend",
+          "command": [
+            "npm",
+            "install"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "up to date, audited 31 packages in 1s\n\n8 packages are looking for funding\n  run `npm fund` for details\n\n3 moderate severity vulnerabilities\n\nTo address all issues (including breaking changes), run:\n  npm audit fix --force\n\nRun `npm audit` for details."
+        },
+        {
+          "label": "npm build frontend",
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/frontend",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "> architecture-view-react-three-socketio@1.0.0 build\n> vite build\n\nvite v8.0.11 building client environment for production...\n\u001b[2K\ntransforming...\u2713 51 modules transformed.\nrendering chunks...\ncomputing gzip size...\ndist/index.html                   0.40 kB \u2502 gzip:   0.27 kB\ndist/assets/index-CJWeTsEN.css   71.69 kB \u2502 gzip:  13.89 kB\ndist/assets/index-evsJWtdC.js   430.88 kB \u2502 gzip: 125.91 kB\n\n\u2713 built in 474ms"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Install web developer extras",
+      "status": "completed",
+      "records": [
+        {
+          "label": "install Angular CLI",
+          "command": [
+            "npm",
+            "install",
+            "-g",
+            "@angular/cli"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "system",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "added 288 packages in 14s\n\n70 packages are looking for funding\n  run `npm fund` for details"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Prepare Docker services",
+      "status": "completed",
+      "records": [
+        {
+          "label": "validate docker",
+          "command": [
+            "docker",
+            "--version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Docker version 29.4.1, build 055a478"
+        },
+        {
+          "label": "validate compose",
+          "command": [
+            "docker",
+            "compose",
+            "version"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": false,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "Docker Compose version v5.1.3"
+        }
+      ],
+      "notes": [
+        "Use installer/docker/docker-compose.db.yml for PostgreSQL and SQL Server.",
+        "Use installer/docker/docker-compose.mlops.yml for MLflow/Jupyter/Redis."
+      ]
+    },
+    {
+      "title": "Run smoke checks",
+      "status": "completed",
+      "records": [
+        {
+          "label": "compile backend",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-m",
+            "py_compile",
+            "backend/app.py",
+            "backend/auth_routes.py"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": ""
+        },
+        {
+          "label": "import Flask",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.venv/bin/python",
+            "-c",
+            "import flask, flask_socketio, psycopg; print('backend imports ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "backend imports ok"
+        },
+        {
+          "label": "frontend bundle exists",
+          "command": [
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.installer-venv/bin/python",
+            "-c",
+            "from pathlib import Path; assert Path('frontend/dist/index.html').is_file(); print('frontend build ok')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+          "kind": "project",
+          "required": true,
+          "ran": true,
+          "reason": "execute",
+          "ok": true,
+          "output": "frontend build ok"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "title": "Write installation report",
+      "status": "noted",
+      "records": [],
+      "notes": []
+    }
+  ]
+}

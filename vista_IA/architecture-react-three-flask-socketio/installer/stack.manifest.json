@@ -1,0 +1,54 @@
+{
+  "name": "HABLA Observer IA Installer",
+  "version": "0.1.0",
+  "profiles": {
+    "base": ["base"],
+    "db": ["base", "db"],
+    "web-dev": ["base", "web-dev"],
+    "ml-cpu": ["base", "ml-cpu"],
+    "ml-nvidia": ["base", "ml-nvidia"],
+    "gen-ai": ["base", "gen-ai"],
+    "vision-industrial": ["base", "vision-industrial"],
+    "agents": ["base", "agents"],
+    "mlops": ["base", "db", "mlops"],
+    "hardware-io-utils": ["base", "hardware-io-utils"],
+    "data-viz-ml-nlp-extended": ["base", "data-viz-ml-nlp-extended"],
+    "full": ["base", "db", "web-dev", "ml-cpu", "ml-nvidia", "gen-ai", "vision-industrial", "agents", "mlops", "hardware-io-utils", "data-viz-ml-nlp-extended"]
+  },
+  "intelligentPlanner": {
+    "catalog": "installer/domain_profiles.json",
+    "exampleRequirement": "installer/client-requirement.example.txt",
+    "commands": [
+      "./installer/install.sh",
+      "./installer/install.sh --ask",
+      "./installer/install.sh --recipe industrial-vision",
+      "./installer/install.sh --from-requirement installer/client-requirement.example.txt",
+      "./installer/install.sh --requirement \"camaras opencv yolo postgres dashboard react\""
+    ],
+    "recipes": [
+      "base-app",
+      "industrial-vision",
+      "agent-platform",
+      "ml-research",
+      "data-dashboard",
+      "iot-control",
+      "document-ai",
+      "security-observer",
+      "rtx-vision",
+      "full"
+    ]
+  },
+  "runtime": {
+    "python": "3.11+",
+    "node": "LTS",
+    "backend": "Flask + Flask-SocketIO",
+    "frontend": "Vite + React + Three.js",
+    "database": "PostgreSQL primary, SQL Server optional"
+  },
+  "safety": {
+    "defaultMode": "dry-run",
+    "executeProjectCommandsFlag": "--execute",
+    "executeSystemCommandsFlag": "--allow-system",
+    "logs": "installer/logs"
+  }
+}

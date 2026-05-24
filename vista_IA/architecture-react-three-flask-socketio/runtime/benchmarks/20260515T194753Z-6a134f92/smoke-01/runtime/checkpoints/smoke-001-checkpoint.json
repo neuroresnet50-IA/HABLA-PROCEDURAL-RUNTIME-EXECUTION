@@ -1,0 +1,80 @@
+{
+  "checkpoint_key": "smoke-001-checkpoint",
+  "created_at": "2026-05-15T19:47:53Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/SMOKE-001-20260515T194753Z-aeb45d6749ef.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/directives/SMOKE-001-20260515T194753Z-aeb45d6749ef.md",
+      "source_hash": "aeb45d6749ef3aa7fadb226b5b0168fd5f18cad18f7fdc73c9a89bdb600d4c4a"
+    },
+    "task": {
+      "checkpoint_key": "smoke-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "smoke-output.txt"
+      ],
+      "goal": "Create one expected smoke evidence file through the control plane.",
+      "id": "SMOKE-001",
+      "max_retries": 2,
+      "mode": "smoke",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 10,
+      "title": "Create smoke evidence",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; assert Path('smoke-output.txt').is_file(), 'smoke-output.txt'\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "smoke-output.txt"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "SMOKE-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; assert Path('smoke-output.txt').is_file(), 'smoke-output.txt'\""
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; assert Path('smoke-output.txt').is_file(), 'smoke-output.txt'\"",
+          "duration_seconds": 0.028104,
+          "returncode": 0,
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "smoke-output.txt",
+            "reported_created": true,
+            "reported_modified": false,
+            "size": 23
+          }
+        ],
+        "found": [
+          "smoke-output.txt"
+        ],
+        "missing": [],
+        "reported_created": [
+          "smoke-output.txt"
+        ],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "SMOKE-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime/benchmarks/20260515T194753Z-6a134f92/smoke-01/workspace"
+    }
+  }
+}

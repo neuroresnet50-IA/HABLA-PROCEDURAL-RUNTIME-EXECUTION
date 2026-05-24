@@ -1,0 +1,154 @@
+{
+  "checkpoint_key": "runtime-20260522170239-001-split-001-checkpoint",
+  "created_at": "2026-05-22T17:28:27Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260522170239-001-SPLIT-001-20260522T172728Z-15da0cf5b7fd.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/directives/RUNTIME-20260522170239-001-SPLIT-001-20260522T172728Z-15da0cf5b7fd.md",
+      "source_hash": "15da0cf5b7fdda8bb2b9af778908d95e9965eda0328ce3887b40ade98d581c9e"
+    },
+    "execution": {
+      "reason": "existing_evidence_validated",
+      "skipped_worker": true
+    },
+    "task": {
+      "checkpoint_key": "runtime-20260522170239-001-split-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html"
+      ],
+      "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+      "id": "RUNTIME-20260522170239-001-SPLIT-001",
+      "max_retries": 3,
+      "mode": "build",
+      "priority": 9,
+      "status": "pending",
+      "timeout_seconds": 900,
+      "title": "Build runnable static web app split 1",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "frontend/index.html"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260522170239-001-SPLIT-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.656379,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-22T17:27:32Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day",
+          "duration_seconds": 15.055502,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+            "--workspace",
+            ".",
+            "--frontend",
+            "frontend",
+            "--mode",
+            "smoke",
+            "--light",
+            "day"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+              "--workspace",
+              ".",
+              "--frontend",
+              "frontend",
+              "--mode",
+              "smoke",
+              "--light",
+              "day"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-22T17:27:33Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+          },
+          "stderr": "",
+          "stdout": "{\n  \"ok\": true,\n  \"blockers\": [],\n  \"dom\": {\n    \"render_mode\": \"webgl\",\n    \"distance_text\": \"18 m\",\n    \"speed_text\": \"15.0 m/s\",\n    \"event_text\": \"patrulla lista | dia: baliza roja | target placa bomba: vuelo autonomo iniciado\"\n  },\n  \"screenshot\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/browser_render_smoke.png\",\n  \"metrics\": {\n    \"width\": 1280,\n    \"height\": 720,\n    \"mean_rgb\": [\n      36.33,\n      42.7,\n      35.51\n    ],\n    \"non_dark_ratio\": 0.3348,\n    \"bright_ratio\": 0.1008,\n    \"central_non_dark_ratio\": 0.4031,\n    \"central_bright_ratio\": 0.0869\n  },\n  \"browser_stderr_tail\": [\n    \"[2290742:2290742:0522/102737.806719:ERROR:gpu/command_buffer/service/gles2_cmd_decoder_passthrough.cc:1073] [GroupMarkerNotSet(crbug.com/242999)!:37B4002B60A0]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.\",\n    \"[2290684:2290723:0522/102738.158859:ERROR:google_apis/gcm/engine/registration_request.cc:291] Registration response error message: DEPRECATED_ENDPOINT\",\n    \"[2290742:2290742:0522/102739.248961:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x30bc0010e200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[2290742:2290742:0522/102742.398692:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x30bc0010e200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[2290742:2290742:0522/102744.469138:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x30bc0010e200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[2290742:2290742:0522/102745.817507:ERROR:gpu/command_buffer/service/gl_utils.cc:431] [.WebGL-0x30bc0010e200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)\",\n    \"239597 bytes written to file /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/browser_render_smoke.png\"\n  ]\n}\n",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": true,
+            "size": 8964
+          }
+        ],
+        "found": [
+          "frontend/index.html"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [
+          "frontend/index.html"
+        ],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260522170239-001-SPLIT-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d"
+    }
+  }
+}
