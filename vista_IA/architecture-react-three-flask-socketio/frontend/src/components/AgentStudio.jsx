@@ -32,7 +32,35 @@ import {
   slugify,
 } from "./agentStudioUtils.js";
 
-export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean }) {
+function getBlockingCyberlaceDecision(session) {
+  if (!session || typeof session !== "object") return null;
+  const cyberlace = session.cyberlace && typeof session.cyberlace === "object" ? session.cyberlace : {};
+  const candidates = [
+    ...(Array.isArray(cyberlace.decisions) ? cyberlace.decisions : []),
+    ...(Array.isArray(session.cyberlaceDecisions) ? session.cyberlaceDecisions : []),
+  ].filter((item) => item && typeof item === "object");
+  const decision = candidates.find((item) => {
+    const action = String(item.runtimeAction || item.action || "").toUpperCase();
+    return item.blocked || item.blocksRuntime || ["BLOCK", "QUARANTINE", "HUMAN_REVIEW"].includes(action);
+  });
+  if (decision) return decision;
+  const errorCode = String(session.errorCode || "").toLowerCase();
+  if (session.status === "blocked" && errorCode.includes("cyberlace")) {
+    return {
+      action: "QUARANTINE",
+      runtimeAction: "QUARANTINE",
+      blocked: true,
+      blocksRuntime: true,
+      message: session.errorMessage || session.progressLabel || "CyberLACE bloqueo esta accion.",
+      reason: session.errorMessage || "CyberLACE nego esta accion antes de ejecutar Codex.",
+      evidence: [],
+      blockedPaths: [],
+    };
+  }
+  return null;
+}
+
+export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean, onCyberlaceBlock }) {
   const [projects, setProjects] = useState([]);
   const [launchMode, setLaunchMode] = useState("new");
   const [runtimeMode, setRuntimeMode] = useState(DEFAULT_AGENT_RUNTIME_MODE);
@@ -107,6 +135,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   const hablaState = habla?.state || null;
   const hablaRuntimeState = hablaState || hablaRuntimeStatus || {};
   const hablaRuntimeAvailable = Boolean(habla?.available || hablaRuntimeStatus?.available);
+  const runtimeCommandReady = connected || hablaRuntimeAvailable;
   const lacePolicyLoaded = hablaRuntimeState?.lacePolicyLoaded ?? hablaRuntimeStatus?.lacePolicyLoaded;
   const lacePolicyPath = hablaRuntimeState?.lacePolicyPath || session?.lacePolicyPath || hablaRuntimeStatus?.agentRuntime?.lacePolicySource || "";
   const laceRuntimeLabel = hablaRuntimeState?.laceRuntime || "not_active";
@@ -321,6 +350,26 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     }
   }
 
+  async function loadAgentProjectsSnapshot() {
+    try {
+      const projectsUrl = new URL("/api/agent/projects", socketUrl).toString();
+      const response = await fetch(projectsUrl, { cache: "no-store" });
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || "agent_projects_load_failed");
+      }
+      const nextProjects = Array.isArray(payload.projects) ? payload.projects : [];
+      setProjects(nextProjects);
+      setSelectedProject((current) => (
+        current && nextProjects.some((project) => project.slug === current)
+          ? current
+          : ""
+      ));
+    } catch (nextError) {
+      setError(`No fue posible cargar proyectos del runtime: ${humanizeRuntimeResetError(nextError)}`);
+    }
+  }
+
   async function saveEmailCommandConfig() {
     if (!emailConfig) return;
     setIsSavingEmailConfig(true);
@@ -357,6 +406,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
 
   useEffect(() => {
     loadHablaRuntimeStatus();
+    loadAgentProjectsSnapshot();
   }, [socketUrl]);
 
   useEffect(() => {
@@ -372,6 +422,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       socket.emit("agent:request");
       loadEmailCommandConfig();
       loadHablaRuntimeStatus();
+      loadAgentProjectsSnapshot();
     });
 
     socket.on("disconnect", () => {
@@ -423,7 +474,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
           return nextSession;
         }
 
-        if (!activeSessionRef.current || nextSession.status === "running" || nextSession.status === "starting") {
+        if (!activeSessionRef.current || ACTIVE_AGENT_STATUSES.has(nextSession.status)) {
           setActiveSessionId(nextSession.sessionId);
           setTerminalOutput(nextSession.output || "");
           if (nextSession.projectSlug) {
@@ -546,6 +597,37 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     if (!terminalRef.current) return;
     terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
   }, [terminalOutput, agentRoomEvents.length]);
+
+  useEffect(() => {
+    function handleSafeAlternativeAccepted(event) {
+      const detail = event?.detail && typeof event.detail === "object" ? event.detail : {};
+      const safeRequirement = String(detail.requirement || "").trim();
+      if (!safeRequirement) return;
+      const sourceSlug = String(detail.projectSlug || "").trim();
+      const generatedName = sourceSlug
+        ? `${sourceSlug}-alternativa-segura`
+        : `alternativa-segura-${new Date().toISOString().slice(11, 19).replace(/:/g, "")}`;
+      setLaunchMode("new");
+      setSelectedProject("");
+      setNewProjectName(generatedName);
+      setRequirement([
+        "[CONTEXTO AUTORIZADO CYBERLACE]",
+        "La accion insegura anterior fue negada. Esta orden reemplaza el camino peligroso por una alternativa segura permitida.",
+        "",
+        safeRequirement,
+      ].join("\n"));
+      setError("Alternativa segura cargada como contexto autorizado. Revisa la orden y pulsa Iniciar proyecto nuevo si deseas ejecutarla.");
+      pushAgentBurst({
+        source: "CyberLACE",
+        message: "Alternativa segura cargada como contexto autorizado.",
+        tone: "final",
+        detail: sourceSlug || detail.sourceSessionId || "safe-alternative",
+      });
+    }
+
+    window.addEventListener("habla:safe-alternative-accepted", handleSafeAlternativeAccepted);
+    return () => window.removeEventListener("habla:safe-alternative-accepted", handleSafeAlternativeAccepted);
+  }, []);
 
   useEffect(() => {
     if (!session?.sessionId || !ACTIVE_AGENT_STATUSES.has(session.status)) return undefined;
@@ -813,16 +895,20 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     setIsCreatingProject(true);
     setError("");
     try {
-      const payload = await emitWithAck(
-        socketRef.current,
-        "agent:project:create",
-        {
+      const createUrl = new URL("/api/agent/projects", socketUrl).toString();
+      const response = await fetch(createUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: newProjectName || buildGeneratedProjectName(),
           ensureUnique: true,
           bootstrapProject: false,
-        },
-        60000
-      );
+        }),
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || "agent_project_create_failed");
+      }
       if (payload.projects) {
         setProjects(payload.projects);
       }
@@ -954,20 +1040,38 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       }
 
       onSceneFocus?.(desiredProjectSlug);
-      const payload = await emitWithAck(
-        socketRef.current,
-        "agent:session:start",
-        {
-          projectName: desiredProjectName,
-          projectSlug: desiredProjectSlug,
-          requirement: normalizedRequirement,
-          ensureNewProject: createFreshProject,
-          bootstrapProject: false,
-          runtimeMode,
-          subagentPlan: assignedSubagentPlan,
-        },
-        120000
-      );
+      const sessionPayload = {
+        projectName: desiredProjectName,
+        projectSlug: desiredProjectSlug,
+        requirement: normalizedRequirement,
+        ensureNewProject: createFreshProject,
+        bootstrapProject: false,
+        runtimeMode,
+        subagentPlan: assignedSubagentPlan,
+      };
+      const sessionUrl = new URL("/api/agent/session", socketUrl).toString();
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 45000);
+      let payload;
+      try {
+        const response = await fetch(sessionUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sessionPayload),
+          signal: controller.signal,
+        });
+        payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.error || payload?.message || "agent_session_start_failed");
+        }
+      } catch (startError) {
+        if (startError?.name === "AbortError") {
+          throw new Error("agent_session_start_timeout");
+        }
+        throw startError;
+      } finally {
+        window.clearTimeout(timeout);
+      }
 
       if (payload.projects) {
         setProjects(payload.projects);
@@ -977,6 +1081,25 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
         setActiveSessionId(payload.session.sessionId);
         setSession(payload.session);
         setTerminalOutput(payload.session.output || "");
+        const cyberlaceDecision = getBlockingCyberlaceDecision(payload.session);
+        if (cyberlaceDecision) {
+          const cyberlaceBlockPayload = {
+            op: "cyberlace_document_blocked",
+            errorCode: payload.session.errorCode,
+            message: payload.session.errorMessage || payload.session.progressLabel,
+            projectSlug: payload.session.projectSlug,
+            sessionId: payload.session.sessionId,
+            securityBlock: {
+              ...cyberlaceDecision,
+              projectSlug: payload.session.projectSlug,
+              sessionId: payload.session.sessionId,
+            },
+          };
+          if (typeof onCyberlaceBlock === "function") {
+            onCyberlaceBlock(cyberlaceBlockPayload);
+          }
+          window.dispatchEvent(new CustomEvent("habla:cyberlace-blocked", { detail: cyberlaceBlockPayload }));
+        }
         if (payload.session.projectSlug) {
           setSelectedProject(payload.session.projectSlug);
           onSceneFocus?.(payload.session.projectSlug);
@@ -1093,6 +1216,25 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
         setActiveSessionId(payload.session.sessionId);
         setSession(payload.session);
         setTerminalOutput(payload.session.output || "");
+        const cyberlaceDecision = getBlockingCyberlaceDecision(payload.session);
+        if (cyberlaceDecision) {
+          const cyberlaceBlockPayload = {
+            op: "cyberlace_document_blocked",
+            errorCode: payload.session.errorCode,
+            message: payload.session.errorMessage || payload.session.progressLabel,
+            projectSlug: payload.session.projectSlug,
+            sessionId: payload.session.sessionId,
+            securityBlock: {
+              ...cyberlaceDecision,
+              projectSlug: payload.session.projectSlug,
+              sessionId: payload.session.sessionId,
+            },
+          };
+          if (typeof onCyberlaceBlock === "function") {
+            onCyberlaceBlock(cyberlaceBlockPayload);
+          }
+          window.dispatchEvent(new CustomEvent("habla:cyberlace-blocked", { detail: cyberlaceBlockPayload }));
+        }
         if (payload.session.projectSlug) {
           setSelectedProject(payload.session.projectSlug);
           onSceneFocus?.(payload.session.projectSlug);
@@ -1252,7 +1394,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
           <span className={`socket-pill ${hablaRuntimeAvailable ? "is-online" : "is-offline"}`}>
             {hablaRuntimeLabel}
           </span>
-          <span className={`socket-pill ${session?.status === "running" || session?.status === "starting" ? "is-online" : "is-offline"}`}>
+          <span className={`socket-pill ${ACTIVE_AGENT_STATUSES.has(session?.status) ? "is-online" : "is-offline"}`}>
             {session ? formatAgentStatus(session.status) : "Sin sesion"}
           </span>
           <span className={`socket-pill ${visualState?.phase || visualState?.op ? "is-online" : "is-offline"}`}>
@@ -1381,7 +1523,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     placeholder="payments-orchestrator"
                   />
                 </label>
-                <button type="button" className="tool-button" onClick={handleCreateProject} disabled={isCreatingProject || !connected}>
+                <button type="button" className="tool-button" onClick={handleCreateProject} disabled={isCreatingProject || !runtimeCommandReady}>
                   {isCreatingProject ? "Preparando..." : "Preparar carpeta nueva"}
                 </button>
               </div>
@@ -1404,7 +1546,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     ))}
                   </select>
                 </label>
-                <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !connected}>
+                <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !runtimeCommandReady}>
                   Abrir proyecto
                 </button>
               </div>
@@ -1452,7 +1594,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     type="button"
                     className="tool-button primary"
                     onClick={handleRelaunchRetryableTask}
-                    disabled={!connected || isRelaunchingTask || isSending}
+                    disabled={!runtimeCommandReady || isRelaunchingTask || isSending}
                   >
                     {isRelaunchingTask ? "Retomando..." : "Retomar aqui"}
                   </button>
@@ -1691,7 +1833,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                 type="button"
                 className="tool-button primary"
                 onClick={handleSendRequirement}
-                disabled={isSending || !requirement.trim() || !connected || (launchMode === "existing" && !selectedProjectMeta)}
+                disabled={isSending || !requirement.trim() || !runtimeCommandReady || (launchMode === "existing" && !selectedProjectMeta)}
               >
                 {isSending
                   ? "Abriendo Codex..."
@@ -1699,7 +1841,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     ? "Iniciar proyecto nuevo"
                     : "Continuar proyecto existente"}
               </button>
-              <button type="button" className="tool-button danger" onClick={handleStopSession} disabled={!activeSessionId || session?.status !== "running"}>
+              <button type="button" className="tool-button danger" onClick={handleStopSession} disabled={!activeSessionId || !ACTIVE_AGENT_STATUSES.has(session?.status)}>
                 Detener sesion
               </button>
             </div>

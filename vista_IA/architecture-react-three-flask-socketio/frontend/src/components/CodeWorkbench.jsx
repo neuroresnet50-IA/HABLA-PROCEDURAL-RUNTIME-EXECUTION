@@ -2069,7 +2069,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
       await loadProjects({ silent: true });
     }
     loadProjects();
-    const timerId = window.setInterval(run, 8000);
+    const timerId = window.setInterval(run, 20000);
     return () => {
       cancelled = true;
       window.clearInterval(timerId);
@@ -2182,7 +2182,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         await loadProjectFile(selectedProject, selectedPath, { silent: true, preserveDirty: true });
       }
     }
-    const timerId = window.setInterval(refreshLiveEditor, 2500);
+    const timerId = window.setInterval(refreshLiveEditor, 8000);
     return () => {
       cancelled = true;
       window.clearInterval(timerId);

@@ -1,0 +1,118 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260525T023420Z",
+  "created_at": "2026-05-25T02:34:20Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+      ],
+      "blocksRuntime": true,
+      "evidence": [
+        {
+          "domain": "credential",
+          "line": 4,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "password",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "financial",
+          "line": 6,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "pin",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "financial",
+          "line": 7,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "cvv",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "sesion-20260524233805",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "scannedDocumentCount": 55,
+      "scannedDocuments": [
+        {
+          "blockedFindings": 3,
+          "bytes": 214,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+        }
+      ],
+      "sessionId": "agent-ed0ff1087b",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 558818,
+        "documents": 54,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+        ],
+        "evidence": [
+          {
+            "domain": "credential",
+            "line": 4,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "password",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "financial",
+            "line": 6,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "pin",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "financial",
+            "line": 7,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "cvv",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "sesion-20260524233805",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-05-25T02:34:20Z"
+    },
+    "project_id": "sesion-20260524233805",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

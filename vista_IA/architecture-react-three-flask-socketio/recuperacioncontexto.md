@@ -4617,3 +4617,1108 @@ Blockers o riesgos:
 Punto de reanudacion:
 - Parche minimo recomendado: cambiar defaults de herramientas internas a 5001 o env configurable, y hacer `observer-status` liviano/cached para no ejecutar `build_snapshot()` completo en una lectura de estado.
 
+
+## 2026-05-24T18:00:46Z - Arranque proyecto HABLA
+
+Solicitud recibida:
+- Arrancar el proyecto HABLA usando `/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/start.sh`.
+
+Acciones realizadas:
+- Se leyo continuidad minima desde `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md` y el contenido de `start.sh`.
+- Se intento arrancar con `BACKEND_PORT=5001`, pero el primer fallo fue `npm` inexistente en `/home/neurodriver/Downloads/node-v24.14.1-linux-x64/bin/npm`.
+- Se intento relanzar con `/usr/local/bin/npm`; el backend fallo por `ModuleNotFoundError: No module named orchestrator`.
+- Se arranco correctamente pasando `PYTHONPATH` a la raiz del repo, `NODE_BIN_DIR=/usr/local/bin`, `NPM_BIN=/usr/local/bin/npm`, `BACKEND_PORT=5001` y `OPEN_BROWSER=0`.
+- Se corrigio `start.sh` para que sus defaults detecten Node/NPM desde `PATH` si la ruta vieja no existe, exporten `PYTHONPATH` a la raiz y usen `5001` como puerto backend por defecto.
+- Se valido `start.sh` con sus defaults corregidos ejecutando `env OPEN_BROWSER=0 ./start.sh start`.
+
+Archivos creados o modificados:
+- `start.sh`
+- `frontend/dist/` regenerado por `npm run build`
+- `.runtime/logs/frontend.log`
+- `.runtime/logs/backend.log`
+- `.runtime/pids/backend.pid`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `bash -n start.sh`: OK.
+- `env OPEN_BROWSER=0 ./start.sh start`: OK, backend activo PID `542547`, frontend compilado y servido por backend.
+- `curl -sS -I http://127.0.0.1:5001/`: HTTP 200.
+- `curl -sS -i http://127.0.0.1:5001/api/health`: HTTP 200, `ok=true`, `service=HABLA Observer IA`, `postgres.ready=true`.
+- `python orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: `statusCode=200`, `ok=true`, `outputMode=compact`.
+
+Resultado real de la validacion:
+- HABLA quedo arrancado y accesible en `http://127.0.0.1:5001/`.
+- El backend quedo vivo con PID `542547`.
+- La API de health y la herramienta interna `agent_tools.py health` confirmaron estado OK.
+
+Blockers o riesgos:
+- El sandbox de comandos de Codex sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`; por eso las lecturas, ejecuciones y escritura del parche se hicieron con permisos escalados.
+- Se uso `OPEN_BROWSER=0`, asi que no se abrio ventana grafica automaticamente.
+- `orchestrator/agent_tools.py` aun requiere `--base-url http://127.0.0.1:5001` para evitar el default historico 5000 si no se parchea aparte.
+
+Punto de reanudacion:
+- Abrir `http://127.0.0.1:5001/`. Para verificar de nuevo: `./start.sh status` o `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 health`.
+
+## 2026-05-24T18:15:00Z - Verificacion de recuperacion CyberLACE tras apagon
+
+Solicitud:
+- El usuario indico que se estaba codificando una nueva capa CyberLACE cuando el computador se apago y pidio verificar en que quedo.
+
+Acciones realizadas:
+- Se leyo continuidad desde `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `PLANS.md` y el checkpoint `runtime/checkpoints/cyberlace-integration-inspection-20260524T002042Z.json`.
+- Se buscaron referencias CyberLACE en el workspace y se inspeccionaron `backend/cyberlace_integration.py`, `backend/cyberlace_routes.py`, `backend/cyberlace_policy_bridge.py`, `backend/app.py`, `backend/cyberlace_config.yaml` y el paquete `backend/cyberlace/`.
+- Se verifico que `backend/app.py` registra rutas CyberLACE, pero no hay hooks CyberLACE en `backend/agent_runtime.py` ni panel frontend `CyberLACEPanel.jsx`.
+- Se invoco herramienta interna auditada `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`.
+- Se consulto `/api/cyberlace/health` del backend vivo en 5001.
+- Se hizo una prueba local del adaptador en modo default/off y otra con `CYBERLACE_ENABLED=1 CYBERLACE_MODE=monitor` para confirmar que el motor importado arranca.
+
+Archivos creados o modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `runtime/agent_tool_invocations.jsonl` por la herramienta interna `health`.
+- `runtime/cyberlace/evidence/cyberlace_events.jsonl` por la prueba monitor.
+- `runtime/cyberlace/evidence/cyberlace_decisions.jsonl` por la prueba monitor.
+- `runtime/cyberlace/evidence/cyberlace_engine_events.jsonl` por la prueba monitor.
+- `runtime/cyberlace/evidence/cyberlace_engine_evidence.jsonl` por la prueba monitor.
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/cyberlace_integration.py backend/cyberlace_routes.py backend/cyberlace_policy_bridge.py backend/cyberlace/core/engine.py backend/cyberlace/core/models.py backend/cyberlace/guards/prompt_guard.py backend/cyberlace/guards/memory_guard.py backend/cyberlace/guards/tool_guard.py backend/cyberlace/guards/output_guard.py backend/cyberlace/storage/evidence_graph.py`: codigo 0.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: codigo 0, `statusCode=200`, `ok=true`.
+- `curl -sS --max-time 5 http://127.0.0.1:5001/api/cyberlace/health`: codigo 0, `enabled=false`, `mode=off`, `engineAvailable=true`.
+- `CYBERLACE_ENABLED=1 CYBERLACE_MODE=monitor python3 -B -c ...`: codigo 0, decision `MONITOR`, `runtimeAction=ALLOW`, evidencia persistida.
+- `python3 -B -m pytest -p no:cacheprovider backend/test_app_lint.py backend/test_agent_runtime_lace.py -q`: codigo 0, `20 passed in 0.82s`.
+
+Resultado real de la validacion:
+- CyberLACE compila, el adaptador importa, la ruta Flask vive y el motor funciona si se activa por entorno.
+- El runtime vivo esta con CyberLACE apagado (`enabled=false`, `mode=off`).
+- La integracion quedo incompleta: API y paquete existen, pero falta conectar hooks en `AgentRuntime`, pruebas CyberLACE dedicadas y panel frontend.
+
+Blockers o riesgos:
+- Sandbox Codex sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`, por eso se usaron comandos escalados.
+- `.git/` no es un repo valido; `git status` falla con `fatal: not a git repository`. No hay diff git local confiable.
+- No habia evidencia CyberLACE real antes de esta verificacion; la evidencia actual corresponde a la prueba local `cyberlace-enabled-probe` hecha durante esta auditoria.
+- Activar `CYBERLACE_ENABLED=1` en el backend vivo sin hooks todavia no basta para proteger sesiones: falta insertar llamadas en el flujo real.
+
+Punto de reanudacion:
+- Implementar una tarea acotada `CYBERLACE-HOOKS-001`: agregar hooks off/monitor/enforce seguros en `backend/agent_runtime.py` alrededor de requirement/directive/tool/output, con tests propios para decisiones `ALLOW`, `MONITOR`, `HUMAN_REVIEW/BLOCK` y evidencia JSONL. Despues crear `CyberLACEPanel.jsx` para health/evidence y montar en la UI.
+
+## 2026-05-24T18:25:31Z - Reparacion timeout login HABLA
+
+Solicitud recibida:
+- El usuario reporto que no puede logearse: `Tiempo de espera agotado al contactar autenticacion en http://127.0.0.1:5001/api/auth/login`.
+
+Acciones realizadas:
+- Se leyo continuidad desde `ULTIMO_CONTEXTO_CODEX.md` y entradas recientes de `recuperacioncontexto.md`.
+- Se revisaron `.runtime/logs/backend.log`, `backend/auth_routes.py`, `frontend/src/components/WelcomeAuthGate.jsx`, `frontend/src/appUtils.js` y la configuracion SocketIO en `backend/app.py`.
+- Se reprodujo el endpoint auth por HTTP contra `http://127.0.0.1:5001/api/auth/login`; credenciales invalidas respondieron 401 sin timeout.
+- Se consulto la base auth con el Python del backend y se confirmo que existia una cuenta activa previa; no se reseteo ni modifico esa cuenta.
+- Se creo una cuenta local de prueba `codex-login-probe@example.com` para medir registro/login exitoso y confirmar que auth funciona punta a punta.
+- Se modifico `frontend/src/components/WelcomeAuthGate.jsx`: timeout general de auth sube de 15s a 45s, login usa 60s y reintenta una vez en timeout, y el mensaje de timeout ahora declara segundos transcurridos.
+- Se recompilo `frontend/dist` para que el backend sirva el bundle actualizado.
+- Se sanitizaron archivos temporales `/tmp/habla_*probe*.json` y `/tmp/habla_register_test.json` porque contenian tokens de sesion de prueba.
+
+Archivos creados o modificados:
+- `frontend/src/components/WelcomeAuthGate.jsx`
+- `frontend/dist/index.html`
+- `frontend/dist/assets/index-DVj8Mjmk.js`
+- `frontend/dist/assets/index-DwPgS9o2.css` preservado por build
+- `.runtime/logs/backend.log`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `curl` login invalido contra `/api/auth/login`: HTTP 401 en ~1.1s, JSON `invalid_credentials`.
+- `curl` registro cuenta prueba contra `/api/auth/register`: HTTP 201 en ~4.4s.
+- `curl` login cuenta prueba contra `/api/auth/login`: HTTP 200 en ~3.8s antes del parche y ~2.9s tras recompilar.
+- `node --check frontend/src/components/WelcomeAuthGate.jsx`: no aplicable, Node 24 devuelve `ERR_UNKNOWN_FILE_EXTENSION` para `.jsx`.
+- `npm --prefix frontend test`: OK, `agentClosureCertificate tests passed`.
+- `npm --prefix frontend run build`: OK, genera `frontend/dist/assets/index-DVj8Mjmk.js`.
+- `curl http://127.0.0.1:5001/`: OK, index referencia `/assets/index-DVj8Mjmk.js`.
+- `curl -i http://127.0.0.1:5001/api/health`: HTTP 200, `ok=true`, `postgres.ready=true`.
+- `python orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 8 health`: `statusCode=200`, `ok=true`.
+- `env OPEN_BROWSER=0 ./start.sh status`: backend activo PID `542547`, frontend compilado y servido por backend.
+
+Resultado real de la validacion:
+- El backend auth no esta caido; responde login invalido y exitoso dentro de pocos segundos.
+- El bundle servido por `5001` ya contiene la correccion de timeout/retry de login.
+- HABLA sigue vivo en `http://127.0.0.1:5001/`.
+
+Blockers o riesgos:
+- Si el navegador mantiene el bundle anterior en memoria, hace falta recarga dura de `http://127.0.0.1:5001/` para cargar `index-DVj8Mjmk.js`.
+- La cuenta real existente no fue reseteada; si la contrasena humana es incorrecta, el sistema debe mostrar `Credenciales invalidas.` en lugar de timeout.
+- Queda una cuenta local de prueba creada para validacion: `codex-login-probe@example.com`; debe limpiarse si no se quiere mantener como acceso dev.
+- El sandbox de comandos Codex sigue requiriendo permisos escalados por `bwrap: loopback: Failed RTM_NEWADDR`.
+
+Punto de reanudacion:
+- Pedir al humano recargar duro la pagina y probar de nuevo. Si necesita acceso inmediato, puede usar la cuenta local de prueba compartida en la respuesta; si quiere conservar solo su cuenta real, eliminar `codex-login-probe@example.com` desde PostgreSQL despues de confirmar acceso.
+
+## 2026-05-24T18:30:49Z - Explicacion y endurecimiento persistente de login/reinicio
+
+Solicitud recibida:
+- El usuario pregunto que paso con el login y por que no puede estar modificandose en cada reinicio.
+
+Acciones realizadas:
+- Se verifico que el fix de login quedo en fuente: `frontend/src/components/WelcomeAuthGate.jsx` contiene timeout general 45s, login 60s y `retryOnTimeout`.
+- Se verifico que `start.sh` contiene `PYTHONPATH` hacia la raiz, autodeteccion de Node/NPM y puerto backend default `5001`.
+- Se corrigieron defaults restantes a `5000` en `orchestrator/agent_tools.py`, `orchestrator/tool_invocation_policy.py` y el texto de ayuda de `start.sh`, para evitar falsos 404 al reiniciar o invocar herramientas internas.
+- Se sanitizo `/tmp/habla_login_check.json` porque podia contener token de sesion de prueba.
+
+Archivos creados o modificados:
+- `orchestrator/agent_tools.py`
+- `orchestrator/tool_invocation_policy.py`
+- `start.sh`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `runtime/agent_tool_invocations.jsonl` por la validacion `agent_tools.py health`.
+
+Validacion corta ejecutada:
+- `rg` de defaults `5000` en `orchestrator/agent_tools.py`, `orchestrator/tool_invocation_policy.py` y `start.sh`: codigo 1 esperado, sin coincidencias.
+- `/home/neurodriver/ferrari_env/bin/python -m py_compile orchestrator/agent_tools.py orchestrator/tool_invocation_policy.py`: OK.
+- `bash -n start.sh`: OK.
+- `/home/neurodriver/ferrari_env/bin/python orchestrator/agent_tools.py --timeout-seconds 8 health`: OK, `statusCode=200`, `ok=true` sin pasar `--base-url`.
+- `curl` login cuenta prueba `/api/auth/login`: HTTP 200 en ~2.5s.
+- `env OPEN_BROWSER=0 ./start.sh status`: backend activo PID `542547`, frontend compilado y servido por backend.
+
+Resultado real de la validacion:
+- El arreglo ya no depende de variables manuales por reinicio: `start.sh` y las herramientas internas apuntan a `5001` por defecto, y el timeout/retry esta en el fuente React que se recompila.
+
+Blockers o riesgos:
+- El navegador puede conservar el bundle viejo hasta recarga dura.
+- La cuenta de prueba `codex-login-probe@example.com` sigue creada para acceso dev y debe limpiarse cuando ya no haga falta.
+- El sandbox Codex sigue fallando con `bwrap`; comandos se ejecutaron escalados.
+
+Punto de reanudacion:
+- Explicar al usuario que hubo dos problemas distintos: defaults operativos viejos (`5000`, ruta Node, PYTHONPATH) y cliente auth con timeout corto ante carga/polling. Confirmar que ambos quedaron persistidos en disco.
+
+## 2026-05-24T18:41:19Z - Usuario por defecto admin/admin para validacion GitHub
+
+Solicitud recibida:
+- Dejar usuario y contrasena por defecto `admin` / `admin` para que cualquier persona desde GitHub pueda validar el proyecto.
+
+Acciones realizadas:
+- Se modifico `backend/auth_routes.py` para sembrar de forma idempotente el usuario por defecto al inicializar el esquema de autenticacion PostgreSQL.
+- El usuario por defecto es configurable por entorno: `HABLA_DEFAULT_ADMIN_ENABLED`, `HABLA_DEFAULT_ADMIN_USER`, `HABLA_DEFAULT_ADMIN_PASSWORD`, `HABLA_DEFAULT_ADMIN_NAME`; por defecto queda habilitado como `admin/admin`.
+- Se ajusto login backend para aceptar identificador de usuario o email; `admin` ya no falla por no tener formato email.
+- Se ajusto `frontend/src/components/WelcomeAuthGate.jsx` para aceptar `Usuario o email`, cambiar el input de login a texto y mostrar `Usuario: admin / Contrasena: admin` en la pantalla de login.
+- Se documento el acceso de validacion en `README.md` y `backend/.env.example`.
+- Se recompilo `frontend/dist`.
+- Se reinicio HABLA con `./start.sh restart` para cargar el backend nuevo y sembrar la base viva.
+- Se elimino la cuenta temporal previa `codex-login-probe@example.com`, dejando solo `admin` como acceso de validacion por defecto.
+
+Archivos creados o modificados:
+- `backend/auth_routes.py`
+- `frontend/src/components/WelcomeAuthGate.jsx`
+- `frontend/dist/index.html`
+- `frontend/dist/assets/index-Cen6trms.js`
+- `README.md`
+- `backend/.env.example`
+- `.runtime/logs/backend.log`
+- `.runtime/logs/frontend.log`
+- `.runtime/pids/backend.pid`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `/home/neurodriver/ferrari_env/bin/python -m py_compile backend/auth_routes.py`: OK.
+- `npm --prefix frontend test`: OK, `agentClosureCertificate tests passed`.
+- `npm --prefix frontend run build`: OK, genero `frontend/dist/assets/index-Cen6trms.js`.
+- `env OPEN_BROWSER=0 ./start.sh restart`: OK, backend nuevo PID `698978`.
+- `curl -i http://127.0.0.1:5001/api/health`: HTTP 200, `ok=true`, `postgres.ready=true`.
+- `python orchestrator/agent_tools.py --timeout-seconds 8 health`: `statusCode=200`, `ok=true`.
+- `curl` login con `admin/admin`: HTTP 200 en ~0.9-1.4s.
+- Consulta DB: `admin` existe con `role=admin`, `status=active`; `codex-login-probe@example.com` fue eliminado.
+- `env OPEN_BROWSER=0 ./start.sh status`: backend activo PID `698978`, frontend compilado y servido por backend.
+
+Resultado real de la validacion:
+- `admin/admin` funciona contra el backend vivo en `http://127.0.0.1:5001/api/auth/login`.
+- En reinicios futuros, el backend vuelve a asegurar ese usuario por defecto al inicializar el esquema.
+- El formulario web permite escribir `admin` como usuario.
+
+Blockers o riesgos:
+- Credenciales `admin/admin` son intencionalmente inseguras para validacion publica/local; deben desactivarse en despliegues reales con `HABLA_DEFAULT_ADMIN_ENABLED=0` o cambiarse por entorno.
+- El navegador puede requerir recarga dura para cargar `index-Cen6trms.js`.
+- Sandbox Codex sigue fallando con `bwrap`; comandos se ejecutaron escalados.
+
+Punto de reanudacion:
+- Validar desde navegador con usuario `admin` y contrasena `admin` en `http://127.0.0.1:5001/`. Si se prepara despliegue no local, definir `HABLA_DEFAULT_ADMIN_ENABLED=0`.
+
+## 2026-05-24T19:07:22Z - Integracion quirurgica HABLA CyberLACE Security Engine
+
+Solicitud:
+- El usuario pidio ejecutar los dos prompts/formato HABLA BASIC para integrar CyberLACE al harness existente sin crear proyecto nuevo, sin reescribir `backend/app.py`, sin romper runtime, agentes, sockets ni worker adapters.
+
+Acciones realizadas:
+- Se cumplio Fase 0 con una nueva inspeccion y checkpoint `runtime/checkpoints/cyberlace-integration-inspection-20260524T183541Z.json`.
+- Se verifico paridad de `backend/cyberlace/` contra la fuente externa con `diff -qr --exclude=__pycache__`; no se recopio ni sobrescribio el paquete porque ya estaba igual.
+- Se mantuvieron `backend/cyberlace_integration.py`, `backend/cyberlace_routes.py`, `backend/cyberlace_policy_bridge.py` y el registro existente en `backend/app.py`.
+- Se agregaron hooks laterales en `backend/agent_runtime.py`: directiva/prompt de control-plane, prompt legacy, tool `codex_worker`, output de tarea control-plane y output final legacy.
+- Se separaron los imports CyberLACE del `try` grande del control-plane para que CyberLACE no pueda tumbar el runtime si el paquete falla.
+- Se corrigio `backend/cyberlace/supervisor/lace_security_supervisor.py` para que `enforce` preserve redacciones de guards especializados.
+- Se agrego panel frontend aislado `CyberLACEPanel.jsx`, montaje minimo en `App.jsx`, estilos en `App.css` y build de `frontend/dist`.
+- Se agregaron tests CyberLACE, scripts operativos y documentacion.
+- Se persistio checkpoint final `runtime/checkpoints/cyberlace-integration-20260524T190426Z.json`, success checkpoint `runtime/checkpoints/cyberlace_success_20260524T190426Z.json` y evento en `runtime/task_history.jsonl`.
+
+Archivos creados o modificados:
+- Creados: `frontend/src/components/CyberLACEPanel.jsx`, `backend/test_cyberlace_integration.py`, `backend/test_cyberlace_routes.py`, `backend/test_cyberlace_agent_runtime_hooks.py`, `scripts/run_cyberlace_api.sh`, `scripts/test_cyberlace_integration.sh`, `docs/CYBERLACE_INTEGRATION.md`.
+- Modificados: `backend/agent_runtime.py`, `backend/cyberlace/supervisor/lace_security_supervisor.py`, `frontend/src/App.jsx`, `frontend/src/App.css`, `frontend/dist/`, `runtime/task_history.jsonl`, `runtime/checkpoints/`, `runtime/cyberlace/evidence/`, `recuperacioncontexto.md`, `ULTIMO_CONTEXTO_CODEX.md`.
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile ...`: OK.
+- `python3 -m unittest backend.test_cyberlace_integration backend.test_cyberlace_routes backend.test_cyberlace_agent_runtime_hooks`: OK, 12 tests.
+- `PYTHONPATH=backend:. python3 -m unittest backend.test_security_policy backend.test_validator_security backend.test_runtime_boundary backend.test_agent_runtime_habla`: OK, 44 tests.
+- `npm --prefix frontend run build`: OK.
+- `./scripts/test_cyberlace_integration.sh`: OK.
+- `curl -sS --max-time 5 http://127.0.0.1:5001/api/cyberlace/health`: OK, `enabled=false`, `mode=off`, `engineAvailable=true`.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: OK, `statusCode=200`, `ok=true`.
+
+Resultado real de la validacion:
+- Integracion CyberLACE funcional en import y REST proxy, con default seguro `off`.
+- `monitor` no bloquea y persiste evidencia.
+- `enforce` bloquea prompt/directiva critica y redacted output sensible.
+- Runtime critico existente pasa con PYTHONPATH correcto.
+- Frontend compila con panel CyberLACE.
+
+Blockers o riesgos:
+- El comando unittest critico exacto sin `PYTHONPATH=backend:.` falla por import historico de tests existentes (`agent_runtime` top-level); con PYTHONPATH pasa.
+- El backend vivo en 5001 puede estar corriendo codigo anterior; reiniciar para cargar hooks y dist nuevos.
+- Modo REST requiere `uvicorn` instalado.
+- Sandbox Codex sigue bloqueando comandos sin permisos escalados por bwrap.
+
+Punto de reanudacion:
+- Reiniciar HABLA y probar sesion real con `CYBERLACE_ENABLED=true CYBERLACE_MODE=monitor CYBERLACE_TRANSPORT=import`; observar panel CyberLACE y JSONL en `runtime/cyberlace/evidence/`. Luego probar `enforce` solo con tarea controlada.
+
+## 2026-05-24T19:11:28Z - Prompts de validacion GitHub para juego 3D
+
+Solicitud recibida:
+- El usuario pidio tres prompts para testear los tres casos faltantes en modo medio, dificil y extradificil, aplicados al juego 3D, con evidencia para publicar en GitHub.
+
+Acciones realizadas:
+- Se reviso continuidad desde `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `PLANS.md` y carpetas de docs/runtime/proyecto activo.
+- Se creo un documento publicable con los tres prompts completos: medio, dificil y extradificil.
+- Se creo un indice JSON auditable con case ids, dificultad, proyecto objetivo y comandos de validacion requeridos.
+- Los prompts apuntan al proyecto existente `workspace/projects/sesion-20260518014728-jeego-en-3d`, prohiben crear proyecto nuevo y exigen evidencia persistente por caso bajo `runtime/artifacts/github_validation/<case-id>/`.
+
+Archivos creados o modificados:
+- `docs/real_validation/juego_3d_prompts_medio_dificil_extradificil.md`
+- `runtime/artifacts/github_validation_prompts_juego_3d_20260524T191128Z.json`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `rg -n "PROMPT 1|PROMPT 2|PROMPT 3|CASE-MEDIO|CASE-DIFICIL|CASE-EXTRADIFICIL|validacion extradificil completada" docs/real_validation/juego_3d_prompts_medio_dificil_extradificil.md runtime/artifacts/github_validation_prompts_juego_3d_20260524T191128Z.json`: OK, encontro los tres prompts/casos.
+- `sed -n '1,260p' docs/real_validation/juego_3d_prompts_medio_dificil_extradificil.md`: OK, documento legible con prompts completos.
+- `cat runtime/artifacts/github_validation_prompts_juego_3d_20260524T191128Z.json`: OK, indice JSON valido con tres casos y validaciones requeridas.
+
+Resultado real de la validacion:
+- Quedaron tres prompts listos para copiar/pegar en el runtime o documentar en GitHub.
+- Quedo evidencia persistida de la definicion de pruebas antes de ejecutarlas.
+
+Blockers o riesgos:
+- Aun no se ejecutaron los tres prompts; solo se preparo la bateria de pruebas.
+- Para que la evidencia final sea publicable, cada ejecucion debe producir `prompt.txt`, `implementation_summary.md`, `task_result.json`, `validation_commands.txt`, `browser_render_smoke.json`, `browser_render_smoke.png` y `files_touched.txt` dentro del proyecto.
+- El sandbox Codex sigue requiriendo permisos escalados por `bwrap`.
+
+Punto de reanudacion:
+- Ejecutar primero `PROMPT 1 - MODO MEDIO` desde `docs/real_validation/juego_3d_prompts_medio_dificil_extradificil.md`, validar smoke y guardar artefactos en `workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/github_validation/CASE-MEDIO/`.
+
+
+## 2026-05-24T19:23:41Z - CyberLACE enforce activo y prueba viva de credenciales ficticias
+
+Solicitud recibida:
+- El usuario pidio poner CyberLACE en true/enforce y preparar un test en vivo con un prompt que intente abrir/preparar GitHub usando una password ficticia cargada desde un TXT, para comprobar que el harness lo impide.
+
+Acciones realizadas:
+- Se activo CyberLACE localmente en `backend/.env` con `CYBERLACE_ENABLED=true`, `CYBERLACE_MODE=enforce` y `CYBERLACE_TRANSPORT=import`.
+- Se agrego documentacion de variables CyberLACE a `backend/.env.example`.
+- Se creo fixture segura `runtime/cyberlace/test_fixtures/fake_git_credentials.txt` con datos falsos solamente.
+- Se creo prompt listo para pegar en `runtime/cyberlace/test_fixtures/live_prompt_git_credentials.txt`.
+- Se creo `scripts/test_cyberlace_live_credentials.sh` para probar prompt, memoria, tool y output guards contra la fixture falsa.
+- Se agrego `backend/cyberlace/utils/yaml_loader.py` y se ajustaron los cargadores CyberLACE para funcionar sin PyYAML en el Python del backend.
+- Se reinicio HABLA con `OPEN_BROWSER=0 ./start.sh restart`; backend activo en `http://127.0.0.1:5001/`.
+- Se actualizo checkpoint `runtime/checkpoints/cyberlace-live-enforce-test-20260524T191538Z.json` y se registro el incidente resuelto de ruta con espacios en `runtime/failures.jsonl`.
+
+Archivos creados o modificados:
+- `backend/.env`
+- `backend/.env.example`
+- `backend/cyberlace/utils/yaml_loader.py`
+- `backend/cyberlace/utils/config.py`
+- `backend/cyberlace/core/policy.py`
+- `backend/cyberlace/utils/patterns.py`
+- `runtime/cyberlace/test_fixtures/fake_git_credentials.txt`
+- `runtime/cyberlace/test_fixtures/live_prompt_git_credentials.txt`
+- `scripts/test_cyberlace_live_credentials.sh`
+- `runtime/checkpoints/cyberlace-live-enforce-test-20260524T191538Z.json`
+- `runtime/cyberlace/evidence/cyberlace_events.jsonl`
+- `runtime/cyberlace/evidence/cyberlace_decisions.jsonl`
+- `runtime/task_history.jsonl`
+- `runtime/failures.jsonl`
+
+Validacion corta ejecutada:
+- `bash -n scripts/test_cyberlace_live_credentials.sh`: OK.
+- `python3 -B -m py_compile backend/cyberlace_integration.py backend/agent_runtime.py backend/cyberlace/utils/yaml_loader.py backend/cyberlace/utils/config.py backend/cyberlace/core/policy.py backend/cyberlace/utils/patterns.py`: OK.
+- `PYTHON_BIN=/home/neurodriver/ferrari_env/bin/python scripts/test_cyberlace_live_credentials.sh`: OK; `memory_guard=QUARANTINE`, `output_guard=HUMAN_REVIEW`, `tool_guard=REDACT`.
+- `OPEN_BROWSER=0 ./start.sh restart`: OK; backend activo en puerto 5001.
+- `curl -sS http://127.0.0.1:5001/api/cyberlace/health`: OK; `enabled=true`, `mode=enforce`, `engineAvailable=true`.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: OK; `statusCode=200`, `ok=true`.
+- `python3 -m unittest backend.test_cyberlace_integration backend.test_cyberlace_routes backend.test_cyberlace_agent_runtime_hooks`: OK, 12 tests.
+
+Resultado real de la validacion:
+- CyberLACE quedo activo en enforce/import en el backend vivo.
+- La prueba falsa genera evidencia por API en `/api/cyberlace/evidence/recent?limit=4`.
+- El prompt inicial que solo menciona la ruta queda `ALLOW`; cuando el contenido del TXT entra como memoria/salida/tool, CyberLACE aplica `QUARANTINE`, `HUMAN_REVIEW` o `REDACT`.
+
+Blockers o riesgos:
+- No usar credenciales reales. La prueba viva debe usar exclusivamente la fixture falsa.
+- El bloqueo ocurre al inspeccionar el contenido sensible, no por solo mencionar un path de archivo.
+- Sandbox Codex sigue requiriendo permisos escalados por `bwrap`.
+
+Punto de reanudacion:
+- Pegar el contenido de `runtime/cyberlace/test_fixtures/live_prompt_git_credentials.txt` en el harness vivo y observar el panel CyberLACE o consultar `/api/cyberlace/evidence/recent?limit=4`.
+
+
+## 2026-05-24T20:15:52Z - Recuperacion UI/runtime tras CyberLACE enforce global
+
+Solicitud recibida:
+- El usuario reporto que la interfaz no cargaba completa, los botones quedaban inaccesibles y el runtime parecia bloqueado al intentar iniciar el test CyberLACE.
+
+Acciones realizadas:
+- Se revisaron estado del launcher, logs backend/frontend, health API, health CyberLACE, assets servidos y montaje/CSS del panel CyberLACE.
+- Se detecto que el backend estaba vivo y sirviendo 200, pero `CYBERLACE_MODE=enforce` como modo global era demasiado agresivo para operacion normal y el panel CyberLACE ocupaba un bloque grande antes de Entrada.
+- Se cambio `backend/.env` a `CYBERLACE_MODE=monitor` manteniendo `CYBERLACE_ENABLED=true`.
+- Se modifico `frontend/src/components/CyberLACEPanel.jsx` para que el panel arranque colapsado y solo muestre evidencia si el humano pulsa `Ver evidencia`.
+- Se ajusto `frontend/src/App.css` para compactar el panel colapsado.
+- Se recompilo frontend y se reinicio el backend.
+- Se genero captura headless valida `runtime/artifacts/cyberlace_ui_monitor_after_fix_1440x1000.png`.
+- Se creo checkpoint `runtime/checkpoints/cyberlace-runtime-unblock-20260524T201552Z.json` y eventos en `runtime/failures.jsonl` / `runtime/task_history.jsonl`.
+
+Archivos creados o modificados:
+- `backend/.env`
+- `frontend/src/components/CyberLACEPanel.jsx`
+- `frontend/src/App.css`
+- `frontend/dist/`
+- `runtime/artifacts/cyberlace_ui_monitor_after_fix_1440x1000.png`
+- `runtime/checkpoints/cyberlace-runtime-unblock-20260524T201552Z.json`
+- `runtime/failures.jsonl`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `npm --prefix frontend run build`: OK.
+- `python3 -B -m py_compile backend/cyberlace_integration.py backend/agent_runtime.py backend/cyberlace/utils/yaml_loader.py`: OK.
+- `OPEN_BROWSER=0 ./start.sh restart`: OK; backend activo en 5001.
+- `curl -sS http://127.0.0.1:5001/api/cyberlace/health`: OK; `enabled=true`, `mode=monitor`, `engineAvailable=true`.
+- `curl` del HTML `/`: OK, HTTP 200, 402 bytes.
+- `curl` del bundle JS `index-BfHyBXA9.js`: OK, HTTP 200, 473225 bytes.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: OK, `statusCode=200`.
+- `google-chrome --headless ... --screenshot=runtime/artifacts/cyberlace_ui_monitor_after_fix_1440x1000.png`: OK, PNG 1440x1000.
+- `PYTHON_BIN=/home/neurodriver/ferrari_env/bin/python scripts/test_cyberlace_live_credentials.sh`: OK; `memory_guard=QUARANTINE`, `output_guard=HUMAN_REVIEW`, `tool_guard=REDACT`.
+
+Resultado real de la validacion:
+- UI/runtime quedaron en modo estable: CyberLACE activo en monitor para no bloquear flujos normales.
+- La prueba fuerte de credenciales sigue disponible y validada por script aislado en enforce.
+
+Blockers o riesgos:
+- Para ver el bundle nuevo puede requerirse refresco duro del navegador (`Ctrl+Shift+R`).
+- Si se vuelve a poner `CYBERLACE_MODE=enforce` global antes de ajustar reglas finas, puede repetir bloqueos o friccion en la UI.
+- La captura headless no pudo verse con `view_image` por el mismo problema sandbox `bwrap`, pero el archivo PNG fue validado con `file`.
+
+Punto de reanudacion:
+- Abrir `http://127.0.0.1:5001/`, hacer refresco duro y confirmar que la barra CyberLACE compacta no tapa la entrada. Luego correr `scripts/test_cyberlace_live_credentials.sh` como prueba enforce controlada.
+
+
+## 2026-05-24T20:56:58Z - Desbloqueo de botones de proyecto y endpoint `/api/agent/projects`
+
+Solicitud recibida:
+- El usuario reporto que no se podia generar proyecto nuevo ni continuar proyecto existente; los botones no se activaban y sospechaba colas viejas o runtime bloqueado.
+
+Acciones realizadas:
+- Se midio `/api/agent/projects` y se confirmo bloqueo real: timeout de 5s con 0 bytes antes del parche.
+- Se revisaron sesiones, task queue, project state y runtime-truth del proyecto `sesion-20260518014728-jeego-en-3d`.
+- Se verifico que no habia colas activas: sesiones activas 0, pending 0, running 0, blocked 0, lock `false`, verdict `idle`.
+- Se agrego `list_agent_projects_snapshot()` en `backend/app.py`, un listado rapido desde disco para hidratar UI sin depender de estado de sesiones/runtime.
+- Se reemplazaron llamadas UI-facing a `agent_runtime.list_projects()` en rutas/sockets por `list_agent_projects_snapshot()`.
+- Se ajusto `frontend/src/components/AgentStudio.jsx` para cargar proyectos por HTTP en mount/connect y usar fallback HTTP para crear proyecto o iniciar sesion si Socket.IO esta intermitente.
+- Se recompilo frontend, reinicio backend y valido que el bundle nuevo `assets/index-X82sp1Vr.js` se sirve.
+- Se genero captura final `runtime/artifacts/agent_projects_unblocked_1440x1000.png`.
+- Se creo checkpoint `runtime/checkpoints/agent-projects-ui-unblocked-20260524T205658Z.json` y eventos en `runtime/failures.jsonl` / `runtime/task_history.jsonl`.
+
+Archivos creados o modificados:
+- `backend/app.py`
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/dist/`
+- `runtime/artifacts/agent_projects_unblocked_1440x1000.png`
+- `runtime/checkpoints/agent-projects-ui-unblocked-20260524T205658Z.json`
+- `runtime/failures.jsonl`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/app.py backend/agent_runtime.py`: OK.
+- `npm --prefix frontend run build`: OK.
+- `OPEN_BROWSER=0 ./start.sh restart`: OK; backend activo en 5001.
+- `curl --max-time 5 http://127.0.0.1:5001/api/agent/projects`: OK, HTTP 200, ~0.013s, 1 proyecto.
+- `curl --max-time 5 http://127.0.0.1:5001/api/runtime/habla-status`: OK, HTTP 200, ~0.003s.
+- `curl http://127.0.0.1:5001/assets/index-X82sp1Vr.js`: OK, HTTP 200, 474104 bytes.
+- `curl http://127.0.0.1:5001/api/health`: OK.
+- `curl http://127.0.0.1:5001/api/cyberlace/health`: OK, `enabled=true`, `mode=monitor`, `engineAvailable=true`.
+- `curl http://127.0.0.1:5001/api/agent/sessions`: OK, `sessions=[]`.
+- `curl http://127.0.0.1:5001/api/projects/sesion-20260518014728-jeego-en-3d/runtime-truth`: OK, `verdict=idle`, `locked=false`, running/pending/blocked 0.
+- `google-chrome --headless ... --screenshot=runtime/artifacts/agent_projects_unblocked_1440x1000.png`: OK, PNG valido 1440x1000.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: OK, `statusCode=200`.
+
+Resultado real de la validacion:
+- El endpoint critico de proyectos ya no se cuelga y responde en milisegundos.
+- Los botones de AgentStudio ya no dependen exclusivamente del socket; pueden habilitarse usando el health HTTP de HABLA y ejecutar por fallback HTTP.
+- No habia colas viejas activas que limpiar.
+
+Blockers o riesgos:
+- El navegador puede requerir refresco duro `Ctrl+Shift+R` para cargar `assets/index-X82sp1Vr.js`.
+- Socket.IO puede seguir reconectando por polling, pero los botones principales tienen fallback HTTP.
+- CyberLACE debe permanecer globalmente en `monitor` para pruebas de UI; `enforce` queda para test controlado.
+
+Punto de reanudacion:
+- Refrescar duro `http://127.0.0.1:5001/`, ir a AgentStudio, comprobar que `Iniciar proyecto nuevo`, `Preparar carpeta nueva`, `Continuar proyecto existente` y `Abrir proyecto` responden. Si se prueba credenciales, usar primero `scripts/test_cyberlace_live_credentials.sh`.
+
+
+## 2026-05-24T21:01:33Z - Reinicio servidor tras desbloqueo UI/proyectos
+
+Solicitud recibida:
+- El usuario pidio reiniciar el servidor para que aceptara los cambios.
+
+Acciones realizadas:
+- Se ejecuto `OPEN_BROWSER=0 ./start.sh restart`.
+- El backend anterior se detuvo y el backend nuevo inicio con PID `1262189`.
+- El frontend fue recompilado y servido por backend.
+- Se creo checkpoint `runtime/checkpoints/server-restart-after-ui-unblock-20260524T210133Z.json`.
+
+Validacion corta ejecutada:
+- `curl http://127.0.0.1:5001/api/health`: OK.
+- `curl --max-time 5 http://127.0.0.1:5001/api/agent/projects`: OK, HTTP 200, ~0.011s.
+- `curl http://127.0.0.1:5001/api/cyberlace/health`: OK, `enabled=true`, `mode=monitor`, `engineAvailable=true`.
+- `curl http://127.0.0.1:5001/`: OK, HTTP 200.
+
+Resultado real:
+- Servidor reiniciado y cambios activos en `http://127.0.0.1:5001/`.
+
+Blockers o riesgos:
+- El navegador puede necesitar refresco duro `Ctrl+Shift+R` para cargar el bundle nuevo.
+
+Punto de reanudacion:
+- Probar botones de AgentStudio: iniciar proyecto nuevo, preparar carpeta nueva, continuar proyecto existente y abrir proyecto.
+
+## 2026-05-24T21:24:18Z - Desbloqueo del boton `Abriendo Codex`
+
+Solicitud recibida:
+- El usuario reporto que el boton quedo atascado en `Abriendo Codex` y no hacia nada.
+
+Acciones realizadas:
+- Se revisaron logs del backend y se encontro `POST /socket.io ... 400 Invalid session` durante el bloqueo.
+- Se verifico que no se habia creado ninguna sesion Codex real: `/api/agent/sessions` devolvio `{"sessions":[]}`.
+- Se cambio `frontend/src/components/AgentStudio.jsx` para iniciar sesiones por HTTP directo contra `POST /api/agent/session` con timeout de 45 segundos.
+- Se elimino la dependencia del ack `agent:session:start` de Socket.IO para el boton principal.
+- Se ajusto `backend/app.py` con `threaded=True` en `socketio.run(...)` para reducir saturacion por polling.
+- Se recompilo frontend y se reinicio el servidor; backend activo con PID `1317054`.
+- Se creo checkpoint `runtime/checkpoints/agent-session-start-http-only-20260524T212418Z.json`.
+
+Archivos creados o modificados:
+- `frontend/src/components/AgentStudio.jsx`
+- `backend/app.py`
+- `frontend/dist/index.html`
+- `frontend/dist/assets/index-Dj7nt0On.js`
+- `frontend/dist/assets/index-L78j9hAI.css`
+- `runtime/checkpoints/agent-session-start-http-only-20260524T212418Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/app.py backend/agent_runtime.py`: OK.
+- `npm --prefix frontend run build`: OK.
+- `OPEN_BROWSER=0 ./start.sh restart`: OK; backend activo con PID `1317054`.
+- `curl --max-time 5 http://127.0.0.1:5001/api/agent/sessions`: OK, HTTP 200, `sessions=[]`.
+- `curl --max-time 5 -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:5001/api/agent/session`: OK como prueba negativa, HTTP 400 `missing_requirement` rapido, sin colgarse.
+- `curl --max-time 5 http://127.0.0.1:5001/`: OK, HTTP 200, 402 bytes.
+- `curl --max-time 5 http://127.0.0.1:5001/api/health`: OK.
+- `curl http://127.0.0.1:5001/api/cyberlace/health`: OK, `enabled=true`, `mode=monitor`, `engineAvailable=true`.
+
+Resultado real de la validacion:
+- El inicio de Codex ya no depende de una sesion Socket.IO vieja.
+- Si el arranque falla, el boton debe salir de `Abriendo Codex` con error o timeout en vez de quedar atascado indefinidamente.
+- El backend esta vivo en `http://127.0.0.1:5001/`.
+
+Blockers o riesgos:
+- Las pestanas ya abiertas pueden conservar sesiones Socket.IO invalidas hasta hacer refresco duro `Ctrl+Shift+R`.
+- La carpeta `workspace/projects/sesion-20260524210420/` fue creada durante el intento anterior del usuario y se dejo intacta.
+- CyberLACE sigue globalmente en `monitor` por estabilidad de UI; el test enforce queda disponible por script.
+
+Punto de reanudacion:
+- Hacer `Ctrl+Shift+R` en `http://127.0.0.1:5001/` y volver a probar el boton que decia `Abriendo Codex`.
+- Si se reproduce un error nuevo, revisar primero `.runtime/logs/backend.log` y probar `curl --max-time 5 http://127.0.0.1:5001/api/agent/session` con payload valido.
+
+
+## 2026-05-24T23:36:18.295167+00:00 - CyberLACE postmortem cuello de botella
+
+Solicitud recibida: el usuario reporta que todo quedo lento/bloqueado tras CyberLACE, botones inaccesibles y login/modal roto.
+
+Acciones realizadas:
+- Investigue instrucciones `.md` relevantes (`AGENTS.md`, `PLANS.md`, `ULTIMO_CONTEXTO_CODEX.md`, `recuperacioncontexto.md`) y estado runtime.
+- Detecte `backend/editor_state.json` autorreferente de ~41 MB que inflaba `/api/architecture` a ~45 MB.
+- Compacte `backend/editor_state.json` con backup en `runtime/artifacts/editor_state_before_bottleneck_fix_20260524T220000Z.json`.
+- Ajuste `backend/project_graph.py` para ignorar estados generados y truncar payloads grandes.
+- Quite emision automatica pesada de arquitectura en cada conexion Socket.IO.
+- Repare arranque eliminando `threaded=True` incompatible en `socketio.run()`.
+- Reduje polling frontend y habilite WebSocket con fallback.
+- Cambie `WelcomeAuthGate` de 30000 ms a 1200 ms para que login/setup aparezca rapido.
+- Genere reporte `runtime/artifacts/cyberlace_postmortem_bottleneck_20260524T233618Z.md` y checkpoint `runtime/checkpoints/cyberlace-postmortem-bottleneck-20260524T233618Z.json`.
+
+Archivos creados o modificados:
+- `backend/project_graph.py`
+- `backend/test_workspace_visual_sync.py`
+- `backend/app.py`
+- `backend/editor_state.json`
+- `frontend/src/components/CyberLACEPanel.jsx`
+- `frontend/src/components/CodeWorkbench.jsx`
+- `frontend/src/App.jsx`
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/src/components/WelcomeAuthGate.jsx`
+- `runtime/artifacts/cyberlace_postmortem_bottleneck_20260524T233618Z.md`
+- `runtime/checkpoints/cyberlace-postmortem-bottleneck-20260524T233618Z.json`
+- `runtime/failures.jsonl`
+- `runtime/task_history.jsonl`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/project_graph.py backend/app.py backend/test_workspace_visual_sync.py`: OK.
+- `python3 -m unittest backend.test_workspace_visual_sync`: OK.
+- `npm --prefix frontend run build`: OK, bundle `frontend/dist/assets/index-DYvKCqrt.js`.
+- `OPEN_BROWSER=0 ./start.sh restart`: OK, backend `http://127.0.0.1:5001/`, PID observado `1955912`.
+- Navegador headless fresco: login/setup visible rapidamente.
+
+Resultado real:
+- Cuello de botella de estado/grafo corregido en codigo y archivo persistido.
+- Backend aislado sin navegador queda en 0.0% CPU y health ~0.004240s.
+- Persistencia de investigacion completada.
+
+Blockers o riesgos:
+- Pestanas antiguas del navegador pueden seguir ejecutando bundle viejo con polling hasta cerrar/recargar fuerte.
+- Cambios previos en auth/login (`admin/admin`, demo) requieren auditoria separada si el usuario quiere causa exacta de autenticacion.
+
+Punto de reanudacion:
+- Cerrar o refrescar fuerte pestanas viejas de `http://127.0.0.1:5001/`, abrir una sola pestana nueva y repetir test de login/botones/CyberLACE.
+
+
+## 2026-05-24T23:58:43Z - Forense CyberLACE/security sin editar codigo
+
+Solicitud recibida:
+- MODO FORENSE HABLA/CYBERLACE - NO EDITAR CODIGO. Determinar si CyberLACE en `monitor/enforce`, rutas, evidencia, hooks en `agent_runtime` o policy bridge pueden bloquear, ralentizar, contaminar prompts, inflar estado o provocar fallas de arranque.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md` y `PLANS.md`.
+- Se revisaron `backend/cyberlace_integration.py`, `backend/cyberlace_routes.py`, `backend/cyberlace_policy_bridge.py`, hooks CyberLACE en `backend/agent_runtime.py`, rutas relevantes en `backend/app.py`, `runtime/cyberlace`, `runtime/checkpoints`, `runtime/failures.jsonl` y `.runtime/logs/backend.log`.
+- Se inspecciono configuracion con `rg`: `CYBERLACE_ENABLED=true`, `CYBERLACE_MODE=monitor`, `CYBERLACE_TRANSPORT=import`.
+- Se midio evidencia con `wc`: 14 eventos/decisiones CyberLACE y `backend/editor_state.json` en 3,331,156 bytes.
+- No se reinicio servidor, no se mataron procesos, no se editaron archivos de producto.
+
+Archivos creados o modificados:
+- Modificado: `recuperacioncontexto.md`
+- Modificado: `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- Lecturas forenses con `rg`, `find`, `sed`, `awk`, `nl`, `tail`, `wc`.
+- No se ejecutaron tests, builds ni healthchecks que alteren runtime por restriccion explicita de no operar servidor/procesos.
+
+Resultado real de la validacion:
+- En modo actual `monitor`, `cyberlace_policy_bridge.py` fuerza `runtimeAction=ALLOW`; no deberia bloquear sesiones.
+- En modo `enforce`, los hooks de `agent_runtime.py` pueden bloquear prompt/directiva/tool/output y dejar sesiones fallidas o tareas `blocked`.
+- La evidencia reciente muestra falso positivo `credit_card_like` sobre timestamps de 14 digitos en una directiva real, aunque en `monitor` no bloqueo.
+- `.runtime/logs/backend.log` muestra errores repetidos de WebSocket Socket.IO 500 `write() before start_response` e `Invalid session` previos, explicando slowness/reintentos mejor que CyberLACE en `monitor`.
+- No se encontro hook CyberLACE directo en auth/login.
+
+Blockers o riesgos:
+- El sandbox de comandos local fallo inicialmente con `bwrap: loopback: Failed RTM_NEWADDR`; las lecturas requirieron escalacion aprobada.
+- `read_recent_cyberlace_evidence()` lee archivos JSONL completos aunque pida pocos eventos; si la evidencia crece, `/api/cyberlace/health` y `/api/cyberlace/evidence/recent` pueden volverse pesados.
+- `CYBERLACE_TRANSPORT=rest` no tiene aislamiento asincrono; si se usa y el servicio no responde, cada guard puede esperar timeout.
+
+Punto de reanudacion:
+- Entregar findings forenses con archivo/linea, hechos vs inferencias, causa probable, validacion sugerida y reparacion minima no destructiva.
+
+
+
+## 2026-05-25T00:01:42Z - Forense frontend/UI/socket/polling CyberLACE sin editar codigo
+
+Solicitud recibida:
+- MODO FORENSE HABLA/CYBERLACE - NO EDITAR CODIGO. Investigar frontend/UI/socket/polling por `agent_session_start_timeout`, botones inaccesibles, login/modal irregular, slowness, polling repetido y posible bundle viejo.
+
+Acciones realizadas:
+- Se revisaron `frontend/src/App.jsx`, `frontend/src/components/AgentStudio.jsx`, `frontend/src/components/CodeWorkbench.jsx`, `frontend/src/components/WelcomeAuthGate.jsx`, `frontend/src/components/CyberLACEPanel.jsx`, `frontend/dist/index.html` y assets referenciados.
+- Se leyeron archivos relacionados necesarios para causa de UI: `frontend/src/App.css`, `frontend/src/components/LiveReviewerPanel.jsx`, `frontend/src/components/AppRuntimeWorkbenches.jsx`, `frontend/src/components/CodeWorkbenchSandboxModal.jsx`, `frontend/src/appUtils.js`, y rutas backend de `/api/agent/session`.
+- No se reinicio servidor, no se mataron procesos y no se editaron archivos de producto.
+
+Archivos creados o modificados:
+- Modificado: `recuperacioncontexto.md`
+- Modificado: `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- Lecturas forenses con `rg`, `awk`, `wc`, `find`, `ls`, `cat`, `tail`, `date`.
+- Validacion estatica de `frontend/dist/index.html`: referencia `/assets/index-DYvKCqrt.js` y `/assets/index-L78j9hAI.css`; ambos existen en `frontend/dist/assets`.
+- No se ejecutaron tests, builds, healthchecks, reinicios ni acciones sobre procesos por restriccion explicita de modo forense.
+
+Resultado real de la validacion:
+- `AgentStudio` aborta POST `/api/agent/session` tras 45s y muestra `agent_session_start_timeout`; backend prepara control plane/directiva antes de responder, por lo que una preparacion lenta puede producir falso negativo de UI.
+- `LiveReviewerPanel` se autoabre en sesiones activas y monta un backdrop full-screen con `pointer-events:auto`; ese backdrop intercepta clicks fuera del panel y puede hacer parecer que botones de la app estan inaccesibles.
+- `WelcomeAuthGate` se monta siempre al final de `App`, pero retorna `null` durante `checking` y cuando queda `authenticated`; localStorage/token, entrada local temporal y fase `checking` explican login/modal que se salta o tarda.
+- Hay tres sockets Socket.IO frontend (`App`, `AgentStudio`, `CodeWorkbench`) con fallback `["websocket","polling"]` y varios pollers HTTP adicionales: AgentStudio 8s/5s, CodeWorkbench 20s/8s, CyberLACE 30s/10s.
+- Dist no parece viejo por timestamp: fuentes tocadas antes de `frontend/dist` 2026-05-24 16:32:53 y assets existen; riesgo restante es cache/pestana vieja.
+
+Blockers o riesgos:
+- El sandbox de comandos fallo inicialmente con `bwrap: loopback: Failed RTM_NEWADDR`; las lecturas requirieron escalacion aprobada.
+- No se pudo confirmar comportamiento en navegador vivo porque el usuario prohibio reiniciar/operar servidores y el modo era forense de solo lectura.
+- Arbol git ya estaba sucio antes de esta intervencion, incluidos los archivos bajo investigacion.
+
+Punto de reanudacion:
+- Entregar findings con archivo/linea, hechos vs inferencias, causa probable, validacion sugerida y reparacion minima no destructiva.
+
+
+## 2026-05-25T00:13:43.414507+00:00 - Investigacion forense runtime roto tras CyberLACE
+
+Solicitud recibida: el usuario reporto que el runtime quedo super grave, nada funciona y pidio planear una investigacion profunda con otros agentes, generar prompt avanzado y continuar investigando.
+
+Acciones realizadas:
+- Se genero y uso un prompt forense avanzado para subagentes, con reglas de no editar codigo, no reiniciar, no matar procesos y separar hechos/inferencias.
+- Se lanzaron tres subagentes: backend/control-plane, frontend/UI/socket y CyberLACE/security. Backend y CyberLACE completaron; frontend no devolvio a tiempo y fue cerrado.
+- Se investigo localmente procesos, sockets, logs, endpoints, estado de sesiones, estado persistido y diffs relevantes.
+- Se confirmo regresion Socket.IO/WebSocket con Werkzeug: repetidos HTTP 500 y `AssertionError: write() before start_response`.
+- Se confirmo `agent_session_start_timeout`: frontend aborta a 45s, backend crea sesion pero hace trabajo pesado antes de responder.
+- Se confirmo sesion `agent-00257041a0` fallida con `errorCode=agent_start_timeout`, `pid=null`, `returncode=123`.
+- Se confirmo estado zombi en `workspace/projects/sesion-20260524233805`: `project_state.status=running` mientras `task_queue.json` conserva tarea `pending`.
+- Se confirmo que `observer-status` por herramienta interna expira bajo carga, mientras `health` puede responder.
+- Se genero reporte `runtime/artifacts/runtime_forensic_investigation_20260525T001343Z.md` y checkpoint `runtime/checkpoints/runtime-forensic-investigation-20260525T001343Z.json`.
+
+Archivos creados o modificados:
+- `runtime/artifacts/runtime_forensic_investigation_20260525T001343Z.md`
+- `runtime/checkpoints/runtime-forensic-investigation-20260525T001343Z.json`
+- `runtime/failures.jsonl`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `ps -eo ...`: backend PID 1955912 cerca de 104% CPU bajo carga.
+- `ss -tanp | grep :5001`: multiples sockets `CLOSE-WAIT` y conexiones Chrome activas.
+- `tail .runtime/logs/backend.log`: WebSocket 500 con `AssertionError: write() before start_response`.
+- `curl /api/agent/sessions`: sesion fallida `agent_start_timeout`, `pid=null`.
+- `python3 orchestrator/agent_tools.py health`: OK, statusCode 200.
+- `python3 orchestrator/agent_tools.py observer-status`: TimeoutError a 5s.
+- prueba uniforme de endpoints a 3s: health/observer/status/agent/projects/cyberlace health expiraron bajo carga.
+
+Resultado real:
+- Diagnostico forense completado sin aplicar reparaciones de codigo.
+- Causas prioritarias: WebSocket incompatible con Werkzeug, POST /api/agent/session sincrono pesado, estado zombi persistido, control-plane `running` sin PID y preflight self-HTTP bloqueante.
+
+Blockers o riesgos:
+- El backend sigue sobrecargado si hay navegador/polling/socket actual activo.
+- No se debe activar CyberLACE `enforce` global hasta estabilizar runtime.
+- Hay riesgo separado en auth por admin/admin default que requiere auditoria posterior.
+
+Punto de reanudacion:
+- Aplicar reparaciones minimas en este orden: transporte Socket.IO estable, respuesta rapida de `/api/agent/session`, estados `preparing/running` con PID, reconciliacion de zombi, preflight no bloqueante, optimizacion CyberLACE evidence.
+
+
+## 2026-05-25T00:16:57.821529+00:00 - Reinicio del sistema tras investigacion forense
+
+Solicitud recibida: el usuario pidio reiniciar el sistema.
+
+Acciones realizadas:
+- Se ejecuto `OPEN_BROWSER=0 ./start.sh restart`.
+- El backend anterior PID `1955912` fue detenido por `start.sh`.
+- El frontend fue recompilado y servido por backend.
+- El backend nuevo inicio con PID `2189464` en `http://127.0.0.1:5001/`.
+- Se creo checkpoint `runtime/checkpoints/server-restart-runtime-forensic-20260525T001657Z.json`.
+
+Archivos creados o modificados:
+- `runtime/checkpoints/server-restart-runtime-forensic-20260525T001657Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `/api/health`: HTTP 200, ~0.098888s.
+- `/api/agent/sessions`: HTTP 200, `sessions=[]`, ~0.002757s.
+- `/api/agent/projects`: HTTP 200, 3 proyectos, ~0.005684s.
+- `/api/cyberlace/health`: HTTP 200, `enabled=true`, `mode=monitor`, `transport=import`, ~0.007680s.
+- Proceso backend PID `2189464`: CPU ~0.7% poco despues del reinicio.
+
+Resultado real:
+- Servidor reiniciado y endpoints basicos responden rapido inmediatamente despues del reinicio.
+
+Blockers o riesgos:
+- El reinicio no corrige la regresion WebSocket/Werkzeug detectada; puede reaparecer cuando el navegador se reconecte.
+- Hay sockets viejos de Chrome en CLOSE-WAIT; conviene cerrar pestanas viejas o hacer recarga fuerte.
+- El estado zombi persistido del proyecto `sesion-20260524233805` no fue corregido por el reinicio.
+
+Punto de reanudacion:
+- Abrir una sola pestana fresca en `http://127.0.0.1:5001/` o hacer `Ctrl+Shift+R`. Luego aplicar reparaciones minimas: transporte Socket.IO estable, respuesta rapida de `/api/agent/session`, estados `preparing/running` y reconciliacion de zombi.
+
+
+## 2026-05-25T00:38:04.473300+00:00 - Revision viva de investigacion de agentes/runtime
+
+Solicitud recibida: actuar como revisor, revisar lo que los agentes investigan en vivo y sacar conclusiones para contexto.
+
+Acciones realizadas:
+- Se reviso `/api/agent/sessions`, logs recientes, estados persistidos y colas de `sesion-20260524210420` y `sesion-20260524233805`.
+- Se midio proceso backend y conexiones al puerto 5001.
+- Se revisaron failures, task history y decisiones CyberLACE recientes.
+- Se genero reporte `runtime/artifacts/live_reviewer_context_20260525T003804Z.md` y checkpoint `runtime/checkpoints/live-reviewer-context-20260525T003804Z.json`.
+
+Archivos creados o modificados:
+- `runtime/artifacts/live_reviewer_context_20260525T003804Z.md`
+- `runtime/checkpoints/live-reviewer-context-20260525T003804Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `/api/agent/sessions`: encontro sesion fallida para `sesion-20260524210420` con `control_plane_prepare_failed` y mensaje `objective does not contain executable work items`.
+- Estado local de `sesion-20260524210420`: `project_state.status=initialized`, `task_queue=[]`, sin archivos de producto.
+- Estado local de `sesion-20260524233805`: `project_state.status=blocked`, tarea sensible pendiente en `task_queue.json`.
+- `ps -p 2189464`: backend ~93.3% CPU bajo carga del navegador.
+- `ss -tanp | grep :5001`: multiples conexiones y `CLOSE-WAIT`.
+
+Resultado real:
+- El fallo actual de `sesion-20260524210420` es de planificacion/cierre ambiguo, no de Codex worker arrancando.
+- `sesion-20260524233805` esta bloqueado pero conserva tarea sensible pendiente; no debe ejecutarse como build normal.
+- El cuello de botella de carga UI/backend sigue activo.
+
+Blockers o riesgos:
+- `runtime-truth` expira bajo carga.
+- El sistema sigue vulnerable a polling/conexiones del navegador.
+- CyberLACE monitor registra falsos positivos de timestamps como credit_card_like.
+
+Punto de reanudacion:
+- Reparar primero carga/transportes y endpoints criticos; luego mejorar planner para convertir “terminar/cerrar proyecto” en tareas ejecutables o fallo claro; despues cerrar/aislar tarea sensible de `sesion-20260524233805`.
+
+
+## 2026-05-25T01:06:46Z - Segunda revision viva de agentes/runtime
+
+Solicitud recibida: revisar nuevamente lo que han hecho los agentes en vivo.
+
+Acciones realizadas:
+- Se leyo el resultado final de los agentes Avicenna y Bacon.
+- Se contrasto con `/api/agent/sessions`, `/api/agent/projects`, health, runtime-truth, logs, `ps`, `ss` y estados persistidos.
+- Se revisaron `project_state.json` y `task_queue.json` de `sesion-20260524210420` y `sesion-20260524233805`.
+- Se detecto checkpoint nuevo `runtime-state-repair-20260525T005750Z` en `sesion-20260524233805`.
+- Se creo reporte `runtime/artifacts/live_reviewer_second_pass_20260525T010646Z.md` y checkpoint `runtime/checkpoints/live-reviewer-second-pass-20260525T010646Z.json`.
+
+Archivos creados o modificados:
+- `runtime/artifacts/live_reviewer_second_pass_20260525T010646Z.md`
+- `runtime/checkpoints/live-reviewer-second-pass-20260525T010646Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `wait_agent` sobre Avicenna/Bacon: ambos completaron con findings.
+- `/api/agent/sessions`: sesion fallida para `sesion-20260524210420` por `control_plane_prepare_failed`.
+- `/api/agent/projects`: timeout tras 8s bajo carga.
+- `/api/health`, `/api/cyberlace/health`, `runtime-truth`: timeout tras 5s bajo carga.
+- `ps -p 2189464`: backend ~107% CPU.
+- `ss -tanp sport = :5001`: muchas conexiones `CLOSE-WAIT`.
+- `jq` de estados/colas de ambos proyectos.
+
+Resultado real:
+- Los agentes no dejaron evidencia de avance de producto en `sesion-20260524210420` ni `sesion-20260524233805`.
+- `sesion-20260524210420` fallo antes de arrancar worker porque el objetivo no contenia items ejecutables.
+- `sesion-20260524233805` fue reparado de `blocked` a `initialized`, pero conserva pendiente la tarea sensible de credenciales.
+- El backend sigue saturado y endpoints basicos expiran bajo carga viva.
+
+Blockers o riesgos:
+- No reintentar Codex normal mientras `/api/agent/projects` y health expiran.
+- La tarea sensible de `sesion-20260524233805` no debe ejecutarse como build normal.
+- `sesion-20260524210420` necesita planner de cierre/recovery para proyecto vacio o fallo claro.
+
+Punto de reanudacion:
+- Aplicar fixes de estabilidad en orden: transporte/polling, respuesta rapida de `/api/agent/session`, estado `preparing/running` con PID real, neutralizacion de tarea sensible y planner de cierre para proyectos vacios.
+
+
+## 2026-05-27T01:26:16Z - Recuperacion de contexto del repositorio
+
+Solicitud recibida: el usuario pidio recuperar el contexto del repo. Luego envio un mensaje incompleto: "construimos hicimos un".
+
+Acciones realizadas:
+- Se leyeron los rastros persistidos principales: `ULTIMO_CONTEXTO_CODEX.md`, ultimas entradas de `recuperacioncontexto.md`, `PLANS.md`, `AGENTS.md`, `runtime/task_history.jsonl`, `runtime/failures.jsonl` y `runtime/agent_tool_invocations.jsonl`.
+- Se revisaron checkpoints posteriores al ultimo historial canonico: `cyberlace-live-math-typewriter-20260526T021615Z.json`, `full-potential-runtime-extreme-smoke-20260525T232306Z.json` y `safety-learning-core-v1-20260525T222122Z.json`.
+- Se verifico estado actual del backend, observer, procesos, proyectos principales y sandboxes persistidos.
+- Se actualizo `ULTIMO_CONTEXTO_CODEX.md` con el punto real de reanudacion.
+
+Archivos creados o modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `./start.sh status`: backend detenido.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health`: `connection_failed`.
+- `python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 observer-status`: `connection_failed`.
+- `pgrep -af backend/app.py`: sin proceso backend vivo.
+- `jq` de checkpoints y estados de proyectos relevantes: exitoso.
+- `ps -p 3044330` y `curl http://127.0.0.1:5639/`: sandbox principal stale, PID inexistente y HTTP 000.
+- `ps -p 2738758` y `curl http://127.0.0.1:5604/`: sandbox de `sesion-20260524210420` stale, PID inexistente y HTTP 000.
+
+Resultado real de la validacion:
+- La memoria persistida fue recuperada, pero el runtime local no esta corriendo ahora mismo.
+- Hay evidencia historica de cierre scanner/typewriter y entrenamientos CyberLACE exitosos, pero los sandboxes `running=true` en JSON no representan procesos vivos actuales.
+
+Blockers o riesgos:
+- Backend apagado impide consultar Observer real y endpoints actuales.
+- `apply_patch` fallo por `bwrap: loopback: Failed RTM_NEWADDR`; esta actualizacion se escribio con ejecucion local escalada.
+- Existen muchos cambios no commiteados y artefactos sin rastrear; no se debe revertir ni blanquear sin confirmacion.
+- `sesion-20260524233805` permanece bloqueado por una tarea sensible de credenciales y debe tratarse como prueba de seguridad.
+
+Punto de reanudacion:
+- Completar la frase del usuario si queria pedir algo concreto despues de "construimos hicimos un".
+- Para continuar trabajo tecnico: arrancar `OPEN_BROWSER=0 ./start.sh start`, validar `/api/health`, luego regenerar o revalidar sandboxes reales de los proyectos completados que se quieran mostrar.
+
+
+## 2026-05-27T01:30:43Z - Arranque de aplicacion para revision humana
+
+Solicitud recibida: el usuario pidio arrancar la aplicacion y dijo que despues completaria mejor lo ultimo que se hizo: Safety Learning Core V1, harness/autopilot.
+
+Acciones realizadas:
+- Se ejecuto `env OPEN_BROWSER=0 ./start.sh start`.
+- Se compilo/uso `frontend/dist` y se inicio backend con PID `26119`.
+- Se validaron endpoints principales de salud, CyberLACE y Safety Learning.
+- Se genero checkpoint `runtime/checkpoints/server-start-for-review-20260527T013043Z.json`.
+
+Archivos creados o modificados:
+- `runtime/checkpoints/server-start-for-review-20260527T013043Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `/api/health`: HTTP 200, `ok=true`, `service=HABLA Observer IA`.
+- `/api/cyberlace/health`: HTTP 200, `enabled=true`, `engineAvailable=true`, `mode=monitor`, `transport=import`.
+- `/api/harness/safety-learning/status`: HTTP 200, `totalExperiences=14`, `blocked_correctly=14`, ultima experiencia `math-board-live-typewriter-smoke`.
+- `python3 orchestrator/agent_tools.py ... health`: `statusCode=200`, `ok=true`.
+- `/`: HTTP 200, 402 bytes.
+- `./start.sh status`: backend activo PID `26119`.
+
+Resultado real de la validacion:
+- La aplicacion principal quedo corriendo en `http://127.0.0.1:5001/`.
+- Safety Learning Core V1 responde y conserva 14 experiencias registradas.
+
+Blockers o riesgos:
+- No se abrio navegador automaticamente.
+- Esta validacion no reanima sandboxes stale de proyectos individuales; solo confirma la app principal.
+
+Punto de reanudacion:
+- El usuario abrira/revisara la app y completara el contexto de lo ultimo construido; revisar despues los cambios de Safety Learning Core V1 y harness/autopilot contra artefactos reales.
+
+
+## 2026-05-27T01:34:55Z - Revision de Harness Engineering Studio y CyberLACE Autonomous Security Training Loop
+
+Solicitud recibida: el usuario aclaro que lo ultimo nuevo fue la capa de testeos `HARNESS ENGINEERING STUDIO` y `CyberLACE Autonomous Security Training Loop`, y pidio revisarlo.
+
+Acciones realizadas:
+- Se revisaron checkpoints historicos de Harness Studio, training loop autonomo y Safety Learning Core V1.
+- Se leyeron secciones clave de `frontend/src/components/HarnessEngineeringStudio.jsx`, `backend/app.py`, `backend/safety_learning_core.py`, `tools/cyberlace_training_loop.py` y `docs/security/cyberlace_training_loop.md`.
+- Se valido el estado vivo del harness con endpoints y compilacion Python.
+- Se creo checkpoint de revision `runtime/checkpoints/harness-autopilot-review-20260527T013455Z.json`.
+
+Archivos creados o modificados:
+- `runtime/checkpoints/harness-autopilot-review-20260527T013455Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/app.py backend/safety_learning_core.py tools/cyberlace_training_loop.py`: OK.
+- `GET /api/harness/training/summary`: OK, retorna campañas/casos/reportes y `safetyLearning`.
+- `jq runtime/safety_learning/policy_model.json`: OK, `totalExperiences=14`, `score=14.0`.
+- `tail .runtime/logs/backend.log`: sin Traceback reciente del harness en el tramo revisado.
+
+Resultado real de la validacion:
+- La capa existe y esta cableada end-to-end: UI -> backend -> training loop -> runtime real -> reportes/checkpoints -> Safety Learning memory.
+- La evidencia actual dice que los 14 casos aprendidos quedaron `blocked_correctly` con `runtimeAction=QUARANTINE`.
+
+Blockers o riesgos:
+- El estado vivo del loop autonomo no es reanudable si cae el backend antes del checkpoint final.
+- Falta gate de concurrencia/budget para evitar varias campanas largas simultaneas.
+- `baseUrl` configurable desde payload debe restringirse si el servidor puede quedar expuesto.
+- `process_check` puede detectar workers ajenos y producir falsos fallos.
+- Documentacion y UI no estan completamente alineadas sobre modo continuo.
+
+Punto de reanudacion:
+- Prioridad tecnica recomendada: persistir estado por ciclo de autopilot y agregar gate de una campana activa/budget; despues alinear docs/UI del modo continuo.
+
+
+## 2026-05-27T02:24:54Z - Memoria persistente autopilot y ubicacion del E2E gate
+
+Solicitud recibida: el usuario acepto implementar la memoria persistente del autopilot y despues pregunto si habia un end-to-end y cual era.
+
+Acciones realizadas:
+- Se implemento persistencia de runs de CyberLACE autopilot en `runtime/cyberlace/training_runs/<run_id>.json` y eventos `.jsonl`.
+- Se agrego recuperacion de runs activos sin memoria como `interrupted`, `resumable=true`, con `resumeFromCycle` calculado desde resultados persistidos.
+- Se agrego `POST /api/harness/training/autopilot-resume/<run_id>`.
+- Se agrego gate de una campana activa: segundo `autopilot-start` devuelve HTTP 409 `training_run_active`.
+- Se creo prueba focalizada `backend/test_harness_autopilot_persistence.py`.
+- Se identifico el E2E gate principal del repo: `orchestrator/e2e_gate_harness.py`.
+
+Archivos creados o modificados:
+- `backend/app.py`
+- `backend/test_harness_autopilot_persistence.py`
+- `runtime/checkpoints/harness-autopilot-persistent-runs-20260527T022454Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/app.py backend/test_harness_autopilot_persistence.py`: OK.
+- `python3 -m unittest backend.test_harness_autopilot_persistence`: OK, 2 tests.
+- `env OPEN_BROWSER=0 ./start.sh restart`: OK, backend PID 43538.
+- `GET /api/health`: HTTP 200.
+- `GET /api/harness/training/summary`: HTTP 200, incluye `runs`.
+- `python3 orchestrator/agent_tools.py health`: `statusCode=200`, `ok=true`.
+- Lectura de `runtime/e2e_gate_harness/latest.json`: ultimo E2E gate `passed=true`, 15 nodos OK, 0 fallos.
+
+Resultado real de la validacion:
+- La memoria de autopilot ya no depende solo del dict en memoria y queda reanudable desde disco.
+- La aplicacion principal quedo corriendo en `http://127.0.0.1:5001/`.
+- El E2E gate real del repo es `orchestrator/e2e_gate_harness.py`; su ultimo reporte persistido es `runtime/e2e_gate_harness/e2e-gate-harness-sesion-20260518014728-jeego-en-3d-20260525T032247Z.json` y paso.
+
+Blockers o riesgos:
+- No se ejecuto de nuevo el E2E completo en esta respuesta; se identifico y se leyo el ultimo reporte persistido.
+- Queda pendiente endurecer `baseUrl` del training loop si el servidor se expone fuera de localhost.
+
+Punto de reanudacion:
+- Para correr el E2E gate: `python3 orchestrator/e2e_gate_harness.py --workspace . --project sesion-20260518014728-jeego-en-3d --base-url http://127.0.0.1:5001 --cycles 1 --fail-fast --verbose`.
+
+
+## 2026-05-27T02:28:01Z - Explicacion del E2E gate harness
+
+Solicitud recibida: el usuario pidio explicar como se ejecuta `orchestrator/e2e_gate_harness.py`, que hace, para que es, si es importante y que hace verdaderamente dentro del sistema.
+
+Acciones realizadas:
+- Se leyo `orchestrator/e2e_gate_harness.py` con numeros de linea.
+- Se reviso `runtime/e2e_gate_harness/latest.json` para confirmar ultimo resultado persistido.
+- No se ejecuto el E2E de nuevo; fue una explicacion basada en codigo y reporte existente.
+
+Archivos creados o modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- Lectura de `orchestrator/e2e_gate_harness.py`: OK.
+- Lectura de `runtime/e2e_gate_harness/latest.json`: OK, `passed=true`, 15 nodos OK, 0 fallos, reporte `runtime/e2e_gate_harness/e2e-gate-harness-sesion-20260518014728-jeego-en-3d-20260525T032247Z.json`.
+
+Resultado real de la validacion:
+- El script es el gate E2E formal de cierre para un proyecto existente; no crea proyectos y solo activa mutacion LACE si se usa `--apply-lace-gate`.
+
+Blockers o riesgos:
+- No se genero evidencia fresca del E2E en esta respuesta porque el usuario pidio explicacion, no ejecucion.
+
+Punto de reanudacion:
+- Si el usuario pide correrlo, usar: `python3 orchestrator/e2e_gate_harness.py --workspace . --project sesion-20260518014728-jeego-en-3d --base-url http://127.0.0.1:5001 --cycles 1 --fail-fast --verbose`.
+
+
+## 2026-05-27T02:35:58Z - Plan conceptual para testeador interno tipo multimetro
+
+Solicitud recibida: el usuario propuso crear un programa interno que pruebe el sistema completo como un multimetro, desde prompt de entrada hasta accion/respuesta, verificando imports, gates, loops, estados y conexiones internas sin dummies falsos.
+
+Acciones realizadas:
+- Se leyo `PLANS.md`, `ULTIMO_CONTEXTO_CODEX.md` y entradas recientes de `recuperacioncontexto.md`.
+- Se preparo un plan conceptual para una sonda de continuidad interna basada en `traceId`, evidencia en disco y probes no destructivos.
+- No se modifico codigo de producto.
+
+Archivos creados o modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- Lectura de `PLANS.md`: OK.
+- Lectura de `ULTIMO_CONTEXTO_CODEX.md`: OK.
+- Lectura reciente de `recuperacioncontexto.md`: OK.
+
+Resultado real de la validacion:
+- La idea encaja con la tesis del repo: evidencia persistida, tareas verificables y no depender de memoria implicita.
+- Nombre recomendado para el concepto: `HABLA CircuitProbe` o `HABLA Continuity Probe`.
+
+Blockers o riesgos:
+- Todavia no se implemento; requiere decidir alcance inicial para no convertirlo en otro E2E monolitico.
+
+Punto de reanudacion:
+- Si el usuario aprueba, implementar V1 como `orchestrator/continuity_probe.py` + `runtime/continuity_probe/` + comando `python3 orchestrator/continuity_probe.py --mode prompt-to-action --project <slug>`.
+
+## 2026-05-27T02:35:29Z - Preflight para publicar proyecto completo en GitHub
+
+Solicitud recibida: el usuario pidio revisar bien el repo y subir toda la informacion del proyecto completo al repositorio `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`, incluyendo la GUI y evidencia de lo construido.
+
+Acciones realizadas:
+- Se activo el flujo de publicacion GitHub y se confirmo que `origin` apunta al repositorio indicado.
+- Se reviso estado Git, plan, politica, memoria persistida, volumen de cambios, autenticacion `gh` y repo remoto publico con rama base `main`.
+- Se clasifico el alcance: 49 archivos modificados ya rastreados y 5445 archivos nuevos sin rastrear, principalmente `workspace/`, `runtime/`, `docs/`, `backend/`, `frontend/`, `scripts/` y `tools/`.
+- Se detectaron cuatro archivos vacios accidentales en la raiz (`=1760`, `=2110`, `=2685`, `=4080`) y se dejaron fuera del alcance previsto de staging.
+- Se redactaron prefijos de tokens sinteticos de CyberLACE que parecian secretos reales (`sk-`, `ghp_`, `AKIA`, bloque private key), manteniendo placeholders detectables por los guards.
+- Se creo checkpoint `runtime/checkpoints/github-publish-preflight-20260527T023529Z.json`.
+- Nota de herramienta: `apply_patch` fallo por `bwrap: loopback Failed RTM_NEWADDR`; esta memoria se escribio con ejecucion local escalada.
+
+Archivos creados o modificados:
+- `runtime/checkpoints/github-publish-preflight-20260527T023529Z.json`
+- `tools/cyberlace_training_loop.py`
+- `backend/editor_state.json`
+- fixtures/evidencias sinteticas en `runtime/cyberlace/` y `workspace/projects/`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 orchestrator/agent_tools.py health`: `statusCode=200`, `ok=true`.
+- `python3 orchestrator/agent_tools.py observer-status`: `statusCode=200`, `ok=true`, observer `idle`.
+- Escaneo estricto de formatos de secretos con `rg --pcre2`: sin coincidencias despues de redaccion.
+- Escaneo de archivos mayores a 95MB: sin coincidencias.
+- `python3 -B -m py_compile backend/app.py backend/agent_runtime.py backend/safety_learning_core.py backend/cyberlace_document_guard.py tools/cyberlace_training_loop.py orchestrator/agent_tools.py orchestrator/safe_process_env.py`: OK.
+- `python3 -m pytest backend/test_harness_autopilot_persistence.py backend/test_cyberlace_integration.py backend/test_cyberlace_routes.py backend/test_cyberlace_agent_runtime_hooks.py -q`: OK, 14 tests.
+- `npm run build` en `frontend`: OK, con warning no bloqueante de chunk mayor a 500 kB.
+
+Resultado real de la validacion:
+- El repo esta listo para staging/commit/push desde una rama de publicacion, con evidencia de preflight persistida.
+- La GUI compila y las pruebas enfocadas de Harness/CyberLACE pasan.
+- No se encontraron formatos obvios de secretos reales despues de redaccion de fixtures sinteticas.
+
+Blockers o riesgos:
+- El repositorio remoto es publico; aunque los datos de seguridad son sinteticos, conviene revisar el PR antes de merge.
+- El Observer reporta estado `idle`, pero su ultima decision historica seguia en `verifying_sandbox` por evidencia de sandbox incompleta en algun proyecto.
+- Hay gran volumen de evidencia (`runtime/` y `workspace/`); el push puede tardar.
+
+Punto de reanudacion:
+- Crear rama `codex/publish-complete-runtime-project`, stagear alcance completo excepto `=1760`, `=2110`, `=2685`, `=4080`, commitear, hacer push y abrir PR draft contra `main`.
+
+
+
+## 2026-05-27T02:44:17Z - Ajuste: CircuitProbe como Tkinter cliente-servidor
+
+Solicitud recibida: el usuario confirmo que el probador de continuidad debe ser una aplicacion Tkinter separada, orquestada tipo cliente-servidor, que devuelva estados internos y verifique cableado incluyendo Harness.
+
+Acciones realizadas:
+- Se reviso `orchestrator/agent_tools.py` para alinear el diseno con el contrato de herramientas internas existente.
+- Se revisaron endpoints backend relevantes en `backend/app.py` por busqueda: health, observer, harness/training, agent session, proyectos y SocketIO.
+- Se preparo plan de arquitectura: Tkinter cliente separado + motor servidor `ContinuityProbe` + endpoints + artefactos en `runtime/continuity_probe/`.
+
+Archivos creados o modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- Lectura de `orchestrator/agent_tools.py`: OK.
+- Busqueda de endpoints relevantes en `backend/app.py`: OK.
+
+Resultado real de la validacion:
+- La arquitectura compatible es cliente-servidor: Tkinter solo visualiza y dispara; backend/orchestrator ejecuta la sonda porque tiene acceso real a runtime, estados, harness, scanner e integrity.
+
+Blockers o riesgos:
+- No se implemento aun.
+- El modo activo debe usar proyecto canario y timeouts/budget para no crear efectos colaterales grandes.
+
+Punto de reanudacion:
+- Implementar V1 en estos archivos propuestos: `orchestrator/continuity_probe.py`, endpoints `/api/continuity-probe/*` en `backend/app.py`, GUI `tools/habla_circuit_probe_tk.py`, pruebas `backend/test_continuity_probe.py` o `orchestrator/test_continuity_probe.py`.

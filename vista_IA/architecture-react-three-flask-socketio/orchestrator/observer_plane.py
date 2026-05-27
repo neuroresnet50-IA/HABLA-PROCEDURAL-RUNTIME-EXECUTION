@@ -37,7 +37,7 @@ def _first_dict(values: Any) -> dict[str, Any] | None:
 
 
 def _active_sessions(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
-    active_statuses = {"queued", "starting", "running"}
+    active_statuses = {"queued", "preparing", "starting", "running"}
     sessions = []
     for session in _as_list(snapshot.get("sessions")):
         if not isinstance(session, dict):

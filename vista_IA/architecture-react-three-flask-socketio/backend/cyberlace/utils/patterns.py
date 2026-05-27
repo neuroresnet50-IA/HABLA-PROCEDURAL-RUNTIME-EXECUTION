@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 from typing import Dict, List, Tuple, Any
-import yaml
+from cyberlace.utils.yaml_loader import safe_load
 
 
 DEFAULT_PATTERNS = {
@@ -19,7 +19,7 @@ DEFAULT_PATTERNS = {
 def load_patterns(path: str | Path | None = None) -> Dict[str, Dict[str, Any]]:
     if path and Path(path).exists():
         with Path(path).open("r", encoding="utf-8") as f:
-            data = yaml.safe_load(f) or {}
+            data = safe_load(f) or {}
             return data.get("patterns", DEFAULT_PATTERNS)
     return DEFAULT_PATTERNS
 

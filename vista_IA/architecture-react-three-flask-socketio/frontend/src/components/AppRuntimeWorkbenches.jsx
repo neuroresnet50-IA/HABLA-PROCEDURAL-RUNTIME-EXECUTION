@@ -9,6 +9,7 @@ export default function AppRuntimeWorkbenches({
   editorExpanded,
   onSceneFocus,
   onWorkspaceClean,
+  onCyberlaceBlock,
   onRepairPresenceStart,
   onToggleEditorExpanded,
 }) {
@@ -16,7 +17,12 @@ export default function AppRuntimeWorkbenches({
     <>
       <SectionDividerMenu id="agents" label="05 Agentes" title="Agentes" />
 
-      <AgentStudio socketUrl={SOCKET_URL} onSceneFocus={onSceneFocus} onWorkspaceClean={onWorkspaceClean} />
+      <AgentStudio
+        socketUrl={SOCKET_URL}
+        onSceneFocus={onSceneFocus}
+        onWorkspaceClean={onWorkspaceClean}
+        onCyberlaceBlock={onCyberlaceBlock}
+      />
 
       <SectionDividerMenu id="editor" label="06 Editor" title="Editor de codigo">
         <button type="button" className="section-menu-primary" onClick={onToggleEditorExpanded}>

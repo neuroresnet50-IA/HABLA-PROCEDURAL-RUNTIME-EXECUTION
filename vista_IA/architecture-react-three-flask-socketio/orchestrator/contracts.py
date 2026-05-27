@@ -11,6 +11,7 @@ ALLOWED_TASK_STATUSES = frozenset({"pending", "running", "completed", "failed", 
 ALLOWED_PROJECT_STATUSES = frozenset(
     {
         "initialized",
+        "preparing",
         "running",
         "paused",
         "completed",
@@ -28,6 +29,18 @@ OPTIONAL_PROJECT_STATE_FIELDS = frozenset(
         "last_queue_clear_at",
         "last_queue_clear_force",
         "last_queue_clear_removed_task_ids",
+        "last_preparing_at",
+        "preparing_session_id",
+        "last_released_zombie_task_ids",
+        "last_released_zombie_at",
+        "last_released_zombie_reason",
+        "last_runtime_repair_at",
+        "last_runtime_repair_reason",
+        "last_cyberlace_block_at",
+        "last_cyberlace_block_reason",
+        "last_cyberlace_block_paths",
+        "last_cyberlace_denied_action",
+        "last_cyberlace_safe_alternative",
     }
 )
 
@@ -154,6 +167,44 @@ def validate_project_state(state: dict[str, Any]) -> dict[str, Any]:
             normalized["last_queue_clear_removed_task_ids"],
             "ProjectState.last_queue_clear_removed_task_ids",
             unique=True,
+        )
+    if "preparing_session_id" in normalized:
+        _expect_optional_non_empty_string(normalized["preparing_session_id"], "ProjectState.preparing_session_id")
+    if "last_preparing_at" in normalized:
+        _expect_datetime_string(normalized["last_preparing_at"], "ProjectState.last_preparing_at")
+    if "last_released_zombie_task_ids" in normalized:
+        _expect_string_list(
+            normalized["last_released_zombie_task_ids"],
+            "ProjectState.last_released_zombie_task_ids",
+            unique=True,
+        )
+    if "last_released_zombie_at" in normalized:
+        _expect_datetime_string(normalized["last_released_zombie_at"], "ProjectState.last_released_zombie_at")
+    if "last_released_zombie_reason" in normalized:
+        _expect_string(normalized["last_released_zombie_reason"], "ProjectState.last_released_zombie_reason")
+    if "last_runtime_repair_at" in normalized:
+        _expect_datetime_string(normalized["last_runtime_repair_at"], "ProjectState.last_runtime_repair_at")
+    if "last_runtime_repair_reason" in normalized:
+        _expect_string(normalized["last_runtime_repair_reason"], "ProjectState.last_runtime_repair_reason")
+    if "last_cyberlace_block_at" in normalized:
+        _expect_datetime_string(normalized["last_cyberlace_block_at"], "ProjectState.last_cyberlace_block_at")
+    if "last_cyberlace_block_reason" in normalized:
+        _expect_string(normalized["last_cyberlace_block_reason"], "ProjectState.last_cyberlace_block_reason")
+    if "last_cyberlace_block_paths" in normalized:
+        _expect_string_list(
+            normalized["last_cyberlace_block_paths"],
+            "ProjectState.last_cyberlace_block_paths",
+            unique=True,
+        )
+    if "last_cyberlace_denied_action" in normalized:
+        _expect_optional_non_empty_string(
+            normalized["last_cyberlace_denied_action"],
+            "ProjectState.last_cyberlace_denied_action",
+        )
+    if "last_cyberlace_safe_alternative" in normalized:
+        _expect_optional_mapping(
+            normalized["last_cyberlace_safe_alternative"],
+            "ProjectState.last_cyberlace_safe_alternative",
         )
     return normalized
 

@@ -1,0 +1,48 @@
+{
+  "timestamp": "2026-05-25T00:16:57.821529+00:00",
+  "event": "SERVER_RESTART_AFTER_RUNTIME_FORENSIC_INVESTIGATION",
+  "status": "restarted_and_basic_health_ok",
+  "backendPid": 2189464,
+  "url": "http://127.0.0.1:5001/",
+  "command": "OPEN_BROWSER=0 ./start.sh restart",
+  "validations": [
+    {
+      "endpoint": "/api/health",
+      "http": 200,
+      "timeSeconds": 0.098888,
+      "result": "ok"
+    },
+    {
+      "endpoint": "/api/agent/sessions",
+      "http": 200,
+      "timeSeconds": 0.002757,
+      "result": "sessions=[]"
+    },
+    {
+      "endpoint": "/api/agent/projects",
+      "http": 200,
+      "timeSeconds": 0.005684,
+      "result": "3 projects returned"
+    },
+    {
+      "endpoint": "/api/cyberlace/health",
+      "http": 200,
+      "timeSeconds": 0.00768,
+      "result": "enabled=true mode=monitor transport=import"
+    },
+    {
+      "command": "ps -p 2189464 -o ...",
+      "result": "backend CPU about 0.7% shortly after restart"
+    },
+    {
+      "command": "ss -tanp | grep :5001",
+      "result": "backend listening; old Chrome CLOSE-WAIT sockets still visible on browser side"
+    }
+  ],
+  "residualRisks": [
+    "WebSocket/Werkzeug regression is not fixed by restart and can reappear when browser reconnects.",
+    "Old browser tabs may still hold stale sockets; hard refresh or closing tabs is still required.",
+    "Persistent zombie project state for sesion-20260524233805 was not repaired by this restart."
+  ],
+  "codeChangesApplied": false
+}

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-const SECTION_MENU_ITEMS = {
+export const SECTION_MENU_ITEMS = {
   runtime: ["Estado del runtime", "Modo autonomo", "Escenas activas", "Reiniciar vista"],
   audit: ["Auditar mapa", "Hallazgos por severidad", "Navegar a errores", "Reporte de coherencia"],
   observer: ["Decision actual", "Memoria", "Behavior tree", "Timeline"],
@@ -13,7 +13,7 @@ const SECTION_MENU_ITEMS = {
   layers: ["Vista por capa", "Filtrar capa", "Seleccionar bloque", "Orden visual"],
 };
 
-const SECTION_MENU_COPY = {
+export const SECTION_MENU_COPY = {
   runtime: "Panel operativo de estado, escena activa y control superior.",
   audit: "Herramientas de revision para coherencia del mapa y hallazgos navegables.",
   observer: "Lectura de decisiones, memoria y eventos del plano Observer.",
@@ -39,7 +39,7 @@ export default function SectionDividerMenu({
   const summary = SECTION_MENU_COPY[id] || "Menu contextual de la seccion.";
 
   return (
-    <div className={`gemini-section-divider ${open ? "is-open" : ""} align-${align}`} onMouseLeave={() => setOpen(false)}>
+    <div id={`section-${id}`} className={`gemini-section-divider ${open ? "is-open" : ""} align-${align}`} onMouseLeave={() => setOpen(false)}>
       <button
         type="button"
         className="gemini-section-divider-button"

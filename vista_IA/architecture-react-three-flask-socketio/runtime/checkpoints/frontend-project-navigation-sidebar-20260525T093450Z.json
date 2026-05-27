@@ -1,0 +1,38 @@
+{
+  "kind": "frontend_project_navigation_sidebar_checkpoint",
+  "createdAt": "2026-05-25T09:34:50.707065+00:00",
+  "scope": "Functional sidebar menu between 01 Runtime and 03 Entrada plus safe project archive endpoint",
+  "filesChanged": [
+    "backend/app.py",
+    "frontend/src/App.jsx",
+    "frontend/src/App.css",
+    "frontend/src/components/SectionDividerMenu.jsx",
+    "frontend/src/components/RuntimeDashboardSidebar.jsx"
+  ],
+  "features": [
+    "Harness Engineering Studio button added as first sidebar action",
+    "PROYECTOS block lists real /api/agent/projects entries",
+    "Create project form calls existing POST /api/agent/projects with bootstrapProject=true",
+    "Select project focuses the workspace scene and editor section",
+    "Archive action moves project to runtime/backups/archived_projects instead of deleting",
+    "Protected projects are blocked from archive in UI and backend",
+    "Sidebar navigation lists section buttons 01 Runtime through 09 Capas with expandable internal menus",
+    "SectionDividerMenu exposes DOM anchors section-<id> for direct navigation"
+  ],
+  "protectedProjects": [
+    "sesion-20260524210420",
+    "sesion-20260524233805"
+  ],
+  "validation": [
+    "python3 -B -m py_compile backend/app.py backend/agent_runtime.py: passed",
+    "npm --prefix frontend run build: passed",
+    "OPEN_BROWSER=0 ./start.sh restart: passed",
+    "GET /api/health: ok",
+    "GET /api/agent/projects: ok, protected projects present",
+    "POST protected archive: 403 protected_project",
+    "POST create smoke project: 200 ok",
+    "POST archive smoke project: 200 ok, backup created",
+    "Final active project list has no ui-menu-smoke project left",
+    "Backend log final: no Traceback/500/SyntaxError/Exception matches"
+  ]
+}

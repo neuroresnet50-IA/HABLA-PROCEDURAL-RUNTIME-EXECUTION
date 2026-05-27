@@ -1,0 +1,111 @@
+{
+  "changes": {
+    "agentRuntime": "Blocks before worker creation with status=blocked, pid=null, command=[], returncode=126; emits modal events asynchronously for fast API response.",
+    "documentGuard": "Scans requirement/task/directive text, referenced local files, workspace text documents, external path references, and fails closed on unscannable documents.",
+    "environment": "Child process environment is allowlisted and filters passwords, tokens, API keys, credentials, database URLs, SSH/GitHub/GitLab/AWS/etc.",
+    "frontend": "Large red WARNING modal is triggered by CyberLACE block events.",
+    "sandbox": "Default inner Codex sandbox changed to workspace-write; danger-full-access/full-auto disabled unless explicitly allowed by env.",
+    "worker": "workers.codex_worker repeats CyberLACE document guard before creating the child Codex process."
+  },
+  "cyberlaceGlobalMode": "monitor",
+  "hardGateMode": "always_enforced_for_document_runtime_preflight",
+  "latestBlockedSession": {
+    "checkpoint": "session-cyberlace-document-blocked-20260525T023420Z",
+    "command": [],
+    "pid": null,
+    "project": "sesion-20260524233805",
+    "returncode": 126,
+    "sessionId": "agent-ed0ff1087b"
+  },
+  "protectedProjects": [
+    "sesion-20260524210420",
+    "sesion-20260524233805"
+  ],
+  "reason": "cyberlace_document_hard_gate_final",
+  "redactionBackups": [
+    "runtime/backups/cyberlace_redaction/20260525T015742Z",
+    "runtime/backups/cyberlace_workspace_redaction/20260525T021448Z"
+  ],
+  "timestamp": "20260525T024358Z",
+  "validations": [
+    {
+      "check": "python3 -B -m py_compile backend/app.py backend/agent_runtime.py backend/cyberlace_document_guard.py orchestrator/*.py workers/codex_worker.py",
+      "ok": true
+    },
+    {
+      "bundle": "frontend/dist/assets/index-ft-ywvkd.js",
+      "check": "npm --prefix frontend run build",
+      "ok": true
+    },
+    {
+      "backendPid": 2960707,
+      "check": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true
+    },
+    {
+      "check": "GET /api/health",
+      "ok": true
+    },
+    {
+      "check": "GET /api/agent/sessions",
+      "latestError": "cyberlace_sensitive_document_blocked",
+      "latestStatus": "blocked",
+      "ok": true
+    },
+    {
+      "check": "GET /api/agent/projects",
+      "ok": true,
+      "protectedProjectsPresent": [
+        "sesion-20260524210420",
+        "sesion-20260524233805"
+      ]
+    },
+    {
+      "check": "GET /api/cyberlace/health",
+      "mode": "monitor",
+      "ok": true,
+      "transport": "import"
+    },
+    {
+      "canReleaseZombie": false,
+      "check": "GET /api/projects/sesion-20260524210420/runtime-truth",
+      "ok": true,
+      "verdict": "idle"
+    },
+    {
+      "canReleaseZombie": false,
+      "check": "GET /api/projects/sesion-20260524233805/runtime-truth",
+      "ok": true,
+      "projectStatus": "blocked",
+      "verdict": "idle"
+    },
+    {
+      "check": "GET /socket.io/?EIO=4&transport=polling",
+      "http": 200,
+      "ok": true,
+      "upgrades": []
+    },
+    {
+      "check": "POST /api/agent/session sensitive fixture",
+      "command": [],
+      "elapsedSeconds": 1.828,
+      "evidenceSamples": "redacted",
+      "ok": true,
+      "pid": null,
+      "returncode": 126,
+      "runtimeAction": "QUARANTINE",
+      "status": "blocked"
+    },
+    {
+      "check": "worker internal guard with workspace .env",
+      "childPid": null,
+      "ok": true,
+      "resultFileCreated": false,
+      "returncode": 126
+    },
+    {
+      "check": "backend.log no Traceback/500/websocket",
+      "ok": true
+    }
+  ]
+}

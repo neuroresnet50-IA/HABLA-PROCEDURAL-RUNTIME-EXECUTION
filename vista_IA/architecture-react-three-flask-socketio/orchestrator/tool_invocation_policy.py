@@ -22,7 +22,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
     from agent_tools import run_command  # type: ignore
 
 
-DEFAULT_TOOL_TIMEOUT_SECONDS = 2
+DEFAULT_TOOL_TIMEOUT_SECONDS = 1
 TOOL_LOG_NAME = "tool_invocation_policy.jsonl"
 
 
@@ -42,7 +42,7 @@ class ToolRunner(Protocol):
 class AgentToolsRunner:
     """Default runner backed by orchestrator.agent_tools."""
 
-    base_url: str = "http://127.0.0.1:5000"
+    base_url: str = "http://127.0.0.1:5001"
     timeout_seconds: int = DEFAULT_TOOL_TIMEOUT_SECONDS
 
     def invoke(
@@ -53,13 +53,20 @@ class AgentToolsRunner:
         dry_run: bool = False,
         confirm: str = "",
     ) -> dict[str, Any]:
+        timeout_seconds = self.timeout_seconds
+        if tool == "observer-status":
+            configured = str(os.environ.get("HABLA_OBSERVER_STATUS_TIMEOUT_SECONDS") or "1").strip()
+            try:
+                timeout_seconds = max(1, min(timeout_seconds, int(float(configured))))
+            except ValueError:
+                timeout_seconds = min(timeout_seconds, 1)
         args = SimpleNamespace(
             command=tool,
             project=project,
             dry_run=dry_run,
             confirm=confirm,
             base_url=self.base_url,
-            timeout_seconds=self.timeout_seconds,
+            timeout_seconds=timeout_seconds,
             full=False,
         )
         status_code, payload = run_command(args)
@@ -162,11 +169,18 @@ class ToolInvocationPolicy:
         try:
             payload = self.runner.invoke(tool, project=self.project_slug, dry_run=dry_run)
         except Exception as exc:  # Tools must leave evidence instead of crashing task execution.
+            message = str(exc)
+            timed_out = "timed out" in message.lower() or type(exc).__name__ in {"TimeoutError", "socket.timeout"}
             payload = {
                 "statusCode": 0,
                 "ok": False,
-                "error": type(exc).__name__,
-                "message": str(exc),
+                "error": "internal_tool_timeout" if timed_out else type(exc).__name__,
+                "message": (
+                    f"Optional internal tool {tool} timed out; continuing runtime startup."
+                    if timed_out
+                    else message
+                ),
+                "timedOut": timed_out,
             }
         invocation = {
             "schema_version": 1,
@@ -182,6 +196,7 @@ class ToolInvocationPolicy:
             "summary": _compact_tool_payload(payload),
             "artifactPath": payload.get("artifactPath") or payload.get("reportPath"),
             "error": payload.get("error"),
+            "timedOut": bool(payload.get("timedOut")),
         }
         self._persist_invocation(invocation)
         return invocation
@@ -299,7 +314,10 @@ def _warnings(invocations: list[dict[str, Any]]) -> list[str]:
     warnings: list[str] = []
     for item in invocations:
         if item.get("ok") is not True:
-            warnings.append(f"{item.get('phase')}:{item.get('tool')} did not return ok=true")
+            if item.get("timedOut"):
+                warnings.append(f"{item.get('phase')}:{item.get('tool')} timed out; continuing")
+            else:
+                warnings.append(f"{item.get('phase')}:{item.get('tool')} did not return ok=true")
     active = max((_active_findings_count(item) for item in invocations), default=0)
     if active:
         warnings.append(f"Observer findings active: {active}")

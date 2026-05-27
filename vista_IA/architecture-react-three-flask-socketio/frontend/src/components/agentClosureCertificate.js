@@ -3,6 +3,7 @@ export const CLOSED_AGENT_STATUSES = new Set(["completed", "failed", "stopped", 
 export function formatAgentStatus(status) {
   return {
     queued: "En cola",
+    preparing: "Preparando",
     starting: "Arrancando",
     running: "Ejecutando",
     completed: "Completado",

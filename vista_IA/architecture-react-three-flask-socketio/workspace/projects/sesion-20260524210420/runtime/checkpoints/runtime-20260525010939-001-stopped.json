@@ -1,0 +1,571 @@
+{
+  "checkpoint_key": "runtime-20260525010939-001-stopped",
+  "created_at": "2026-05-25T01:11:16Z",
+  "payload": {
+    "reason": "stop_requested",
+    "task": {
+      "checkpoint_key": "runtime-20260525010939-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json",
+        "runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json",
+        "runtime/complexity_estimate.json"
+      ],
+      "goal": "Validacion smoke de runtime HABLA/Codex: inspecciona LACE.md, LACE_LOG.md y docs/habla-session.md; no modifiques archivos, emite evidencia breve y termina.",
+      "id": "RUNTIME-20260525010939-001",
+      "max_retries": 2,
+      "mode": "smoke",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 600,
+      "title": "Validacion smoke de runtime HABLA/Codex: inspecciona LACE.md, LACE_LOG.md",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "task_result": {
+      "blockers": [
+        "Worker process exited with return code -15"
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "RUNTIME-20260525010939-001",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_f43c2652ddca43c9b5ac8ef4c91bdac0",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 51,
+            "pattern": "credit_card_like",
+            "sample": "20260525010939",
+            "start": 37,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 697,
+            "pattern": "credit_card_like",
+            "sample": "20260525010939",
+            "start": 683,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 854,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 840,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 2900,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 2886,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 3053,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 3039,
+            "type": "sensitive_output"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260525010939",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 697,
+              "pattern": "credit_card_like",
+              "sample": "20260525010939",
+              "start": 683,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 854,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 840,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 2900,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 2886,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 3053,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 3039,
+              "type": "sensitive_output"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear LACE detect\u00f3 1 se\u00f1ales cr\u00edticas.",
+          "risk_score": 100,
+          "severity": "CRITICAL"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear LACE detect\u00f3 1 se\u00f1ales cr\u00edticas.",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 100.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-33161f4b63",
+        "severity": "CRITICAL",
+        "stage": "output",
+        "timestamp": "2026-05-25T01:11:12Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_4906189c523f487da70e9c615c7fa8e9",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 245,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 231,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 310,
+            "pattern": "credit_card_like",
+            "sample": "20260525010939",
+            "start": 296,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 659,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 645,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 819,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 805,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 1231,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 1217,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 7245,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 7231,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 7403,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 7389,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8702,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 8688,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8865,
+            "pattern": "credit_card_like",
+            "sample": "20260524210420",
+            "start": 8851,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8907,
+            "pattern": "credit_card_like",
+            "sample": "20260525010939",
+            "start": 8893,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8983,
+            "pattern": "credit_card_like",
+            "sample": "20260525010939",
+            "start": 8969,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 245,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 231,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 310,
+              "pattern": "credit_card_like",
+              "sample": "20260525010939",
+              "start": 296,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 659,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 645,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 819,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 805,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 1231,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 1217,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7245,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 7231,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7403,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 7389,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8702,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 8688,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8865,
+              "pattern": "credit_card_like",
+              "sample": "20260524210420",
+              "start": 8851,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8907,
+              "pattern": "credit_card_like",
+              "sample": "20260525010939",
+              "start": 8893,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8983,
+              "pattern": "credit_card_like",
+              "sample": "20260525010939",
+              "start": 8969,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-33161f4b63",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-05-25T01:09:42Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420/runtime/artifacts/tool_invocations/RUNTIME-20260525010939-001-postflight-20260525T011113Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "sesion-20260524210420",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260525010939-001",
+            "timedOut": true,
+            "timestamp": "2026-05-25T01:11:12Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "postflight",
+            "projectSlug": "sesion-20260524210420",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "sesion-20260524210420",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 0,
+                "totalFindings": 0
+              }
+            },
+            "taskId": "RUNTIME-20260525010939-001",
+            "timedOut": false,
+            "timestamp": "2026-05-25T01:11:13Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "sesion-20260524210420",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260525010939-001",
+        "taskResult": {
+          "blocker_count": 1,
+          "completed": false,
+          "validation_passed": false
+        },
+        "timestamp": "2026-05-25T01:11:13Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420/runtime/artifacts/tool_invocations/RUNTIME-20260525010939-001-preflight-20260525T010942Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "sesion-20260524210420",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": false,
+                "incident": null,
+                "state": "idle"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "RUNTIME-20260525010939-001",
+            "timedOut": false,
+            "timestamp": "2026-05-25T01:09:41Z",
+            "tool": "observer-status"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "sesion-20260524210420",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260525010939-001",
+        "timestamp": "2026-05-25T01:09:42Z",
+        "warnings": []
+      },
+      "recovery_preview": null,
+      "task_completion_gate": null
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.221487,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-25T01:11:11Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 503
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 3
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/complexity_estimate.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 972
+          }
+        ],
+        "found": [
+          "runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json",
+          "runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json",
+          "runtime/complexity_estimate.json"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260525010939-001",
+      "validation_passed": false,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Any, Dict
-import yaml
+from cyberlace.utils.yaml_loader import safe_load
 
 
 DEFAULT_CONFIG = {
@@ -40,7 +40,7 @@ def load_yaml(path: str | Path) -> Dict[str, Any]:
     if not p.exists():
         return {}
     with p.open("r", encoding="utf-8") as f:
-        return yaml.safe_load(f) or {}
+        return safe_load(f) or {}
 
 
 def load_config(path: str | Path | None = None) -> Dict[str, Any]:

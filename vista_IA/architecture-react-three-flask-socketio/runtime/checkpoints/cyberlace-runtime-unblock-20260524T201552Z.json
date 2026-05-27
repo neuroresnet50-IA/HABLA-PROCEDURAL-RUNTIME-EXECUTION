@@ -1,0 +1,80 @@
+{
+  "changes": [
+    {
+      "change": "Changed CYBERLACE_MODE from enforce to monitor while keeping CYBERLACE_ENABLED=true.",
+      "file": "backend/.env"
+    },
+    {
+      "change": "Panel now starts collapsed and only expands evidence on demand.",
+      "file": "frontend/src/components/CyberLACEPanel.jsx"
+    },
+    {
+      "change": "Collapsed CyberLACE panel uses compact spacing.",
+      "file": "frontend/src/App.css"
+    }
+  ],
+  "nextStep": "Refresh browser hard, use normal UI in monitor mode, and run scripts/test_cyberlace_live_credentials.sh for controlled enforce proof.",
+  "rootCause": "CYBERLACE_MODE=enforce was too aggressive as global startup mode for normal UI operation, and CyberLACEPanel rendered a large evidence block before the input section.",
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:5001/",
+    "cyberlaceEnabled": true,
+    "cyberlaceMode": "monitor",
+    "testScriptStillEnforces": true
+  },
+  "status": "completed",
+  "task": "Recover UI/runtime after CyberLACE live enforce setup",
+  "timestamp": "2026-05-24T20:15:52Z",
+  "validation": [
+    {
+      "command": "npm --prefix frontend run build",
+      "ok": true
+    },
+    {
+      "command": "python3 -B -m py_compile backend/cyberlace_integration.py backend/agent_runtime.py backend/cyberlace/utils/yaml_loader.py",
+      "ok": true
+    },
+    {
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true
+    },
+    {
+      "command": "curl -sS http://127.0.0.1:5001/api/cyberlace/health",
+      "engineAvailable": true,
+      "mode": "monitor",
+      "ok": true
+    },
+    {
+      "bytes": 402,
+      "command": "curl -sS -o /tmp/habla_index_after_fix.html -w \"%{http_code} %{size_download}\" http://127.0.0.1:5001/",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "bytes": 473225,
+      "command": "curl -sS -o /tmp/habla_bundle_after_fix.js -w \"%{http_code} %{size_download}\" http://127.0.0.1:5001/assets/index-BfHyBXA9.js",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health",
+      "ok": true,
+      "statusCode": 200
+    },
+    {
+      "artifact": "runtime/artifacts/cyberlace_ui_monitor_after_fix_1440x1000.png",
+      "command": "google-chrome --headless=new --no-sandbox --disable-gpu --window-size=1440,1000 --screenshot=runtime/artifacts/cyberlace_ui_monitor_after_fix_1440x1000.png http://127.0.0.1:5001/",
+      "ok": true
+    },
+    {
+      "blockingChecks": [
+        "memory_guard",
+        "output_guard"
+      ],
+      "command": "PYTHON_BIN=/home/neurodriver/ferrari_env/bin/python scripts/test_cyberlace_live_credentials.sh",
+      "ok": true,
+      "redactionChecks": [
+        "tool_guard"
+      ]
+    }
+  ]
+}

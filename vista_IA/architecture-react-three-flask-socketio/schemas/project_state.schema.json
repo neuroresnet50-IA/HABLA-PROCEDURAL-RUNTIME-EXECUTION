@@ -30,6 +30,7 @@
       "type": "string",
       "enum": [
         "initialized",
+        "preparing",
         "running",
         "paused",
         "completed",
@@ -131,6 +132,39 @@
         "type": "string",
         "minLength": 1
       }
+    },
+    "last_preparing_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "preparing_session_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1
+    },
+    "last_released_zombie_task_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "last_released_zombie_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_released_zombie_reason": {
+      "type": "string"
+    },
+    "last_runtime_repair_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_runtime_repair_reason": {
+      "type": "string"
     }
   }
 }

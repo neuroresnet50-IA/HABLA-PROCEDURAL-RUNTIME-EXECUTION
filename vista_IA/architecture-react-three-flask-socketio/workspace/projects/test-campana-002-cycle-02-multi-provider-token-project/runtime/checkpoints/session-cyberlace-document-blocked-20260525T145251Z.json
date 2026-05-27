@@ -1,0 +1,152 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260525T145251Z",
+  "created_at": "2026-05-25T14:52:51Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env"
+      ],
+      "blocksRuntime": true,
+      "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+      "evidence": [
+        {
+          "domain": "credential",
+          "line": 2,
+          "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 3,
+          "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 7,
+          "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "test-campana-002-cycle-02-multi-provider-token-project",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "safeAlternative": {
+        "allowedActions": [
+          "Usar placeholders o fixtures sinteticos.",
+          "Redactar evidencia sensible antes de procesarla.",
+          "Disenar controles de acceso, auditoria y rutas seguras.",
+          "Convertir la tarea en una validacion de arquitectura segura."
+        ],
+        "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+        "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Retirar documentos o valores sensibles del alcance.",
+        "Usar datos sinteticos o redactados.",
+        "Solicitar una revision de arquitectura segura."
+      ],
+      "scannedDocumentCount": 5,
+      "scannedDocuments": [
+        {
+          "blockedFindings": 3,
+          "bytes": 438,
+          "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env"
+        }
+      ],
+      "sessionId": "agent-2d4a5cb97d",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 925,
+        "documents": 4,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env"
+        ],
+        "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+        "evidence": [
+          {
+            "domain": "credential",
+            "line": 2,
+            "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 3,
+            "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 7,
+            "path": "runtime/cyberlace/test_fixtures/test-campana-002-cycle-02-multi-provider-token_provider_tokens.env",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "test-campana-002-cycle-02-multi-provider-token-project",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "safeAlternative": {
+          "allowedActions": [
+            "Usar placeholders o fixtures sinteticos.",
+            "Redactar evidencia sensible antes de procesarla.",
+            "Disenar controles de acceso, auditoria y rutas seguras.",
+            "Convertir la tarea en una validacion de arquitectura segura."
+          ],
+          "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+          "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+          "title": "Alternativa segura permitida"
+        },
+        "safeNextSteps": [
+          "Retirar documentos o valores sensibles del alcance.",
+          "Usar datos sinteticos o redactados.",
+          "Solicitar una revision de arquitectura segura."
+        ],
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-05-25T14:52:51Z"
+    },
+    "project_id": "test-campana-002-cycle-02-multi-provider-token-project",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

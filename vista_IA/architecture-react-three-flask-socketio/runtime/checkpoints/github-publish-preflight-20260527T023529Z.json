@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-05-27T02:35:29Z",
+  "task_id": "GITHUB-PUBLISH-PREFLIGHT-20260527",
+  "status": "validated_pending_git_publish",
+  "repository": {
+    "remote": "https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION.git",
+    "nameWithOwner": "neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION",
+    "defaultBranch": "main",
+    "isPrivate": false
+  },
+  "scope": {
+    "intent": "Subir el proyecto completo y su evidencia al repositorio GitHub indicado.",
+    "tracked_modified_files_before_staging": 49,
+    "untracked_files_before_staging": 5445,
+    "untracked_top_level": {
+      "workspace": 3790,
+      "runtime": 1618,
+      "docs": 19,
+      "backend": 7,
+      "scripts": 3,
+      "frontend": 3,
+      "tools": 1,
+      "orchestrator": 1
+    },
+    "excluded_from_staging": [
+      "=1760",
+      "=2110",
+      "=2685",
+      "=4080"
+    ],
+    "excluded_reason": "Archivos vacios accidentales, sin contenido de proyecto."
+  },
+  "security_preflight": {
+    "redacted_synthetic_secret_prefixes": true,
+    "secret_scan_command": "rg --pcre2 --hidden ... secret-format patterns",
+    "secret_scan_exit_code": 1,
+    "secret_scan_result": "no matches after synthetic fixture redaction",
+    "large_file_scan_result": "no files above 95MB"
+  },
+  "internal_tools": [
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "statusCode": 200,
+      "ok": true
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py observer-status",
+      "statusCode": 200,
+      "ok": true,
+      "observerState": "idle",
+      "lastDecisionState": "verifying_sandbox"
+    }
+  ],
+  "validation": [
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/agent_runtime.py backend/safety_learning_core.py backend/cyberlace_document_guard.py tools/cyberlace_training_loop.py orchestrator/agent_tools.py orchestrator/safe_process_env.py",
+      "ok": true
+    },
+    {
+      "command": "python3 -m pytest backend/test_harness_autopilot_persistence.py backend/test_cyberlace_integration.py backend/test_cyberlace_routes.py backend/test_cyberlace_agent_runtime_hooks.py -q",
+      "ok": true,
+      "tests": 14
+    },
+    {
+      "command": "npm run build",
+      "cwd": "frontend",
+      "ok": true,
+      "warning": "Vite reported a chunk above 500 kB after minification."
+    }
+  ],
+  "blockers": [],
+  "tooling_notes": [
+    "apply_patch failed because sandbox helper failed with bwrap: loopback Failed RTM_NEWADDR; memory/checkpoint were written with an escalated local script."
+  ],
+  "next_recommendation": "Create a publish branch from main, stage the intended project files except empty accidental root files, commit, push, and open a draft PR."
+}

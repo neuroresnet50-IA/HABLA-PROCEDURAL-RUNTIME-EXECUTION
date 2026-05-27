@@ -1,0 +1,63 @@
+{
+  "checkpoint": "habla-safe-alternative-accept-context",
+  "createdAt": "2026-05-25T11:32:12Z",
+  "scope": "frontend-cyberlace-safe-guidance",
+  "status": "validated",
+  "summary": "Se agrego boton para aceptar la alternativa segura como contexto autorizado sin ejecutar automaticamente.",
+  "changes": [
+    {
+      "path": "frontend/src/App.jsx",
+      "details": [
+        "El panel verde ahora incluye el boton Aceptar alternativa segura.",
+        "El boton emite el evento habla:safe-alternative-accepted con requirement, projectSlug, sourceSessionId y title.",
+        "Al aceptar, se cierra el bloqueo visible y se enfoca AgentStudio."
+      ]
+    },
+    {
+      "path": "frontend/src/components/AgentStudio.jsx",
+      "details": [
+        "Escucha habla:safe-alternative-accepted.",
+        "Carga la alternativa segura como nueva orden con prefijo [CONTEXTO AUTORIZADO CYBERLACE].",
+        "No ejecuta automaticamente; deja la orden lista para revision del usuario."
+      ]
+    },
+    {
+      "path": "frontend/src/App.css",
+      "details": [
+        "Agrega estilos del boton verde de aceptacion.",
+        "Mantiene el panel verde como modal lateral derecho estable."
+      ]
+    },
+    {
+      "path": "docs/security/habla_bloqueo_con_alternativa_segura.md",
+      "details": [
+        "Documenta la nueva accion de aceptar alternativa segura como contexto autorizado."
+      ]
+    }
+  ],
+  "validations": [
+    {
+      "command": "rg -n \"Aceptar alternativa segura|habla:safe-alternative-accepted|CONTEXTO AUTORIZADO CYBERLACE|cyberlace-safe-accept-button\" frontend/src/App.jsx frontend/src/App.css frontend/src/components/AgentStudio.jsx",
+      "result": "passed"
+    },
+    {
+      "command": "npm --prefix frontend run build",
+      "result": "passed"
+    },
+    {
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "result": "passed"
+    },
+    {
+      "command": "curl -sS --max-time 5 http://127.0.0.1:5001/api/health",
+      "result": "passed"
+    }
+  ],
+  "safety": {
+    "backendChanged": false,
+    "runtimeSecurityPolicyChanged": false,
+    "autoExecution": false,
+    "dangerousActionStillBlocked": true,
+    "safeAlternativeRequiresUserReview": true
+  }
+}

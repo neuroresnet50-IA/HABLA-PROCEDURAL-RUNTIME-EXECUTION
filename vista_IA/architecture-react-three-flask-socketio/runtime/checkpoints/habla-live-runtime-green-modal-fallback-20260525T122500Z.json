@@ -1,0 +1,38 @@
+{
+  "checkpoint": "habla-live-runtime-green-modal-fallback",
+  "createdAt": "2026-05-25T12:25:00Z",
+  "status": "validated",
+  "problem": "En estado runtime vivo el modal rojo aparecia pero el verde no, porque algunos eventos CyberLACE llegan incompletos sin safeAlternative/securityBlock completo.",
+  "fix": [
+    "App.jsx ahora acepta securityBlock, security_block, decision o cyberlace.decisions[0].",
+    "Si el evento no trae safeAlternative, se genera una alternativa segura fallback basada en el texto del bloqueo.",
+    "Para bloqueos financieros con banco/CVV/PIN/tarjeta/transferencia se muestra alternativa segura PCI-style.",
+    "El verde se muestra inline dentro del warning rojo y tambien como panel lateral."
+  ],
+  "files": [
+    "frontend/src/App.jsx"
+  ],
+  "validation": {
+    "scenario": "Evento vivo incompleto sin safeAlternative, similar a captura del usuario.",
+    "redModal": true,
+    "inlineGreen": true,
+    "sideGreen": true,
+    "acceptInline": true,
+    "acceptSide": true,
+    "fallbackTextIncludes": [
+      "CVV",
+      "PIN",
+      "tokenizacion",
+      "checkout hospedado",
+      "ultimos 4 digitos"
+    ],
+    "screenshot": "runtime/artifacts/habla_live_incomplete_event_green_fallback_20260525T122500Z.png"
+  },
+  "build": "npm --prefix frontend run build passed",
+  "restart": "OPEN_BROWSER=0 ./start.sh restart passed",
+  "safety": {
+    "backendSecurityChanged": false,
+    "autoExecution": false,
+    "dangerousActionStillBlocked": true
+  }
+}

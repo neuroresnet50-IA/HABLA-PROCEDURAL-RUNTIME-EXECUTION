@@ -1,0 +1,53 @@
+{
+  "checkpoint": "habla-visible-real-cyberlace-green-modal-trigger",
+  "createdAt": "2026-05-25T11:51:35Z",
+  "status": "validated_visible_real_trigger",
+  "chromePid": 1471319,
+  "projectSlug": "visible-real-cyberlace-green-045109",
+  "sessionId": "agent-b7c160201b",
+  "method": "Chrome visible opened HABLA UI and executed a real POST /api/agent/session from inside the page context, then displayed the actual blocked CyberLACE payload in the UI modal path.",
+  "backendResult": {
+    "httpOk": true,
+    "status": "blocked",
+    "pid": null,
+    "commandLength": 0,
+    "errorCode": "cyberlace_sensitive_document_blocked",
+    "runtimeAction": "QUARANTINE",
+    "safeAlternative": true
+  },
+  "visibleUiResult": {
+    "redModal": true,
+    "greenPanel": true,
+    "acceptButton": true,
+    "buttonText": "Aceptar alternativa segura",
+    "greenPanelIncludes": [
+      "DIRECCION SEGURA",
+      "Alternativa segura permitida",
+      "tokenizacion",
+      "checkout hospedado"
+    ]
+  },
+  "runtimeTruth": {
+    "verdict": "idle",
+    "stale": false,
+    "canReleaseZombie": false,
+    "workerPid": null,
+    "activeSessions": 0,
+    "projectStatus": "blocked",
+    "persistedRunning": false
+  },
+  "processCheck": {
+    "agentProcessFound": false,
+    "codexWorkerFound": false
+  },
+  "artifacts": [
+    "runtime/artifacts/habla_visible_real_green_modal_trigger_20260525T115500Z.png"
+  ],
+  "safety": {
+    "realSecretsUsed": false,
+    "simulatedAdversarialPrompt": true,
+    "dangerousActionExecuted": false,
+    "codexSpawned": false,
+    "modalLeftOpenForHumanInspection": true
+  }
+}
