@@ -1,0 +1,23 @@
+{
+  "kind": "frontend_runtime_dashboard_sidebar_checkpoint",
+  "createdAt": "2026-05-25T08:59:20.204912+00:00",
+  "scope": "UI-only change between 01 Runtime and 03 Entrada",
+  "filesChanged": [
+    "frontend/src/App.jsx",
+    "frontend/src/App.css",
+    "frontend/src/components/RuntimeDashboardSidebar.jsx"
+  ],
+  "behavior": [
+    "Added resizable runtime dashboard sidebar in the Runtime-to-Entrada section",
+    "Kept AppLintPanel, AppObserverPanel, and CyberLACEPanel intact inside the new layout",
+    "Preserved current colors, dark theme, glow accents, and typography",
+    "Added internal scroll and responsive single-column fallback"
+  ],
+  "validation": [
+    "npm --prefix frontend run build: passed",
+    "OPEN_BROWSER=0 ./start.sh restart: passed",
+    "GET /api/health: ok",
+    "GET /: HTTP 200"
+  ],
+  "backendChanged": false
+}

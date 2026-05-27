@@ -1,0 +1,71 @@
+{
+  "checkpoint": "habla-green-modal-http-response-fix",
+  "createdAt": "2026-05-25T11:44:47Z",
+  "status": "validated",
+  "problem": "El panel verde no aparecia cuando CyberLACE bloqueaba desde la respuesta HTTP directa de AgentStudio.",
+  "rootCause": "App.jsx abria el modal por Socket.IO/global visual events, pero AgentStudio no notificaba directamente el bloqueo incluido en payload.session.",
+  "changes": [
+    {
+      "path": "frontend/src/App.jsx",
+      "details": [
+        "Escucha evento global habla:cyberlace-blocked.",
+        "Pasa onCyberlaceBlock a AppRuntimeWorkbenches."
+      ]
+    },
+    {
+      "path": "frontend/src/components/AppRuntimeWorkbenches.jsx",
+      "details": [
+        "Propaga onCyberlaceBlock hacia AgentStudio."
+      ]
+    },
+    {
+      "path": "frontend/src/components/AgentStudio.jsx",
+      "details": [
+        "Detecta decisiones CyberLACE bloqueantes en payload.session.",
+        "Llama onCyberlaceBlock y emite habla:cyberlace-blocked.",
+        "Cubre inicio normal y relanzamiento de tarea."
+      ]
+    },
+    {
+      "path": "docs/security/habla_bloqueo_con_alternativa_segura.md",
+      "details": [
+        "Documenta la causa y validacion visual del modal verde."
+      ]
+    }
+  ],
+  "validations": [
+    {
+      "command": "npm --prefix frontend run build",
+      "result": "passed"
+    },
+    {
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "result": "passed",
+      "backendPid": 1437152
+    },
+    {
+      "command": "GET /api/health",
+      "result": "passed"
+    },
+    {
+      "command": "Chrome headless modal test",
+      "result": {
+        "redModal": true,
+        "greenPanel": true,
+        "acceptButton": true,
+        "hasAuthorizedTextarea": true,
+        "hasSafeRequirement": true
+      }
+    }
+  ],
+  "artifacts": [
+    "runtime/artifacts/habla_green_modal_before_accept_20260525T114200Z.png",
+    "runtime/artifacts/habla_hard_ui_safe_alternative_test_20260525T113542Z.md"
+  ],
+  "safety": {
+    "backendSecurityChanged": false,
+    "autoExecution": false,
+    "dangerousActionStillBlocked": true,
+    "safeAlternativeCanBeAcceptedAsContext": true
+  }
+}

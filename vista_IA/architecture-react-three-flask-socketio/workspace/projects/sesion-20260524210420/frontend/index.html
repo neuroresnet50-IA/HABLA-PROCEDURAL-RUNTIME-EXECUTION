@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Runtime Flight Smoke</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="shell" aria-label="Runtime flight smoke">
+      <section class="stage" aria-label="Canvas de simulacion">
+        <canvas id="world" width="1280" height="720" data-render-mode="booting"></canvas>
+        <div class="hud" aria-label="Telemetria">
+          <div class="metric">
+            <span class="metric-label">Distancia</span>
+            <span id="distance-value" class="metric-value">0 m</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Velocidad</span>
+            <span id="speed-value" class="metric-value">0 m/s</span>
+          </div>
+          <div class="metric metric-wide">
+            <span class="metric-label">Estado</span>
+            <span id="event-value" class="metric-value">iniciando</span>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="app.js" defer></script>
+  </body>
+</html>

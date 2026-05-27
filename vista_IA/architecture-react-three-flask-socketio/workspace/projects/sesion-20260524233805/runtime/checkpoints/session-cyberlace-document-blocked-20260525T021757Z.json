@@ -1,0 +1,357 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260525T021757Z",
+  "created_at": "2026-05-25T02:17:57Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+      ],
+      "blocksRuntime": true,
+      "evidence": [
+        {
+          "domain": "credential",
+          "line": 4,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "password",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "financial",
+          "line": 6,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "pin",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "financial",
+          "line": 7,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+          "pattern": "cvv",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "sesion-20260524233805",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "scannedDocuments": [
+        {
+          "blockedFindings": 3,
+          "bytes": 214,
+          "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 9071,
+          "path": "workspace/projects/sesion-20260524233805/LACE.md"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1661,
+          "path": "workspace/projects/sesion-20260524233805/LACE_LOG.md"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 330,
+          "path": "workspace/projects/sesion-20260524233805/.agent-project.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1639,
+          "path": "workspace/projects/sesion-20260524233805/runtime/project_state.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 3485,
+          "path": "workspace/projects/sesion-20260524233805/runtime/tool_invocation_policy.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 82785,
+          "path": "workspace/projects/sesion-20260524233805/runtime/failures.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 4215,
+          "path": "workspace/projects/sesion-20260524233805/runtime/task_queue.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1453,
+          "path": "workspace/projects/sesion-20260524233805/runtime/task_history.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 936,
+          "path": "workspace/projects/sesion-20260524233805/runtime/complexity_estimate.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 2246,
+          "path": "workspace/projects/sesion-20260524233805/runtime/validation_security_events.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 924,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/tool_invocation_policy_latest.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1460,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/observer_findings.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1282,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/browser_render_smoke.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 611,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/file_integrity_report.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1346,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/final_typewriter_report.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 905,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/tool_invocations/RUNTIME-20260524234105-001-preflight-20260525T011010Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 924,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/tool_invocations/RUNTIME-20260524234105-001-SPLIT-001-preflight-20260525T011034Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 2071,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/tool_invocations/RUNTIME-20260524234105-001-postflight-20260525T011033Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 2088,
+          "path": "workspace/projects/sesion-20260524233805/runtime/artifacts/tool_invocations/RUNTIME-20260524234105-001-recovery_preview-20260525T011034Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 3428,
+          "path": "workspace/projects/sesion-20260524233805/runtime/logs/agent-851c52bb3b-events.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 155365,
+          "path": "workspace/projects/sesion-20260524233805/runtime/logs/agent-d6ff031021-reviewer.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 644,
+          "path": "workspace/projects/sesion-20260524233805/runtime/logs/agent-00257041a0-events.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 3428,
+          "path": "workspace/projects/sesion-20260524233805/runtime/logs/agent-97ba4ba0c3-events.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 440,
+          "path": "workspace/projects/sesion-20260524233805/runtime/logs/agent-d6ff031021-events.jsonl"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 3795,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-cyberlace-document-blocked-20260525T015604Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1251,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/complexity-estimate.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 3795,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-cyberlace-document-blocked-20260525T015656Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 1346,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/final-typewriter-checkpoint.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 867,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-zombie-recovered-20260525T011351Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 92951,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-20260524234105-001-retry-0-recovery.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 388,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-state-repair-20260525T005750Z.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 310,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-preparing-agent-6b0c797271.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 310,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-preparing-agent-d6ff031021.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 310,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-preparing-agent-851c52bb3b.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 310,
+          "path": "workspace/projects/sesion-20260524233805/runtime/checkpoints/session-preparing-agent-97ba4ba0c3.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 10798,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-20260525T011006Z-0afd5155354e.md"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 33988,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-20260525T011006Z-0afd5155354e.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 23132,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-SPLIT-001-20260525T011034Z-062a3c68a39d.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 34187,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-20260524T234124Z-afb20a06cb70.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 10811,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-20260524T234124Z-afb20a06cb70.md"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 7947,
+          "path": "workspace/projects/sesion-20260524233805/runtime/directives/RUNTIME-20260524234105-001-SPLIT-001-20260525T011034Z-062a3c68a39d.md"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 2040,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/zombie_release/20260525T000322Z/task_queue.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 384,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/zombie_release/20260525T000322Z/project_state.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 4071,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/zombie_release/20260525T011351Z/task_queue.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 985,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/zombie_release/20260525T011351Z/project_state.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 2040,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 566,
+          "path": "workspace/projects/sesion-20260524233805/runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json"
+        },
+        {
+          "blockedFindings": 0,
+          "bytes": 4264,
+          "path": "workspace/projects/sesion-20260524233805/docs/habla-session.md"
+        }
+      ],
+      "sessionId": "agent-6b0c797271",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 523583,
+        "documents": 48,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "runtime/cyberlace/test_fixtures/fake_git_credentials.txt"
+        ],
+        "evidence": [
+          {
+            "domain": "credential",
+            "line": 4,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "password",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "financial",
+            "line": 6,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "pin",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "financial",
+            "line": 7,
+            "path": "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+            "pattern": "cvv",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "sesion-20260524233805",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-05-25T02:17:57Z"
+    },
+    "project_id": "sesion-20260524233805",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

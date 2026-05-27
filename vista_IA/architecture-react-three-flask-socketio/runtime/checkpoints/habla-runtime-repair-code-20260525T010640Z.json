@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-05-25T01:06:40.887321+00:00",
+  "type": "HABLA_RUNTIME_REPAIR_CODE_CHECKPOINT",
+  "status": "implemented_pending_final_validation",
+  "changes": [
+    "Socket.IO polling-only path for Werkzeug/threading and frontend clients disabled websocket upgrades.",
+    "/api/agent/session and socket session start return before sync_runtime_graph(save_state=True); sync runs in background.",
+    "Added preparing session/project state semantics; running is reserved for a real worker PID/process.",
+    "Runtime-truth detects running_without_pid, blocked_state_with_pending_queue, and dead worker PID.",
+    "Zombie release backs up project_state/task_queue, requeues active tasks to pending, records failure and checkpoint.",
+    "Internal observer-status/preflight timeout is non-fatal and emits terminal output before internal tool checks.",
+    "Removed unused duplicated _prepare_control_plane_session helper after consolidating background prepare in _run_control_plane_session."
+  ],
+  "protectedProjects": [
+    "workspace/projects/sesion-20260524210420",
+    "workspace/projects/sesion-20260524233805"
+  ],
+  "stateRepairEvidence": {
+    "sesion-20260524210420BackupDir": "workspace/projects/sesion-20260524210420/runtime/backups/habla_runtime_repair/20260525T005750Z",
+    "sesion-20260524233805BackupDir": "workspace/projects/sesion-20260524233805/runtime/backups/habla_runtime_repair/20260525T005750Z",
+    "sesion-20260524233805Checkpoint": "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-state-repair-20260525T005750Z.json"
+  },
+  "destructiveActions": false
+}

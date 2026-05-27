@@ -18,13 +18,22 @@ from typing import Any
 
 try:
     from orchestrator.contracts import ContractError, validate_task, validate_task_result
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
 except ImportError:  # pragma: no cover - direct path execution fallback.
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(REPO_ROOT))
     from orchestrator.contracts import ContractError, validate_task, validate_task_result
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
 
 
 Command = str | list[str]
 MAX_OUTPUT_CHARS = 24_000
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def run_task(
@@ -69,6 +78,28 @@ def run_task(
     if command is None:
         blockers.append("No execution command provided for this task")
 
+    if not blockers and command is not None:
+        document_decision = _worker_document_decision(validated_task, workspace_path, command)
+        if _decision_blocks(document_decision):
+            blocker = "CyberLACE document hard gate blocked worker before child process launch."
+            execution.update(
+                {
+                    "returncode": 126,
+                    "duration_seconds": _elapsed(started),
+                    "stderr": blocker,
+                    "cyberlace_document_decision": document_decision,
+                }
+            )
+            task_result = _task_result(
+                validated_task,
+                completed=False,
+                files_created=[],
+                files_modified=[],
+                blockers=[blocker],
+                next_recommendation="Remove secrets from the workspace or use a secure credential workflow before retrying.",
+            )
+            return {"task_result": task_result, "execution": execution}
+
     if blockers:
         task_result = _task_result(
             validated_task,
@@ -89,6 +120,10 @@ def run_task(
         stderr=subprocess.PIPE,
         text=True,
         shell=shell,
+        env=safe_child_process_env(
+            os.environ,
+            extra={"VISTA_AGENT_PROJECT_DIR": str(workspace_path)},
+        ),
     )
     execution["child_pid"] = process.pid
 
@@ -146,6 +181,33 @@ def run_task(
         next_recommendation=next_recommendation,
     )
     return {"task_result": task_result, "execution": execution}
+
+
+def _command_to_text(command: Command) -> str:
+    if isinstance(command, list):
+        return " ".join(command)
+    return str(command or "")
+
+
+def _worker_document_decision(task: dict[str, Any], workspace_path: Path, command: Command) -> dict[str, Any]:
+    command_text = _command_to_text(command)
+    return inspect_runtime_document_inputs(
+        requirement=command_text,
+        project_dir=workspace_path,
+        repo_root=REPO_ROOT,
+        task=task,
+        directive={"rendered_instruction": command_text},
+        session_id=os.environ.get("VISTA_AGENT_SESSION_ID"),
+        project_slug=os.environ.get("VISTA_AGENT_PROJECT_SLUG") or workspace_path.name,
+        scan_workspace=True,
+    )
+
+
+def _decision_blocks(decision: dict[str, Any] | None) -> bool:
+    if not isinstance(decision, dict):
+        return True
+    action = str(decision.get("runtimeAction") or decision.get("action") or "").upper()
+    return bool(decision.get("blocked") is True or decision.get("blocksRuntime") is True or action in {"BLOCK", "QUARANTINE", "HUMAN_REVIEW"})
 
 
 def load_task(path: str | Path) -> dict[str, Any]:

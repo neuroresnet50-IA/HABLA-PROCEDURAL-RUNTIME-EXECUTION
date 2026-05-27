@@ -1,0 +1,21 @@
+{
+  "checkpoint": "harness-scroll-containment-ui-20260525T150100Z",
+  "createdAt": "2026-05-25T15:01:00.211378+00:00",
+  "reason": "Corregir crecimiento vertical del Harness Autopilot: el historial de test debe usar scroll interno y no estirar modal ni botones.",
+  "changes": [
+    "harness-studio-panel: max-height viewport + overflow auto",
+    "harness-studio-autopilot/grid: align-items start",
+    "harness-studio-runner: no se estira con la columna de resultados",
+    "submit button: altura fija y ancho controlado",
+    "harness-studio-result: max-height + overflow hidden",
+    "step/cycle/artifacts/preview: scroll interno"
+  ],
+  "validation": {
+    "frontendBuild": "passed",
+    "pyCompile": "passed",
+    "restart": "passed",
+    "uiLoad": "HTTP 200",
+    "socketPolling": "HTTP 200 upgrades=[]",
+    "bundleContainsContainmentCss": true
+  }
+}

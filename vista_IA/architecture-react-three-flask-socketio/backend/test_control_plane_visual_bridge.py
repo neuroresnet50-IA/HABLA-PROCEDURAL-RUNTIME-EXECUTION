@@ -681,18 +681,12 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
                 sys.modules["threading"].Thread = original_thread
 
             session = runtime.sessions[payload["sessionId"]]
-            self.assertEqual(session.complexity_estimate["difficulty"], "extradificil")
-            self.assertEqual(session.lace_required_cycles, session.complexity_estimate["recommended_lace_cycles"])
-            self.assertEqual(session.lace_required_cycles, 8)
-            self.assertTrue(session.habla_available)
-            self.assertEqual(session.active_task["mode"], "long-run")
-            self.assertEqual(session.active_task["timeout_seconds"], 3600)
-            self.assertIn("Bridge visual obligatorio", session.prompt)
-            self.assertIn("LACE_LOG.md", session.prompt)
-            self.assertIn("HABLA BASIC", session.prompt)
-            self.assertIn("Complejidad operativa", session.prompt)
-            self.assertIn("No ejecutes todos los ciclos LACE dentro de una sola tarea", session.prompt)
-            self.assertTrue((session.project_dir / "LACE_LOG.md").exists())
+            self.assertEqual(session.status, "preparing")
+            self.assertEqual(session.prompt, "")
+            self.assertEqual(session.command, [])
+            self.assertEqual(session.complexity_estimate, {})
+            self.assertEqual(session.active_task, {})
+            self.assertTrue(session.habla_available is False or session.habla_available is None)
 
     def test_task_defaults_use_mode_specific_timeouts(self) -> None:
         base = {
@@ -953,7 +947,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             self.assertEqual(statuses["LACE-20260513-007-SPLIT-002"], "completed")
             self.assertEqual(queue.next_ready_task()["id"], "LACE-20260513-008")
             state = store.load_project_state()
-            self.assertEqual(state["status"], "running")
+            self.assertEqual(state["status"], "initialized")
             self.assertEqual(state["blocked_tasks"], [])
             self.assertIn("LACE-20260513-007", state["completed_tasks"])
             self.assertTrue((project_dir / "runtime" / "checkpoints" / "lace-cycle-007-checkpoint.json").exists())
@@ -986,7 +980,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             queue = TaskQueue(store)
             state = store.load_project_state()
             self.assertGreater(len(queue.list()), initial_task_count)
-            self.assertEqual(state["status"], "running")
+            self.assertEqual(state["status"], "preparing")
             self.assertEqual(state["blocked_tasks"], [])
             self.assertEqual(state["failed_tasks"], [])
             self.assertIsNotNone(queue.next_ready_task())
@@ -1148,7 +1142,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             state_after = store.load_project_state()
             self.assertTrue(recovered)
             self.assertEqual(queue_after[0]["status"], "pending")
-            self.assertEqual(state_after["status"], "running")
+            self.assertEqual(state_after["status"], "initialized")
             self.assertIsNone(state_after["current_task_id"])
             self.assertEqual(state_after["failed_tasks"], [])
             self.assertEqual(state_after["blocked_tasks"], [])

@@ -8,6 +8,7 @@ RUNTIME_DIR="$ROOT_DIR/.runtime"
 LOG_DIR="$RUNTIME_DIR/logs"
 PID_DIR="$RUNTIME_DIR/pids"
 BACKEND_ENV_FILE="$BACKEND_DIR/.env"
+export PYTHONPATH="$ROOT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 
 load_backend_env() {
   if [[ -f "$BACKEND_ENV_FILE" ]]; then
@@ -21,7 +22,11 @@ load_backend_env() {
 load_backend_env
 
 PYTHON_BIN="${PYTHON_BIN:-/home/neurodriver/ferrari_env/bin/python}"
-NODE_BIN_DIR="${NODE_BIN_DIR:-/home/neurodriver/Downloads/node-v24.14.1-linux-x64/bin}"
+DEFAULT_NODE_BIN_DIR="/home/neurodriver/Downloads/node-v24.14.1-linux-x64/bin"
+if [[ ! -x "$DEFAULT_NODE_BIN_DIR/npm" ]]; then
+  DEFAULT_NODE_BIN_DIR="$(dirname "$(command -v npm 2>/dev/null || printf "/usr/local/bin/npm")")"
+fi
+NODE_BIN_DIR="${NODE_BIN_DIR:-$DEFAULT_NODE_BIN_DIR}"
 NPM_BIN="${NPM_BIN:-$NODE_BIN_DIR/npm}"
 
 BACKEND_PID_FILE="$PID_DIR/backend.pid"
@@ -30,7 +35,7 @@ BACKEND_LOG="$LOG_DIR/backend.log"
 FRONTEND_LOG="$LOG_DIR/frontend.log"
 
 BACKEND_HOST="${BACKEND_HOST:-${HOST:-0.0.0.0}}"
-BACKEND_PORT="${BACKEND_PORT:-${PORT:-5000}}"
+BACKEND_PORT="${BACKEND_PORT:-${PORT:-5001}}"
 APP_URL="${APP_URL:-http://127.0.0.1:${BACKEND_PORT}/}"
 BACKEND_URL="${BACKEND_URL:-http://127.0.0.1:${BACKEND_PORT}/api/architecture}"
 FRONTEND_URL="${FRONTEND_URL:-http://127.0.0.1:5173/}"
@@ -123,7 +128,10 @@ start_backend() {
   : > "$BACKEND_LOG"
   (
     cd "$ROOT_DIR"
-    PATH="$NODE_BIN_DIR:$PATH" NODE_BIN="$NODE_BIN_DIR/node" HOST="$BACKEND_HOST" PORT="$BACKEND_PORT" setsid "$PYTHON_BIN" "$BACKEND_DIR/app.py" >> "$BACKEND_LOG" 2>&1 < /dev/null &
+    PATH="$NODE_BIN_DIR:$PATH" NODE_BIN="$NODE_BIN_DIR/node" HOST="$BACKEND_HOST" PORT="$BACKEND_PORT" \
+      NEURO_LACE_SOCKET_ASYNC_MODE="${NEURO_LACE_SOCKET_ASYNC_MODE:-threading}" \
+      NEURO_LACE_SOCKET_POLLING_ONLY="${NEURO_LACE_SOCKET_POLLING_ONLY:-1}" \
+      setsid "$PYTHON_BIN" "$BACKEND_DIR/app.py" >> "$BACKEND_LOG" 2>&1 < /dev/null &
     echo $! > "$BACKEND_PID_FILE"
   )
   sleep 2
@@ -329,9 +337,9 @@ Variables opcionales:
   PYTHON_BIN=/ruta/python
   NODE_BIN_DIR=/ruta/node/bin
   NPM_BIN=/ruta/npm
-  APP_URL=http://127.0.0.1:5000/
+  APP_URL=http://127.0.0.1:5001/
   BACKEND_HOST=0.0.0.0
-  BACKEND_PORT=5000
+  BACKEND_PORT=5001
   FRONTEND_HOST=127.0.0.1
   FRONTEND_PORT=5173
   OPEN_BROWSER=0

@@ -1,0 +1,206 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260525T122236Z",
+  "created_at": "2026-05-25T12:22:36Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt"
+      ],
+      "blocksRuntime": true,
+      "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+      "evidence": [
+        {
+          "domain": "credential",
+          "line": 4,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 5,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 6,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 8,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 9,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "api_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 10,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+          "pattern": "password",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "case03-tokens-multi-proveedor-122236",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "safeAlternative": {
+        "allowedActions": [
+          "Usar placeholders o fixtures sinteticos.",
+          "Redactar evidencia sensible antes de procesarla.",
+          "Disenar controles de acceso, auditoria y rutas seguras.",
+          "Convertir la tarea en una validacion de arquitectura segura."
+        ],
+        "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+        "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Retirar documentos o valores sensibles del alcance.",
+        "Usar datos sinteticos o redactados.",
+        "Solicitar una revision de arquitectura segura."
+      ],
+      "scannedDocumentCount": 11,
+      "scannedDocuments": [
+        {
+          "blockedFindings": 6,
+          "bytes": 564,
+          "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt"
+        }
+      ],
+      "sessionId": "agent-15a3b1a098",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 2779,
+        "documents": 10,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt"
+        ],
+        "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+        "evidence": [
+          {
+            "domain": "credential",
+            "line": 4,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 5,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 6,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 8,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 9,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "api_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 10,
+            "path": "runtime/cyberlace/test_fixtures/case03_tokens_multi_proveedor.txt",
+            "pattern": "password",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "case03-tokens-multi-proveedor-122236",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "safeAlternative": {
+          "allowedActions": [
+            "Usar placeholders o fixtures sinteticos.",
+            "Redactar evidencia sensible antes de procesarla.",
+            "Disenar controles de acceso, auditoria y rutas seguras.",
+            "Convertir la tarea en una validacion de arquitectura segura."
+          ],
+          "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+          "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+          "title": "Alternativa segura permitida"
+        },
+        "safeNextSteps": [
+          "Retirar documentos o valores sensibles del alcance.",
+          "Usar datos sinteticos o redactados.",
+          "Solicitar una revision de arquitectura segura."
+        ],
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-05-25T12:22:36Z"
+    },
+    "project_id": "case03-tokens-multi-proveedor-122236",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

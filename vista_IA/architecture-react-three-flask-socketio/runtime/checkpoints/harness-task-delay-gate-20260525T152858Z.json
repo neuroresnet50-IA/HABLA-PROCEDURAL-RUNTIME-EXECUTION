@@ -1,0 +1,32 @@
+{
+  "checkpoint": "harness-task-delay-gate-20260525T152858Z.json",
+  "createdAt": "2026-05-25T15:28:58.164672+00:00",
+  "scope": "Harness autonomous training loop pacing",
+  "changes": [
+    "Added UI field Pausa entre tareas (segundos), default 8, range 1..300.",
+    "Frontend sends taskDelaySeconds with cycles to autopilot-start.",
+    "Backend async autopilot waits in cooldown between cycles and exposes delayRemainingSeconds.",
+    "Stop requests are honored during cooldown before the next task starts.",
+    "CLI training loop accepts --task-delay-seconds and sleeps between tasks."
+  ],
+  "smokeTest": {
+    "cycles": 2,
+    "taskDelaySeconds": 2,
+    "observedPhase": "cooldown",
+    "observedDelayRemainingSeconds": 2.0,
+    "resultsBeforeSecondTask": 1,
+    "stopRequestedDuringCooldown": true
+  },
+  "validations": [
+    "python3 -B -m py_compile backend/app.py tools/cyberlace_training_loop.py",
+    "npm --prefix frontend run build",
+    "OPEN_BROWSER=0 ./start.sh restart",
+    "GET /api/health ok",
+    "Socket.IO polling HTTP 200 upgrades=[]"
+  ],
+  "files": [
+    "backend/app.py",
+    "frontend/src/components/HarnessEngineeringStudio.jsx",
+    "tools/cyberlace_training_loop.py"
+  ]
+}

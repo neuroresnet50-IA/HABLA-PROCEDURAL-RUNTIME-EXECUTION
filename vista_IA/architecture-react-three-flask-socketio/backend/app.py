@@ -1,13 +1,16 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib
+import io
 import json
 import mimetypes
 import os
 import re
 import signal
 import shlex
+import shutil
 import socket
 import subprocess
 import sys
@@ -18,6 +21,7 @@ import urllib.request
 from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
+from types import SimpleNamespace
 from typing import Any, Dict, List
 
 from agent_repair_service import (
@@ -27,7 +31,7 @@ from agent_repair_service import (
     suggested_repair_files as suggested_repair_files_service,
 )
 from agent_runtime import AgentRuntime, normalize_agent_runtime_mode
-from auth_routes import register_auth_routes
+from auth_routes import register_auth_routes, verify_current_user_password
 from architecture_ir import (
     build_architecture_ir,
     build_project_descriptor,
@@ -65,6 +69,12 @@ from runtime_admin_routes import register_runtime_admin_routes
 from runtime_admin_service import RuntimeAdminService
 from sandbox_service import SandboxService
 from sandbox_routes import register_sandbox_routes
+from safety_learning_core import (
+    build_safety_learning_status,
+    learn_from_harness_result,
+    queue_repair_recommendation,
+    record_human_feedback,
+)
 from integrity_service import IntegrityService
 from workspace_blanqueo import (
     apply_selective_blanqueo,
@@ -80,6 +90,22 @@ except ImportError:
     CORS = None
 
 SOCKET_ASYNC_MODE = os.environ.get("NEURO_LACE_SOCKET_ASYNC_MODE", "threading")
+
+
+def env_flag_enabled(value: str | None, *, default: bool = False) -> bool:
+    raw = str(value or "").strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
+SOCKET_POLLING_ONLY = env_flag_enabled(
+    os.environ.get("NEURO_LACE_SOCKET_POLLING_ONLY"),
+    default=SOCKET_ASYNC_MODE == "threading",
+)
+SOCKETIO_OPTIONS: Dict[str, Any] = {}
+if SOCKET_POLLING_ONLY:
+    SOCKETIO_OPTIONS.update({"allow_upgrades": False, "transports": ["polling"]})
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "architecture-view-dev"
@@ -99,8 +125,7 @@ socketio = SocketIO(
     app,
     cors_allowed_origins="*",
     async_mode=SOCKET_ASYNC_MODE,
-    allow_upgrades=False,
-    transports=["polling"],
+    **SOCKETIO_OPTIONS,
 )
 register_auth_routes(app, secret_key=str(app.config.get("SECRET_KEY") or "architecture-view-dev"))
 register_cyberlace_routes(app, socketio)
@@ -115,9 +140,10 @@ EDITOR_STATE_FILE = Path(__file__).resolve().with_name("editor_state.json")
 ANALYSIS_STATE_FILE = Path(__file__).resolve().with_name("reverse_engineering_state.json")
 AGENT_WORKSPACE_ROOT = PROJECT_ROOT / "workspace"
 AGENT_PROJECTS_ROOT = AGENT_WORKSPACE_ROOT / "projects"
+PROTECTED_AGENT_PROJECTS = {"sesion-20260524210420", "sesion-20260524233805", "sesion-20260518014728-jeego-en-3d"}
 WORKSPACE_PATH_PREFIX = "workspace/projects/"
 ANALYSIS_PATH_PREFIX = "analysis/projects/"
-ACTIVE_AGENT_SESSION_STATUSES = {"queued", "starting", "running"}
+ACTIVE_AGENT_SESSION_STATUSES = {"queued", "preparing", "starting", "running"}
 CLOSED_AGENT_SESSION_STATUSES = {"completed", "failed", "stopped", "blocked"}
 CLOSED_AGENT_VISUAL_OPS = {
     "session_complete",
@@ -190,7 +216,34 @@ integrity_action_locks: Dict[str, threading.Lock] = {}
 runtime_action_locks_lock = threading.Lock()
 frontend_asset_cache: Dict[str, Dict[str, Any]] = {}
 frontend_asset_cache_lock = threading.Lock()
+cyberlace_training_runs: Dict[str, Dict[str, Any]] = {}
+cyberlace_training_runs_lock = threading.RLock()
+continuity_probe_runs: Dict[str, Dict[str, Any]] = {}
+continuity_probe_runs_lock = threading.RLock()
 NORMALIZED_GRAPH_CACHE_TTL_SECONDS = float(os.environ.get("NEURO_LACE_GRAPH_CACHE_TTL_SECONDS", "8"))
+CYBERLACE_TRAINING_SCENARIOS = {
+    "obfuscated-secret",
+    "external-login",
+    "prompt-injection-readme",
+    "payment-data",
+    "multi-provider-token",
+}
+CYBERLACE_TRAINING_INTENSITIES = {"baseline", "hard", "extreme"}
+CYBERLACE_TRAINING_CASES_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_cases"
+CYBERLACE_TRAINING_REPORTS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_reports"
+CYBERLACE_TRAINING_CHECKPOINTS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_checkpoints"
+CYBERLACE_TRAINING_CAMPAIGNS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_campaigns"
+CYBERLACE_TRAINING_MEMORY_PATH = CYBERLACE_TRAINING_CAMPAIGNS_DIR / "memory.json"
+CYBERLACE_TRAINING_RUNS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_runs"
+CYBERLACE_TRAINING_RUN_ACTIVE_STATUSES = {"queued", "running", "stopping"}
+CYBERLACE_TRAINING_RUN_TERMINAL_STATUSES = {"completed", "failed", "stopped", "interrupted"}
+CYBERLACE_TRAINING_ALLOWED_ROOTS = (
+    CYBERLACE_TRAINING_CASES_DIR,
+    CYBERLACE_TRAINING_REPORTS_DIR,
+    CYBERLACE_TRAINING_CHECKPOINTS_DIR,
+    CYBERLACE_TRAINING_CAMPAIGNS_DIR,
+    CYBERLACE_TRAINING_RUNS_DIR,
+)
 LINT_FULL_IR_MAX_NODES = int(os.environ.get("NEURO_LACE_LINT_FULL_IR_MAX_NODES", "40"))
 LINT_FULL_IR_MAX_BYTES = int(os.environ.get("NEURO_LACE_LINT_FULL_IR_MAX_BYTES", "250000"))
 normalized_graph_cache: Dict[str, Dict[str, Any]] = {}
@@ -422,6 +475,13 @@ def build_habla_runtime_status() -> Dict[str, Any]:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _append_unique(values: Any, value: str) -> List[str]:
+    result = [str(item) for item in values if str(item)] if isinstance(values, list) else []
+    if value and value not in result:
+        result.append(value)
+    return result
 
 
 def runtime_reset_urls(port: int = DEFAULT_RUNTIME_RESET_PORT, host: str = DEFAULT_RUNTIME_RESET_HOST) -> Dict[str, Any]:
@@ -3166,7 +3226,7 @@ def dispatch_next_email_command() -> Dict[str, Any]:
             mode=str(command.get("runtimeMode") or "long-run"),
         )
         sync_runtime_graph(save_state=True)
-        projects = agent_runtime.list_projects()
+        projects = list_agent_projects_snapshot()
         socketio.emit("agent:projects", {"projects": projects})
         started = email_command_plane.mark_command(command["id"], "started", sessionId=session.get("sessionId"))
         emit_email_command_event(
@@ -3214,8 +3274,45 @@ def start_email_command_dispatcher() -> None:
         socketio.start_background_task(email_command_dispatch_loop, EMAIL_COMMAND_STOP_EVENT, socketio.sleep)
 
 
-def observer_status_payload() -> Dict[str, Any]:
-    status = observer_plane.status()
+def lightweight_observer_status_payload(error: str | None = None) -> Dict[str, Any]:
+    context = getattr(observer_plane, "context", None)
+    try:
+        behavior_tree = observer_plane.behavior_tree.to_dict()
+    except Exception:
+        behavior_tree = {}
+    try:
+        memory = observer_plane.memory.summary("")
+    except Exception:
+        memory = {}
+    try:
+        incident = observer_plane._incident_status()
+    except Exception:
+        incident = None
+    status: Dict[str, Any] = {
+        "enabled": bool(getattr(observer_plane, "enabled", False)),
+        "state": str(getattr(context, "state", "idle") or "idle"),
+        "tickCount": int(getattr(context, "tick_count", 0) or 0),
+        "behaviorTree": behavior_tree,
+        "activeProjectSlug": "",
+        "memory": memory if isinstance(memory, dict) else {},
+        "timeline": [],
+        "incident": incident,
+        "lightweight": True,
+    }
+    if error:
+        status["degraded"] = True
+        status["warning"] = f"observer_status_degraded: {error}"
+    return status
+
+
+def observer_status_payload(*, full: bool = False) -> Dict[str, Any]:
+    if full:
+        try:
+            status = observer_plane.status()
+        except Exception as error:
+            status = lightweight_observer_status_payload(str(error))
+    else:
+        status = lightweight_observer_status_payload()
     manual_pin = read_observer_manual_pin()
     human_pinned = bool(manual_pin.get("enabled"))
     status["runtimePath"] = str(OBSERVER_ROOT)
@@ -3332,9 +3429,182 @@ def get_habla_status():
     return jsonify({"ok": True, "habla": status})
 
 
+def _load_continuity_probe_module():
+    return importlib.import_module("orchestrator.continuity_probe")
+
+
+def _continuity_probe_public_state(trace_id: str) -> Dict[str, Any] | None:
+    run_id = str(trace_id or "").strip()
+    if not run_id:
+        return None
+    with continuity_probe_runs_lock:
+        state = deepcopy(continuity_probe_runs.get(run_id) or {})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=run_id)
+    except Exception:
+        report = None
+    if isinstance(report, dict):
+        state.update(
+            {
+                "traceId": run_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "eventsPath": report.get("eventsPath"),
+                "finishedAt": report.get("finishedAt"),
+                "report": report,
+            }
+        )
+    return state or None
+
+
+def _run_continuity_probe_background(trace_id: str, payload: Dict[str, Any]) -> None:
+    with continuity_probe_runs_lock:
+        state = continuity_probe_runs.setdefault(trace_id, {"traceId": trace_id})
+        state.update({"status": "running", "startedAt": utc_now()})
+    socketio.emit("agent:observer", {"op": "continuity_probe_started", "traceId": trace_id, "status": "running"})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.run_continuity_probe(
+            repo_root=PROJECT_ROOT,
+            mode=str(payload.get("mode") or "active_canary"),
+            project=str(payload.get("project") or module.DEFAULT_PROJECT),
+            base_url=str(payload.get("baseUrl") or ""),
+            trace_id=trace_id,
+            timeout_seconds=int(payload.get("timeoutSeconds") or 45),
+            include_harness=bool(payload.get("includeHarness", True)),
+        )
+        ok = report.get("result") == "continuity_ok"
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": ok,
+                "traceId": trace_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "finishedAt": report.get("finishedAt"),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_completed", "traceId": trace_id, "status": report.get("status"), "result": report.get("result")})
+    except Exception as error:
+        app.logger.exception("continuity_probe_failed")
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": False,
+                "traceId": trace_id,
+                "status": "failed",
+                "result": "continuity_failed",
+                "error": str(error),
+                "finishedAt": utc_now(),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_failed", "traceId": trace_id, "status": "failed", "message": str(error)})
+
+
+@app.post("/api/continuity-probe/start")
+def start_continuity_probe():
+    payload = request.get_json(silent=True) or {}
+    try:
+        module = _load_continuity_probe_module()
+        mode = str(payload.get("mode") or "active_canary").strip().lower()
+        if mode not in module.VALID_MODES:
+            return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.VALID_MODES)}), 400
+        trace_id = module.safe_slug(payload.get("traceId") or module.new_trace_id(), "continuity")
+        project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
+        base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
+        base_url = str(base_url_raw or "").rstrip("/")
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 45), 300))
+        include_harness = bool(payload.get("includeHarness", True))
+        run_payload = {
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "timeoutSeconds": timeout_seconds,
+            "includeHarness": include_harness,
+        }
+        initial = {
+            "ok": True,
+            "traceId": trace_id,
+            "status": "queued",
+            "result": "queued",
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "includeHarness": include_harness,
+            "createdAt": utc_now(),
+        }
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = initial
+        if bool(payload.get("sync")):
+            report = module.run_continuity_probe(
+                repo_root=PROJECT_ROOT,
+                mode=mode,
+                project=project,
+                base_url=base_url,
+                trace_id=trace_id,
+                timeout_seconds=timeout_seconds,
+                include_harness=include_harness,
+            )
+            ok = report.get("result") == "continuity_ok"
+            with continuity_probe_runs_lock:
+                continuity_probe_runs[trace_id] = {
+                    **initial,
+                    "ok": ok,
+                    "status": report.get("status"),
+                    "result": report.get("result"),
+                    "summary": report.get("summary"),
+                    "reportPath": report.get("reportPath"),
+                    "finishedAt": report.get("finishedAt"),
+                }
+            return jsonify({"ok": ok, "traceId": trace_id, "run": continuity_probe_runs[trace_id], "report": report})
+        socketio.start_background_task(_run_continuity_probe_background, trace_id, run_payload)
+        return jsonify({"ok": True, "traceId": trace_id, "run": initial})
+    except Exception as error:
+        app.logger.exception("continuity_probe_start_failed")
+        return jsonify({"ok": False, "error": "continuity_probe_start_failed", "message": str(error)}), 500
+
+
+@app.get("/api/continuity-probe/status/<trace_id>")
+def get_continuity_probe_status(trace_id: str):
+    state = _continuity_probe_public_state(trace_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "continuity_probe_not_found"}), 404
+    return jsonify({"ok": True, "run": state})
+
+
+@app.get("/api/continuity-probe/report/<trace_id>")
+def get_continuity_probe_report(trace_id: str):
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=trace_id)
+    except Exception as error:
+        return jsonify({"ok": False, "error": "continuity_probe_report_failed", "message": str(error)}), 500
+    if report is None:
+        return jsonify({"ok": False, "error": "continuity_probe_report_not_found"}), 404
+    return jsonify({"ok": True, "traceId": trace_id, "report": report})
+
+
+@app.get("/api/continuity-probe/runs")
+def list_continuity_probe_runs():
+    try:
+        module = _load_continuity_probe_module()
+        reports = module.list_continuity_reports(repo_root=PROJECT_ROOT, limit=30)
+    except Exception:
+        reports = []
+    with continuity_probe_runs_lock:
+        memory_runs = list(continuity_probe_runs.values())
+    return jsonify({"ok": True, "runs": reports, "memoryRuns": memory_runs})
+
+
 @app.get("/api/observer/status")
 def get_observer_status():
-    return jsonify({"ok": True, "observer": observer_status_payload()})
+    full = env_flag_enabled(request.args.get("full"), default=False)
+    return jsonify({"ok": True, "observer": observer_status_payload(full=full)})
 
 
 @app.post("/api/observer/enabled")
@@ -3606,9 +3876,859 @@ def load_habla_architecture_demo():
     return jsonify({"ok": True, "graph": graph, "sessions": []})
 
 
+
+def _relative_repo_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _artifact_time(path: Path) -> str:
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()
+    except OSError:
+        return ""
+
+
+def _list_cyberlace_training_artifacts(root: Path, *, suffixes: tuple[str, ...], limit: int = 30) -> List[Dict[str, Any]]:
+    root.mkdir(parents=True, exist_ok=True)
+    rows: List[Dict[str, Any]] = []
+    for path in sorted(root.glob("*"), key=lambda item: item.stat().st_mtime if item.exists() else 0, reverse=True):
+        if not path.is_file() or path.suffix.lower() not in suffixes:
+            continue
+        try:
+            size = path.stat().st_size
+        except OSError:
+            size = 0
+        rows.append(
+            {
+                "name": path.name,
+                "path": _relative_repo_path(path),
+                "updatedAt": _artifact_time(path),
+                "bytes": size,
+            }
+        )
+        if len(rows) >= limit:
+            break
+    return rows
+
+
+def _load_cyberlace_training_loop_module():
+    tools_root = PROJECT_ROOT / "tools"
+    tools_path = str(tools_root)
+    if tools_path not in sys.path:
+        sys.path.insert(0, tools_path)
+    return importlib.import_module("cyberlace_training_loop")
+
+
+def _training_case_id(value: Any, scenario: str) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        raw = f"ui-{scenario}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "-", raw).strip("-._")
+    return cleaned[:90] or f"ui-{scenario}"
+
+
+def _training_artifact_path(relative_path: str) -> Path | None:
+    raw = str(relative_path or "").strip().lstrip("/")
+    if not raw:
+        return None
+    candidate = (PROJECT_ROOT / raw).resolve()
+    allowed_roots = [root.resolve() for root in CYBERLACE_TRAINING_ALLOWED_ROOTS]
+    if not any(str(candidate).startswith(str(root) + os.sep) or candidate == root for root in allowed_roots):
+        return None
+    if candidate.suffix.lower() not in {".json", ".jsonl", ".md", ".txt"}:
+        return None
+    return candidate if candidate.exists() and candidate.is_file() else None
+
+
+@app.get("/api/harness/training/summary")
+def get_harness_training_summary():
+    return jsonify(
+        {
+            "ok": True,
+            "scenarios": sorted(CYBERLACE_TRAINING_SCENARIOS),
+            "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES),
+            "cases": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CASES_DIR, suffixes=(".json",)),
+            "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",)),
+            "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",)),
+            "campaigns": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CAMPAIGNS_DIR, suffixes=(".json", ".md")),
+            "runs": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_RUNS_DIR, suffixes=(".json", ".jsonl")),
+            "memory": {
+                "path": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+                "exists": CYBERLACE_TRAINING_MEMORY_PATH.exists(),
+                "updatedAt": _artifact_time(CYBERLACE_TRAINING_MEMORY_PATH) if CYBERLACE_TRAINING_MEMORY_PATH.exists() else "",
+            },
+            "safetyLearning": build_safety_learning_status(limit=8),
+        }
+    )
+
+
+@app.get("/api/harness/safety-learning/status")
+def get_harness_safety_learning_status():
+    return jsonify(build_safety_learning_status(limit=12))
+
+
+@app.post("/api/harness/safety-learning/feedback")
+def post_harness_safety_learning_feedback():
+    payload = request.get_json(silent=True) or {}
+    return jsonify(record_human_feedback(payload))
+
+
+@app.post("/api/harness/safety-learning/repair-request")
+def post_harness_safety_learning_repair_request():
+    payload = request.get_json(silent=True) or {}
+    return jsonify(queue_repair_recommendation(payload))
+
+
+@app.get("/api/harness/training/artifact")
+def get_harness_training_artifact():
+    artifact = _training_artifact_path(str(request.args.get("path") or ""))
+    if artifact is None:
+        return jsonify({"ok": False, "error": "artifact_not_found"}), 404
+    try:
+        content = artifact.read_text(encoding="utf-8", errors="replace")
+    except OSError as error:
+        return jsonify({"ok": False, "error": "artifact_read_failed", "message": str(error)}), 500
+    return jsonify({"ok": True, "path": _relative_repo_path(artifact), "content": content})
+
+
+@app.post("/api/harness/training/generate-run")
+def post_harness_training_generate_run():
+    payload = request.get_json(silent=True) or {}
+    scenario = str(payload.get("scenario") or "").strip().lower()
+    if scenario not in CYBERLACE_TRAINING_SCENARIOS:
+        return jsonify({"ok": False, "error": "invalid_scenario", "scenarios": sorted(CYBERLACE_TRAINING_SCENARIOS)}), 400
+    case_id = _training_case_id(payload.get("caseId") or payload.get("case_id"), scenario)
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        case = loop.generated_case(scenario, case_id)
+        case_path = loop.TRAINING_CASES_DIR / f"{case['id']}.json"
+        loop.write_json(case_path, case)
+        args = SimpleNamespace(case=str(case_path), base_url=base_url)
+        output_buffer = io.StringIO()
+        with contextlib.redirect_stdout(output_buffer):
+            result = loop.run_case(args)
+        learning = learn_from_harness_result(
+            result,
+            case=case,
+            context={"source": "manual", "casePath": _relative_repo_path(case_path), "cycle": 1},
+        )
+        result["learning"] = {
+            "experienceId": learning.get("experience", {}).get("id"),
+            "diagnosis": learning.get("evaluation", {}).get("diagnosis"),
+            "severity": learning.get("evaluation", {}).get("severity"),
+            "recommendation": learning.get("recommendation"),
+        }
+        console_lines = [line for line in output_buffer.getvalue().splitlines() if line.strip()]
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        return jsonify(
+            {
+                "ok": True,
+                "case": {"id": case.get("id"), "path": _relative_repo_path(case_path), "scenario": scenario},
+                "result": result,
+                "console": console_lines[-30:],
+                "summary": {
+                    "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",), limit=8),
+                    "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",), limit=8),
+                    "safetyLearning": build_safety_learning_status(limit=8),
+                },
+                "safetyLearning": learning,
+            }
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_generate_run_failed")
+        return jsonify({"ok": False, "error": "training_run_failed", "message": str(error)}), 500
+
+
+
+
+def _training_run_paths(run_id: str) -> tuple[Path, Path]:
+    safe_run_id = _training_case_id(run_id, "autopilot-run")
+    return (
+        CYBERLACE_TRAINING_RUNS_DIR / f"{safe_run_id}.json",
+        CYBERLACE_TRAINING_RUNS_DIR / f"{safe_run_id}.jsonl",
+    )
+
+
+def _training_run_status_active(status: Any) -> bool:
+    return str(status or "").lower() in CYBERLACE_TRAINING_RUN_ACTIVE_STATUSES
+
+
+def _training_run_resume_from_cycle(state: Dict[str, Any]) -> int:
+    results = state.get("results") if isinstance(state.get("results"), list) else []
+    return max(1, len(results) + 1)
+
+
+def _training_run_attach_paths(run_id: str, state: Dict[str, Any]) -> Dict[str, Any]:
+    state = dict(state)
+    state_path, events_path = _training_run_paths(run_id)
+    state.setdefault("runId", run_id)
+    state["runPath"] = _relative_repo_path(state_path)
+    state["eventsPath"] = _relative_repo_path(events_path)
+    return state
+
+
+def _training_run_persist_state(run_id: str, state: Dict[str, Any]) -> Dict[str, Any]:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    state = _training_run_attach_paths(run_id, state)
+    state_path, _ = _training_run_paths(run_id)
+    state_path.write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return state
+
+
+def _training_run_append_event_record(run_id: str, event: Dict[str, Any]) -> None:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    _, events_path = _training_run_paths(run_id)
+    payload = dict(event)
+    payload.setdefault("runId", run_id)
+    payload.setdefault("at", datetime.now(timezone.utc).isoformat())
+    with events_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def _training_run_load_from_disk(run_id: str) -> Dict[str, Any] | None:
+    state_path, _ = _training_run_paths(run_id)
+    data = load_json_file(state_path, None)
+    if not isinstance(data, dict):
+        return None
+    return _training_run_attach_paths(str(data.get("runId") or run_id), data)
+
+
+def _training_run_mark_interrupted(run_id: str, state: Dict[str, Any], *, reason: str) -> Dict[str, Any]:
+    updated = _training_run_attach_paths(run_id, state)
+    now = datetime.now(timezone.utc).isoformat()
+    updated.update(
+        {
+            "status": "interrupted",
+            "phase": "interrupted",
+            "message": "Campaña interrumpida: el backend no conserva una tarea viva para este run.",
+            "interruptedAt": now,
+            "interruptionReason": reason,
+            "resumable": True,
+            "resumeFromCycle": _training_run_resume_from_cycle(updated),
+            "stopRequested": False,
+            "updatedAt": now,
+        }
+    )
+    steps = updated.setdefault("steps", [])
+    if isinstance(steps, list):
+        steps.append(
+            {
+                "cycle": None,
+                "phase": "interrupted",
+                "message": updated["message"],
+                "status": "interrupted",
+                "at": now,
+            }
+        )
+        if len(steps) > 120:
+            del steps[:-120]
+    updated = _training_run_persist_state(run_id, updated)
+    _training_run_append_event_record(
+        run_id,
+        {
+            "type": "run_interrupted",
+            "phase": "interrupted",
+            "status": "interrupted",
+            "reason": reason,
+            "resumeFromCycle": updated.get("resumeFromCycle"),
+        },
+    )
+    return updated
+
+
+def _training_recover_orphaned_runs() -> None:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    with cyberlace_training_runs_lock:
+        live_run_ids = {run_id for run_id, state in cyberlace_training_runs.items() if _training_run_status_active((state or {}).get("status"))}
+    for state_path in CYBERLACE_TRAINING_RUNS_DIR.glob("*.json"):
+        state = load_json_file(state_path, None)
+        if not isinstance(state, dict):
+            continue
+        run_id = str(state.get("runId") or state_path.stem)
+        if run_id in live_run_ids:
+            continue
+        if _training_run_status_active(state.get("status")):
+            _training_run_mark_interrupted(run_id, state, reason="backend_process_restart_or_memory_loss")
+
+
+def _training_active_run_state() -> Dict[str, Any] | None:
+    _training_recover_orphaned_runs()
+    with cyberlace_training_runs_lock:
+        for state in cyberlace_training_runs.values():
+            if isinstance(state, dict) and _training_run_status_active(state.get("status")):
+                return deepcopy(state)
+    return None
+
+
+def _training_run_public_state(run_id: str) -> Dict[str, Any] | None:
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.get(run_id)
+        if isinstance(state, dict):
+            return deepcopy(state)
+    state = _training_run_load_from_disk(run_id)
+    if state is None:
+        return None
+    if _training_run_status_active(state.get("status")):
+        state = _training_run_mark_interrupted(run_id, state, reason="backend_process_restart_or_memory_loss")
+    return deepcopy(state)
+
+
+def _training_run_update(run_id: str, **updates: Any) -> Dict[str, Any]:
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.setdefault(run_id, {"runId": run_id})
+        state.update(updates)
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+        return deepcopy(state)
+
+
+def _training_run_append_step(run_id: str, *, cycle: int | None, phase: str, message: str, status: str = "running") -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    step = {
+        "cycle": cycle,
+        "phase": phase,
+        "message": message,
+        "status": status,
+        "at": now,
+    }
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.setdefault(run_id, {"runId": run_id})
+        steps = state.setdefault("steps", [])
+        steps.append(step)
+        state["phase"] = phase
+        state["message"] = message
+        state["updatedAt"] = now
+        if len(steps) > 120:
+            del steps[:-120]
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+    _training_run_append_event_record(run_id, {"type": "step", **step})
+
+
+def _training_run_stop_requested(run_id: str) -> bool:
+    with cyberlace_training_runs_lock:
+        return bool((cyberlace_training_runs.get(run_id) or {}).get("stopRequested"))
+
+
+def _training_wait_between_autopilot_tasks(run_id: str, *, cycle: int, next_cycle: int, seconds: float) -> bool:
+    delay = max(1.0, min(float(seconds or 8.0), 300.0))
+    deadline = time.monotonic() + delay
+    _training_run_append_step(
+        run_id,
+        cycle=cycle,
+        phase="cooldown",
+        message=f"Pausa de {delay:g}s antes de lanzar la tarea {next_cycle}; protegiendo el runtime de solapamientos.",
+        status="running",
+    )
+    while True:
+        if _training_run_stop_requested(run_id):
+            _training_run_update(run_id, phase="stopping", delayRemainingSeconds=0)
+            return False
+        remaining = max(0.0, deadline - time.monotonic())
+        _training_run_update(
+            run_id,
+            phase="cooldown",
+            delayRemainingSeconds=round(remaining, 1),
+            message=f"Pausa entre tareas: {remaining:.1f}s antes de la tarea {next_cycle}.",
+        )
+        if remaining <= 0:
+            break
+        time.sleep(min(1.0, remaining))
+    _training_run_update(run_id, delayRemainingSeconds=0)
+    _training_run_append_step(
+        run_id,
+        cycle=cycle,
+        phase="cooldown",
+        message=f"Pausa completada; la tarea {next_cycle} puede iniciar.",
+        status="completed",
+    )
+    return True
+
+
+def _run_harness_training_autopilot_background(
+    *,
+    run_id: str,
+    campaign_id: str,
+    cycles: int,
+    intensity: str,
+    objective: str,
+    base_url: str,
+    continuous: bool = False,
+    task_delay_seconds: float = 8.0,
+    start_cycle: int = 1,
+    initial_results: List[Dict[str, Any]] | None = None,
+) -> None:
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        memory = loop.load_training_memory()
+        results: List[Dict[str, Any]] = deepcopy(initial_results or [])
+        _training_run_update(run_id, status="running", phase="bootstrap", message="Inicializando agente generador y memoria de entrenamiento.")
+        _training_run_append_step(run_id, cycle=None, phase="bootstrap", message="Memoria cargada; iniciando campaña autónoma.", status="completed")
+
+        max_cycles = 1000 if continuous else cycles
+        stopped_by_user = False
+        for cycle in range(max(1, int(start_cycle or 1)), max_cycles + 1):
+            if _training_run_stop_requested(run_id):
+                stopped_by_user = True
+                _training_run_append_step(run_id, cycle=None, phase="stopping", message="Solicitud humana de detener recibida; cerrando campaña con evidencia acumulada.", status="completed")
+                break
+            _training_run_append_step(run_id, cycle=cycle, phase="metacognitive-plan", message=f"Ciclo {cycle}: analizando memoria previa y seleccionando familia de ataque.")
+            case = loop.build_autonomous_case(
+                campaign_id=campaign_id,
+                cycle=cycle,
+                intensity=intensity,
+                objective=objective,
+                previous_results=results,
+            )
+            scenario = str(case.get("scenario") or "unknown")
+            case_path = loop.TRAINING_CASES_DIR / f"{case['id']}.json"
+            loop.write_json(case_path, case)
+            _training_run_update(
+                run_id,
+                currentCycle=cycle,
+                currentScenario=scenario,
+                currentCase=case.get("id"),
+                currentCasePath=_relative_repo_path(case_path),
+            )
+            _training_run_append_step(run_id, cycle=cycle, phase="case-generated", message=f"Ciclo {cycle}: caso fabricado ({scenario}) y fixture escrito.", status="completed")
+            _training_run_append_step(run_id, cycle=cycle, phase="runtime-dispatch", message=f"Ciclo {cycle}: enviando caso al runtime real por /api/agent/session.")
+
+            output_buffer = io.StringIO()
+            with contextlib.redirect_stdout(output_buffer):
+                result = loop.run_case(SimpleNamespace(case=str(case_path), base_url=base_url))
+            result["cycle"] = cycle
+            result["scenario"] = scenario
+            result["casePath"] = _relative_repo_path(case_path)
+            result["selectionReason"] = (case.get("campaign") or {}).get("selectionReason")
+            learning = learn_from_harness_result(
+                result,
+                case=case,
+                context={
+                    "source": "autopilot",
+                    "campaignId": campaign_id,
+                    "cycle": cycle,
+                    "casePath": _relative_repo_path(case_path),
+                },
+            )
+            result["learning"] = {
+                "experienceId": learning.get("experience", {}).get("id"),
+                "diagnosis": learning.get("evaluation", {}).get("diagnosis"),
+                "severity": learning.get("evaluation", {}).get("severity"),
+                "needsRepair": learning.get("evaluation", {}).get("needsRepair"),
+                "recommendation": learning.get("recommendation"),
+            }
+            results.append(result)
+            _training_run_update(run_id, results=deepcopy(results), learningStatus=build_safety_learning_status(limit=8))
+            _training_run_append_step(
+                run_id,
+                cycle=cycle,
+                phase="evaluation",
+                message=f"Ciclo {cycle}: evaluación {'PASSED' if result.get('passed') else 'FAILED'} con status={result.get('status')} action={result.get('runtimeAction')}.",
+                status="completed" if result.get("passed") else "failed",
+            )
+            _training_run_append_step(
+                run_id,
+                cycle=cycle,
+                phase="learning",
+                message=f"Ciclo {cycle}: Safety Learning Core clasificó {result['learning'].get('diagnosis')} y recomienda {((result['learning'].get('recommendation') or {}).get('action') or 'generate_next_case')}.",
+                status="completed",
+            )
+
+            lessons = memory.setdefault("lessons", [])
+            lessons.append(
+                {
+                    "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "campaignId": campaign_id,
+                    "cycle": cycle,
+                    "scenario": scenario,
+                    "case": case.get("id"),
+                    "passed": result.get("passed"),
+                    "status": result.get("status"),
+                    "runtimeAction": result.get("runtimeAction"),
+                    "failures": result.get("failures") or [],
+                    "report": result.get("report"),
+                    "checkpoint": result.get("checkpoint"),
+                }
+            )
+            loop.save_training_memory(memory)
+            _training_run_append_step(run_id, cycle=cycle, phase="memory", message=f"Ciclo {cycle}: memoria actualizada para orientar el siguiente caso.", status="completed")
+            if cycle < max_cycles:
+                if not _training_wait_between_autopilot_tasks(run_id, cycle=cycle, next_cycle=cycle + 1, seconds=task_delay_seconds):
+                    stopped_by_user = True
+                    _training_run_append_step(run_id, cycle=None, phase="stopping", message="Loop detenido durante la pausa entre tareas.", status="completed")
+                    break
+
+        campaign = {
+            "schemaVersion": 1,
+            "id": campaign_id,
+            "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "objective": objective,
+            "intensity": intensity,
+            "cycles": len(results),
+            "requestedCycles": cycles,
+            "continuous": continuous,
+            "taskDelaySeconds": task_delay_seconds,
+            "stoppedByUser": stopped_by_user,
+            "passed": bool(results) and all(item.get("passed") for item in results),
+            "results": results,
+            "memoryPath": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            "learningSummary": build_safety_learning_status(limit=8),
+        }
+        run_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        checkpoint_path = CYBERLACE_TRAINING_CAMPAIGNS_DIR / f"{campaign_id}-{run_stamp}.json"
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text(json.dumps(campaign, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        report_path = CYBERLACE_TRAINING_CAMPAIGNS_DIR / f"{campaign_id}-{run_stamp}.md"
+        report_path.write_text(loop.campaign_markdown_report(campaign, checkpoint_path), encoding="utf-8")
+
+        memory.setdefault("campaigns", []).append(
+            {
+                "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "campaignId": campaign_id,
+                "cycles": len(results),
+                "requestedCycles": cycles,
+                "continuous": continuous,
+                "taskDelaySeconds": task_delay_seconds,
+                "stoppedByUser": stopped_by_user,
+                "intensity": intensity,
+                "passed": campaign["passed"],
+                "report": _relative_repo_path(report_path),
+                "checkpoint": _relative_repo_path(checkpoint_path),
+            }
+        )
+        loop.save_training_memory(memory)
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        final_status = "stopped" if stopped_by_user else "completed"
+        final_message = "Loop autónomo detenido por el usuario; reporte, checkpoint y memoria listos." if stopped_by_user else "Campaña autónoma finalizada; reporte, checkpoint y memoria listos."
+        _training_run_append_step(run_id, cycle=None, phase=final_status, message=final_message, status="completed")
+        _training_run_update(
+            run_id,
+            status=final_status,
+            passed=campaign["passed"],
+            campaign={
+                "ok": True,
+                "campaignId": campaign_id,
+                "passed": campaign["passed"],
+                "cycles": len(results),
+                "requestedCycles": cycles,
+                "continuous": continuous,
+                "taskDelaySeconds": task_delay_seconds,
+                "stoppedByUser": stopped_by_user,
+                "results": results,
+                "report": _relative_repo_path(report_path),
+                "checkpoint": _relative_repo_path(checkpoint_path),
+                "memory": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            },
+            report=_relative_repo_path(report_path),
+            checkpoint=_relative_repo_path(checkpoint_path),
+            memory=_relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            learningStatus=build_safety_learning_status(limit=8),
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_autopilot_background_failed")
+        _training_run_append_step(run_id, cycle=None, phase="failed", message=f"Campaña falló: {error}", status="failed")
+        _training_run_update(run_id, status="failed", passed=False, error=str(error))
+
+
+@app.post("/api/harness/training/autopilot-start")
+def post_harness_training_autopilot_start():
+    payload = request.get_json(silent=True) or {}
+    continuous = bool(payload.get("continuous"))
+    try:
+        cycles = max(1, min(int(payload.get("cycles", 50)), 1000))
+    except (TypeError, ValueError):
+        cycles = 50
+    if continuous:
+        cycles = 1000
+    try:
+        task_delay_seconds = max(1.0, min(float(payload.get("taskDelaySeconds", payload.get("task_delay_seconds", 8))), 300.0))
+    except (TypeError, ValueError):
+        task_delay_seconds = 8.0
+    intensity = str(payload.get("intensity") or "hard").strip().lower()
+    if intensity not in CYBERLACE_TRAINING_INTENSITIES:
+        return jsonify({"ok": False, "error": "invalid_intensity", "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES)}), 400
+    campaign_id = _training_case_id(payload.get("campaignId") or payload.get("campaign_id"), f"autopilot-{intensity}")
+    run_id = _training_case_id(f"{campaign_id}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}", "autopilot-run")
+    objective = str(payload.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.").strip()
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    active_run = _training_active_run_state()
+    if active_run is not None:
+        return jsonify({"ok": False, "error": "training_run_active", "message": "Ya hay una campaña autónoma activa; detén o espera ese run antes de iniciar otro.", "activeRun": active_run}), 409
+    created_at = datetime.now(timezone.utc).isoformat()
+    initial = {
+        "ok": True,
+        "runId": run_id,
+        "campaignId": campaign_id,
+        "status": "queued",
+        "phase": "queued",
+        "message": "Campaña en cola; preparando agente generador.",
+        "createdAt": created_at,
+        "updatedAt": created_at,
+        "cycles": cycles,
+        "continuous": continuous,
+        "taskDelaySeconds": task_delay_seconds,
+        "delayRemainingSeconds": 0,
+        "stopRequested": False,
+        "intensity": intensity,
+        "objective": objective,
+        "baseUrl": base_url,
+        "resumable": False,
+        "resumeFromCycle": 1,
+        "results": [],
+        "steps": [],
+        "passed": None,
+    }
+    with cyberlace_training_runs_lock:
+        initial = _training_run_persist_state(run_id, initial)
+        cyberlace_training_runs[run_id] = initial
+        _training_run_append_event_record(run_id, {"type": "run_created", "phase": "queued", "status": "queued", "campaignId": campaign_id, "cycles": cycles})
+        if len(cyberlace_training_runs) > 40:
+            for old_key in list(cyberlace_training_runs.keys())[:-40]:
+                old_state = cyberlace_training_runs.get(old_key) or {}
+                if not _training_run_status_active(old_state.get("status")):
+                    cyberlace_training_runs.pop(old_key, None)
+    socketio.start_background_task(
+        _run_harness_training_autopilot_background,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        cycles=cycles,
+        intensity=intensity,
+        objective=objective,
+        base_url=base_url,
+        continuous=continuous,
+        task_delay_seconds=task_delay_seconds,
+    )
+    return jsonify({"ok": True, "run": initial})
+
+
+@app.post("/api/harness/training/autopilot-stop/<run_id>")
+def post_harness_training_autopilot_stop(run_id: str):
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.get(run_id)
+        if not isinstance(state, dict):
+            disk_state = _training_run_public_state(run_id)
+            if disk_state is None:
+                return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+            return jsonify({"ok": True, "run": disk_state})
+        if str(state.get("status") or "").lower() in CYBERLACE_TRAINING_RUN_TERMINAL_STATUSES:
+            return jsonify({"ok": True, "run": deepcopy(state)})
+        state["stopRequested"] = True
+        state["status"] = "stopping"
+        state["phase"] = "stopping"
+        state["message"] = "Detencion solicitada; el loop cerrara al terminar el ciclo actual."
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+        run = deepcopy(state)
+    _training_run_append_step(run_id, cycle=None, phase="stopping", message="Usuario solicito detener el loop autonomo.", status="running")
+    return jsonify({"ok": True, "run": _training_run_public_state(run_id) or run})
+
+
+@app.post("/api/harness/training/autopilot-resume/<run_id>")
+def post_harness_training_autopilot_resume(run_id: str):
+    state = _training_run_public_state(run_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+    if str(state.get("status") or "").lower() != "interrupted":
+        return jsonify({"ok": False, "error": "training_run_not_resumable", "run": state}), 409
+    active_run = _training_active_run_state()
+    if active_run is not None and active_run.get("runId") != run_id:
+        return jsonify({"ok": False, "error": "training_run_active", "message": "Ya hay una campaña autónoma activa; no se puede reanudar otra.", "activeRun": active_run}), 409
+
+    results = state.get("results") if isinstance(state.get("results"), list) else []
+    cycles = max(1, min(int(state.get("cycles") or state.get("requestedCycles") or len(results) or 1), 1000))
+    start_cycle = _training_run_resume_from_cycle(state)
+    if start_cycle > cycles and not bool(state.get("continuous")):
+        state["status"] = "completed"
+        state["phase"] = "completed"
+        state["message"] = "No quedan ciclos pendientes para reanudar."
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        return jsonify({"ok": True, "run": state})
+
+    campaign_id = str(state.get("campaignId") or _training_case_id(run_id, "autopilot-resume"))
+    intensity = str(state.get("intensity") or "hard")
+    objective = str(state.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.")
+    base_url = str(state.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    task_delay_seconds = float(state.get("taskDelaySeconds") or 8.0)
+    continuous = bool(state.get("continuous"))
+    now = datetime.now(timezone.utc).isoformat()
+    state.update(
+        {
+            "status": "queued",
+            "phase": "queued",
+            "message": f"Reanudando campaña desde ciclo {start_cycle}.",
+            "stopRequested": False,
+            "resumable": False,
+            "resumeFromCycle": start_cycle,
+            "resumedAt": now,
+            "updatedAt": now,
+        }
+    )
+    with cyberlace_training_runs_lock:
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+    _training_run_append_step(run_id, cycle=None, phase="resume", message=state["message"], status="running")
+    socketio.start_background_task(
+        _run_harness_training_autopilot_background,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        cycles=cycles,
+        intensity=intensity,
+        objective=objective,
+        base_url=base_url,
+        continuous=continuous,
+        task_delay_seconds=task_delay_seconds,
+        start_cycle=start_cycle,
+        initial_results=deepcopy(results),
+    )
+    return jsonify({"ok": True, "run": _training_run_public_state(run_id) or state})
+
+
+@app.get("/api/harness/training/autopilot-status/<run_id>")
+def get_harness_training_autopilot_status(run_id: str):
+    state = _training_run_public_state(run_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+    return jsonify({"ok": True, "run": state})
+
+
+@app.post("/api/harness/training/autopilot-run")
+def post_harness_training_autopilot_run():
+    payload = request.get_json(silent=True) or {}
+    raw_cycles = payload.get("cycles", 50)
+    try:
+        cycles = max(1, min(int(raw_cycles), 1000))
+    except (TypeError, ValueError):
+        cycles = 50
+    intensity = str(payload.get("intensity") or "hard").strip().lower()
+    if intensity not in CYBERLACE_TRAINING_INTENSITIES:
+        return jsonify({"ok": False, "error": "invalid_intensity", "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES)}), 400
+    campaign_id = _training_case_id(payload.get("campaignId") or payload.get("campaign_id"), f"autopilot-{intensity}")
+    objective = str(payload.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.").strip()
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    try:
+        task_delay_seconds = max(1.0, min(float(payload.get("taskDelaySeconds", payload.get("task_delay_seconds", 8))), 300.0))
+    except (TypeError, ValueError):
+        task_delay_seconds = 8.0
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        args = SimpleNamespace(
+            campaign_id=campaign_id,
+            cycles=cycles,
+            intensity=intensity,
+            objective=objective,
+            base_url=base_url,
+            task_delay_seconds=task_delay_seconds,
+        )
+        output_buffer = io.StringIO()
+        with contextlib.redirect_stdout(output_buffer):
+            campaign = loop.run_campaign(args)
+        console_lines = [line for line in output_buffer.getvalue().splitlines() if line.strip()]
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        return jsonify(
+            {
+                "ok": True,
+                "campaign": campaign,
+                "console": console_lines[-60:],
+                "summary": {
+                    "campaigns": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CAMPAIGNS_DIR, suffixes=(".json", ".md"), limit=12),
+                    "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",), limit=12),
+                    "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",), limit=12),
+                    "memory": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+                },
+            }
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_autopilot_run_failed")
+        return jsonify({"ok": False, "error": "training_autopilot_failed", "message": str(error)}), 500
+
+def list_agent_projects_snapshot() -> List[Dict[str, Any]]:
+    """Return a fast, disk-only projects snapshot for UI hydration.
+
+    This endpoint is on the critical UI path. It intentionally avoids runtime
+    session state so stale workers, sockets, or queues cannot freeze the
+    project picker.
+    """
+
+    AGENT_WORKSPACE_ROOT.mkdir(parents=True, exist_ok=True)
+    AGENT_PROJECTS_ROOT.mkdir(parents=True, exist_ok=True)
+    projects: List[Dict[str, Any]] = []
+    source_suffixes = {
+        ".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".md", ".html", ".css",
+        ".scss", ".yaml", ".yml", ".txt", ".sh", ".sql", ".toml", ".ini",
+    }
+    ignored_dirs = {".git", ".pytest_cache", ".ruff_cache", ".vista", "node_modules", "__pycache__", ".venv", "venv", "runtime", "dist", "build", "coverage"}
+
+    def titleize_project(value: str) -> str:
+        return " ".join(part.capitalize() for part in str(value or "").replace("-", " ").split()) or "Nuevo Proyecto"
+
+    def count_files_fast(project_dir: Path) -> int:
+        count = 0
+        try:
+            for root_dir, dirnames, filenames in os.walk(project_dir):
+                dirnames[:] = [name for name in dirnames if name not in ignored_dirs and not name.startswith(".")]
+                for filename in filenames:
+                    if Path(filename).suffix.lower() in source_suffixes:
+                        count += 1
+        except OSError:
+            return count
+        return count
+
+    for project_dir in sorted(AGENT_PROJECTS_ROOT.iterdir(), key=lambda item: item.name):
+        if not project_dir.is_dir():
+            continue
+        metadata: Dict[str, Any] = {}
+        metadata_path = project_dir / ".agent-project.json"
+        if metadata_path.exists() and metadata_path.is_file():
+            try:
+                loaded = json.loads(metadata_path.read_text(encoding="utf-8"))
+                metadata = loaded if isinstance(loaded, dict) else {}
+            except (json.JSONDecodeError, OSError):
+                metadata = {}
+        try:
+            relative_path = str(project_dir.relative_to(PROJECT_ROOT))
+        except ValueError:
+            relative_path = str(project_dir)
+        now_value = utc_now()
+        projects.append(
+            {
+                "name": metadata.get("name") or titleize_project(project_dir.name),
+                "slug": project_dir.name,
+                "path": str(project_dir),
+                "relativePath": relative_path,
+                "updatedAt": metadata.get("updatedAt") or now_value,
+                "createdAt": metadata.get("createdAt") or now_value,
+                "fileCount": count_files_fast(project_dir),
+                "demoLabel": metadata.get("demoLabel") or "",
+                "description": metadata.get("description") or "",
+                "demoRole": metadata.get("demoRole") or "",
+                "systemDemo": bool(metadata.get("systemDemo")),
+                "nativeExample": bool(metadata.get("nativeExample")),
+                "evaluatedProject": bool(metadata.get("evaluatedProject")),
+                "learningMode": bool(metadata.get("learningMode")),
+                "protected": bool(metadata.get("protected") or project_dir.name in PROTECTED_AGENT_PROJECTS),
+                "protectedReason": metadata.get("protectedReason") or ("Proyecto protegido del sistema." if project_dir.name in PROTECTED_AGENT_PROJECTS else ""),
+            }
+        )
+    return projects
+
+
+
 @app.get("/api/agent/projects")
 def get_agent_projects():
-    return jsonify({"projects": agent_runtime.list_projects()})
+    return jsonify({"projects": list_agent_projects_snapshot()})
 
 
 def resolve_reviewer_project(project_id: str) -> Path | None:
@@ -3665,7 +4785,7 @@ def load_json_file(path: Path, fallback: Any) -> Any:
 
 
 def build_editor_lock_state(project_slug: str, project_dir: Path) -> Dict[str, Any]:
-    active_statuses = {"queued", "starting", "running"}
+    active_statuses = {"queued", "preparing", "starting", "running"}
     terminal_state_statuses = {"blocked", "completed", "failed", "stopped"}
     active_sessions = [
         session
@@ -4302,6 +5422,24 @@ def _runtime_truth_iso_from_epoch(epoch: float | None) -> str | None:
     return datetime.fromtimestamp(float(epoch), timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def _pid_is_alive(pid: Any) -> bool | None:
+    try:
+        normalized_pid = int(pid)
+    except (TypeError, ValueError):
+        return None
+    if normalized_pid <= 0:
+        return False
+    try:
+        os.kill(normalized_pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
 def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[str, Any]:
     runtime_dir = project_dir / "runtime"
     lock_state = build_editor_lock_state(project_slug, project_dir)
@@ -4341,12 +5479,27 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
     )
     worker_alive = None
     worker_pid = None
+    running_without_pid = False
+    for session in active_sessions:
+        status = str(session.get("status") or "").strip().lower()
+        session_pid = session.get("pid")
+        if status == "running" and not session_pid:
+            running_without_pid = True
+            continue
+        pid_alive = _pid_is_alive(session_pid)
+        if pid_alive is not None:
+            worker_pid = session_pid
+            worker_alive = pid_alive
+            if pid_alive:
+                break
     has_recent_activity = last_activity_age_seconds is not None and last_activity_age_seconds < RUNTIME_TRUTH_STALE_SECONDS
+    has_preparing_session = any(str(session.get("status") or "").strip().lower() == "preparing" for session in active_sessions)
+    orphaned_persisted_running = bool(persisted_running and not active_sessions and worker_alive is not True)
     stale = bool(
         persisted_running
-        and not active_sessions
+        and not has_preparing_session
         and worker_alive is not True
-        and not has_recent_activity
+        and (not has_recent_activity or orphaned_persisted_running or running_without_pid)
     )
     if stale:
         verdict = "zombie"
@@ -4364,6 +5517,8 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
         reasons.append("no_live_worker_pid")
     if persisted_running:
         reasons.append("persisted_control_plane_running")
+    if running_without_pid:
+        reasons.append("running_session_without_pid")
     if not has_recent_activity:
         reasons.append("no_recent_disk_activity")
     if isinstance(sandbox, dict) and sandbox.get("running") is False:
@@ -4376,7 +5531,23 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
             {
                 "code": "runtime_zombie_state",
                 "severity": "error",
-                "message": "Persisted running state without active session, worker pid, or recent disk activity.",
+                "message": "Persisted running state without active preparing/running session or worker pid.",
+            }
+        )
+    if running_without_pid:
+        warnings.append(
+            {
+                "code": "running_session_without_pid",
+                "severity": "error",
+                "message": "A runtime session reported running with pid=null; this must be repaired to preparing or failed.",
+            }
+        )
+    if state_status == "blocked" and queue_counts.get("pending", 0) and not queue_counts.get("blocked", 0) and not queue_counts.get("failed", 0):
+        warnings.append(
+            {
+                "code": "blocked_state_with_pending_queue",
+                "severity": "warning",
+                "message": "Project state is blocked but the queue only has pending work.",
             }
         )
 
@@ -4660,8 +5831,9 @@ def release_project_runtime_zombie(project_id: str):
     for task in queue_tasks:
         status = str(task.get("status") or "").strip().lower()
         if status in ACTIVE_AGENT_SESSION_STATUSES:
-            task["status"] = "blocked"
-            task["blocked_reason"] = "runtime_truth_zombie_release"
+            task["status"] = "pending"
+            task["previous_status"] = status
+            task["requeued_reason"] = "runtime_truth_zombie_release"
             task["released_at"] = release_time
             if task.get("id"):
                 released_task_ids.append(str(task.get("id")))
@@ -4674,22 +5846,51 @@ def release_project_runtime_zombie(project_id: str):
     runtime_dir.mkdir(parents=True, exist_ok=True)
     queue_path.write_text(json.dumps(next_queue_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    checkpoint_key = "runtime-zombie-recovered-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    failure_event = None
+    checkpoint_path = None
+    try:
+        store = StateStore(runtime_dir)
+        failure_event = store.append_failure(
+            {
+                "kind": "runtime_zombie_recovered",
+                "project_id": project_slug,
+                "released_task_ids": released_task_ids,
+                "reason": "No active agent session, no live worker, and stale disk activity.",
+            }
+        )
+        checkpoint_path = store.save_checkpoint(
+            checkpoint_key,
+            {
+                "reason": "runtime_zombie_recovered",
+                "project_id": project_slug,
+                "released_task_ids": released_task_ids,
+                "failure_event": failure_event,
+                "backup_dir": str(backup_dir),
+            },
+        )
+    except Exception:
+        failure_event = None
+        checkpoint_path = None
+
     if isinstance(state_payload, dict):
-        blocked_tasks = state_payload.get("blocked_tasks")
-        blocked_tasks = blocked_tasks if isinstance(blocked_tasks, list) else []
-        for task_id in released_task_ids:
-            if task_id not in blocked_tasks:
-                blocked_tasks.append(task_id)
-        state_payload["blocked_tasks"] = blocked_tasks
-        state_payload["status"] = "blocked"
+        state_payload["blocked_tasks"] = [
+            item for item in state_payload.get("blocked_tasks", []) if str(item) not in released_task_ids
+        ] if isinstance(state_payload.get("blocked_tasks"), list) else []
+        state_payload["failed_tasks"] = [
+            item for item in state_payload.get("failed_tasks", []) if str(item) not in released_task_ids
+        ] if isinstance(state_payload.get("failed_tasks"), list) else []
+        state_payload["status"] = "initialized"
         state_payload["current_task_id"] = None
         state_payload["last_released_zombie_task_ids"] = released_task_ids
         state_payload["last_released_zombie_at"] = release_time
         state_payload["last_released_zombie_reason"] = "No active agent session, no live worker, and stale disk activity."
+        if checkpoint_path is not None:
+            state_payload["checkpoints"] = _append_unique(state_payload.get("checkpoints", []), checkpoint_key)
         state_payload["updated_at"] = release_time
         state_path.write_text(json.dumps(state_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     next_truth = _build_project_runtime_truth(project_slug, project_dir)
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -4699,7 +5900,7 @@ def release_project_runtime_zombie(project_id: str):
             "phase": "runtime-truth",
             "status": "blocked",
             "projectSlug": project_slug,
-            "message": f"Supervisor real libero tarea zombie: {', '.join(released_task_ids) or 'sin id'}.",
+            "message": f"Supervisor real reencolo tarea zombie con backup: {', '.join(released_task_ids) or 'sin id'}.",
         },
     )
     return jsonify(
@@ -4708,6 +5909,9 @@ def release_project_runtime_zombie(project_id: str):
             "projectId": project_slug,
             "releasedTaskIds": released_task_ids,
             "backupDir": str(backup_dir),
+            "checkpointKey": checkpoint_key,
+            "checkpointPath": str(checkpoint_path) if checkpoint_path is not None else None,
+            "failureEvent": failure_event,
             "truth": next_truth,
             "projects": projects,
         }
@@ -4941,10 +6145,136 @@ def create_agent_project():
     ensure_unique = bool(payload.get("ensureUnique"))
     bootstrap = bool(payload.get("bootstrapProject", True))
     project = agent_runtime.create_project(project_name, ensure_unique=ensure_unique, bootstrap=bootstrap)
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     socketio.start_background_task(sync_runtime_graph, True)
     return jsonify({"ok": True, "project": project, "projects": projects})
+
+
+@app.post("/api/agent/projects/<project_id>/delete")
+def delete_agent_project(project_id: str):
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({"ok": False, "error": "invalid_payload", "message": "El cuerpo debe ser JSON."}), 400
+
+    normalized_slug = normalize_layer_name(project_id)
+    if normalized_slug in PROTECTED_AGENT_PROJECTS:
+        return jsonify({"ok": False, "error": "protected_project", "message": "Proyecto protegido; no se puede eliminar."}), 403
+    if not payload.get("confirmDelete") or str(payload.get("projectSlug") or "") != normalized_slug:
+        return jsonify({"ok": False, "error": "delete_confirmation_required", "message": "Confirmacion de eliminacion invalida."}), 400
+
+    password = str(payload.get("password") or "")
+    verified, auth_context, auth_error, auth_message, auth_status = verify_current_user_password(str(app.config.get("SECRET_KEY") or "architecture-view-dev"), password)
+    if not verified:
+        return jsonify({"ok": False, "error": auth_error, "message": auth_message}), auth_status
+
+    project_dir = workspace_project_dir(normalized_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 400
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    active_statuses = {"queued", "preparing", "starting", "running"}
+    active_sessions = []
+    for session in agent_runtime.list_sessions():
+        try:
+            same_project = Path(session.get("projectDir") or "").resolve() == project_dir
+        except OSError:
+            same_project = False
+        if same_project and str(session.get("status") or "").lower() in active_statuses:
+            active_sessions.append(session.get("sessionId") or session.get("id") or "active")
+    if active_sessions:
+        return jsonify({"ok": False, "error": "project_runtime_active", "message": "Deten el runtime del proyecto antes de eliminarlo.", "sessions": active_sessions}), 409
+
+    deleted_at = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    backup_root = PROJECT_ROOT / "runtime" / "backups" / "deleted_projects" / deleted_at
+    backup_root.mkdir(parents=True, exist_ok=True)
+    backup_dir = backup_root / normalized_slug
+    suffix = 2
+    while backup_dir.exists():
+        backup_dir = backup_root / f"{normalized_slug}-{suffix}"
+        suffix += 1
+
+    shutil.copytree(project_dir, backup_dir)
+    manifest = {
+        "kind": "agent_project_deleted",
+        "deletedAt": datetime.now(timezone.utc).isoformat(),
+        "projectSlug": normalized_slug,
+        "sourcePath": str(project_dir),
+        "backupPath": str(backup_dir),
+        "operatorUserId": (auth_context or {}).get("user", {}).get("id"),
+        "operatorEmail": (auth_context or {}).get("user", {}).get("email"),
+        "reason": "sidebar_project_delete_password_confirmed",
+    }
+    (backup_dir / ".deleted-project.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    shutil.rmtree(project_dir)
+
+    projects = list_agent_projects_snapshot()
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.start_background_task(sync_runtime_graph, True)
+    try:
+        backup_relative = str(backup_dir.relative_to(PROJECT_ROOT))
+    except ValueError:
+        backup_relative = str(backup_dir)
+    return jsonify({"ok": True, "deleted": manifest, "backupRelativePath": backup_relative, "projects": projects})
+
+
+@app.post("/api/agent/projects/<project_id>/archive")
+def archive_agent_project(project_id: str):
+    normalized_slug = normalize_layer_name(project_id)
+    if normalized_slug in PROTECTED_AGENT_PROJECTS:
+        return jsonify({"ok": False, "error": "protected_project", "message": "Proyecto protegido; no se puede archivar desde la UI."}), 403
+
+    project_dir = workspace_project_dir(normalized_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 400
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    active_statuses = {"queued", "preparing", "starting", "running"}
+    active_sessions = []
+    for session in agent_runtime.list_sessions():
+        try:
+            same_project = Path(session.get("projectDir") or "").resolve() == project_dir
+        except OSError:
+            same_project = False
+        if same_project and str(session.get("status") or "").lower() in active_statuses:
+            active_sessions.append(session.get("sessionId") or session.get("id") or "active")
+    if active_sessions:
+        return jsonify({"ok": False, "error": "project_runtime_active", "message": "Deten el runtime del proyecto antes de archivarlo.", "sessions": active_sessions}), 409
+
+    archived_at = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    backup_root = PROJECT_ROOT / "runtime" / "backups" / "archived_projects" / archived_at
+    backup_root.mkdir(parents=True, exist_ok=True)
+    backup_dir = backup_root / normalized_slug
+    suffix = 2
+    while backup_dir.exists():
+        backup_dir = backup_root / f"{normalized_slug}-{suffix}"
+        suffix += 1
+    shutil.move(str(project_dir), str(backup_dir))
+
+    manifest = {
+        "kind": "agent_project_archived",
+        "archivedAt": datetime.now(timezone.utc).isoformat(),
+        "projectSlug": normalized_slug,
+        "sourcePath": str(project_dir),
+        "backupPath": str(backup_dir),
+        "reason": "sidebar_project_archive",
+    }
+    (backup_dir / ".archived-project.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+
+    projects = list_agent_projects_snapshot()
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.start_background_task(sync_runtime_graph, True)
+    try:
+        backup_relative = str(backup_dir.relative_to(PROJECT_ROOT))
+    except ValueError:
+        backup_relative = str(backup_dir)
+    return jsonify({"ok": True, "archived": manifest, "backupRelativePath": backup_relative, "projects": projects})
 
 
 def clear_pending_project_queue(
@@ -4962,7 +6292,7 @@ def clear_pending_project_queue(
     if not project_dir.exists() or not project_dir.is_dir():
         return {"ok": False, "error": "project_not_found"}
 
-    active_statuses = {"queued", "starting", "running"}
+    active_statuses = {"queued", "preparing", "starting", "running"}
     stopped_sessions: List[str] = []
     if force:
         for session in agent_runtime.list_sessions():
@@ -5092,7 +6422,7 @@ def clear_agent_project_pending_queue(project_id: str):
         return jsonify(result), 423
     if result.get("error") in {"invalid_project", "project_not_found"}:
         return jsonify(result), 404
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     result["projects"] = projects
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -5292,7 +6622,7 @@ def relaunch_agent_project_retryable_task(project_id: str):
         ensure_new_project=False,
         mode=runtime_mode,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     sync_runtime_graph(save_state=True)
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -5404,14 +6734,21 @@ def start_agent_session():
             {
                 "op": "subagents_assigned",
                 "phase": "orchestration",
-                "status": "running",
+                "status": "preparing",
                 "projectSlug": session.get("projectSlug") or project_slug,
                 "message": f"{subagent_plan.get('recommendedAgents')} subagente(s) asignados a la sesion.",
                 "subagentPlan": subagent_plan,
             },
         )
-    sync_runtime_graph(save_state=True)
-    return jsonify({"ok": True, "session": session, "projects": agent_runtime.list_projects(), "subagentPlan": subagent_plan})
+    def refresh_agent_projects_snapshot() -> None:
+        try:
+            socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()})
+        except Exception:
+            app.logger.exception("agent_projects_snapshot_refresh_failed")
+
+    socketio.start_background_task(sync_runtime_graph, True)
+    socketio.start_background_task(refresh_agent_projects_snapshot)
+    return jsonify({"ok": True, "session": session, "subagentPlan": subagent_plan})
 
 
 @app.post("/api/agent/session/<session_id>/stop")
@@ -5425,8 +6762,9 @@ def stop_agent_session(session_id: str):
 @socketio.on("connect")
 def handle_connect():
     start_email_command_dispatcher()
-    emit("architecture:update", normalize_graph(load_default_graph()))
-    emit("agent:projects", {"projects": agent_runtime.list_projects()})
+    # App.jsx asks for the full graph with architecture:request. Avoid sending
+    # multi-MB architecture payloads to every auxiliary socket on handshake.
+    emit("agent:projects", {"projects": list_agent_projects_snapshot()})
     emit("reverse:sessions", {"sessions": list_analysis_sessions()})
     emit(
         "agent:observer",
@@ -5548,7 +6886,7 @@ def handle_reverse_agent_transcribe(payload=None):
         reason="Sesion de proyecto iniciada: Observer entra en modo autonomo de mision.",
         persistent=True,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     return {"ok": True, "session": session, "projects": projects, "targetPath": str(resolved_target)}
 
@@ -5562,7 +6900,7 @@ def handle_architecture_patch(payload):
 
 @socketio.on("agent:request")
 def handle_agent_request(_payload=None):
-    emit("agent:projects", {"projects": agent_runtime.list_projects()})
+    emit("agent:projects", {"projects": list_agent_projects_snapshot()})
     emit("agent:email_command", {"op": "email_command_status", "emailStatus": email_command_plane.status()})
     for session in agent_runtime.list_sessions():
         emit("agent:session", session)
@@ -5641,7 +6979,7 @@ def handle_agent_project_create(payload):
     ensure_unique = bool((payload or {}).get("ensureUnique"))
     bootstrap = bool((payload or {}).get("bootstrapProject", True))
     project = agent_runtime.create_project(project_name, ensure_unique=ensure_unique, bootstrap=bootstrap)
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     socketio.start_background_task(sync_runtime_graph, True)
     return {"ok": True, "project": project, "projects": projects}
@@ -5679,20 +7017,20 @@ def handle_agent_session_start(payload):
             {
                 "op": "subagents_assigned",
                 "phase": "orchestration",
-                "status": "running",
+                "status": "preparing",
                 "projectSlug": session.get("projectSlug") or project_slug,
                 "message": f"{subagent_plan.get('recommendedAgents')} subagente(s) asignados a la sesion.",
                 "subagentPlan": subagent_plan,
             },
         )
-    sync_runtime_graph(save_state=True)
+    socketio.start_background_task(sync_runtime_graph, True)
     observer_event = observe_with_tool_event(
         "agent_started",
         project_slug=str(session.get("projectSlug") or project_slug or project_name),
         reason="Sesion de proyecto iniciada: Observer entra en modo autonomo de mision.",
         persistent=True,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     return {"ok": True, "session": session, "projects": projects, "observerEvent": observer_event}
 

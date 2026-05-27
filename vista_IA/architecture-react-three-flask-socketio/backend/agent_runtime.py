@@ -37,6 +37,7 @@ try:
     from orchestrator.state_store import StateStore
     from orchestrator.task_queue import TaskQueue
     from orchestrator.tool_invocation_policy import ToolInvocationPolicy
+    from orchestrator.safe_process_env import safe_child_process_env
     from orchestrator.validator import validate_task_execution
     from backend.agent_worker_adapters import SessionWorkerAdapter, select_session_worker_adapter
     from backend.human_alignment_review import create_human_alignment_review
@@ -63,6 +64,7 @@ except Exception as error:  # pragma: no cover - surfaced clearly when control p
     StateStore = None  # type: ignore[assignment]
     TaskQueue = None  # type: ignore[assignment]
     ToolInvocationPolicy = None  # type: ignore[assignment]
+    safe_child_process_env = None  # type: ignore[assignment]
     validate_task_execution = None  # type: ignore[assignment]
     SessionWorkerAdapter = Any  # type: ignore[assignment]
     select_session_worker_adapter = None  # type: ignore[assignment]
@@ -76,6 +78,29 @@ except Exception as error:  # pragma: no cover - surfaced clearly when control p
     CONTROL_PLANE_IMPORT_ERROR: Exception | None = error
 else:
     CONTROL_PLANE_IMPORT_ERROR = None
+
+try:
+    from backend.cyberlace_integration import (
+        cyberlace_after_model_output,
+        cyberlace_before_external_action,
+        cyberlace_before_memory_read,
+        cyberlace_before_prompt,
+        cyberlace_before_tool_call,
+    )
+    from backend.cyberlace_policy_bridge import should_block_action, should_redact_payload
+except Exception:  # pragma: no cover - CyberLACE must remain lateral if unavailable.
+    cyberlace_after_model_output = None  # type: ignore[assignment]
+    cyberlace_before_external_action = None  # type: ignore[assignment]
+    cyberlace_before_memory_read = None  # type: ignore[assignment]
+    cyberlace_before_prompt = None  # type: ignore[assignment]
+    cyberlace_before_tool_call = None  # type: ignore[assignment]
+    should_block_action = None  # type: ignore[assignment]
+    should_redact_payload = None  # type: ignore[assignment]
+
+try:
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
+except Exception:  # pragma: no cover - document guard must fail closed only when explicitly invoked.
+    inspect_runtime_document_inputs = None  # type: ignore[assignment]
 
 ANSI_PATTERN = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
 SOURCE_FILE_SUFFIXES = {
@@ -190,9 +215,10 @@ CODE_TARGET_PATTERN = re.compile(
     flags=re.IGNORECASE,
 )
 SNAP_CODEX_PATH_MARKERS = ("/snap/codex/",)
-DEFAULT_INNER_CODEX_SANDBOX_MODE = "danger-full-access"
+DEFAULT_INNER_CODEX_SANDBOX_MODE = "workspace-write"
 DEFAULT_INNER_CODEX_APPROVAL_POLICY = "never"
 ALLOWED_AGENT_RUNTIME_MODES = frozenset({"smoke", "build", "medium", "long-run"})
+ACTIVE_AGENT_SESSION_STATUSES = {"queued", "preparing", "starting", "running"}
 
 
 def utc_now() -> str:
@@ -1413,13 +1439,14 @@ class LaceContext:
 class AgentRuntimeControlPlaneError(RuntimeError):
     """Raised when the task control plane cannot prepare or run a task."""
 
-    def __init__(self, code: str, message: str) -> None:
+    def __init__(self, code: str, message: str, details: Dict[str, Any] | None = None) -> None:
         super().__init__(message)
         self.code = code
         self.message = message
+        self.details = details or {}
 
-    def to_dict(self) -> Dict[str, str]:
-        return {"code": self.code, "message": self.message}
+    def to_dict(self) -> Dict[str, Any]:
+        return {"code": self.code, "message": self.message, "details": self.details}
 
 
 @dataclass
@@ -1481,6 +1508,7 @@ class AgentSession:
     validation_result: Dict[str, Any] = field(default_factory=dict, repr=False)
     recovery_result: Dict[str, Any] = field(default_factory=dict, repr=False)
     checkpoint_result: Dict[str, Any] = field(default_factory=dict, repr=False)
+    cyberlace_decisions: List[Dict[str, Any]] = field(default_factory=list, repr=False)
     event_offset: int = field(default=0, repr=False)
     habla_state: Dict[str, Any] = field(default_factory=dict, repr=False)
     lace_cycle_states: List[Dict[str, Any]] = field(default_factory=list, repr=False)
@@ -1494,13 +1522,16 @@ class AgentSession:
 
     def to_dict(self) -> Dict[str, Any]:
         lace_completed_cycles = count_completed_lace_cycles(self.lace_log_path) if self.lace_required_cycles else 0
+        effective_status = self.status
+        if effective_status == "running" and self.pid is None and self.process is None:
+            effective_status = "preparing"
         return {
             "sessionId": self.session_id,
             "projectName": self.project_name,
             "projectSlug": self.project_slug,
             "projectDir": str(self.project_dir),
             "requirement": self.requirement,
-            "status": self.status,
+            "status": effective_status,
             "output": self.output,
             "createdAt": self.created_at,
             "updatedAt": self.updated_at,
@@ -1553,6 +1584,9 @@ class AgentSession:
                 "recovery": self.recovery_result or None,
                 "checkpoint": self.checkpoint_result or None,
             },
+            "cyberlace": {
+                "decisions": self.cyberlace_decisions[-12:],
+            },
         }
 
 
@@ -1586,8 +1620,18 @@ class AgentRuntime:
         self.codex_exec_approval_policy = str(
             os.environ.get("VISTA_CODEX_EXEC_APPROVAL_POLICY") or DEFAULT_INNER_CODEX_APPROVAL_POLICY
         ).strip() or DEFAULT_INNER_CODEX_APPROVAL_POLICY
+        if self.codex_exec_sandbox_mode == "danger-full-access" and not env_flag_enabled(
+            os.environ.get("VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX"),
+            default=False,
+        ):
+            self.codex_exec_sandbox_mode = DEFAULT_INNER_CODEX_SANDBOX_MODE
         self.codex_exec_extra_args = shlex.split(str(os.environ.get("VISTA_CODEX_EXEC_EXTRA_ARGS") or "").strip())
         self.codex_exec_use_full_auto = env_flag_enabled(os.environ.get("VISTA_CODEX_EXEC_USE_FULL_AUTO"), default=False)
+        if self.codex_exec_use_full_auto and not env_flag_enabled(
+            os.environ.get("VISTA_ALLOW_FULL_AUTO_CODEX"),
+            default=False,
+        ):
+            self.codex_exec_use_full_auto = False
         self.prompt_converter = prompt_converter
         self.graph_provider = graph_provider
         self.graph_sync = graph_sync
@@ -1629,6 +1673,15 @@ class AgentRuntime:
                     "updatedAt": metadata.get("updatedAt") or utc_now(),
                     "createdAt": metadata.get("createdAt") or utc_now(),
                     "fileCount": count_source_files(project_dir),
+                    "demoLabel": metadata.get("demoLabel") or "",
+                    "description": metadata.get("description") or "",
+                    "demoRole": metadata.get("demoRole") or "",
+                    "systemDemo": bool(metadata.get("systemDemo")),
+                    "nativeExample": bool(metadata.get("nativeExample")),
+                    "evaluatedProject": bool(metadata.get("evaluatedProject")),
+                    "learningMode": bool(metadata.get("learningMode")),
+                    "protected": bool(metadata.get("protected")),
+                    "protectedReason": metadata.get("protectedReason") or "",
                 }
             )
         return projects
@@ -1708,7 +1761,7 @@ class AgentRuntime:
             for session in sorted(self.sessions.values(), key=lambda item: item.created_at, reverse=True):
                 if session.project_slug != normalized_slug:
                     continue
-                if session.status not in {"queued", "starting", "running"}:
+                if session.status not in {"queued", "preparing", "starting", "running"}:
                     continue
                 if self._mark_orphaned_control_plane_session_locked(session):
                     continue
@@ -1716,7 +1769,7 @@ class AgentRuntime:
         return None
 
     def _mark_orphaned_control_plane_session_locked(self, session: AgentSession) -> bool:
-        if not session.control_plane_enabled or session.status not in {"queued", "starting", "running"}:
+        if not session.control_plane_enabled or session.status not in {"queued", "preparing", "starting", "running"}:
             return False
         if session.process is not None or session.pid is not None:
             return False
@@ -1745,6 +1798,361 @@ class AgentRuntime:
         session.pid = None
         return True
 
+    def _cyberlace_record_decision(self, session_id: str | None, decision: Dict[str, Any] | None) -> None:
+        if not session_id or not isinstance(decision, dict):
+            return
+        compact = {
+            "timestamp": decision.get("timestamp") or utc_now(),
+            "stage": decision.get("stage"),
+            "mode": decision.get("mode"),
+            "action": decision.get("action"),
+            "runtimeAction": decision.get("runtimeAction"),
+            "riskScore": decision.get("riskScore"),
+            "severity": decision.get("severity"),
+            "reason": decision.get("reason"),
+            "eventId": decision.get("eventId"),
+            "ok": decision.get("ok"),
+        }
+        with self.lock:
+            session = self.sessions.get(session_id)
+            if session is None:
+                return
+            session.cyberlace_decisions = [*session.cyberlace_decisions[-31:], compact]
+            session.updated_at = utc_now()
+
+    def _cyberlace_guard(
+        self,
+        stage: str,
+        *,
+        agent_id: str,
+        user_id: str = "local",
+        content: Any = "",
+        context: Dict[str, Any] | None = None,
+        session_id: str | None = None,
+        tool_name: str | None = None,
+        tool_args: Dict[str, Any] | None = None,
+        action_type: str | None = None,
+        payload: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        resolved_session_id = session_id or "agent-runtime"
+        context = context or {}
+        try:
+            if stage == "prompt" and cyberlace_before_prompt is not None:
+                decision = cyberlace_before_prompt(agent_id, user_id, str(content or ""), context, resolved_session_id)
+            elif stage == "memory" and cyberlace_before_memory_read is not None:
+                decision = cyberlace_before_memory_read(agent_id, user_id, str(content or ""), context, resolved_session_id)
+            elif stage == "tool" and cyberlace_before_tool_call is not None:
+                decision = cyberlace_before_tool_call(
+                    agent_id,
+                    user_id,
+                    tool_name or "unknown_tool",
+                    tool_args or {},
+                    context,
+                    resolved_session_id,
+                )
+            elif stage == "output" and cyberlace_after_model_output is not None:
+                decision = cyberlace_after_model_output(agent_id, user_id, str(content or ""), context, resolved_session_id)
+            elif stage == "external-action" and cyberlace_before_external_action is not None:
+                decision = cyberlace_before_external_action(
+                    agent_id,
+                    user_id,
+                    action_type or "external_action",
+                    payload or {},
+                    context,
+                    resolved_session_id,
+                )
+            else:
+                decision = {"ok": True, "mode": "off", "stage": stage, "runtimeAction": "ALLOW", "allowed": True}
+        except Exception as error:  # pragma: no cover - adapter normally converts failures to decisions.
+            decision = {
+                "ok": False,
+                "mode": "monitor",
+                "stage": stage,
+                "runtimeAction": "ALLOW",
+                "allowed": True,
+                "reason": f"CyberLACE hook failure ignored by runtime: {error}",
+                "riskScore": 0,
+            }
+        self._cyberlace_record_decision(session_id, decision if isinstance(decision, dict) else None)
+        return decision if isinstance(decision, dict) else {"ok": False, "runtimeAction": "ALLOW", "allowed": True}
+
+    def _cyberlace_should_block(self, decision: Dict[str, Any] | None) -> bool:
+        if not isinstance(decision, dict):
+            return False
+        runtime_action = str(decision.get("runtimeAction") or decision.get("action") or "").upper()
+        if decision.get("blocked") is True or decision.get("blocksRuntime") is True:
+            return True
+        if runtime_action in {"BLOCK", "QUARANTINE", "HUMAN_REVIEW"}:
+            return True
+        if should_block_action is not None:
+            return bool(should_block_action(decision))
+        return False
+
+    def _cyberlace_should_redact(self, decision: Dict[str, Any] | None) -> bool:
+        if not isinstance(decision, dict):
+            return False
+        if should_redact_payload is not None:
+            return bool(should_redact_payload(decision))
+        return str(decision.get("runtimeAction") or "").upper() == "REDACT" and decision.get("modified_payload") is not None
+
+    def _cyberlace_block_message(self, decision: Dict[str, Any] | None, *, stage: str) -> str:
+        if not isinstance(decision, dict):
+            return f"CyberLACE blocked {stage}."
+        action = decision.get("runtimeAction") or decision.get("action") or "BLOCK"
+        reason = decision.get("reason") or "decision without reason"
+        return f"CyberLACE {action} en {stage}: {reason}"
+
+    def _cyberlace_document_decision(
+        self,
+        *,
+        requirement: str,
+        project_dir: Path,
+        project_slug: str,
+        session_id: str | None,
+        task: Dict[str, Any] | None = None,
+        directive: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        if inspect_runtime_document_inputs is None:
+            return {
+                "ok": False,
+                "mode": "hard-gate",
+                "stage": "document-preflight",
+                "action": "QUARANTINE",
+                "runtimeAction": "QUARANTINE",
+                "allowed": False,
+                "blocked": True,
+                "blocksRuntime": True,
+                "severity": "CRITICAL",
+                "riskScore": 100.0,
+                "message": "PELIGRO: CyberLACE document guard no esta disponible; runtime negado por seguridad.",
+                "reason": "CyberLACE document guard unavailable; fail closed before Codex can read local files.",
+                "evidence": [{"type": "document_guard_unavailable", "sample": "[REDACTED]"}],
+                "blockedPaths": [],
+            }
+        return inspect_runtime_document_inputs(
+            requirement=requirement,
+            project_dir=project_dir,
+            repo_root=self.repo_root,
+            task=task,
+            directive=directive,
+            session_id=session_id,
+            project_slug=project_slug,
+        )
+
+    def _persist_cyberlace_document_block(
+        self,
+        runtime_dir: Path,
+        project_slug: str,
+        decision: Dict[str, Any],
+        *,
+        task: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any] | None:
+        if StateStore is None:
+            return None
+        try:
+            store = StateStore(runtime_dir)  # type: ignore[operator]
+            runtime_dir.mkdir(parents=True, exist_ok=True)
+            failure_event = store.append_failure(
+                {
+                    "kind": "cyberlace_sensitive_document_blocked",
+                    "project_id": project_slug,
+                    "task_id": task.get("id") if isinstance(task, dict) else None,
+                    "reason": decision.get("reason"),
+                    "severity": decision.get("severity"),
+                    "riskScore": decision.get("riskScore"),
+                    "blockedPaths": decision.get("blockedPaths") or [],
+                    "deniedAction": decision.get("deniedAction"),
+                    "safeAlternative": decision.get("safeAlternative"),
+                    "safeNextSteps": decision.get("safeNextSteps") or [],
+                    "evidence": decision.get("evidence") or [],
+                }
+            )
+            task_id = str(task.get("id") or "session") if isinstance(task, dict) else "session"
+            checkpoint_key = f"{task_id.lower()}-cyberlace-document-blocked-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+            checkpoint_path = store.save_checkpoint(
+                checkpoint_key,
+                {
+                    "reason": "cyberlace_sensitive_document_blocked",
+                    "project_id": project_slug,
+                    "task_id": task.get("id") if isinstance(task, dict) else None,
+                    "decision": decision,
+                    "failure_event": failure_event,
+                },
+            )
+            try:
+                state = store.load_project_state()
+            except Exception:
+                now_value = utc_now()
+                state = {
+                    "schema_version": 1,
+                    "project_id": project_slug,
+                    "status": "initialized",
+                    "mode": task.get("mode", "build") if isinstance(task, dict) else "build",
+                    "current_task_id": None,
+                    "completed_tasks": [],
+                    "failed_tasks": [],
+                    "blocked_tasks": [],
+                    "checkpoints": [],
+                    "created_at": now_value,
+                    "updated_at": now_value,
+                }
+            state["status"] = "blocked"
+            state["current_task_id"] = None
+            if isinstance(task, dict) and task.get("id"):
+                state["blocked_tasks"] = _append_unique(state.get("blocked_tasks", []), str(task.get("id")))
+            state["last_cyberlace_block_at"] = utc_now()
+            state["last_cyberlace_block_reason"] = decision.get("reason")
+            state["last_cyberlace_block_paths"] = list(decision.get("blockedPaths") or [])
+            state["last_cyberlace_denied_action"] = decision.get("deniedAction")
+            state["last_cyberlace_safe_alternative"] = decision.get("safeAlternative")
+            state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
+            state["updated_at"] = utc_now()
+            store.save_project_state(state)
+            return {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path), "failure": failure_event}
+        except Exception:
+            return None
+
+    def _persist_cyberlace_document_block_later(
+        self,
+        runtime_dir: Path,
+        project_slug: str,
+        decision: Dict[str, Any],
+        *,
+        session_id: str,
+        task: Dict[str, Any] | None = None,
+    ) -> None:
+        def persist_block() -> None:
+            checkpoint = self._persist_cyberlace_document_block(runtime_dir, project_slug, decision, task=task)
+            if checkpoint is None:
+                return
+            snapshot: Dict[str, Any] | None = None
+            with self.lock:
+                live_session = self.sessions.get(session_id)
+                if live_session is not None:
+                    live_session.checkpoint_result = checkpoint
+                    live_session.updated_at = utc_now()
+                    snapshot = live_session.to_dict()
+            if snapshot is not None:
+                try:
+                    self.session_emitter(snapshot)
+                except Exception:
+                    pass
+
+        threading.Thread(target=persist_block, daemon=True).start()
+
+
+    def _block_session_for_cyberlace_document(
+        self,
+        session: AgentSession,
+        decision: Dict[str, Any],
+        *,
+        checkpoint: Dict[str, Any] | None = None,
+    ) -> Dict[str, Any]:
+        message = str(decision.get("message") or "PELIGRO: potencial informacion insegura. Accion negada por CyberLACE.")
+        with self.lock:
+            live_session = self.sessions.get(session.session_id, session)
+            live_session.status = "blocked"
+            live_session.returncode = 126
+            live_session.pid = None
+            live_session.process = None
+            live_session.error_code = "cyberlace_sensitive_document_blocked"
+            live_session.error_message = message
+            live_session.progress_label = message
+            live_session.progress_percent = max(live_session.progress_percent, 96)
+            live_session.updated_at = utc_now()
+            live_session.ended_at = live_session.updated_at
+            live_session.cyberlace_decisions = [*live_session.cyberlace_decisions[-31:], decision]
+            if checkpoint is not None:
+                live_session.checkpoint_result = checkpoint
+            snapshot = live_session.to_dict()
+            blocked_ref = live_session
+        def emit_block_events() -> None:
+            self._append_output(session.session_id, f"[cyberlace] {message}\n")
+            self.session_emitter(snapshot)
+            self._emit_visual_runtime_event(
+                blocked_ref,
+                op="cyberlace_document_blocked",
+                status="blocked",
+                phase="cyberlace",
+                error_code="cyberlace_sensitive_document_blocked",
+                message=message,
+                securityBlock=decision,
+                checkpoint=checkpoint,
+            )
+            self._emit_visual_runtime_event(
+                blocked_ref,
+                op="session_blocked",
+                status="blocked",
+                phase="cyberlace",
+                error_code="cyberlace_sensitive_document_blocked",
+                message=message,
+                securityBlock=decision,
+                checkpoint=checkpoint,
+            )
+
+        threading.Thread(target=emit_block_events, daemon=True).start()
+        return snapshot
+
+    def _cyberlace_guard_text(
+        self,
+        stage: str,
+        text: str,
+        *,
+        agent_id: str,
+        session_id: str | None,
+        context: Dict[str, Any] | None = None,
+    ) -> tuple[str, Dict[str, Any]]:
+        decision = self._cyberlace_guard(
+            stage,
+            agent_id=agent_id,
+            content=text,
+            context=context or {},
+            session_id=session_id,
+        )
+        if self._cyberlace_should_redact(decision):
+            modified = decision.get("modified_payload")
+            if modified is not None:
+                return str(modified), decision
+        return text, decision
+
+    def _cyberlace_finalize_session_output(self, session_id: str) -> None:
+        with self.lock:
+            session = self.sessions.get(session_id)
+            if session is None or not session.output:
+                return
+            output = session.output[-16000:]
+            context = {
+                "project_slug": session.project_slug,
+                "project_dir": str(session.project_dir),
+                "runtime_mode": session.runtime_mode,
+                "control_plane_enabled": session.control_plane_enabled,
+            }
+        decision = self._cyberlace_guard(
+            "output",
+            agent_id="agent-runtime",
+            content=output,
+            context=context,
+            session_id=session_id,
+        )
+        if self._cyberlace_should_redact(decision):
+            modified = str(decision.get("modified_payload") or "")
+            with self.lock:
+                session = self.sessions.get(session_id)
+                if session is not None:
+                    prefix = session.output[:-len(output)] if len(session.output) > len(output) else ""
+                    session.output = f"{prefix}{modified}"[-MAX_OUTPUT_CHARS:]
+                    session.updated_at = utc_now()
+        if self._cyberlace_should_block(decision):
+            with self.lock:
+                session = self.sessions.get(session_id)
+                if session is not None and session.status == "completed":
+                    session.status = "failed"
+                    session.returncode = 126
+                    session.error_code = "cyberlace_output_blocked"
+                    session.error_message = self._cyberlace_block_message(decision, stage="output")
+                    session.progress_label = session.error_message
+                    session.updated_at = utc_now()
+
     def _start_control_plane_session(
         self,
         requirement: str,
@@ -1756,9 +2164,10 @@ class AgentRuntime:
         ensure_new_project: bool,
     ) -> Dict[str, Any]:
         requested_slug = slugify(str(project_slug or "").strip()) if str(project_slug or "").strip() else slugify(project_name)
-        active_session = self._find_active_session_for_project(requested_slug)
-        if active_session is not None:
-            return active_session.to_dict()
+        if not ensure_new_project:
+            active_session = self._find_active_session_for_project(requested_slug)
+            if active_session is not None:
+                return active_session.to_dict()
 
         project = self.create_project(
             project_name,
@@ -1772,117 +2181,58 @@ class AgentRuntime:
         session_runtime_dir = project_dir / "runtime"
         session_id = f"agent-{uuid.uuid4().hex[:10]}"
         event_file, terminal_file = self._new_control_plane_log_paths(session_runtime_dir, session_id=session_id)
-        smoke_mode = runtime_mode == "smoke"
-        complexity_estimate = self._build_complexity_estimate(project_dir, requirement, runtime_mode)
-        lace_context = None if smoke_mode else self._prepare_lace_context(
-            project_dir,
-            requirement,
-            complexity_estimate=complexity_estimate,
-        )
-        habla_prompt, habla_available, habla_state = self._resolve_habla_payload(requirement)
-        habla_preflight_path = self._write_habla_preflight(
+        try:
+            self._persist_control_plane_preparing_state(
+                session_runtime_dir,
+                project_slug,
+                runtime_mode,
+                session_id,
+                reason="session_accepted_background_prepare",
+            )
+        except Exception:
+            pass
+        session = AgentSession(
+            session_id=session_id,
+            project_name=display_name,
+            project_slug=project_slug,
             project_dir=project_dir,
             requirement=requirement,
-            habla_prompt=habla_prompt,
-            habla_available=habla_available,
-            habla_state=habla_state,
-            lace_context=lace_context,
+            prompt="",
+            command=[],
+            event_file=event_file,
+            terminal_file=terminal_file,
+            status="preparing",
+            progress_percent=1,
+            progress_label="Preparando runtime y directiva en segundo plano",
+            smoke_mode=runtime_mode == "smoke",
+            runtime_mode=runtime_mode,
+            control_plane_enabled=True,
+            control_plane_runtime_dir=str(session_runtime_dir),
+            reviewer_log_path=str(session_runtime_dir / "logs" / f"{session_id}-reviewer.jsonl"),
         )
-        try:
-            self._ensure_control_plane_runtime(session_runtime_dir, project_slug, runtime_mode)
-            self._persist_complexity_estimate(session_runtime_dir, complexity_estimate)
-            prepared = self._prepare_control_plane_directive(
-                requirement,
-                runtime_mode=runtime_mode,
-                runtime_dir=session_runtime_dir,
-                sprint_number=self.control_plane_sprint_number,
-                directive_repo_root=self.repo_root,
-                task_workspace_root=project_dir,
-                complexity_estimate=complexity_estimate,
-            )
-            command = self._build_control_plane_worker_command(prepared["directive"], workspace=project_dir)
-            task = prepared["task"]
-            directive = prepared["directive"]
-            session = AgentSession(
-                session_id=session_id,
-                project_name=display_name,
-                project_slug=project_slug,
-                project_dir=project_dir,
-                requirement=requirement,
-                prompt=directive["rendered_instruction"],
-                command=command,
-                habla_prompt=habla_prompt,
-                habla_available=habla_available,
-                event_file=event_file,
-                terminal_file=terminal_file,
-                lace_policy_path=lace_context.policy_path if lace_context is not None else None,
-                lace_log_path=lace_context.log_path if lace_context is not None else None,
-                habla_preflight_path=habla_preflight_path,
-                lace_required_cycles=lace_context.required_cycles if lace_context is not None else 0,
-                complexity_estimate=complexity_estimate,
-                smoke_mode=task["mode"] == "smoke",
-                runtime_mode=task["mode"],
-                habla_state=habla_state,
-                control_plane_enabled=True,
-                control_plane_runtime_dir=str(prepared["runtime_dir"]),
-                active_task_id=task["id"],
-                active_task=task,
-                directive=directive,
-                directive_json_path=prepared["directive_json_path"],
-                directive_markdown_path=prepared["directive_markdown_path"],
-                directive_source_hash=directive["traceability"]["source_hash"],
-                reviewer_log_path=str(session_runtime_dir / "logs" / f"{session_id}-reviewer.jsonl"),
-                progress_label="Directiva generada; tarea en cola",
-            )
-        except Exception as error:
-            message = f"Control plane no pudo preparar una tarea activa: {error}"
-            session = AgentSession(
-                session_id=f"agent-{uuid.uuid4().hex[:10]}",
-                project_name=display_name,
-                project_slug=project_slug,
-                project_dir=project_dir,
-                requirement=requirement,
-                prompt="",
-                command=[],
-                event_file=event_file,
-                terminal_file=terminal_file,
-                habla_prompt=habla_prompt,
-                habla_available=habla_available,
-                lace_policy_path=lace_context.policy_path if lace_context is not None else None,
-                lace_log_path=lace_context.log_path if lace_context is not None else None,
-                habla_preflight_path=habla_preflight_path,
-                lace_required_cycles=lace_context.required_cycles if lace_context is not None else 0,
-                status="failed",
-                returncode=126,
-                ended_at=utc_now(),
-                error_code=getattr(error, "code", "control_plane_prepare_failed"),
-                error_message=message,
-                progress_label=message,
-                smoke_mode=runtime_mode == "smoke",
-                runtime_mode=runtime_mode,
-                habla_state=habla_state,
-                control_plane_enabled=True,
-                control_plane_runtime_dir=str(session_runtime_dir),
-                reviewer_log_path=None,
-                output=f"[control-plane] {message}\n",
-            )
-            with self.lock:
-                self.sessions[session.session_id] = session
-            self._emit_session(session)
-            self._emit_visual_runtime_event(
-                session,
-                op="session_failed",
-                status="failed",
-                phase="failed",
-                error_code=session.error_code or "control_plane_prepare_failed",
-                message=message,
-            )
-            return session.to_dict()
-
         with self.lock:
             self.sessions[session.session_id] = session
 
+        document_decision = self._cyberlace_document_decision(
+            requirement=requirement,
+            project_dir=project_dir,
+            project_slug=project_slug,
+            session_id=session_id,
+        )
+        if self._cyberlace_should_block(document_decision):
+            self._persist_cyberlace_document_block_later(
+                session_runtime_dir,
+                project_slug,
+                document_decision,
+                session_id=session.session_id,
+            )
+            return self._block_session_for_cyberlace_document(session, document_decision)
+
         self._emit_session(session)
+        self._append_output(
+            session.session_id,
+            "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n",
+        )
         worker = threading.Thread(target=self._run_session, args=(session.session_id,), daemon=True)
         worker.start()
         return session.to_dict()
@@ -1953,7 +2303,20 @@ class AgentRuntime:
             smoke_mode=smoke_mode,
             continuing_existing_project=project_preexisting,
         )
-        command = self._build_codex_command(project_dir, prompt)
+        session_id = f"agent-{uuid.uuid4().hex[:10]}"
+        prompt, prompt_decision = self._cyberlace_guard_text(
+            "prompt",
+            prompt,
+            agent_id="legacy-pty-worker",
+            session_id=session_id,
+            context={
+                "kind": "legacy_worker_prompt",
+                "project_slug": project_slug,
+                "project_dir": str(project_dir),
+                "runtime_mode": runtime_mode,
+            },
+        )
+        command = [] if self._cyberlace_should_block(prompt_decision) else self._build_codex_command(project_dir, prompt)
         event_file = project_dir / VISUAL_DIR_NAME / f"{uuid.uuid4().hex}-events.jsonl"
         event_file.parent.mkdir(parents=True, exist_ok=True)
         if event_file.exists():
@@ -1962,7 +2325,7 @@ class AgentRuntime:
         remove_file_if_exists(terminal_file)
 
         session = AgentSession(
-            session_id=f"agent-{uuid.uuid4().hex[:10]}",
+            session_id=session_id,
             project_name=display_name,
             project_slug=project_slug,
             project_dir=project_dir,
@@ -1981,11 +2344,47 @@ class AgentRuntime:
             smoke_mode=smoke_mode,
             runtime_mode=runtime_mode,
             habla_state=habla_state,
+            cyberlace_decisions=[prompt_decision] if isinstance(prompt_decision, dict) else [],
         )
+        document_decision = self._cyberlace_document_decision(
+            requirement=requirement,
+            project_dir=project_dir,
+            project_slug=project_slug,
+            session_id=session_id,
+        )
+        if self._cyberlace_should_block(document_decision):
+            session.command = []
+            session.cyberlace_decisions = [*session.cyberlace_decisions, document_decision]
+
+        if self._cyberlace_should_block(prompt_decision):
+            session.status = "failed"
+            session.returncode = 126
+            session.ended_at = utc_now()
+            session.error_code = "cyberlace_prompt_blocked"
+            session.error_message = self._cyberlace_block_message(prompt_decision, stage="prompt")
+            session.progress_label = session.error_message
         with self.lock:
             self.sessions[session.session_id] = session
 
+        if self._cyberlace_should_block(document_decision):
+            checkpoint = self._persist_cyberlace_document_block(
+                project_dir / "runtime",
+                project_slug,
+                document_decision,
+            )
+            return self._block_session_for_cyberlace_document(session, document_decision, checkpoint=checkpoint)
+
         self._emit_session(session)
+        if self._cyberlace_should_block(prompt_decision):
+            self._emit_visual_runtime_event(
+                session,
+                op="session_failed",
+                status="failed",
+                phase="cyberlace",
+                error_code="cyberlace_prompt_blocked",
+                message=session.error_message or "CyberLACE blocked prompt.",
+            )
+            return session.to_dict()
         worker = threading.Thread(target=self._run_session, args=(session.session_id,), daemon=True)
         worker.start()
         return session.to_dict()
@@ -2092,6 +2491,57 @@ class AgentRuntime:
             )
         if not store.task_queue_path.exists():
             store.save_task_queue([])
+
+    def _persist_control_plane_preparing_state(
+        self,
+        runtime_dir: Path,
+        project_id: str,
+        runtime_mode: str,
+        session_id: str,
+        *,
+        reason: str,
+    ) -> None:
+        self._require_control_plane_imports()
+        runtime_dir.mkdir(parents=True, exist_ok=True)
+        store = StateStore(runtime_dir)  # type: ignore[operator]
+        now = utc_now()
+        if store.project_state_path.exists():
+            state = store.load_project_state()
+        else:
+            state = {
+                "schema_version": 1,
+                "project_id": project_id,
+                "status": "initialized",
+                "mode": runtime_mode,
+                "current_task_id": None,
+                "completed_tasks": [],
+                "failed_tasks": [],
+                "blocked_tasks": [],
+                "checkpoints": [],
+                "created_at": now,
+                "updated_at": now,
+            }
+        if not store.task_queue_path.exists():
+            store.save_task_queue([])
+        checkpoint_key = f"session-preparing-{session_id}"
+        checkpoint_path = store.save_checkpoint(
+            checkpoint_key,
+            {
+                "reason": reason,
+                "session_id": session_id,
+                "project_id": project_id,
+                "runtime_mode": runtime_mode,
+                "status": "preparing",
+            },
+        )
+        state["status"] = "preparing"
+        state["mode"] = runtime_mode
+        state["current_task_id"] = None
+        state["preparing_session_id"] = session_id
+        state["last_preparing_at"] = now
+        state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
+        state["updated_at"] = now
+        store.save_project_state(state)
 
     def _count_material_project_files(self, project_dir: Path, *, limit: int = 500) -> int:
         if not project_dir.exists() or not project_dir.is_dir():
@@ -2408,7 +2858,7 @@ class AgentRuntime:
                 planned_tasks = self._normalize_control_plane_planned_tasks(planned_tasks, workspace_for_reconciliation)
                 queue.enqueue_many(planned_tasks)
                 state = store.load_project_state()
-                state["status"] = "running"
+                state["status"] = "preparing"
                 state["current_task_id"] = None
                 state["blocked_tasks"] = []
                 state["failed_tasks"] = []
@@ -2444,7 +2894,31 @@ class AgentRuntime:
                 "No se pudo obtener una tarea activa desde la cola persistida.",
             )
 
-        self._save_project_state_transition(store, task, "running")
+        task_document_decision = self._cyberlace_document_decision(
+            requirement=requirement,
+            project_dir=workspace_for_reconciliation,
+            project_slug=workspace_for_reconciliation.name,
+            session_id=None,
+            task=task,
+        )
+        if self._cyberlace_should_block(task_document_decision):
+            try:
+                queue.mark_task_status(task["id"], "blocked")
+            except Exception:
+                pass
+            checkpoint = self._persist_cyberlace_document_block(
+                store.runtime_dir,
+                workspace_for_reconciliation.name,
+                task_document_decision,
+                task=task,
+            )
+            raise AgentRuntimeControlPlaneError(
+                "cyberlace_sensitive_document_blocked",
+                str(task_document_decision.get("message") or "CyberLACE bloqueo documentos sensibles antes del worker."),
+                {"decision": task_document_decision, "checkpoint": checkpoint},
+            )
+
+        self._save_project_state_transition(store, task, "preparing")
         context_root = Path(directive_repo_root).resolve() if directive_repo_root is not None else self.repo_root
         workspace_root = (
             Path(task_workspace_root).resolve()
@@ -2469,6 +2943,30 @@ class AgentRuntime:
             )
         guide = build_habla_guide(context)  # type: ignore[misc]
         directive = generate_directive(context, guide)  # type: ignore[misc]
+        directive_document_decision = self._cyberlace_document_decision(
+            requirement=requirement,
+            project_dir=workspace_root,
+            project_slug=workspace_root.name,
+            session_id=None,
+            task=task,
+            directive=directive,
+        )
+        if self._cyberlace_should_block(directive_document_decision):
+            try:
+                queue.mark_task_status(task["id"], "blocked")
+            except Exception:
+                pass
+            checkpoint = self._persist_cyberlace_document_block(
+                store.runtime_dir,
+                workspace_root.name,
+                directive_document_decision,
+                task=task,
+            )
+            raise AgentRuntimeControlPlaneError(
+                "cyberlace_sensitive_document_blocked",
+                str(directive_document_decision.get("message") or "CyberLACE bloqueo documentos sensibles antes del worker."),
+                {"decision": directive_document_decision, "checkpoint": checkpoint},
+            )
         persisted = persist_directive(directive, directives_dir=directives_dir)  # type: ignore[misc]
         return {
             "runtime_dir": store.runtime_dir,
@@ -2486,12 +2984,31 @@ class AgentRuntime:
         directive: Dict[str, Any],
         *,
         workspace: str | Path | None = None,
+        session_id: str | None = None,
+        task: Dict[str, Any] | None = None,
     ) -> List[str]:
         instruction = str(directive.get("rendered_instruction") or "").strip()
         if not instruction:
             raise AgentRuntimeControlPlaneError(
                 "control_plane_empty_directive",
                 "La directiva generada no tiene instruccion para el worker.",
+            )
+        instruction, decision = self._cyberlace_guard_text(
+            "prompt",
+            instruction,
+            agent_id="control-plane-worker",
+            session_id=session_id,
+            context={
+                "kind": "control_plane_directive",
+                "workspace": str(Path(workspace).resolve()) if workspace is not None else str(self.repo_root),
+                "task": task or {},
+                "directiveTraceability": directive.get("traceability") if isinstance(directive.get("traceability"), dict) else {},
+            },
+        )
+        if self._cyberlace_should_block(decision):
+            raise AgentRuntimeControlPlaneError(
+                "cyberlace_directive_blocked",
+                self._cyberlace_block_message(decision, stage="directive"),
             )
         return self._build_codex_command(Path(workspace).resolve() if workspace is not None else self.repo_root, instruction)
 
@@ -2527,17 +3044,39 @@ class AgentRuntime:
     def _attach_control_plane_process(self, session_id: str | None, process: subprocess.Popen[Any]) -> None:
         if not session_id:
             return
+        snapshot = None
+        session_ref = None
         with self.lock:
             session = self.sessions.get(session_id)
             if session is None:
                 return
+            now = utc_now()
             session.process = process
             session.pid = process.pid
-            session.updated_at = utc_now()
+            session.status = "running"
+            session.started_at = session.started_at or now
+            session.updated_at = now
+            session.start_monotonic = session.start_monotonic or time.monotonic()
+            session.last_agent_activity_monotonic = session.start_monotonic
+            session.last_heartbeat_monotonic = session.start_monotonic
+            session.last_heartbeat_at = now
+            session.progress_percent = max(session.progress_percent, 14)
+            session.progress_label = "Worker Codex lanzado con PID real"
+            snapshot = session.to_dict()
+            session_ref = session
+        self.session_emitter(snapshot)
+        self._emit_visual_runtime_event(
+            session_ref,
+            op="worker_started",
+            status="running",
+            phase="worker",
+            message=f"Worker Codex activo con PID {process.pid}.",
+        )
 
     def _clear_control_plane_process(self, session_id: str | None, process: subprocess.Popen[Any] | None) -> None:
         if not session_id:
             return
+        snapshot = None
         with self.lock:
             session = self.sessions.get(session_id)
             if session is None:
@@ -2545,7 +3084,13 @@ class AgentRuntime:
             if process is None or session.process is process:
                 session.process = None
                 session.pid = None
+                if session.status == "running":
+                    session.status = "preparing"
+                    session.progress_label = "Worker termino; validando salida"
                 session.updated_at = utc_now()
+                snapshot = session.to_dict()
+        if snapshot is not None:
+            self.session_emitter(snapshot)
 
     def run_control_plane_task_once(
         self,
@@ -2577,7 +3122,7 @@ class AgentRuntime:
         command = (
             command_builder(directive)
             if command_builder is not None
-            else self._build_control_plane_worker_command(directive, workspace=workspace_path)
+            else self._build_control_plane_worker_command(directive, workspace=workspace_path, task=prepared.get("task") if isinstance(prepared, dict) else None)
         )
         return self._execute_prepared_control_plane_task(
             prepared,
@@ -2679,7 +3224,7 @@ class AgentRuntime:
                 command = (
                     command_builder(directive)
                     if command_builder is not None
-                    else self._build_control_plane_worker_command(directive, workspace=workspace_path)
+                    else self._build_control_plane_worker_command(directive, workspace=workspace_path, session_id=session_id, task=prepared.get("task") if isinstance(prepared, dict) else None)
                 )
 
             result = self._execute_prepared_control_plane_task(
@@ -2850,7 +3395,7 @@ class AgentRuntime:
                     },
                 )
                 state = store.load_project_state()
-                state["status"] = "running"
+                state["status"] = "preparing"
                 state["current_task_id"] = None
                 state["blocked_tasks"] = [item for item in state.get("blocked_tasks", []) if item != "lace_cycles_pending"]
                 state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
@@ -3475,7 +4020,7 @@ class AgentRuntime:
             },
         )
         state = store.load_project_state()
-        state["status"] = "running"
+        state["status"] = "initialized"
         state["current_task_id"] = None
         state["failed_tasks"] = [
             item for item in state.get("failed_tasks", []) if str(item) not in running_task_ids
@@ -3661,7 +4206,7 @@ class AgentRuntime:
             state["status"] = "completed"
             state["current_task_id"] = None
         else:
-            state["status"] = "running"
+            state["status"] = "initialized"
             state["current_task_id"] = None
         state["updated_at"] = utc_now()
         store.save_project_state(state)
@@ -3841,6 +4386,12 @@ class AgentRuntime:
             runtime_dir=prepared["runtime_dir"],
             workspace=workspace,
         )
+        self._save_project_state_transition(store, task, "preparing")
+        if session_id:
+            self._append_output(
+                session_id,
+                f"[control-plane] Preflight interno opcional para {task['id']}; si observer-status expira se continua.\n",
+            )
         preflight_tools = tool_policy.run_preflight(task) if tool_policy is not None else None
         self._append_control_plane_tool_summary(session_id, "preflight", preflight_tools)
 
@@ -3862,8 +4413,55 @@ class AgentRuntime:
             existing_evidence_result["tool_invocations"] = existing_tools
             return existing_evidence_result
 
-        queue.mark_task_status(task["id"], "running")
-        self._save_project_state_transition(store, task, "running")
+        cyberlace_tool_decision = self._cyberlace_guard(
+            "tool",
+            agent_id="control-plane-worker",
+            session_id=session_id,
+            tool_name="codex_worker",
+            tool_args={
+                "command": command if isinstance(command, list) else str(command),
+                "workspace": str(Path(workspace).resolve()),
+                "directive_json_path": prepared.get("directive_json_path"),
+                "task_id": task.get("id"),
+            },
+            context={"task": task, "directive": {"source_hash": directive.get("traceability", {}).get("source_hash")}},
+        )
+        if self._cyberlace_should_block(cyberlace_tool_decision):
+            task_result = {
+                "task_id": task["id"],
+                "completed": False,
+                "files_created": [],
+                "files_modified": [],
+                "validation_ran": [],
+                "validation_passed": False,
+                "blockers": [self._cyberlace_block_message(cyberlace_tool_decision, stage="tool")],
+                "next_recommendation": "Esperar revision humana o ajustar la directiva para reducir riesgo CyberLACE.",
+            }
+            validation = {"task_result": task_result, "validation": {"passed": False, "commands": [], "blockers": task_result["blockers"]}}
+            queue.mark_task_status(task["id"], "blocked")
+            history_event = store.append_task_history(task_result)
+            checkpoint_key = f"{task['id'].lower()}-cyberlace-blocked"
+            checkpoint_path = store.save_checkpoint(
+                checkpoint_key,
+                {"task": task, "task_result": task_result, "cyberlace": cyberlace_tool_decision, "reason": "cyberlace_tool_blocked"},
+            )
+            self._save_project_state_transition(store, task, "blocked", checkpoint_key=checkpoint_key)
+            return {
+                "status": "blocked",
+                "task": task,
+                "directive": directive,
+                "directive_json_path": prepared.get("directive_json_path"),
+                "directive_markdown_path": prepared.get("directive_markdown_path"),
+                "execution": {"execution": {"returncode": 126, "stdout": "", "stderr": task_result["blockers"][0]}},
+                "validation": validation,
+                "task_result": task_result,
+                "history_event": history_event,
+                "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
+                "recovery": None,
+                "tool_invocations": {"preflight": preflight_tools, "cyberlace_tool": cyberlace_tool_decision},
+                "retry_count": self._next_retry_count_for_task(store, task["id"]),
+                "enqueued_split_tasks": [],
+            }
 
         if session_id:
             self._append_output(
@@ -3878,6 +4476,8 @@ class AgentRuntime:
         def on_process_start(process: subprocess.Popen[Any]) -> None:
             nonlocal active_process
             active_process = process
+            queue.mark_task_status(task["id"], "running")
+            self._save_project_state_transition(store, task, "running")
             self._attach_control_plane_process(session_id, process)
 
         try:
@@ -3905,6 +4505,30 @@ class AgentRuntime:
             command_timeout_seconds=max(1, min(300, int(task["timeout_seconds"]))),
         )
         task_result = validation["task_result"]
+        cyberlace_output_decision = self._cyberlace_guard(
+            "output",
+            agent_id="control-plane-worker",
+            session_id=session_id,
+            content=json.dumps({"task_result": task_result, "validation": validation.get("validation")}, ensure_ascii=True),
+            context={"task": task, "workspace": str(Path(workspace).resolve())},
+        )
+        if self._cyberlace_should_redact(cyberlace_output_decision):
+            task_result = {
+                **task_result,
+                "blockers": [*list(task_result.get("blockers") or []), "CyberLACE redacted sensitive output evidence."],
+            }
+        if self._cyberlace_should_block(cyberlace_output_decision):
+            task_result = {
+                **task_result,
+                "completed": False,
+                "validation_passed": False,
+                "blockers": [
+                    *list(task_result.get("blockers") or []),
+                    self._cyberlace_block_message(cyberlace_output_decision, stage="output"),
+                ],
+                "next_recommendation": "Revisar salida bloqueada por CyberLACE antes de continuar.",
+            }
+            validation = {**validation, "task_result": task_result}
         stop_requested = self._control_plane_session_stop_requested(session_id) if session_id else False
         postflight_tools = None
         completion_tools = None
@@ -3934,6 +4558,8 @@ class AgentRuntime:
             "postflight": postflight_tools,
             "task_completion_gate": completion_tools,
             "recovery_preview": recovery_preview_tools,
+            "cyberlace_tool": cyberlace_tool_decision,
+            "cyberlace_output": cyberlace_output_decision,
         }
         if session_id:
             self._emit_control_plane_sync_file_events(session_id, workspace, task_result)
@@ -4423,19 +5049,17 @@ class AgentRuntime:
     ) -> None:
         state = store.load_project_state()
         task_id = task["id"]
-        if status == "retry":
-            state["status"] = "running"
-        elif status == "split":
-            state["status"] = "running"
+        if status in {"retry", "split", "preparing"}:
+            state["status"] = "preparing"
         else:
             state["status"] = status
         state["mode"] = task["mode"]
-        state["current_task_id"] = task_id if status == "running" else None
+        state["current_task_id"] = task_id if status in {"preparing", "running"} else None
         if status == "completed":
             state["completed_tasks"] = _append_unique(state.get("completed_tasks", []), task_id)
             state["failed_tasks"] = [item for item in state.get("failed_tasks", []) if item != task_id]
             state["blocked_tasks"] = [item for item in state.get("blocked_tasks", []) if item != task_id]
-        elif status == "retry":
+        elif status in {"retry", "preparing"}:
             state["failed_tasks"] = [item for item in state.get("failed_tasks", []) if item != task_id]
             state["blocked_tasks"] = [item for item in state.get("blocked_tasks", []) if item != task_id]
         elif status == "split":
@@ -4653,6 +5277,62 @@ class AgentRuntime:
             )
         return True
 
+    def _persist_control_plane_manual_stop(self, session_snapshot: AgentSession) -> None:
+        if not session_snapshot.control_plane_enabled:
+            return
+        if StateStore is None or TaskQueue is None:
+            return
+        runtime_dir = Path(session_snapshot.control_plane_runtime_dir or session_snapshot.project_dir / "runtime")
+        store = StateStore(runtime_dir)
+        queue = TaskQueue(store, bootstrap_empty=True)
+        stopped_task_ids: List[str] = []
+        for task in queue.list():
+            task_id = str(task.get("id") or "")
+            if not task_id:
+                continue
+            if task_id == session_snapshot.active_task_id or str(task.get("status") or "").lower() == "running":
+                try:
+                    queue.mark_task_status(task_id, "blocked")
+                    stopped_task_ids = _append_unique(stopped_task_ids, task_id)
+                except Exception:
+                    continue
+
+        state = store.load_project_state()
+        previous_status = state.get("status")
+        previous_current_task_id = state.get("current_task_id")
+        checkpoint_key = f"manual-stop-{session_snapshot.session_id}"
+        checkpoint_path = store.save_checkpoint(
+            checkpoint_key,
+            {
+                "reason": "manual_stop",
+                "session_id": session_snapshot.session_id,
+                "project_slug": session_snapshot.project_slug,
+                "active_task_id": session_snapshot.active_task_id,
+                "blocked_task_ids": stopped_task_ids,
+                "previous_status": previous_status,
+                "previous_current_task_id": previous_current_task_id,
+            },
+        )
+        blocked_tasks = [str(item) for item in state.get("blocked_tasks", []) if str(item)]
+        for task_id in stopped_task_ids:
+            blocked_tasks = _append_unique(blocked_tasks, task_id)
+        state["status"] = "stopped"
+        state["current_task_id"] = None
+        state["blocked_tasks"] = blocked_tasks
+        state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
+        state["updated_at"] = utc_now()
+        store.save_project_state(state)
+        store.append_failure(
+            {
+                "task_id": session_snapshot.active_task_id or (stopped_task_ids[-1] if stopped_task_ids else "manual_stop"),
+                "failure_type": "manual_stop",
+                "session_id": session_snapshot.session_id,
+                "blocked_task_ids": stopped_task_ids,
+                "checkpoint_key": checkpoint_key,
+                "checkpoint_path": str(checkpoint_path),
+            }
+        )
+
     def stop_session(self, session_id: str) -> Dict[str, Any] | None:
         session_snapshot: AgentSession | None = None
         process = None
@@ -4691,20 +5371,9 @@ class AgentRuntime:
                     live_session.progress_percent = max(live_session.progress_percent, 94)
                     session_snapshot = live_session
 
-        if session_snapshot is not None and session_snapshot.control_plane_enabled and session_snapshot.active_task_id:
+        if session_snapshot is not None and session_snapshot.control_plane_enabled:
             try:
-                runtime_dir = Path(session_snapshot.control_plane_runtime_dir or session_snapshot.project_dir / "runtime")
-                store = StateStore(runtime_dir) if StateStore is not None else None
-                if store is not None and TaskQueue is not None:
-                    queue = TaskQueue(store)
-                    try:
-                        queue.mark_task_status(session_snapshot.active_task_id, "blocked")
-                    except Exception:
-                        pass
-                    task = dict(session_snapshot.active_task or {"id": session_snapshot.active_task_id, "mode": session_snapshot.runtime_mode})
-                    task.setdefault("id", session_snapshot.active_task_id)
-                    task.setdefault("mode", session_snapshot.runtime_mode)
-                    self._save_project_state_transition(store, task, "blocked")
+                self._persist_control_plane_manual_stop(session_snapshot)
             except Exception:
                 pass
             self.session_emitter(session_snapshot.to_dict())
@@ -4971,7 +5640,7 @@ class AgentRuntime:
         previous_relative = None
         lace_relative = log_path.relative_to(session.project_dir).as_posix()
         active_cycle_number = None
-        running_now = str(session.status or "").lower() in {"queued", "starting", "running"}
+        running_now = str(session.status or "").lower() in {"queued", "preparing", "starting", "running"}
         for cycle_number in cycle_numbers:
             cycle_sections = sections_by_cycle.get(cycle_number, {})
             cycle_summary = summarize_lace_cycle_visual(cycle_number, cycle_sections)
@@ -5817,43 +6486,125 @@ class AgentRuntime:
         return har_result
 
     def _run_control_plane_session(self, session_id: str) -> None:
+        visual_stop = None
+        visual_thread = None
+        reviewer_stop = None
+        reviewer_thread = None
         with self.lock:
             session = self.sessions.get(session_id)
             if session is None:
                 return
-            session.status = "running"
-            session.started_at = utc_now()
-            session.updated_at = session.started_at
-            session.start_monotonic = time.monotonic()
-            session.last_agent_activity_monotonic = session.start_monotonic
-            session.last_heartbeat_monotonic = session.start_monotonic
-            session.last_heartbeat_at = session.started_at
-            session.progress_percent = max(session.progress_percent, 8)
-            session.progress_label = "Ejecutando tarea aislada desde directiva del control plane"
+            session.status = "preparing"
+            session.updated_at = utc_now()
+            session.progress_percent = max(session.progress_percent, 6)
+            session.progress_label = "Preparando runtime, LACE y directiva del control plane"
             session_ref = session
         self.session_emitter(session_ref.to_dict())
-        self._emit_visual_runtime_event(
-            session_ref,
-            op="session_start",
-            status="running",
-            phase="start",
-            message=(
-                f"Control plane preparo la tarea {session_ref.active_task_id} "
-                f"con directiva {session_ref.directive_json_path}."
-            ),
+        self._append_output(
+            session_id,
+            "[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n",
         )
-        self._emit_preflight_visuals(session_ref)
 
-        prepared = {
-            "runtime_dir": str(self._resolve_control_plane_runtime_dir(session=session_ref)),
-            "task": dict(session_ref.active_task),
-            "directive": dict(session_ref.directive),
-            "directive_json_path": session_ref.directive_json_path,
-            "directive_markdown_path": session_ref.directive_markdown_path,
-        }
-        visual_stop, visual_thread = self._start_visual_event_consumer(session_id)
-        reviewer_stop, reviewer_thread = self._start_live_reviewer(session_id)
         try:
+            with self.lock:
+                current_session = self.sessions.get(session_id)
+                if current_session is None:
+                    return
+                needs_prepare = not current_session.active_task or not current_session.directive or not current_session.command
+                session_ref = current_session
+
+            if needs_prepare:
+                project_dir = session_ref.project_dir
+                session_runtime_dir = project_dir / "runtime"
+                runtime_mode = session_ref.runtime_mode
+                smoke_mode = runtime_mode == "smoke"
+                complexity_estimate = self._build_complexity_estimate(project_dir, session_ref.requirement, runtime_mode)
+                lace_context = None if smoke_mode else self._prepare_lace_context(
+                    project_dir,
+                    session_ref.requirement,
+                    complexity_estimate=complexity_estimate,
+                )
+                habla_prompt, habla_available, habla_state = self._resolve_habla_payload(session_ref.requirement)
+                habla_preflight_path = self._write_habla_preflight(
+                    project_dir=project_dir,
+                    requirement=session_ref.requirement,
+                    habla_prompt=habla_prompt,
+                    habla_available=habla_available,
+                    habla_state=habla_state,
+                    lace_context=lace_context,
+                )
+                self._ensure_control_plane_runtime(session_runtime_dir, session_ref.project_slug, runtime_mode)
+                self._persist_complexity_estimate(session_runtime_dir, complexity_estimate)
+                prepared = self._prepare_control_plane_directive(
+                    session_ref.requirement,
+                    runtime_mode=runtime_mode,
+                    runtime_dir=session_runtime_dir,
+                    sprint_number=self.control_plane_sprint_number,
+                    directive_repo_root=self.repo_root,
+                    task_workspace_root=project_dir,
+                    complexity_estimate=complexity_estimate,
+                )
+                task = prepared["task"]
+                directive = prepared["directive"]
+                command = self._build_control_plane_worker_command(
+                    directive,
+                    workspace=project_dir,
+                    session_id=session_id,
+                    task=task,
+                )
+                with self.lock:
+                    prepared_session = self.sessions.get(session_id)
+                    if prepared_session is None:
+                        return
+                    prepared_session.prompt = directive["rendered_instruction"]
+                    prepared_session.command = command
+                    prepared_session.habla_prompt = habla_prompt
+                    prepared_session.habla_available = habla_available
+                    prepared_session.habla_state = habla_state
+                    prepared_session.habla_preflight_path = habla_preflight_path
+                    prepared_session.lace_policy_path = lace_context.policy_path if lace_context is not None else None
+                    prepared_session.lace_log_path = lace_context.log_path if lace_context is not None else None
+                    prepared_session.lace_required_cycles = lace_context.required_cycles if lace_context is not None else 0
+                    prepared_session.complexity_estimate = complexity_estimate
+                    prepared_session.smoke_mode = task["mode"] == "smoke"
+                    prepared_session.runtime_mode = task["mode"]
+                    prepared_session.control_plane_runtime_dir = str(prepared["runtime_dir"])
+                    prepared_session.active_task_id = task["id"]
+                    prepared_session.active_task = task
+                    prepared_session.directive = directive
+                    prepared_session.directive_json_path = prepared["directive_json_path"]
+                    prepared_session.directive_markdown_path = prepared["directive_markdown_path"]
+                    prepared_session.directive_source_hash = directive["traceability"]["source_hash"]
+                    prepared_session.reviewer_log_path = str(session_runtime_dir / "logs" / f"{session_id}-reviewer.jsonl")
+                    prepared_session.status = "preparing"
+                    prepared_session.progress_percent = max(prepared_session.progress_percent, 10)
+                    prepared_session.progress_label = "Directiva generada; esperando worker Codex"
+                    prepared_session.updated_at = utc_now()
+                    session_ref = prepared_session
+                self.session_emitter(session_ref.to_dict())
+            else:
+                prepared = {
+                    "runtime_dir": str(self._resolve_control_plane_runtime_dir(session=session_ref)),
+                    "task": dict(session_ref.active_task),
+                    "directive": dict(session_ref.directive),
+                    "directive_json_path": session_ref.directive_json_path,
+                    "directive_markdown_path": session_ref.directive_markdown_path,
+                }
+
+            self._emit_visual_runtime_event(
+                session_ref,
+                op="session_preparing",
+                status="preparing",
+                phase="prepare",
+                message=(
+                    f"Control plane preparo la tarea {session_ref.active_task_id} "
+                    f"con directiva {session_ref.directive_json_path}."
+                ),
+            )
+            self._emit_preflight_visuals(session_ref)
+
+            visual_stop, visual_thread = self._start_visual_event_consumer(session_id)
+            reviewer_stop, reviewer_thread = self._start_live_reviewer(session_id)
             sequence = self.run_control_plane_until_idle(
                 session_ref.requirement,
                 mode=session_ref.runtime_mode,
@@ -5942,6 +6693,8 @@ class AgentRuntime:
                     if completed
                     else str(canonical_outcome["message"])
                 )
+                finished_session.pid = None
+                finished_session.process = None
                 finished_session.updated_at = utc_now()
                 finished_session.ended_at = finished_session.updated_at
                 finished_session_ref = finished_session
@@ -5975,6 +6728,26 @@ class AgentRuntime:
                 message=str(canonical_outcome["message"]),
             )
         except Exception as error:
+            if getattr(error, "code", "") == "cyberlace_sensitive_document_blocked":
+                details = getattr(error, "details", {}) if isinstance(getattr(error, "details", {}), dict) else {}
+                decision = details.get("decision") if isinstance(details.get("decision"), dict) else {
+                    "message": str(error),
+                    "reason": str(error),
+                    "blocked": True,
+                    "blocksRuntime": True,
+                    "runtimeAction": "QUARANTINE",
+                    "severity": "CRITICAL",
+                    "riskScore": 100.0,
+                    "evidence": [],
+                    "blockedPaths": [],
+                }
+                checkpoint = details.get("checkpoint") if isinstance(details.get("checkpoint"), dict) else None
+                with self.lock:
+                    blocked_session = self.sessions.get(session_id)
+                if blocked_session is not None:
+                    self._block_session_for_cyberlace_document(blocked_session, decision, checkpoint=checkpoint)
+                return
+
             message = f"Control plane fallo durante la ejecucion de la tarea: {error}"
             with self.lock:
                 failed_session = self.sessions.get(session_id)
@@ -5982,6 +6755,8 @@ class AgentRuntime:
                     return
                 failed_session.status = "failed"
                 failed_session.returncode = 126
+                failed_session.pid = None
+                failed_session.process = None
                 failed_session.error_code = getattr(error, "code", "control_plane_execution_error")
                 failed_session.error_message = message
                 failed_session.progress_label = message
@@ -6007,9 +6782,13 @@ class AgentRuntime:
             session = self.sessions.get(session_id)
             if session is None:
                 return
-            session.status = "starting"
+            if session.control_plane_enabled:
+                session.status = "preparing"
+                session.progress_label = "Preparando control plane y directiva"
+            else:
+                session.status = "starting"
+                session.progress_label = "Preparando el proceso del agente"
             session.progress_percent = max(session.progress_percent, 2)
-            session.progress_label = "Preparando el proceso del agente"
             session.updated_at = utc_now()
         self._emit_session(session)
         adapter = self._session_worker_adapter(session)
@@ -6023,14 +6802,19 @@ class AgentRuntime:
     def _run_legacy_pty_session(self, session_id: str) -> None:
         try:
             master_fd, slave_fd = pty.openpty()
-            env = os.environ.copy()
-            env["PATH"] = self.codex_launch_path
-            env["VISTA_AGENT_SESSION_ID"] = session.session_id
-            env["VISTA_AGENT_PROJECT_SLUG"] = session.project_slug
-            env["VISTA_AGENT_PROJECT_DIR"] = str(session.project_dir)
+            env_extra = {
+                "PATH": self.codex_launch_path,
+                "VISTA_AGENT_SESSION_ID": session.session_id,
+                "VISTA_AGENT_PROJECT_SLUG": session.project_slug,
+                "VISTA_AGENT_PROJECT_DIR": str(session.project_dir),
+                "VISTA_AGENT_BRIDGE": f"{self.bridge_python} {self.bridge_script}",
+            }
             if session.event_file is not None:
-                env["VISTA_AGENT_EVENT_FILE"] = str(session.event_file)
-            env["VISTA_AGENT_BRIDGE"] = f"{self.bridge_python} {self.bridge_script}"
+                env_extra["VISTA_AGENT_EVENT_FILE"] = str(session.event_file)
+            if safe_child_process_env is not None:
+                env = safe_child_process_env(os.environ, extra=env_extra)
+            else:
+                env = env_extra
             process = subprocess.Popen(
                 session.command,
                 cwd=session.project_dir,
@@ -6225,6 +7009,7 @@ class AgentRuntime:
                 self.session_emitter(retry_snapshot)
             self._run_session(session_id)
             return
+        self._cyberlace_finalize_session_output(session_id)
         self.graph_sync(True)
         final_snapshot = self.get_session(session_id)
         if final_snapshot is not None:

@@ -2,8 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 
 const AUTH_TOKEN_STORAGE_KEY = "hablaAuthToken";
 const AUTH_INTRO_STORAGE_KEY = "hablaAuthIntroCompleted";
-const DEFAULT_LOADING_MS = 30000;
-const AUTH_REQUEST_TIMEOUT_MS = 15000;
+const DEFAULT_LOADING_MS = 1200;
+const AUTH_REQUEST_TIMEOUT_MS = 45000;
+const AUTH_RETRY_DELAY_MS = 600;
 
 function storageGet(key) {
   try {
@@ -39,25 +40,24 @@ function normalizeFieldErrors(fields) {
   return fields && typeof fields === "object" ? fields : {};
 }
 
-async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUEST_TIMEOUT_MS, ...options } = {}) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  const requestUrl = buildApiUrl(apiBaseUrl, path);
+function isAbortLike(error) {
+  const rawMessage = String(error?.message || "");
+  return error?.name === "AbortError" || rawMessage === "auth_request_timeout" || rawMessage.includes("aborted");
+}
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function fetchWithAuthTimeout(requestUrl, options, timeoutMs) {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(new Error("auth_request_timeout")), timeoutMs);
-  let response;
   try {
-    response = await fetch(requestUrl, { ...options, headers, signal: controller.signal });
+    return await fetch(requestUrl, { ...options, signal: controller.signal });
   } catch (error) {
-    const rawMessage = String(error?.message || "");
-    const aborted = error?.name === "AbortError" || rawMessage === "auth_request_timeout" || rawMessage.includes("aborted");
-    if (aborted) {
-      const timeoutError = new Error(`Tiempo de espera agotado al contactar autenticacion en ${requestUrl}.`);
+    if (isAbortLike(error)) {
+      const timeoutSeconds = Math.round(timeoutMs / 1000);
+      const timeoutError = new Error(`Tiempo de espera agotado al contactar autenticacion en ${requestUrl} despues de ${timeoutSeconds}s.`);
       timeoutError.code = "auth_request_timeout";
       timeoutError.cause = error;
       throw timeoutError;
@@ -68,6 +68,31 @@ async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUES
     throw networkError;
   } finally {
     window.clearTimeout(timeoutId);
+  }
+}
+
+async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUEST_TIMEOUT_MS, retryOnTimeout = false, ...options } = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const requestUrl = buildApiUrl(apiBaseUrl, path);
+  const attempts = retryOnTimeout ? 2 : 1;
+  let response;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      response = await fetchWithAuthTimeout(requestUrl, { ...options, headers }, timeoutMs);
+      break;
+    } catch (error) {
+      if (error?.code === "auth_request_timeout" && attempt + 1 < attempts) {
+        await wait(AUTH_RETRY_DELAY_MS);
+        continue;
+      }
+      throw error;
+    }
   }
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload?.ok === false) {
@@ -108,7 +133,11 @@ function validateRegisterForm(form) {
 
 function validateLoginForm(form) {
   const errors = {};
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.usuario_email.trim())) errors.usuario_email = "Email invalido.";
+  const identifier = form.usuario_email.trim();
+  const looksLikeEmail = identifier.includes("@");
+  const validIdentifier = /^[A-Za-z0-9_.@+-]{3,254}$/.test(identifier);
+  const validEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(identifier);
+  if (!validIdentifier || (looksLikeEmail && !validEmail)) errors.usuario_email = "Usuario o email invalido.";
   if (!form.usuario_password) errors.usuario_password = "Contrasena requerida.";
   return errors;
 }
@@ -266,6 +295,8 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
       const payload = await authFetch(apiBaseUrl, "/api/auth/login", {
         method: "POST",
         body: JSON.stringify(loginForm),
+        timeoutMs: 60000,
+        retryOnTimeout: true,
       });
       completeAuth(payload);
     } catch (error) {
@@ -401,8 +432,8 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
           ) : (
             <form className="welcome-auth-form" onSubmit={submitLogin}>
               <label>
-                <span>Email</span>
-                <input name="usuario_email" type="email" value={loginForm.usuario_email} onChange={handleLoginChange} autoComplete="email" required />
+                <span>Usuario o email</span>
+                <input name="usuario_email" type="text" value={loginForm.usuario_email} onChange={handleLoginChange} autoComplete="username" required />
                 {fieldErrors.usuario_email ? <small>{fieldErrors.usuario_email}</small> : null}
               </label>
               <label>
@@ -410,6 +441,10 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
                 <input name="usuario_password" type="password" value={loginForm.usuario_password} onChange={handleLoginChange} autoComplete="current-password" required />
                 {fieldErrors.usuario_password ? <small>{fieldErrors.usuario_password}</small> : null}
               </label>
+              <div className="welcome-auth-demo-access">
+                <strong>Acceso de validacion</strong>
+                <span>Usuario: admin / Contrasena: admin</span>
+              </div>
               <button type="submit" className="welcome-auth-submit" disabled={busy}>
                 {busy ? "Validando..." : "Iniciar sesion"}
               </button>

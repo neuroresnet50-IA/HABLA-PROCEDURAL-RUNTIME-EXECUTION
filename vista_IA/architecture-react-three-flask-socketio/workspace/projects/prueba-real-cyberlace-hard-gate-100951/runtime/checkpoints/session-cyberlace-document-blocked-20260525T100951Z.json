@@ -1,0 +1,132 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260525T100951Z",
+  "created_at": "2026-05-25T10:09:51Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/01_fake_credential_bundle.py",
+        "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/02_cloud_exfiltration_decoy.js",
+        "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/03_finance_seed.json"
+      ],
+      "blocksRuntime": true,
+      "evidence": [
+        {
+          "domain": "credential",
+          "line": 5,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/01_fake_credential_bundle.py",
+          "pattern": "password",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "credential",
+          "line": 5,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/02_cloud_exfiltration_decoy.js",
+          "pattern": "private_key",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        },
+        {
+          "domain": "financial",
+          "line": 5,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/03_finance_seed.json",
+          "pattern": "credit_card_like",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "sensitive_document_content"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "prueba-real-cyberlace-hard-gate-100951",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "scannedDocumentCount": 8,
+      "scannedDocuments": [
+        {
+          "blockedFindings": 1,
+          "bytes": 572,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/01_fake_credential_bundle.py"
+        },
+        {
+          "blockedFindings": 1,
+          "bytes": 504,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/02_cloud_exfiltration_decoy.js"
+        },
+        {
+          "blockedFindings": 1,
+          "bytes": 330,
+          "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/03_finance_seed.json"
+        }
+      ],
+      "sessionId": "agent-6ece4d913c",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 1970,
+        "documents": 5,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/01_fake_credential_bundle.py",
+          "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/02_cloud_exfiltration_decoy.js",
+          "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/03_finance_seed.json"
+        ],
+        "evidence": [
+          {
+            "domain": "credential",
+            "line": 5,
+            "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/01_fake_credential_bundle.py",
+            "pattern": "password",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "credential",
+            "line": 5,
+            "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/02_cloud_exfiltration_decoy.js",
+            "pattern": "private_key",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          },
+          {
+            "domain": "financial",
+            "line": 5,
+            "path": "workspace/projects/prueba-real-cyberlace-hard-gate-100951/src/03_finance_seed.json",
+            "pattern": "credit_card_like",
+            "sample": "[REDACTED]",
+            "source": "referenced_document",
+            "type": "sensitive_document_content"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "prueba-real-cyberlace-hard-gate-100951",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-05-25T10:09:51Z"
+    },
+    "project_id": "prueba-real-cyberlace-hard-gate-100951",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

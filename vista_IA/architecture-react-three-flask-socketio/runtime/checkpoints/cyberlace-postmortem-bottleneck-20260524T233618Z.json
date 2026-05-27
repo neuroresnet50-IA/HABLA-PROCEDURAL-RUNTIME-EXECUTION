@@ -1,0 +1,103 @@
+{
+  "timestamp": "2026-05-24T23:36:18.295167+00:00",
+  "event": "CYBERLACE_POSTMORTEM_BOTTLENECK",
+  "user_report": "UI lenta/bloqueada, botones inaccesibles, login/modal no iniciaba correctamente despues de integracion CyberLACE.",
+  "root_causes": [
+    {
+      "id": "editor_state_self_recursion",
+      "severity": "critical",
+      "evidence": [
+        "backend/editor_state.json media aproximadamente 41 MB antes de reparar.",
+        "Contenia un nodo backend__editor_state_json con payload code de aproximadamente 26 MB.",
+        "/api/architecture respondia aproximadamente 45 MB y tardo 8.17s antes de compactar."
+      ],
+      "cause": "project_graph no ignoraba editor_state.json ni reverse_engineering_state.json, por lo que el estado persistido podia incluirse a si mismo y crecer en cada sincronizacion.",
+      "fix": "backend/project_graph.py ahora ignora archivos de estado generados y trunca code payloads grandes; backend/editor_state.json fue compactado con backup."
+    },
+    {
+      "id": "socket_polling_stale_tabs",
+      "severity": "high",
+      "evidence": [
+        "Backend principal mostro CPU cercano a 100% mientras habia varias conexiones de navegador abiertas.",
+        "Backend aislado en puerto temporal, sin navegador conectado, uso 0.0% CPU y /api/health respondio en 0.004240s.",
+        "Logs tenian llamadas repetidas a /api/projects/.../files, /api/agent/projects, /api/cyberlace/health, /api/cyberlace/evidence/recent y socket.io polling."
+      ],
+      "cause": "Pestanas abiertas con bundle viejo seguian usando Socket.IO por polling y polling frecuente de endpoints pesados.",
+      "fix": "Socket.IO frontend/backend permite websocket; se redujo polling de frontend; CyberLACEPanel no descarga evidencia mientras esta colapsado."
+    },
+    {
+      "id": "backend_restart_threaded_argument",
+      "severity": "high",
+      "evidence": [
+        "Reinicio fallaba con TypeError: flask.app.Flask.run() got multiple values for keyword argument threaded."
+      ],
+      "cause": "Se habia agregado threaded=True a socketio.run(), incompatible con Flask-SocketIO en este arranque.",
+      "fix": "Se elimino threaded=True y el backend reinicio correctamente."
+    },
+    {
+      "id": "welcome_modal_delay",
+      "severity": "medium",
+      "evidence": [
+        "WelcomeAuthGate tenia DEFAULT_LOADING_MS = 30000, por lo que en navegador limpio el modal aparecia despues de 30 segundos.",
+        "Si existia token valido, /api/auth/me devolvia 200 y el modal se omitia por diseno."
+      ],
+      "cause": "La espera visual inicial hacia parecer que login/setup no iniciaba.",
+      "fix": "DEFAULT_LOADING_MS reducido a 1200 ms; verificado en navegador headless fresco con modal visible rapidamente."
+    }
+  ],
+  "files_modified": [
+    "backend/project_graph.py",
+    "backend/test_workspace_visual_sync.py",
+    "backend/app.py",
+    "backend/editor_state.json",
+    "frontend/src/components/CyberLACEPanel.jsx",
+    "frontend/src/components/CodeWorkbench.jsx",
+    "frontend/src/App.jsx",
+    "frontend/src/components/AgentStudio.jsx",
+    "frontend/src/components/WelcomeAuthGate.jsx",
+    "frontend/dist/*"
+  ],
+  "backups": [
+    "runtime/artifacts/editor_state_before_bottleneck_fix_20260524T220000Z.json"
+  ],
+  "validations": [
+    {
+      "command": "python3 -B -m py_compile backend/project_graph.py backend/app.py backend/test_workspace_visual_sync.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m unittest backend.test_workspace_visual_sync",
+      "result": "passed"
+    },
+    {
+      "command": "npm --prefix frontend run build",
+      "result": "passed",
+      "bundle": "frontend/dist/assets/index-DYvKCqrt.js"
+    },
+    {
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "result": "passed",
+      "backend_pid": 1955912,
+      "url": "http://127.0.0.1:5001/"
+    },
+    {
+      "command": "fresh headless browser check",
+      "result": "passed",
+      "evidence": "welcome-auth-gate is-setup, Acceso inicial, Crear cuenta, Iniciar sesion visible despues de ~3s"
+    }
+  ],
+  "measurements_after": {
+    "backend_editor_state_json_bytes": 3314631,
+    "backend_editor_state_nodes": 148,
+    "editor_state_self_node_present": false,
+    "backend_isolated_health_seconds": 0.00424,
+    "backend_isolated_cpu_percent": 0.0,
+    "main_backend_note": "El proceso principal puede seguir alto mientras existan pestanas antiguas con bundle viejo haciendo polling."
+  },
+  "residual_risks": [
+    "Cerrar o refrescar fuerte todas las pestanas antiguas de http://127.0.0.1:5001/ es necesario para cortar polling viejo ya cargado en el navegador.",
+    "No se debe matar procesos de navegador sin autorizacion explicita del usuario.",
+    "Se detectaron cambios previos/no verificados en auth_routes.py y WelcomeAuthGate.jsx relacionados con usuario admin/admin y acceso demo; requieren auditoria separada si el usuario quiere investigar login/autenticacion a fondo."
+  ],
+  "next_recommendation": "Cerrar todas las pestanas viejas del navegador o hacer Ctrl+Shift+R, abrir una sola pestana nueva en http://127.0.0.1:5001/ y repetir prueba de botones/login. Si CPU sigue alta sin pestanas abiertas, revisar workers/procesos externos."
+}

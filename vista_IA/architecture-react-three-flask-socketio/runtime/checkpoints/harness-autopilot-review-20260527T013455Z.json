@@ -1,0 +1,109 @@
+{
+  "checkpoint": "harness-autopilot-review-20260527T013455Z.json",
+  "createdAt": "2026-05-27T01:34:55Z",
+  "task_id": "HARNESS-AUTOPILOT-REVIEW-20260527",
+  "status": "completed_review_only",
+  "scope": "Review of Harness Engineering Studio and CyberLACE Autonomous Security Training Loop against code, checkpoints and live endpoints.",
+  "reviewed": {
+    "files": [
+      "frontend/src/components/HarnessEngineeringStudio.jsx",
+      "backend/app.py",
+      "backend/safety_learning_core.py",
+      "tools/cyberlace_training_loop.py",
+      "docs/security/cyberlace_training_loop.md"
+    ],
+    "checkpoints": [
+      "runtime/checkpoints/harness-engineering-studio-ui-20260525T135428Z.json",
+      "runtime/checkpoints/cyberlace-autonomous-training-loop-20260525T141623Z.json",
+      "runtime/checkpoints/safety-learning-core-v1-20260525T222122Z.json"
+    ]
+  },
+  "validation": [
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/safety_learning_core.py tools/cyberlace_training_loop.py",
+      "ok": true
+    },
+    {
+      "command": "GET /api/harness/training/summary",
+      "ok": true,
+      "containsSafetyLearning": true
+    },
+    {
+      "command": "jq runtime/safety_learning/policy_model.json",
+      "ok": true,
+      "totalExperiences": 14,
+      "score": 14.0
+    },
+    {
+      "command": "tail .runtime/logs/backend.log",
+      "ok": true,
+      "recentHarnessTracebackFound": false
+    }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "file": "backend/app.py",
+      "line": 219,
+      "title": "Autopilot run state is in-memory until final checkpoint",
+      "detail": "cyberlace_training_runs is a process-local dict. autopilot-start stores queued/running status only in memory, and autopilot-status reads only that dict. If the backend restarts mid-campaign, the UI loses the run and there is no per-step persisted run state to resume from.",
+      "evidence": [
+        "backend/app.py:219",
+        "backend/app.py:3871",
+        "backend/app.py:4172",
+        "backend/app.py:4209"
+      ]
+    },
+    {
+      "severity": "medium",
+      "file": "backend/app.py",
+      "line": 4130,
+      "title": "No global concurrency/budget gate for autonomous campaigns",
+      "detail": "autopilot-start accepts up to 1000 cycles and starts a background task for every request. The UI disables its own button, but another tab or direct API call can start multiple campaigns and saturate the runtime.",
+      "evidence": [
+        "backend/app.py:4130",
+        "backend/app.py:4177",
+        "frontend/src/components/HarnessEngineeringStudio.jsx:150"
+      ]
+    },
+    {
+      "severity": "medium",
+      "file": "backend/app.py",
+      "line": 3825,
+      "title": "Harness accepts client supplied baseUrl for server-side requests",
+      "detail": "generate-run/autopilot-start/autopilot-run accept baseUrl from the request payload and then the backend makes HTTP calls to it. In local-only development this is convenient, but if exposed it is an SSRF-style risk and can point the harness away from the intended local runtime.",
+      "evidence": [
+        "backend/app.py:3825",
+        "backend/app.py:4150",
+        "backend/app.py:4230",
+        "tools/cyberlace_training_loop.py:697"
+      ]
+    },
+    {
+      "severity": "medium",
+      "file": "tools/cyberlace_training_loop.py",
+      "line": 734,
+      "title": "Worker process check can false-fail under unrelated active workers",
+      "detail": "process_check builds a broad pgrep OR pattern including workers.codex_worker and VISTA_AGENT_SESSION_ID. Any unrelated live worker can make mustNotStartCodex fail even if the current case did not start a worker.",
+      "evidence": [
+        "tools/cyberlace_training_loop.py:734",
+        "tools/cyberlace_training_loop.py:840"
+      ]
+    },
+    {
+      "severity": "low",
+      "file": "docs/security/cyberlace_training_loop.md",
+      "line": 182,
+      "title": "Documentation still describes continuous UI mode that current component does not expose",
+      "detail": "The backend supports continuous=true, but HarnessEngineeringStudio hardcodes continuous=false and the UI text now says it runs an exact task count and stops. This is a docs/UI contract mismatch.",
+      "evidence": [
+        "docs/security/cyberlace_training_loop.md:182",
+        "frontend/src/components/HarnessEngineeringStudio.jsx:60",
+        "frontend/src/components/HarnessEngineeringStudio.jsx:188",
+        "frontend/src/components/HarnessEngineeringStudio.jsx:359"
+      ]
+    }
+  ],
+  "summary": "The layer exists and is wired end-to-end: UI -> backend endpoints -> training loop -> runtime session -> reports/checkpoints -> Safety Learning memory. The main gap is durability/governance for long autonomous campaigns.",
+  "nextRecommendation": "Before running long campaigns, persist live autopilot run state per cycle and add a single-run/budget gate. Then align docs/UI for continuous mode."
+}

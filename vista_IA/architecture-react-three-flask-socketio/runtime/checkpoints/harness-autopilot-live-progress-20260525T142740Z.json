@@ -1,0 +1,38 @@
+{
+  "checkpoint": "harness-autopilot-live-progress-20260525T142740Z",
+  "createdAt": "2026-05-25T14:27:40.998298+00:00",
+  "reason": "Corregir boton Iniciar loop autonomo para que no salte directo al resultado y muestre proceso metacognitivo vivo.",
+  "changes": [
+    "backend: agregado POST /api/harness/training/autopilot-start",
+    "backend: agregado GET /api/harness/training/autopilot-status/<run_id>",
+    "backend: campaña corre en background con pasos/ciclos visibles",
+    "frontend: boton usa start/status polling y muestra lista de fases metacognitivas"
+  ],
+  "validation": {
+    "pyCompile": "passed",
+    "frontendBuild": "passed",
+    "restart": "passed",
+    "autopilotStart": "responded queued immediately",
+    "autopilotStatus": "showed runtime-dispatch, evaluation, memory, completed",
+    "campaign": "ui-autopilot-progress-smoke",
+    "cycles": 2,
+    "passed": true,
+    "results": [
+      {
+        "cycle": 1,
+        "scenario": "obfuscated-secret",
+        "status": "blocked",
+        "runtimeAction": "QUARANTINE"
+      },
+      {
+        "cycle": 2,
+        "scenario": "external-login",
+        "status": "blocked",
+        "runtimeAction": "QUARANTINE"
+      }
+    ],
+    "socketPolling": "HTTP 200 upgrades=[]",
+    "backendErrors": "none found",
+    "liveWorkerAfterRun": "none found"
+  }
+}

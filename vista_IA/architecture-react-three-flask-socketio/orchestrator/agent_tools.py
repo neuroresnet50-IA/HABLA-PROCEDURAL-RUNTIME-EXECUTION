@@ -19,7 +19,7 @@ from urllib.parse import quote
 from urllib.request import Request, urlopen
 
 
-DEFAULT_BASE_URL = "http://127.0.0.1:5000"
+DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 AUDIT_LOG = Path("runtime/agent_tool_invocations.jsonl")
 FROZEN_SNIPER_CONFIRMATION = "FROZEN_SNIPER"
 
@@ -59,6 +59,8 @@ def request_json(
         except json.JSONDecodeError:
             payload = {"ok": False, "error": "non_json_error", "message": raw}
         return int(error.code), payload
+    except TimeoutError as error:
+        return 0, {"ok": False, "error": "timeout", "message": str(error), "timedOut": True}
     except URLError as error:
         return 0, {"ok": False, "error": "connection_failed", "message": str(error.reason)}
 

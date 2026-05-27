@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "sesion-20260524210420",
+  "generatedAt": "2026-05-27T02:16:40.403584Z",
+  "summary": {
+    "totalFindings": 1,
+    "activeFindings": 1,
+    "resolvedFindings": 0,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1
+    },
+    "bySource": {
+      "sandbox": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-93848450deaa24f8",
+      "fingerprintSha256": "93848450deaa24f8e6962c34065b2ca60ad1ce6652292a303ed997dc2d11d3c6",
+      "projectSlug": "sesion-20260524210420",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260524210420/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": "stopped",
+        "running": true,
+        "ready": false,
+        "embedUrl": "http://127.0.0.1:5604/",
+        "healthcheck": {
+          "ready": true,
+          "reason": "http_ready",
+          "statusCode": 200,
+          "lastError": ""
+        }
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-27T01:45:34.887358Z",
+      "lastSeenAt": "2026-05-27T02:16:40.403584Z",
+      "occurrenceCount": 54,
+      "resolvedAt": null
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "applyLaceGate": false,
+  "baseUrl": "http://127.0.0.1:5001",
+  "cyclesCompleted": 1,
+  "cyclesRequested": 1,
+  "generatedAt": "2026-05-25T02:54:44.895491Z",
+  "latestPath": "runtime/e2e_gate_harness/latest.json",
+  "nodes": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "--version"
+      ],
+      "durationSeconds": 0.184824,
+      "enteredAt": "2026-05-25T02:54:43.771430Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:54:43.956245Z",
+      "name": "cycle-001:pytest_available",
+      "ok": true,
+      "stderr": "",
+      "stdout": "pytest 9.0.3\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "pytest",
+        "backend/test_agent_runtime_lace.py",
+        "-q"
+      ],
+      "durationSeconds": 0.449862,
+      "enteredAt": "2026-05-25T02:54:43.956311Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:54:44.406158Z",
+      "name": "cycle-001:pytest_lace_unit",
+      "ok": true,
+      "stderr": "",
+      "stdout": "..............                                                           [100%]\n14 passed in 0.14s\n",
+      "timedOut": false,
+      "timeoutSeconds": 60
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "pytest",
+        "backend/test_control_plane_visual_bridge.py::ControlPlaneVisualBridgeTest::test_lace_closure_gate_allows_completion_only_with_all_cycles_valid",
+        "-q"
+      ],
+      "durationSeconds": 0.34825,
+      "enteredAt": "2026-05-25T02:54:44.406239Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:54:44.754453Z",
+      "name": "cycle-001:pytest_lace_control_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": ".                                                                        [100%]\n1 passed in 0.12s\n",
+      "timedOut": false,
+      "timeoutSeconds": 60
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nimport sys\nsys.path.insert(0, 'backend')\nimport agent_runtime as ar\np = Path('workspace/projects/sesion-20260524210420/LACE_LOG.md')\nvalidated = ar.validate_lace_log(p, 10)\nstatus = ar.lace_closure_status(p, 10)\nprint(json.dumps({'validate_lace_log': validated, 'lace_closure_status': status}, ensure_ascii=True))\nraise SystemExit(0 if validated[0] == 10 and status[0] else 1)\n"
+      ],
+      "durationSeconds": 0.112643,
+      "enteredAt": "2026-05-25T02:54:44.754609Z",
+      "error": "",
+      "evidence": {
+        "lace_closure_status": [
+          false,
+          "Cierre bloqueado por LACE: 0/10 ciclos v\u00e1lidos. falta secci\u00f3n [BASE] con estado actual; ciclos incompletos: 1 (analizar/criticar, mejorar, validar), 2 (analizar/criticar, mejorar, validar), 3 (analizar/criticar, mejorar, validar), 4 (analizar/criticar, mejorar, validar), 5 (analizar/criticar, mejorar, validar)."
+        ],
+        "validate_lace_log": [
+          0,
+          [
+            "falta secci\u00f3n [BASE] con estado actual",
+            "ciclos incompletos: 1 (analizar/criticar, mejorar, validar), 2 (analizar/criticar, mejorar, validar), 3 (analizar/criticar, mejorar, validar), 4 (analizar/criticar, mejorar, validar), 5 (analizar/criticar, mejorar, validar)"
+          ]
+        ]
+      },
+      "exitCode": 1,
+      "exitedAt": "2026-05-25T02:54:44.867252Z",
+      "name": "cycle-001:lace_log_readonly",
+      "ok": false,
+      "stderr": "",
+      "stdout": "{\"validate_lace_log\": [0, [\"falta secci\\u00f3n [BASE] con estado actual\", \"ciclos incompletos: 1 (analizar/criticar, mejorar, validar), 2 (analizar/criticar, mejorar, validar), 3 (analizar/criticar, mejorar, validar), 4 (analizar/criticar, mejorar, validar), 5 (analizar/criticar, mejorar, validar)\"]], \"lace_closure_status\": [false, \"Cierre bloqueado por LACE: 0/10 ciclos v\\u00e1lidos. falta secci\\u00f3n [BASE] con estado actual; ciclos incompletos: 1 (analizar/criticar, mejorar, validar), 2 (analizar/criticar, mejorar, validar), 3 (analizar/criticar, mejorar, validar), 4 (analizar/criticar, mejorar, validar), 5 (analizar/criticar, mejorar, validar).\"]}\n",
+      "timedOut": false,
+      "timeoutSeconds": 30
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nimport shutil\ncache = Path('.pytest_cache')\nexisted = cache.exists()\nshutil.rmtree(cache, ignore_errors=True)\nprint(json.dumps({'pytest_cache_existed': existed, 'pytest_cache_exists_after': cache.exists()}, sort_keys=True))\nraise SystemExit(0 if not cache.exists() else 1)\n"
+      ],
+      "durationSeconds": 0.02813,
+      "enteredAt": "2026-05-25T02:54:44.867319Z",
+      "error": "",
+      "evidence": {
+        "pytest_cache_existed": true,
+        "pytest_cache_exists_after": false
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:54:44.895431Z",
+      "name": "final:pytest_cache_cleanup",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"pytest_cache_existed\": true, \"pytest_cache_exists_after\": false}\n",
+      "timedOut": false,
+      "timeoutSeconds": 10
+    }
+  ],
+  "project": "sesion-20260524210420",
+  "reportPath": "runtime/e2e_gate_harness/e2e-gate-harness-sesion-20260524210420-20260525T025444Z.json",
+  "report_type": "e2e_gate_harness",
+  "summary": {
+    "nodesFailed": 1,
+    "nodesPassed": 4,
+    "nodesTotal": 5,
+    "passed": false,
+    "timedOut": 0
+  },
+  "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+}

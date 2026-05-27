@@ -164,11 +164,14 @@ class AgentRuntimeHablaTest(unittest.TestCase):
         self.assertEqual(command[:3], ["python3", "-m", "codex"])
         self.assertIn("exec", command)
 
-    def test_build_codex_command_defaults_to_unsandboxed_inner_exec(self) -> None:
+    def test_build_codex_command_defaults_to_workspace_write_inner_exec(self) -> None:
         with TemporaryDirectory() as tmpdir:
             runtime = self.build_runtime(Path(tmpdir) / "app", [])
             command = runtime._build_codex_command(Path(tmpdir) / "project", "haz algo")
-        self.assertIn("--dangerously-bypass-approvals-and-sandbox", command)
+        self.assertNotIn("--dangerously-bypass-approvals-and-sandbox", command)
+        self.assertIn("-s", command)
+        sandbox_index = command.index("-s")
+        self.assertEqual(command[sandbox_index + 1], "workspace-write")
         self.assertIn("-C", command)
         cd_index = command.index("-C")
         self.assertEqual(command[cd_index + 2], "exec")
@@ -855,8 +858,9 @@ class AgentRuntimeHablaTest(unittest.TestCase):
             self.assertIsNone(session_payload["laceRequiredCycles"])
             self.assertTrue(session.smoke_mode)
             self.assertEqual(session.lace_required_cycles, 0)
-            self.assertNotIn("Política LACE obligatoria para esta sesión", session.prompt)
-            self.assertIn("Bridge visual obligatorio", session.prompt)
+            self.assertEqual(session.status, "preparing")
+            self.assertEqual(session.prompt, "")
+            self.assertEqual(session.command, [])
             self.assertFalse((project_dir / "LACE.md").exists())
             self.assertFalse((project_dir / "LACE_LOG.md").exists())
 

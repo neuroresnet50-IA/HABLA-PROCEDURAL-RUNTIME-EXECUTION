@@ -14,8 +14,10 @@ from typing import Any, Callable, Protocol
 
 try:
     from .contracts import validate_task
+    from .safe_process_env import safe_child_process_env
 except ImportError:  # pragma: no cover - supports direct script execution during bootstraps.
     from contracts import validate_task  # type: ignore
+    from safe_process_env import safe_child_process_env  # type: ignore
 
 
 Command = str | list[str]
@@ -105,11 +107,9 @@ class CodexSubprocessWorkerAdapter:
             if shell:
                 adapter_command.append("--shell")
 
-            env = dict(os.environ)
             repo_root = str(Path(__file__).resolve().parents[1])
+            env = safe_child_process_env(os.environ, extra=extra_env, allowlist={"PYTHONPATH"})
             env["PYTHONPATH"] = repo_root + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
-            if extra_env:
-                env.update({str(key): str(value) for key, value in extra_env.items()})
 
             process = subprocess.Popen(
                 adapter_command,

@@ -1,0 +1,396 @@
+{
+  "applyLaceGate": false,
+  "baseUrl": "http://127.0.0.1:5001",
+  "cyclesCompleted": 1,
+  "cyclesRequested": 1,
+  "generatedAt": "2026-05-25T02:47:57.982130Z",
+  "latestPath": "runtime/e2e_gate_harness/latest.json",
+  "nodes": [
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-m",
+        "pytest",
+        "--version"
+      ],
+      "durationSeconds": 0.155503,
+      "enteredAt": "2026-05-25T02:47:52.106351Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:52.261831Z",
+      "name": "cycle-001:pytest_available",
+      "ok": true,
+      "stderr": "",
+      "stdout": "pytest 9.0.3\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "pytest",
+        "backend/test_agent_runtime_lace.py",
+        "-q"
+      ],
+      "durationSeconds": 0.458,
+      "enteredAt": "2026-05-25T02:47:52.261971Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:52.719968Z",
+      "name": "cycle-001:pytest_lace_unit",
+      "ok": true,
+      "stderr": "",
+      "stdout": "..............                                                           [100%]\n14 passed in 0.14s\n",
+      "timedOut": false,
+      "timeoutSeconds": 60
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-m",
+        "pytest",
+        "backend/test_control_plane_visual_bridge.py::ControlPlaneVisualBridgeTest::test_lace_closure_gate_allows_completion_only_with_all_cycles_valid",
+        "-q"
+      ],
+      "durationSeconds": 0.40166,
+      "enteredAt": "2026-05-25T02:47:52.720039Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:53.121685Z",
+      "name": "cycle-001:pytest_lace_control_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": ".                                                                        [100%]\n1 passed in 0.13s\n",
+      "timedOut": false,
+      "timeoutSeconds": 60
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nimport sys\nsys.path.insert(0, 'backend')\nimport agent_runtime as ar\np = Path('workspace/projects/sesion-20260518014728-jeego-en-3d/LACE_LOG.md')\nvalidated = ar.validate_lace_log(p, 10)\nstatus = ar.lace_closure_status(p, 10)\nprint(json.dumps({'validate_lace_log': validated, 'lace_closure_status': status}, ensure_ascii=True))\nraise SystemExit(0 if validated[0] == 10 and status[0] else 1)\n"
+      ],
+      "durationSeconds": 0.204767,
+      "enteredAt": "2026-05-25T02:47:53.121747Z",
+      "error": "",
+      "evidence": {
+        "lace_closure_status": [
+          true,
+          "Puerta LACE superada."
+        ],
+        "validate_lace_log": [
+          10,
+          []
+        ]
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:53.326504Z",
+      "name": "cycle-001:lace_log_readonly",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"validate_lace_log\": [10, []], \"lace_closure_status\": [true, \"Puerta LACE superada.\"]}\n",
+      "timedOut": false,
+      "timeoutSeconds": 30
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nproject = Path('workspace/projects/sesion-20260518014728-jeego-en-3d')\nstate = json.loads((project / 'runtime' / 'project_state.json').read_text(encoding='utf-8'))\nqueue_payload = json.loads((project / 'runtime' / 'task_queue.json').read_text(encoding='utf-8'))\ntasks = queue_payload.get('tasks') if isinstance(queue_payload, dict) else queue_payload\ncounts = {}\nfor task in tasks or []:\n    status = str(task.get('status'))\n    counts[status] = counts.get(status, 0) + 1\nblocked_file = project / 'runtime' / 'checkpoints' / 'lace-closure-gate-blocked.json'\ncompleted_file = project / 'runtime' / 'checkpoints' / 'lace-closure-gate-completed.json'\nsummary = {\n    'status': state.get('status'),\n    'current_task_id': state.get('current_task_id'),\n    'blocked_tasks': state.get('blocked_tasks'),\n    'failed_tasks': state.get('failed_tasks'),\n    'task_status_counts': counts,\n    'blocked_checkpoint_exists': blocked_file.exists(),\n    'completed_checkpoint_exists': completed_file.exists(),\n}\nprint(json.dumps(summary, ensure_ascii=True, sort_keys=True))\nraise SystemExit(0 if summary['status'] == 'completed' and summary['blocked_tasks'] == [] and summary['failed_tasks'] == [] and not summary['blocked_checkpoint_exists'] and summary['completed_checkpoint_exists'] else 1)\n"
+      ],
+      "durationSeconds": 0.027091,
+      "enteredAt": "2026-05-25T02:47:53.326559Z",
+      "error": "",
+      "evidence": {
+        "blocked_checkpoint_exists": false,
+        "blocked_tasks": [],
+        "completed_checkpoint_exists": true,
+        "current_task_id": null,
+        "failed_tasks": [],
+        "status": "completed",
+        "task_status_counts": {
+          "completed": 116
+        }
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:53.353630Z",
+      "name": "cycle-001:runtime_state_after_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"blocked_checkpoint_exists\": false, \"blocked_tasks\": [], \"completed_checkpoint_exists\": true, \"current_task_id\": null, \"failed_tasks\": [], \"status\": \"completed\", \"task_status_counts\": {\"completed\": 116}}\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "orchestrator/agent_tools.py",
+        "--base-url",
+        "http://127.0.0.1:5001",
+        "--timeout-seconds",
+        "45",
+        "health"
+      ],
+      "durationSeconds": 0.08797,
+      "enteredAt": "2026-05-25T02:47:53.353708Z",
+      "error": "",
+      "evidence": {
+        "rawLastLine": "}"
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:53.441669Z",
+      "name": "cycle-001:backend_health",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\n  \"statusCode\": 200,\n  \"ok\": true,\n  \"command\": \"health\",\n  \"outputMode\": \"compact\",\n  \"service\": \"HABLA Observer IA\"\n}\n",
+      "timedOut": false,
+      "timeoutSeconds": 50
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "orchestrator/agent_tools.py",
+        "--base-url",
+        "http://127.0.0.1:5001",
+        "--timeout-seconds",
+        "180",
+        "scanner",
+        "sesion-20260518014728-jeego-en-3d"
+      ],
+      "durationSeconds": 2.207347,
+      "enteredAt": "2026-05-25T02:47:53.441722Z",
+      "error": "",
+      "evidence": {
+        "rawLastLine": "}"
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:55.649052Z",
+      "name": "cycle-001:scanner_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\n  \"statusCode\": 200,\n  \"ok\": true,\n  \"command\": \"scanner\",\n  \"outputMode\": \"compact\",\n  \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/final_code_scanner_report.json\",\n  \"report\": {\n    \"summary\": {\n      \"bytesScanned\": 444670,\n      \"charactersScanned\": 444206,\n      \"filesScanned\": 18,\n      \"linesScanned\": 8091\n    },\n    \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n    \"generatedAt\": \"2026-05-25T02:47:54.858609+00:00\"\n  },\n  \"observerEvent\": null,\n  \"fullReportHint\": \"Use --full only when full evidence is required.\"\n}\n",
+      "timedOut": false,
+      "timeoutSeconds": 190
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nproject = Path('workspace/projects/sesion-20260518014728-jeego-en-3d')\nreport = json.loads((project / 'runtime' / 'artifacts' / 'final_code_scanner_report.json').read_text(encoding='utf-8'))\nvalidation = report.get('validation') or {}\nscanner = report.get('scanner') or {}\nsummary = {\n    'validation_passed': validation.get('passed'),\n    'blockers': validation.get('blockers'),\n    'visual_playback': scanner.get('visual_playback'),\n    'scrolls_to_last_line': scanner.get('scrolls_to_last_line'),\n    'summary': report.get('summary'),\n}\nprint(json.dumps(summary, ensure_ascii=True, sort_keys=True))\nraise SystemExit(0 if summary['validation_passed'] is True and summary['blockers'] == [] and summary['visual_playback'] == 'magnifier_line_by_line_to_last_line' and summary['scrolls_to_last_line'] is True else 1)\n"
+      ],
+      "durationSeconds": 0.023334,
+      "enteredAt": "2026-05-25T02:47:55.649127Z",
+      "error": "",
+      "evidence": {
+        "blockers": [],
+        "scrolls_to_last_line": true,
+        "summary": {
+          "bytesScanned": 444670,
+          "charactersScanned": 444206,
+          "filesScanned": 18,
+          "linesScanned": 8091
+        },
+        "validation_passed": true,
+        "visual_playback": "magnifier_line_by_line_to_last_line"
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:55.672444Z",
+      "name": "cycle-001:scanner_artifact_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"blockers\": [], \"scrolls_to_last_line\": true, \"summary\": {\"bytesScanned\": 444670, \"charactersScanned\": 444206, \"filesScanned\": 18, \"linesScanned\": 8091}, \"validation_passed\": true, \"visual_playback\": \"magnifier_line_by_line_to_last_line\"}\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "orchestrator/agent_tools.py",
+        "--base-url",
+        "http://127.0.0.1:5001",
+        "--timeout-seconds",
+        "180",
+        "integrity",
+        "sesion-20260518014728-jeego-en-3d"
+      ],
+      "durationSeconds": 1.85219,
+      "enteredAt": "2026-05-25T02:47:55.672530Z",
+      "error": "",
+      "evidence": {
+        "rawLastLine": "}"
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:57.524711Z",
+      "name": "cycle-001:integrity_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\n  \"statusCode\": 200,\n  \"ok\": true,\n  \"command\": \"integrity\",\n  \"outputMode\": \"compact\",\n  \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n  \"reportPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/file_integrity_report.json\",\n  \"report\": {\n    \"summary\": {\n      \"baselineFindings\": 0,\n      \"deletedFiles\": 0,\n      \"modifiedFiles\": 0,\n      \"registeredWrites\": 0,\n      \"totalFindings\": 0,\n      \"untrackedFiles\": 0\n    },\n    \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n    \"generatedAt\": \"2026-05-25T02:47:56.660670+00:00\",\n    \"findingSamples\": [],\n    \"findingSampleCount\": 0,\n    \"findingTotalCount\": 0\n  },\n  \"observerEvent\": {\n    \"state\": \"detecting_issue\",\n    \"action\": \"click_issue\",\n    \"reason\": \"La auditoria del mapa reporto hallazgos reales.\",\n    \"message\": \"Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.\",\n    \"projectSlug\": \"sesion-20260524210420\",\n    \"incidentId\": \"OBS-20260525-024757-7f6843c5\",\n    \"incidentStatus\": \"open\",\n    \"focusPath\": \"workspace/projects/sesion-20260524210420/frontend/app.js\",\n    \"snapshotSummary\": {\n      \"activeSessionCount\": 0,\n      \"edgeCount\": 5,\n      \"findingCount\": 12,\n      \"integrityFindingCount\": 0,\n      \"nodeCount\": 8,\n      \"observationScore\": 84,\n      \"observerFindingCount\": 5\n    }\n  },\n  \"fullReportHint\": \"Use --full only when full evidence is required.\"\n}\n",
+      "timedOut": false,
+      "timeoutSeconds": 190
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nproject = Path('workspace/projects/sesion-20260518014728-jeego-en-3d')\nreport = json.loads((project / 'runtime' / 'artifacts' / 'file_integrity_report.json').read_text(encoding='utf-8'))\nvalidation = report.get('validation') or {}\nsummary = report.get('summary') or {}\npayload = {\n    'validation_passed': validation.get('passed'),\n    'blockers': validation.get('blockers'),\n    'totalFindings': summary.get('totalFindings'),\n    'modifiedFiles': summary.get('modifiedFiles'),\n    'deletedFiles': summary.get('deletedFiles'),\n    'untrackedFiles': summary.get('untrackedFiles'),\n}\nprint(json.dumps(payload, ensure_ascii=True, sort_keys=True))\nraise SystemExit(0 if payload['validation_passed'] is True and payload['blockers'] == [] and payload['totalFindings'] == 0 else 1)\n"
+      ],
+      "durationSeconds": 0.025472,
+      "enteredAt": "2026-05-25T02:47:57.524771Z",
+      "error": "",
+      "evidence": {
+        "blockers": [],
+        "deletedFiles": 0,
+        "modifiedFiles": 0,
+        "totalFindings": 0,
+        "untrackedFiles": 0,
+        "validation_passed": true
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:57.550221Z",
+      "name": "cycle-001:integrity_artifact_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"blockers\": [], \"deletedFiles\": 0, \"modifiedFiles\": 0, \"totalFindings\": 0, \"untrackedFiles\": 0, \"validation_passed\": true}\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "orchestrator/agent_tools.py",
+        "--base-url",
+        "http://127.0.0.1:5001",
+        "--timeout-seconds",
+        "45",
+        "findings",
+        "sesion-20260518014728-jeego-en-3d"
+      ],
+      "durationSeconds": 0.239041,
+      "enteredAt": "2026-05-25T02:47:57.550305Z",
+      "error": "",
+      "evidence": {
+        "rawLastLine": "}"
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:57.789321Z",
+      "name": "cycle-001:findings_gate",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\n  \"statusCode\": 200,\n  \"ok\": true,\n  \"command\": \"findings\",\n  \"outputMode\": \"compact\",\n  \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n  \"reportPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/observer_findings.json\",\n  \"report\": {\n    \"summary\": {\n      \"activeFindings\": 1,\n      \"bySeverity\": {\n        \"error\": 1\n      },\n      \"bySource\": {\n        \"sandbox\": 1\n      },\n      \"observationScore\": 82,\n      \"resolvedFindings\": 499,\n      \"totalFindings\": 500\n    },\n    \"projectId\": \"sesion-20260518014728-jeego-en-3d\",\n    \"generatedAt\": \"2026-05-25T02:47:57.731276Z\",\n    \"findingSamples\": [\n      {\n        \"id\": \"observer-94f241479079c39c\",\n        \"status\": \"active\",\n        \"severity\": \"error\",\n        \"source\": \"sandbox\",\n        \"state\": \"verifying_sandbox\",\n        \"relativePath\": \"runtime/sandbox.json\",\n        \"message\": \"Sandbox real incompleto despues de scanner aprobado.\",\n        \"reason\": \"Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.\",\n        \"observationScore\": 82,\n        \"firstSeenAt\": \"2026-05-25T01:19:32.578426Z\",\n        \"lastSeenAt\": \"2026-05-25T02:47:57.731276Z\"\n      }\n    ],\n    \"findingSampleCount\": 1,\n    \"findingTotalCount\": 500\n  },\n  \"fullReportHint\": \"Use --full only when full evidence is required.\"\n}\n",
+      "timedOut": false,
+      "timeoutSeconds": 50
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nproject = Path('workspace/projects/sesion-20260518014728-jeego-en-3d')\nreport = json.loads((project / 'runtime' / 'artifacts' / 'observer_findings.json').read_text(encoding='utf-8'))\nsummary = report.get('summary') or {}\npayload = {\n    'activeFindings': summary.get('activeFindings'),\n    'totalFindings': summary.get('totalFindings'),\n    'resolvedFindings': summary.get('resolvedFindings'),\n    'observationScore': summary.get('observationScore'),\n}\nprint(json.dumps(payload, ensure_ascii=True, sort_keys=True))\nraise SystemExit(0 if payload['activeFindings'] == 0 else 1)\n"
+      ],
+      "durationSeconds": 0.034944,
+      "enteredAt": "2026-05-25T02:47:57.789421Z",
+      "error": "",
+      "evidence": {
+        "activeFindings": 1,
+        "observationScore": 82,
+        "resolvedFindings": 499,
+        "totalFindings": 500
+      },
+      "exitCode": 1,
+      "exitedAt": "2026-05-25T02:47:57.824357Z",
+      "name": "cycle-001:findings_artifact_gate",
+      "ok": false,
+      "stderr": "",
+      "stdout": "{\"activeFindings\": 1, \"observationScore\": 82, \"resolvedFindings\": 499, \"totalFindings\": 500}\n",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nfrom urllib.request import Request, urlopen\nimport json\nproject = Path('workspace/projects/sesion-20260518014728-jeego-en-3d')\nsandbox = json.loads((project / 'runtime' / 'sandbox.json').read_text(encoding='utf-8'))\nurl = sandbox.get('embedUrl') or sandbox.get('url')\nstatus_code = None\nif url:\n    request = Request(url, method='HEAD')\n    with urlopen(request, timeout=5) as response:\n        status_code = int(response.status)\nsummary = {\n    'running': sandbox.get('running'),\n    'ready': sandbox.get('ready'),\n    'url': sandbox.get('url'),\n    'embedUrl': sandbox.get('embedUrl'),\n    'pid': sandbox.get('pid'),\n    'statusCode': status_code,\n    'healthcheck': sandbox.get('healthcheck'),\n}\nprint(json.dumps(summary, ensure_ascii=True, sort_keys=True))\nraise SystemExit(0 if summary['running'] is True and summary['ready'] is True and url and status_code and 200 <= status_code < 400 else 1)\n"
+      ],
+      "durationSeconds": 0.1133,
+      "enteredAt": "2026-05-25T02:47:57.824417Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 1,
+      "exitedAt": "2026-05-25T02:47:57.937683Z",
+      "name": "cycle-001:sandbox_http_gate",
+      "ok": false,
+      "stderr": "Traceback (most recent call last):\n  File \"/usr/lib/python3.12/urllib/request.py\", line 1344, in do_open\n    h.request(req.get_method(), req.selector, req.data, headers,\n  File \"/usr/lib/python3.12/http/client.py\", line 1356, in request\n    self._send_request(method, url, body, headers, encode_chunked)\n  File \"/usr/lib/python3.12/http/client.py\", line 1402, in _send_request\n    self.endheaders(body, encode_chunked=encode_chunked)\n  File \"/usr/lib/python3.12/http/client.py\", line 1351, in endheaders\n    self._send_output(message_body, encode_chunked=encode_chunked)\n  File \"/usr/lib/python3.12/http/client.py\", line 1111, in _send_output\n    self.send(msg)\n  File \"/usr/lib/python3.12/http/client.py\", line 1055, in send\n    self.connect()\n  File \"/usr/lib/python3.12/http/client.py\", line 1021, in connect\n    self.sock = self._create_connection(\n                ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/socket.py\", line 852, in create_connection\n    raise exceptions[0]\n  File \"/usr/lib/python3.12/socket.py\", line 837, in create_connection\n    sock.connect(sa)\nConnectionRefusedError: [Errno 111] Connection refused\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"<string>\", line 11, in <module>\n  File \"/usr/lib/python3.12/urllib/request.py\", line 215, in urlopen\n    return opener.open(url, data, timeout)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 515, in open\n    response = self._open(req, data)\n               ^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 532, in _open\n    result = self._call_chain(self.handle_open, protocol, protocol +\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 492, in _call_chain\n    result = func(*args)\n             ^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 1373, in http_open\n    return self.do_open(http.client.HTTPConnection, req)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/usr/lib/python3.12/urllib/request.py\", line 1347, in do_open\n    raise URLError(err)\nurllib.error.URLError: <urlopen error [Errno 111] Connection refused>\n",
+      "stdout": "",
+      "timedOut": false,
+      "timeoutSeconds": 20
+    },
+    {
+      "command": [
+        "pgrep",
+        "-af",
+        "[p]ytest"
+      ],
+      "durationSeconds": 0.019144,
+      "enteredAt": "2026-05-25T02:47:57.937829Z",
+      "error": "",
+      "evidence": {},
+      "exitCode": 1,
+      "exitedAt": "2026-05-25T02:47:57.956951Z",
+      "name": "cycle-001:no_pytest_process_left",
+      "ok": true,
+      "stderr": "",
+      "stdout": "",
+      "timedOut": false,
+      "timeoutSeconds": 10
+    },
+    {
+      "command": [
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "\nfrom pathlib import Path\nimport json\nimport shutil\ncache = Path('.pytest_cache')\nexisted = cache.exists()\nshutil.rmtree(cache, ignore_errors=True)\nprint(json.dumps({'pytest_cache_existed': existed, 'pytest_cache_exists_after': cache.exists()}, sort_keys=True))\nraise SystemExit(0 if not cache.exists() else 1)\n"
+      ],
+      "durationSeconds": 0.024983,
+      "enteredAt": "2026-05-25T02:47:57.957090Z",
+      "error": "",
+      "evidence": {
+        "pytest_cache_existed": true,
+        "pytest_cache_exists_after": false
+      },
+      "exitCode": 0,
+      "exitedAt": "2026-05-25T02:47:57.982070Z",
+      "name": "final:pytest_cache_cleanup",
+      "ok": true,
+      "stderr": "",
+      "stdout": "{\"pytest_cache_existed\": true, \"pytest_cache_exists_after\": false}\n",
+      "timedOut": false,
+      "timeoutSeconds": 10
+    }
+  ],
+  "project": "sesion-20260518014728-jeego-en-3d",
+  "reportPath": "runtime/e2e_gate_harness/e2e-gate-harness-sesion-20260518014728-jeego-en-3d-20260525T024757Z.json",
+  "report_type": "e2e_gate_harness",
+  "summary": {
+    "nodesFailed": 2,
+    "nodesPassed": 13,
+    "nodesTotal": 15,
+    "passed": false,
+    "timedOut": 0
+  },
+  "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"
+}
