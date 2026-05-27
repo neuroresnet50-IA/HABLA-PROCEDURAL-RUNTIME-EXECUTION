@@ -5722,3 +5722,40 @@ Blockers o riesgos:
 
 Punto de reanudacion:
 - Implementar V1 en estos archivos propuestos: `orchestrator/continuity_probe.py`, endpoints `/api/continuity-probe/*` en `backend/app.py`, GUI `tools/habla_circuit_probe_tk.py`, pruebas `backend/test_continuity_probe.py` o `orchestrator/test_continuity_probe.py`.
+
+## 2026-05-27T02:51:48Z - Publicacion GitHub completada en PR draft
+
+Solicitud recibida: continuar la publicacion del proyecto completo al repositorio GitHub indicado.
+
+Acciones realizadas:
+- Se creo la rama `codex/publish-complete-runtime-project` desde `main`.
+- Se stageo el alcance completo del proyecto excepto los archivos vacios accidentales `=1760`, `=2110`, `=2685`, `=4080`.
+- Se creo el commit `861e0c4` con mensaje `Publish complete runtime project state`.
+- Se empujo la rama a `origin/codex/publish-complete-runtime-project`.
+- El conector GitHub fallo con `403 Resource not accessible by integration`; se uso fallback `gh pr create --draft`.
+- Se abrio el PR draft: https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
+- Se creo checkpoint `runtime/checkpoints/github-publish-complete-20260527T025148Z.json`.
+
+Archivos creados o modificados:
+- `runtime/checkpoints/github-publish-complete-20260527T025148Z.json`
+- `runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `git diff --cached --check`: OK antes del commit principal.
+- `git push -u origin codex/publish-complete-runtime-project`: OK.
+- `gh pr create --draft`: OK, PR #1 creado.
+- Validaciones previas incluidas en el PR: health OK, observer-status OK, secret scan estricto sin matches, py_compile OK, 14 tests Harness/CyberLACE OK, `npm run build` OK.
+
+Resultado real de la validacion:
+- El proyecto completo quedo subido al repositorio remoto en la rama `codex/publish-complete-runtime-project`.
+- El PR draft existe en https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
+
+Blockers o riesgos:
+- El PR es grande y el repo es publico; revisar antes de mergear.
+- Quedan sin rastrear localmente los cuatro archivos vacios accidentales `=1760`, `=2110`, `=2685`, `=4080`.
+- El conector GitHub no pudo crear PR por permisos, pero `gh` funciono.
+
+Punto de reanudacion:
+- Revisar PR #1 y decidir si mergear, pedir ajustes de alcance, o marcarlo ready for review.
