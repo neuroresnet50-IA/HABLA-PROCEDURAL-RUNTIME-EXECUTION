@@ -218,6 +218,8 @@ frontend_asset_cache: Dict[str, Dict[str, Any]] = {}
 frontend_asset_cache_lock = threading.Lock()
 cyberlace_training_runs: Dict[str, Dict[str, Any]] = {}
 cyberlace_training_runs_lock = threading.RLock()
+continuity_probe_runs: Dict[str, Dict[str, Any]] = {}
+continuity_probe_runs_lock = threading.RLock()
 NORMALIZED_GRAPH_CACHE_TTL_SECONDS = float(os.environ.get("NEURO_LACE_GRAPH_CACHE_TTL_SECONDS", "8"))
 CYBERLACE_TRAINING_SCENARIOS = {
     "obfuscated-secret",
@@ -3425,6 +3427,178 @@ def get_habla_status():
         "lacePolicySourceExists": agent_runtime.lace_policy_source.exists(),
     }
     return jsonify({"ok": True, "habla": status})
+
+
+def _load_continuity_probe_module():
+    return importlib.import_module("orchestrator.continuity_probe")
+
+
+def _continuity_probe_public_state(trace_id: str) -> Dict[str, Any] | None:
+    run_id = str(trace_id or "").strip()
+    if not run_id:
+        return None
+    with continuity_probe_runs_lock:
+        state = deepcopy(continuity_probe_runs.get(run_id) or {})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=run_id)
+    except Exception:
+        report = None
+    if isinstance(report, dict):
+        state.update(
+            {
+                "traceId": run_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "eventsPath": report.get("eventsPath"),
+                "finishedAt": report.get("finishedAt"),
+                "report": report,
+            }
+        )
+    return state or None
+
+
+def _run_continuity_probe_background(trace_id: str, payload: Dict[str, Any]) -> None:
+    with continuity_probe_runs_lock:
+        state = continuity_probe_runs.setdefault(trace_id, {"traceId": trace_id})
+        state.update({"status": "running", "startedAt": utc_now()})
+    socketio.emit("agent:observer", {"op": "continuity_probe_started", "traceId": trace_id, "status": "running"})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.run_continuity_probe(
+            repo_root=PROJECT_ROOT,
+            mode=str(payload.get("mode") or "active_canary"),
+            project=str(payload.get("project") or module.DEFAULT_PROJECT),
+            base_url=str(payload.get("baseUrl") or ""),
+            trace_id=trace_id,
+            timeout_seconds=int(payload.get("timeoutSeconds") or 45),
+            include_harness=bool(payload.get("includeHarness", True)),
+        )
+        ok = report.get("result") == "continuity_ok"
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": ok,
+                "traceId": trace_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "finishedAt": report.get("finishedAt"),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_completed", "traceId": trace_id, "status": report.get("status"), "result": report.get("result")})
+    except Exception as error:
+        app.logger.exception("continuity_probe_failed")
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": False,
+                "traceId": trace_id,
+                "status": "failed",
+                "result": "continuity_failed",
+                "error": str(error),
+                "finishedAt": utc_now(),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_failed", "traceId": trace_id, "status": "failed", "message": str(error)})
+
+
+@app.post("/api/continuity-probe/start")
+def start_continuity_probe():
+    payload = request.get_json(silent=True) or {}
+    try:
+        module = _load_continuity_probe_module()
+        mode = str(payload.get("mode") or "active_canary").strip().lower()
+        if mode not in module.VALID_MODES:
+            return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.VALID_MODES)}), 400
+        trace_id = module.safe_slug(payload.get("traceId") or module.new_trace_id(), "continuity")
+        project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
+        base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
+        base_url = str(base_url_raw or "").rstrip("/")
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 45), 300))
+        include_harness = bool(payload.get("includeHarness", True))
+        run_payload = {
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "timeoutSeconds": timeout_seconds,
+            "includeHarness": include_harness,
+        }
+        initial = {
+            "ok": True,
+            "traceId": trace_id,
+            "status": "queued",
+            "result": "queued",
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "includeHarness": include_harness,
+            "createdAt": utc_now(),
+        }
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = initial
+        if bool(payload.get("sync")):
+            report = module.run_continuity_probe(
+                repo_root=PROJECT_ROOT,
+                mode=mode,
+                project=project,
+                base_url=base_url,
+                trace_id=trace_id,
+                timeout_seconds=timeout_seconds,
+                include_harness=include_harness,
+            )
+            ok = report.get("result") == "continuity_ok"
+            with continuity_probe_runs_lock:
+                continuity_probe_runs[trace_id] = {
+                    **initial,
+                    "ok": ok,
+                    "status": report.get("status"),
+                    "result": report.get("result"),
+                    "summary": report.get("summary"),
+                    "reportPath": report.get("reportPath"),
+                    "finishedAt": report.get("finishedAt"),
+                }
+            return jsonify({"ok": ok, "traceId": trace_id, "run": continuity_probe_runs[trace_id], "report": report})
+        socketio.start_background_task(_run_continuity_probe_background, trace_id, run_payload)
+        return jsonify({"ok": True, "traceId": trace_id, "run": initial})
+    except Exception as error:
+        app.logger.exception("continuity_probe_start_failed")
+        return jsonify({"ok": False, "error": "continuity_probe_start_failed", "message": str(error)}), 500
+
+
+@app.get("/api/continuity-probe/status/<trace_id>")
+def get_continuity_probe_status(trace_id: str):
+    state = _continuity_probe_public_state(trace_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "continuity_probe_not_found"}), 404
+    return jsonify({"ok": True, "run": state})
+
+
+@app.get("/api/continuity-probe/report/<trace_id>")
+def get_continuity_probe_report(trace_id: str):
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=trace_id)
+    except Exception as error:
+        return jsonify({"ok": False, "error": "continuity_probe_report_failed", "message": str(error)}), 500
+    if report is None:
+        return jsonify({"ok": False, "error": "continuity_probe_report_not_found"}), 404
+    return jsonify({"ok": True, "traceId": trace_id, "report": report})
+
+
+@app.get("/api/continuity-probe/runs")
+def list_continuity_probe_runs():
+    try:
+        module = _load_continuity_probe_module()
+        reports = module.list_continuity_reports(repo_root=PROJECT_ROOT, limit=30)
+    except Exception:
+        reports = []
+    with continuity_probe_runs_lock:
+        memory_runs = list(continuity_probe_runs.values())
+    return jsonify({"ok": True, "runs": reports, "memoryRuns": memory_runs})
 
 
 @app.get("/api/observer/status")

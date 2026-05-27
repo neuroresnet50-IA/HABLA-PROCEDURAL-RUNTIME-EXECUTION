@@ -1,32 +1,26 @@
 # ULTIMO CONTEXTO CODEX
 
-Fecha/hora UTC: 2026-05-27T02:51:48Z
+Fecha/hora UTC: 2026-05-27T02:55:10Z
 
-Ultima solicitud del usuario: revisar bien el repo y subir toda la informacion del proyecto completo al GitHub `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`, incluyendo GUI y evidencia de lo construido.
+Ultima solicitud del usuario: revisar bien el repo y subir toda la informacion del proyecto completo al GitHub `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`, incluyendo GUI, evidencia y la informacion local mas reciente.
 
-Estado real: publicacion completada en rama `codex/publish-complete-runtime-project` y PR draft abierto: https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1. Commit principal publicado: `861e0c4` (`Publish complete runtime project state`), con 5492 archivos y evidencia de `runtime/` + `workspace/`. El conector GitHub fallo con 403 para crear PR, pero el fallback `gh pr create --draft` funciono.
+Estado real: PR draft abierto en https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1 sobre la rama `codex/publish-complete-runtime-project`. Commit principal publicado `861e0c4`; commit de cierre publicado `4c92d2e`. Despues del PR aparecio un borrador local de `HABLA CircuitProbe` (`orchestrator/continuity_probe.py` + 2 lineas en `backend/app.py`); fue inspeccionado, `py_compile` paso, y queda preparado para commit/push follow-up.
 
-Archivos tocados por el cierre:
-- `runtime/checkpoints/github-publish-complete-20260527T025148Z.json`
+Archivos tocados por el follow-up:
+- `orchestrator/continuity_probe.py`
+- `backend/app.py`
+- `runtime/checkpoints/github-publish-continuity-probe-followup-20260527T025510Z.json`
 - `runtime/task_history.jsonl`
 - `recuperacioncontexto.md`
 - `ULTIMO_CONTEXTO_CODEX.md`
 
 Validacion ejecutada:
-- `python3 orchestrator/agent_tools.py health`: `statusCode=200`, `ok=true`.
-- `python3 orchestrator/agent_tools.py observer-status`: `statusCode=200`, `ok=true`, observer `idle`.
-- Escaneo estricto de formatos de secretos con `rg --pcre2`: sin coincidencias despues de redaccion.
-- Escaneo de archivos mayores a 95MB: sin coincidencias.
-- `python3 -B -m py_compile backend/app.py backend/agent_runtime.py backend/safety_learning_core.py backend/cyberlace_document_guard.py tools/cyberlace_training_loop.py orchestrator/agent_tools.py orchestrator/safe_process_env.py`: OK.
-- `python3 -m pytest backend/test_harness_autopilot_persistence.py backend/test_cyberlace_integration.py backend/test_cyberlace_routes.py backend/test_cyberlace_agent_runtime_hooks.py -q`: OK, 14 tests.
-- `npm run build` en `frontend`: OK, con warning no bloqueante de chunk mayor a 500 kB.
-- `git diff --cached --check`: OK antes del commit principal.
-- `git push -u origin codex/publish-complete-runtime-project`: OK.
-- `gh pr create --draft`: OK, PR #1 creado.
+- Validaciones previas de publicacion: health OK, observer-status OK, secret scan estricto sin matches, py_compile OK, 14 tests Harness/CyberLACE OK, `npm run build` OK, push OK, PR draft OK.
+- Follow-up: `python3 -B -m py_compile backend/app.py orchestrator/continuity_probe.py`: OK.
 
 Riesgos / blockers:
-- El repositorio remoto es publico; revisar PR antes de mergear por el volumen de evidencia runtime/workspace.
-- Quedan sin rastrear localmente los archivos vacios `=1760`, `=2110`, `=2685`, `=4080`; no se subieron.
-- `apply_patch` fallo antes por `bwrap: loopback Failed RTM_NEWADDR`; los rastros finales se escribieron con ejecucion local escalada.
+- `orchestrator/continuity_probe.py` es borrador valido por sintaxis; no se ejecuto activamente para evitar efectos colaterales.
+- El PR sigue siendo draft y debe revisarse antes de merge.
+- Quedan sin rastrear localmente los archivos vacios `=1760`, `=2110`, `=2685`, `=4080`; no deben subirse.
 
-Siguiente paso exacto: revisar el PR draft https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1; si el alcance esta bien, marcarlo ready/mergear. Si quieres reducir peso, ajustar `runtime/`/`workspace/` antes de merge.
+Siguiente paso exacto: commitear y empujar el follow-up de CircuitProbe a `codex/publish-complete-runtime-project` para que el PR #1 quede actualizado; luego revisar https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
