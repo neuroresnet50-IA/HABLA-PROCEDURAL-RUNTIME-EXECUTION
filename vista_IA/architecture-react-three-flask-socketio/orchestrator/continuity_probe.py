@@ -9,6 +9,7 @@ project E2E gate.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import shlex
@@ -47,6 +48,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 DEFAULT_PROJECT = "continuity-probe-canary"
 VALID_MODES = {"read_only", "active_canary", "harness_canary"}
+PROMPT_FLIGHT_MODES = {"trace_only", "safe_canary", "real_session_guarded", "ui_session_rest"}
 TERMINAL_BAD_STATUSES = {"failed", "disconnected", "missing_evidence", "timeout"}
 
 
@@ -320,7 +322,7 @@ class ContinuityProbe:
             )
 
             queue.mark_task_status(task_id, "running")
-            command = [sys.executable, "-B", "-c", self._worker_code()]
+            command = ["python3", "-B", "-c", self._worker_code()]
             execution = execute_task_with_details(
                 task,
                 workspace=project_dir,
@@ -340,6 +342,9 @@ class ContinuityProbe:
                 workerReturnCode=worker_execution.get("worker_returncode"),
                 childReturnCode=worker_execution.get("returncode"),
                 output=self._compact(worker_execution.get("stdout")),
+                workerProcessStdout=self._compact(worker_execution.get("worker_process_stdout"), limit=1200),
+                workerProcessStderr=self._compact(worker_execution.get("worker_process_stderr"), limit=1200),
+                cyberlaceDocumentDecision=self._compact(worker_execution.get("cyberlace_document_decision"), limit=1200),
                 blockers=worker_result.get("blockers") if isinstance(worker_result, dict) else None,
             )
 
@@ -649,6 +654,50 @@ class ContinuityProbe:
 
     def _error(self, exc: Exception) -> dict[str, str]:
         return {"type": type(exc).__name__, "message": str(exc)}
+
+
+def new_prompt_trace_id() -> str:
+    return "prompt-flight-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def sha256_text(value: Any) -> str:
+    payload = value if isinstance(value, str) else json.dumps(value, ensure_ascii=True, sort_keys=True)
+    return hashlib.sha256(payload.encode("utf-8", errors="replace")).hexdigest()
+
+
+def run_prompt_flight_probe(
+    *,
+    repo_root: str | Path | None = None,
+    prompt: str,
+    mode: str = "trace_only",
+    project: str = DEFAULT_PROJECT,
+    base_url: str = DEFAULT_BASE_URL,
+    trace_id: str | None = None,
+    timeout_seconds: int = 90,
+    include_harness: bool = True,
+) -> dict[str, Any]:
+    try:
+        from .prompt_flight_probe import run_prompt_flight_probe as _run_prompt_flight_probe
+    except ImportError:  # pragma: no cover - direct script fallback.
+        from prompt_flight_probe import run_prompt_flight_probe as _run_prompt_flight_probe  # type: ignore
+    return _run_prompt_flight_probe(
+        repo_root=repo_root,
+        prompt=prompt,
+        mode=mode,
+        project=project,
+        base_url=base_url,
+        trace_id=trace_id,
+        timeout_seconds=timeout_seconds,
+        include_harness=include_harness,
+    )
+
+
+def load_prompt_flight_report(*, repo_root: str | Path | None = None, trace_id: str) -> dict[str, Any] | None:
+    try:
+        from .prompt_flight_probe import load_prompt_flight_report as _load_prompt_flight_report
+    except ImportError:  # pragma: no cover - direct script fallback.
+        from prompt_flight_probe import load_prompt_flight_report as _load_prompt_flight_report  # type: ignore
+    return _load_prompt_flight_report(repo_root=repo_root, trace_id=trace_id)
 
 
 def _json_safe(value: Any) -> Any:

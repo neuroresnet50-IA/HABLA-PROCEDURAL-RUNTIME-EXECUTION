@@ -1,0 +1,70 @@
+{
+  "id": "github-publish-continuous-action-tests-20260527T173312Z",
+  "createdAt": "2026-05-27T17:33:12Z",
+  "request": "Subir archivos test y evidencia del sistema en accion continua mientras el desarrollo sigue en curso.",
+  "branch": "codex/publish-complete-runtime-project",
+  "pullRequest": "https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1",
+  "status": "validated_ready_for_commit_and_push",
+  "includedScope": [
+    "Prompt Flight Recorder backend endpoint and CLI",
+    "CircuitProbe/Prompt Flight focused tests",
+    "Tkinter GUI client for CircuitProbe and Prompt Flight",
+    "runtime/continuity_probe evidence reports",
+    "workspace continuity canary projects and runtime evidence",
+    "CyberLACE document guard/worker hook adjustments and evidence ledgers",
+    "Prompt Flight sequential batch runner and 50-case prompt_flight_cases_50.json"
+  ],
+  "excludedScope": [
+    "backups/ pending separate exposure review before public upload",
+    "=1760, =2110, =2685, =4080 empty accidental files"
+  ],
+  "validations": [
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/cyberlace_document_guard.py backend/test_cyberlace_agent_runtime_hooks.py backend/test_continuity_probe.py orchestrator/agent_tools.py orchestrator/continuity_probe.py orchestrator/prompt_flight_probe.py workers/codex_worker.py tools/habla_circuit_probe_tk.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m pytest backend/test_continuity_probe.py backend/test_cyberlace_agent_runtime_hooks.py -q",
+      "result": "passed",
+      "evidence": "14 passed in 3.10s"
+    },
+    {
+      "command": "rg --pcre2 secret-format scan over candidate scope",
+      "result": "passed_no_matches"
+    },
+    {
+      "command": "find candidate scope -type f -size +95M -print",
+      "result": "passed_no_large_files"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py prompt-flight --project continuity-probe-canary --mode trace_only --no-harness --prompt \"Verificar publicacion continua del sistema en accion desde Codex.\"",
+      "statusCode": 200,
+      "ok": true,
+      "result": "prompt_flight_ok",
+      "reportPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json",
+      "summary": {
+        "ok": 10,
+        "failed": 0,
+        "blocked": 0,
+        "skipped": 2,
+        "total": 12
+      }
+    },
+    {
+      "command": "python3 -B -m py_compile orchestrator/prompt_flight_batch.py",
+      "result": "passed"
+    },
+    {
+      "command": "jq '{caseCount:(.cases|length), firstCase:.cases[0].id, lastCase:.cases[-1].id}' runtime/continuity_probe/prompt_flight_cases_50.json",
+      "result": "passed",
+      "caseCount": 50,
+      "firstCase": "PF-001",
+      "lastCase": "PF-050"
+    }
+  ],
+  "knownBlockers": [
+    "backups/ not included in this public PR until a dedicated exposure review is done.",
+    "The development process is ongoing; future runtime evidence may continue appearing after this commit."
+  ],
+  "nextStep": "Commit and push this continuous-action evidence batch to PR #1, then optionally review backups/ as a separate publish decision."
+}

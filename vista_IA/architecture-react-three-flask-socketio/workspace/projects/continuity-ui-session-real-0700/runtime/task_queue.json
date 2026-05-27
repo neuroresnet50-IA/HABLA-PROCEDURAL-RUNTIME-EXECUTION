@@ -1,0 +1,56 @@
+[
+  {
+    "checkpoint_key": "runtime-20260527070408-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/circuit_probe_canary.md"
+    ],
+    "goal": "Crear una tarea real pequena: genera docs/circuit_probe_canary.md con la frase continuidad real ok y no cambies otros archivos de producto.",
+    "id": "RUNTIME-20260527070408-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 10,
+    "status": "blocked",
+    "timeout_seconds": 600,
+    "title": "Crear una tarea real pequena: genera docs/circuit_probe_canary.md con",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527070408-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/circuit_probe_canary.md"
+    ],
+    "goal": "Prepare smaller scope for Crear una tarea real pequena: genera docs/circuit_probe_canary.md con la frase continuidad real ok y no cambies otros archivos de producto.. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260527070408-001-SPLIT-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 9,
+    "status": "blocked",
+    "timeout_seconds": 600,
+    "title": "Crear una tarea real pequena: genera docs/circuit_probe_canary.md con split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527070408-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/circuit_probe_canary.md"
+    ],
+    "goal": "Complete smaller scope for Crear una tarea real pequena: genera docs/circuit_probe_canary.md con la frase continuidad real ok y no cambies otros archivos de producto.. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260527070408-001-SPLIT-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 8,
+    "status": "pending",
+    "timeout_seconds": 600,
+    "title": "Crear una tarea real pequena: genera docs/circuit_probe_canary.md con split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  }
+]

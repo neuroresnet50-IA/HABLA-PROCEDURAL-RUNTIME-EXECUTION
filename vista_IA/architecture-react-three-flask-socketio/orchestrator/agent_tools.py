@@ -170,6 +170,16 @@ def compact_payload(command: str, status_code: int, payload: dict[str, Any], ful
         compact["report"] = compact_report(payload.get("report"))
         compact["observerEvent"] = compact_event(payload.get("observerEvent"))
         compact["fullReportHint"] = "Use --full only when full evidence is required."
+    elif command in {"continuity", "prompt-flight"}:
+        report = payload.get("report") if isinstance(payload.get("report"), dict) else {}
+        run = payload.get("run") if isinstance(payload.get("run"), dict) else {}
+        compact["traceId"] = payload.get("traceId") or run.get("traceId") or report.get("traceId")
+        compact["result"] = report.get("result") or run.get("result")
+        compact["summary"] = report.get("summary") or run.get("summary")
+        compact["reportPath"] = report.get("reportPath") or run.get("reportPath")
+        if command == "prompt-flight":
+            compact["stageCount"] = len(report.get("stages") or []) if isinstance(report, dict) else None
+        compact["fullReportHint"] = "Use --full only when full continuity evidence is required."
     elif command == "observe":
         compact["event"] = compact_event(payload.get("event") or payload.get("observerEvent"))
         compact["observer"] = compact_observer_status(payload)
@@ -200,6 +210,31 @@ def run_command(args: argparse.Namespace) -> tuple[int, dict[str, Any]]:
         if args.confirm:
             payload["confirm"] = args.confirm
         return request_json(base_url, "POST", project_path(args.project, "/integrity/frozen-sniper"), payload, timeout_seconds=timeout_seconds)
+    if args.command == "continuity":
+        payload = {
+            "mode": args.mode,
+            "project": args.project,
+            "baseUrl": base_url,
+            "includeHarness": not bool(args.no_harness),
+            "sync": True,
+        }
+        return request_json(base_url, "POST", "/api/continuity-probe/start", payload, timeout_seconds=timeout_seconds)
+    if args.command == "prompt-flight":
+        prompt = args.prompt or ""
+        if args.prompt_file:
+            try:
+                prompt = Path(args.prompt_file).read_text(encoding="utf-8")
+            except OSError as error:
+                return 2, {"ok": False, "error": "prompt_file_read_failed", "message": str(error)}
+        payload = {
+            "prompt": prompt,
+            "mode": args.mode,
+            "project": args.project,
+            "baseUrl": base_url,
+            "includeHarness": not bool(args.no_harness),
+            "timeoutSeconds": timeout_seconds,
+        }
+        return request_json(base_url, "POST", "/api/continuity-probe/prompt-flight", payload, timeout_seconds=timeout_seconds)
     return 2, {"ok": False, "error": "unsupported_command", "command": args.command}
 
 
@@ -230,6 +265,18 @@ def build_parser() -> argparse.ArgumentParser:
     sniper.add_argument("project")
     sniper.add_argument("--dry-run", action="store_true", help="Preview recovery without modifying project files.")
     sniper.add_argument("--confirm", default="", help=f"Required value for non-dry-run: {FROZEN_SNIPER_CONFIRMATION}")
+
+    continuity = add_output_flag(subparsers.add_parser("continuity", help="Run HABLA CircuitProbe continuity test."))
+    continuity.add_argument("--project", default="continuity-probe-canary", help="Continuity canary project slug.")
+    continuity.add_argument("--mode", default="active_canary", choices=["active_canary", "read_only", "harness_canary"])
+    continuity.add_argument("--no-harness", action="store_true", help="Skip Harness/Safety Learning checks.")
+
+    prompt_flight = add_output_flag(subparsers.add_parser("prompt-flight", help="Run Prompt Flight Recorder through CircuitProbe."))
+    prompt_flight.add_argument("--project", default="continuity-probe-canary", help="Continuity canary project slug.")
+    prompt_flight.add_argument("--mode", default="trace_only", choices=["trace_only", "safe_canary", "real_session_guarded", "ui_session_rest"])
+    prompt_flight.add_argument("--prompt", default="", help="Prompt text to send through HABLA BASIC envelope.")
+    prompt_flight.add_argument("--prompt-file", default="", help="Read prompt text from a UTF-8 file.")
+    prompt_flight.add_argument("--no-harness", action="store_true", help="Skip Harness/Safety Learning checks.")
     return parser
 
 

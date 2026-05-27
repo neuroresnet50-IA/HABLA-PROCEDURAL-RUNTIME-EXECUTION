@@ -1,0 +1,2342 @@
+{
+  "active_task": {
+    "checkpoint_key": null,
+    "dependencies": [],
+    "expected_files": [
+      "src/prompt_flight_response.json"
+    ],
+    "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+    "id": "PROMPT-REAL-20260527T060457Z",
+    "max_retries": 0,
+    "mode": "build",
+    "priority": 80,
+    "status": "pending",
+    "timeout_seconds": 120,
+    "title": "Process guarded HABLA BASIC prompt",
+    "validation_commands": [
+      "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T060457Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+    ]
+  },
+  "audit": {
+    "inputs": {
+      "checkpoints_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints",
+      "failures_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/failures.jsonl",
+      "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+      "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+      "project_state_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/project_state.json",
+      "task_history_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+      "task_queue_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+      "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    },
+    "requested_sprint_number": null,
+    "requested_task_id": "PROMPT-REAL-20260527T060457Z",
+    "selected_task_id": "PROMPT-REAL-20260527T060457Z"
+  },
+  "checkpoint": {
+    "available_checkpoint_keys": [
+      "continuity-continuity-20260527T025833Z",
+      "continuity-continuity-20260527T030026Z",
+      "continuity-continuity-20260527T030158Z",
+      "continuity-continuity-20260527T030336Z",
+      "continuity-continuity-20260527T031130Z",
+      "continuity-continuity-20260527T034324Z",
+      "continuity-continuity-20260527T050527Z",
+      "continuity-continuity-20260527T050723Z",
+      "continuity-continuity-20260527T050739Z",
+      "continuity-continuity-local-debug",
+      "continuity-prompt-flight-20260527T033816Z-canary",
+      "continuity-prompt-flight-20260527T034342Z-canary",
+      "continuity-prompt-flight-20260527T050759Z-canary",
+      "continuity-prompt-flight-20260527T051028Z-canary",
+      "continuity-prompt-flight-20260527T051036Z-canary",
+      "continuity-prompt-flight-20260527T051104Z-canary",
+      "prompt-flight-prompt-flight-20260527T044433Z",
+      "prompt-flight-prompt-flight-20260527T050508Z",
+      "prompt-flight-prompt-flight-20260527T050815Z",
+      "prompt-flight-prompt-flight-20260527T050907Z"
+    ],
+    "checkpoint_key": "prompt-flight-prompt-flight-20260527T050907Z",
+    "data": {
+      "checkpoint_key": "prompt-flight-prompt-flight-20260527T050907Z",
+      "created_at": "2026-05-27T05:09:08Z",
+      "payload": {
+        "mode": "real_session_guarded",
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "reportPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_report.json",
+        "responseFile": "src/prompt_flight_response.json",
+        "stageLatenciesMs": {
+          "backend_health": 21.875,
+          "cyberlace_preflight": 2.408,
+          "directive_generated": 22.311,
+          "habla_basic_envelope": 0.893,
+          "harness_summary": 57.552,
+          "history_written": 1.546,
+          "observer_status": 3.731,
+          "plan_loaded": 7.94,
+          "policy_loaded": 2.918,
+          "prompt_classified": 0.485,
+          "prompt_received": 0.845,
+          "real_session_bootstrap": 6.074,
+          "safe_canary_continuity": 0.0,
+          "task_planned": 0.486,
+          "task_queue_persisted": 2.056,
+          "validator_passed": 41.617,
+          "worker_executed": 169.273
+        },
+        "taskId": "PROMPT-REAL-20260527T050907Z",
+        "traceId": "prompt-flight-20260527T050907Z",
+        "validationPassed": true
+      }
+    },
+    "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T050907Z.json",
+    "source": "runtime/checkpoints",
+    "tried": [
+      {
+        "checkpoint_key": "prompt-flight-prompt-flight-20260527T050907Z",
+        "source": "runtime/checkpoints"
+      }
+    ]
+  },
+  "complexity_estimate": {},
+  "context_type": "directive_context",
+  "degraded": false,
+  "evidence": {
+    "blockers": [],
+    "expected_files": [
+      {
+        "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+        "exists": true,
+        "is_file": true,
+        "path": "src/prompt_flight_response.json",
+        "size": 1085
+      }
+    ],
+    "found": [
+      "src/prompt_flight_response.json"
+    ],
+    "missing": [],
+    "validation_commands": [
+      "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T060457Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+    ]
+  },
+  "failures": {
+    "active_task_events": [],
+    "recent_events": [],
+    "total_events": 0
+  },
+  "history": {
+    "active_task_events": [],
+    "recent_events": [
+      {
+        "recorded_at": "2026-05-27T02:58:34Z",
+        "result": {
+          "blockers": [
+            "CyberLACE document hard gate blocked worker before child process launch.",
+            "Missing expected file: src/continuity_probe.txt",
+            "Validation command failed with return code 1: python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T025833Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "CONTINUITY-20260527T025833Z",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T025833Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:00:14Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [
+            "src/continuity_probe.txt"
+          ],
+          "files_modified": [],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-local-debug",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-local-debug'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:00:27Z",
+        "result": {
+          "blockers": [
+            "CyberLACE document hard gate blocked worker before child process launch.",
+            "Validation command failed with return code 1: python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030026Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "CONTINUITY-20260527T030026Z",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030026Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:02:02Z",
+        "result": {
+          "blockers": [
+            "CyberLACE document hard gate blocked worker before child process launch.",
+            "Validation command failed with return code 1: python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030158Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "CONTINUITY-20260527T030158Z",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030158Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:03:38Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T030336Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030336Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:11:30Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T031130Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T031130Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:38:17Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T033816Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T033816Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:43:24Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T034324Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T034324Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T03:43:42Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T034342Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T034342Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T04:44:33Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [
+            "src/prompt_flight_response.json"
+          ],
+          "files_modified": [],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "PROMPT-REAL-20260527T044433Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T044433Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:05:09Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/prompt_flight_response.json"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "PROMPT-REAL-20260527T050508Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050508Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:05:27Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T050527Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T050527Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:07:23Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T050723Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T050723Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:07:40Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-20260527T050739Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T050739Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:07:59Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T050759Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T050759Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:08:16Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/prompt_flight_response.json"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "PROMPT-REAL-20260527T050815Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050815Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:09:08Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/prompt_flight_response.json"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "PROMPT-REAL-20260527T050907Z",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050907Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:10:29Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T051028Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T051028Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:10:41Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T051036Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T051036Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      },
+      {
+        "recorded_at": "2026-05-27T05:11:10Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [
+            "src/continuity_probe.txt"
+          ],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "CONTINUITY-prompt-flight-20260527T051104Z-canary",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=prompt-flight-20260527T051104Z-canary'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+          ]
+        }
+      }
+    ],
+    "total_events": 20
+  },
+  "plan": {
+    "deployment_rule": "Si no pasan todos, no se despliega.\n\n---",
+    "document": "PLANS.md",
+    "expected_result": [
+      "divide proyectos grandes,",
+      "ejecuta tarea por tarea,",
+      "valida por evidencia real,",
+      "crea checkpoints,",
+      "se recupera de fallos,",
+      "reanuda tras reinicios,",
+      "desacopla el worker del sistema central."
+    ],
+    "modules": {
+      "orchestrator/benchmark.py": {
+        "path": "orchestrator/benchmark.py",
+        "responsibilities": [
+          "ejecutar benchmarks oficiales,",
+          "bloquear despliegue si fallan."
+        ]
+      },
+      "orchestrator/contracts.py": {
+        "path": "orchestrator/contracts.py",
+        "responsibilities": [
+          "validar Task,",
+          "validar TaskResult,",
+          "validar ProjectState."
+        ]
+      },
+      "orchestrator/directive_context.py": {
+        "path": "orchestrator/directive_context.py",
+        "responsibilities": [
+          "reunir pol\u00edtica, plan, estado, cola, historial, fallos y checkpoint actual,",
+          "producir el contexto estructurado de la tarea activa."
+        ]
+      },
+      "orchestrator/directive_generator.py": {
+        "path": "orchestrator/directive_generator.py",
+        "responsibilities": [
+          "construir la instrucci\u00f3n exacta del worker para la tarea actual,",
+          "persistir la directiva en disco,",
+          "evitar prompts manuales permanentes como mecanismo final del runtime."
+        ]
+      },
+      "orchestrator/executor.py": {
+        "path": "orchestrator/executor.py",
+        "responsibilities": [
+          "lanzar un worker por tarea,",
+          "esperar resultado o timeout,",
+          "devolver resultado estructurado."
+        ]
+      },
+      "orchestrator/habla_adapter.py": {
+        "path": "orchestrator/habla_adapter.py",
+        "responsibilities": [
+          "incorporar HABLA BASIC como capa procedural reusable,",
+          "transformar el contexto de tarea en gu\u00eda operativa compatible con el generador de directivas."
+        ]
+      },
+      "orchestrator/plan_loader.py": {
+        "path": "orchestrator/plan_loader.py",
+        "responsibilities": [
+          "cargar y normalizar `PLANS.md`,",
+          "exponer fases, sprints, alcance y criterios de aceptaci\u00f3n consumibles por m\u00e1quina."
+        ]
+      },
+      "orchestrator/planner.py": {
+        "path": "orchestrator/planner.py",
+        "responsibilities": [
+          "dividir prompt grande en tareas,",
+          "definir objetivo,",
+          "definir archivos esperados,",
+          "definir validaciones,",
+          "definir dependencias,",
+          "definir prioridad,",
+          "definir timeout,",
+          "definir modo."
+        ]
+      },
+      "orchestrator/policy_loader.py": {
+        "path": "orchestrator/policy_loader.py",
+        "responsibilities": [
+          "cargar y normalizar `AGENTS.md`,",
+          "exponer reglas duras del repositorio al control plane."
+        ]
+      },
+      "orchestrator/recovery.py": {
+        "path": "orchestrator/recovery.py",
+        "responsibilities": [
+          "registrar fallo,",
+          "cerrar proceso,",
+          "crear checkpoint,",
+          "reintentar limpio,",
+          "dividir tarea si es demasiado grande,",
+          "bloquear tarea si supera reintentos."
+        ]
+      },
+      "orchestrator/state_store.py": {
+        "path": "orchestrator/state_store.py",
+        "responsibilities": [
+          "cargar/guardar estado,",
+          "persistir queue,",
+          "persistir historial,",
+          "persistir failures,",
+          "persistir checkpoints."
+        ]
+      },
+      "orchestrator/task_queue.py": {
+        "path": "orchestrator/task_queue.py",
+        "responsibilities": [
+          "cargar y guardar cola,",
+          "ordenar por dependencias,",
+          "ordenar por prioridad,",
+          "seleccionar siguiente tarea ejecutable."
+        ]
+      },
+      "orchestrator/validator.py": {
+        "path": "orchestrator/validator.py",
+        "responsibilities": [
+          "validar evidencia real,",
+          "ejecutar validation_commands,",
+          "decidir si una tarea pasa o falla."
+        ]
+      },
+      "workers/codex_worker.py": {
+        "path": "workers/codex_worker.py",
+        "responsibilities": [
+          "ejecutar una tarea acotada,",
+          "devolver resultado estructurado."
+        ]
+      }
+    },
+    "official_benchmarks": [
+      "smoke-01",
+      "crud-ui-02",
+      "refactor-mid-03",
+      "long-project-04",
+      "recovery-05"
+    ],
+    "operational_thesis": "No tratar proyectos largos como una sola sesi\u00f3n larga.\nDividir el trabajo en tareas peque\u00f1as, verificables, persistentes y reanudables.",
+    "phases": {
+      "1": {
+        "acceptance": [
+          "un prompt grande no entra en smoke por palabras como \u201cprueba\u201d, \u201cvalidaci\u00f3n\u201d o \u201cm\u00ednima\u201d;",
+          "el runtime deja preparado el terreno para task runtime;",
+          "existen estructuras persistentes base."
+        ],
+        "number": 1,
+        "objective": "Quitar las fallas estructurales m\u00e1s peligrosas del runtime actual.",
+        "scope": [
+          "eliminar smoke heur\u00edstico,",
+          "introducir modos expl\u00edcitos,",
+          "separar l\u00f3gica de sesi\u00f3n y tarea,",
+          "endurecer cierre de procesos,",
+          "preparar persistencia m\u00ednima."
+        ],
+        "title": "Estabilizaci\u00f3n del runtime actual"
+      },
+      "2": {
+        "acceptance": [
+          "el proyecto puede apagarse y retomarse;",
+          "una tarea fallida no mata el proyecto completo;",
+          "el sistema sigue desde el \u00faltimo estado persistido."
+        ],
+        "number": 2,
+        "objective": "Pasar de session runtime a task runtime.",
+        "scope": [
+          "cola persistente,",
+          "dependencias tipo DAG,",
+          "contrato de salida por tarea,",
+          "validaci\u00f3n autom\u00e1tica por paso,",
+          "reanudaci\u00f3n desde checkpoint."
+        ],
+        "title": "Orquestaci\u00f3n por tareas"
+      },
+      "3": {
+        "acceptance": [
+          "el runtime supera smoke, mediano, largo y recovery sin intervenci\u00f3n manual continua."
+        ],
+        "number": 3,
+        "objective": "Soportar proyectos cortos, medianos y largos con la misma base.",
+        "scope": [
+          "planificaci\u00f3n por etapas,",
+          "budgets de tiempo por tarea,",
+          "ciclos de correcci\u00f3n,",
+          "bater\u00eda de benchmarks,",
+          "soporte para agentes reemplazables."
+        ],
+        "title": "Autonom\u00eda larga"
+      }
+    },
+    "problem": [
+      "clasifica tareas grandes como smoke por heur\u00edsticas fr\u00e1giles,",
+      "mata sesiones \u00fatiles por timeouts r\u00edgidos,",
+      "el retry puede quedar esperando indefinidamente al proceso anterior."
+    ],
+    "project_vision": "Redise\u00f1ar el runtime actual para convertirlo en un orquestador aut\u00f3nomo de proyectos cortos, medianos y largos.",
+    "sections": {
+      "1. Baseline forense": {
+        "code_blocks": [],
+        "items": [
+          "Crear un manifiesto de archivos generados por agentes despu\u00e9s del scanner final.",
+          "Persistir rutas, contenido base, m\u00e9tricas, SHA-256, fecha de baseline y origen.",
+          "Guardar el artefacto como `runtime/artifacts/agent_file_manifest.json`.",
+          "Sellar la baseline con `runtime/artifacts/agent_file_manifest.seal.json`.",
+          "Guardar una copia de b\u00f3veda en `runtime/baseline_vault/<sha256>/agent_file_manifest.json`.",
+          "Detectar `baseline_manifest_tampered`, `baseline_seal_tampered`, `baseline_unsealed` y `baseline_vault_tampered`.",
+          "Anclar el sello fuera del \u00e1rbol del proyecto en `.runtime/baseline_anchors/<project>/latest_anchor.json` o `HABLA_BASELINE_ANCHOR_ROOT`.",
+          "Si existe `HABLA_BASELINE_SIGNING_KEY`, firmar el ancla con HMAC-SHA256.",
+          "Detectar `baseline_external_anchor_missing`, `baseline_external_anchor_mismatch`, `baseline_external_anchor_tampered` y `baseline_external_anchor_vault_tampered`."
+        ],
+        "level": 3,
+        "text": "- Crear un manifiesto de archivos generados por agentes despu\u00e9s del scanner final.\n- Persistir rutas, contenido base, m\u00e9tricas, SHA-256, fecha de baseline y origen.\n- Guardar el artefacto como `runtime/artifacts/agent_file_manifest.json`.\n- Sellar la baseline con `runtime/artifacts/agent_file_manifest.seal.json`.\n- Guardar una copia de b\u00f3veda en `runtime/baseline_vault/<sha256>/agent_file_manifest.json`.\n- Detectar `baseline_manifest_tampered`, `baseline_seal_tampered`, `baseline_unsealed` y `baseline_vault_tampered`.\n- Anclar el sello fuera del \u00e1rbol del proyecto en `.runtime/baseline_anchors/<project>/latest_anchor.json` o `HABLA_BASELINE_ANCHOR_ROOT`.\n- Si existe `HABLA_BASELINE_SIGNING_KEY`, firmar el ancla con HMAC-SHA256.\n- Detectar `baseline_external_anchor_missing`, `baseline_external_anchor_mismatch`, `baseline_external_anchor_tampered` y `baseline_external_anchor_vault_tampered`.",
+        "title": "1. Baseline forense"
+      },
+      "1. Smoke mode": {
+        "code_blocks": [],
+        "items": [
+          "eliminar detecci\u00f3n heur\u00edstica por palabras;",
+          "soportar solo modo expl\u00edcito:",
+          "smoke",
+          "build",
+          "medium",
+          "long-run"
+        ],
+        "level": 2,
+        "text": "- eliminar detecci\u00f3n heur\u00edstica por palabras;\n- soportar solo modo expl\u00edcito:\n  - smoke\n  - build\n  - medium\n  - long-run",
+        "title": "1. Smoke mode"
+      },
+      "2. Registro de escrituras internas": {
+        "code_blocks": [],
+        "items": [
+          "Registrar escrituras autorizadas desde el editor/API del sistema.",
+          "Persistir antes/despu\u00e9s, SHA-256 y raz\u00f3n en `runtime/file_write_ledger.jsonl`.",
+          "Usar ese ledger para distinguir cambios internos leg\u00edtimos de cambios externos."
+        ],
+        "level": 3,
+        "text": "- Registrar escrituras autorizadas desde el editor/API del sistema.\n- Persistir antes/despu\u00e9s, SHA-256 y raz\u00f3n en `runtime/file_write_ledger.jsonl`.\n- Usar ese ledger para distinguir cambios internos leg\u00edtimos de cambios externos.",
+        "title": "2. Registro de escrituras internas"
+      },
+      "2. Session vs task": {
+        "code_blocks": [],
+        "items": [
+          "reemplazar session runtime por task runtime;",
+          "una sesi\u00f3n contiene muchas tareas;",
+          "cada tarea tiene worker propio;",
+          "cada tarea tiene timeout propio."
+        ],
+        "level": 2,
+        "text": "- reemplazar session runtime por task runtime;\n- una sesi\u00f3n contiene muchas tareas;\n- cada tarea tiene worker propio;\n- cada tarea tiene timeout propio.",
+        "title": "2. Session vs task"
+      },
+      "3. Escaneo de integridad": {
+        "code_blocks": [],
+        "items": [
+          "Comparar disco actual contra la baseline.",
+          "Ignorar cambios internos registrados despu\u00e9s de la baseline.",
+          "Generar `runtime/artifacts/file_integrity_report.json`."
+        ],
+        "level": 3,
+        "text": "- Comparar disco actual contra la baseline.\n- Ignorar cambios internos registrados despu\u00e9s de la baseline.\n- Generar `runtime/artifacts/file_integrity_report.json`.",
+        "title": "3. Escaneo de integridad"
+      },
+      "3. Retry fuerte": {
+        "code_blocks": [],
+        "items": [
+          "registrar causa del fallo,",
+          "cerrar proceso anterior,",
+          "reintentar limpio,",
+          "dividir tarea si era demasiado grande,",
+          "nunca esperar que una sesi\u00f3n larga \u201creviva sola\u201d."
+        ],
+        "level": 2,
+        "text": "- registrar causa del fallo,\n- cerrar proceso anterior,\n- reintentar limpio,\n- dividir tarea si era demasiado grande,\n- nunca esperar que una sesi\u00f3n larga \u201creviva sola\u201d.",
+        "title": "3. Retry fuerte"
+      },
+      "4. Timeout contextual": {
+        "code_blocks": [],
+        "items": [
+          "FIRST_SIGNAL_TIMEOUT depende del modo;",
+          "FIRST_VISUAL_TIMEOUT depende del modo;",
+          "SESSION_IDLE_TIMEOUT depende del modo y del tipo de tarea."
+        ],
+        "level": 2,
+        "text": "- FIRST_SIGNAL_TIMEOUT depende del modo;\n- FIRST_VISUAL_TIMEOUT depende del modo;\n- SESSION_IDLE_TIMEOUT depende del modo y del tipo de tarea.",
+        "title": "4. Timeout contextual"
+      },
+      "4. Tipos de hallazgo": {
+        "code_blocks": [],
+        "items": [
+          "`file_modified`: archivo generado modificado externamente.",
+          "`file_deleted`: archivo generado eliminado externamente.",
+          "`untracked_file`: archivo nuevo no registrado en baseline.",
+          "`char_replaced`: segmento o car\u00e1cter reemplazado.",
+          "`char_deleted`: segmento o car\u00e1cter eliminado.",
+          "`char_inserted`: segmento o car\u00e1cter insertado."
+        ],
+        "level": 3,
+        "text": "- `file_modified`: archivo generado modificado externamente.\n- `file_deleted`: archivo generado eliminado externamente.\n- `untracked_file`: archivo nuevo no registrado en baseline.\n- `char_replaced`: segmento o car\u00e1cter reemplazado.\n- `char_deleted`: segmento o car\u00e1cter eliminado.\n- `char_inserted`: segmento o car\u00e1cter insertado.",
+        "title": "4. Tipos de hallazgo"
+      },
+      "5. Cierre garantizado": {
+        "code_blocks": [],
+        "items": [
+          "terminate()",
+          "wait",
+          "kill() si sigue vivo"
+        ],
+        "level": 2,
+        "text": "- terminate()\n- wait\n- kill() si sigue vivo\n\n---",
+        "title": "5. Cierre garantizado"
+      },
+      "5. Evidencia por car\u00e1cter": {
+        "code_blocks": [],
+        "items": [
+          "ruta relativa,",
+          "l\u00ednea,",
+          "columna,",
+          "longitud,",
+          "texto esperado,",
+          "texto actual,",
+          "SHA-256 esperado,",
+          "SHA-256 actual,",
+          "mensaje explicable."
+        ],
+        "level": 3,
+        "text": "Cada hallazgo debe incluir, cuando aplique:\n- ruta relativa,\n- l\u00ednea,\n- columna,\n- longitud,\n- texto esperado,\n- texto actual,\n- SHA-256 esperado,\n- SHA-256 actual,\n- mensaje explicable.",
+        "title": "5. Evidencia por car\u00e1cter"
+      },
+      "6. Prioridad en HABLA Observer IA": {
+        "code_blocks": [],
+        "items": [
+          "`external_file_change_detected`,",
+          "`external_file_deletion_detected`,",
+          "`untracked_file_detected`,",
+          "`char_level_tamper_detected`."
+        ],
+        "level": 3,
+        "text": "Antes de observaciones gen\u00e9ricas de mapa o flujo, el Observer debe emitir:\n- `external_file_change_detected`,\n- `external_file_deletion_detected`,\n- `untracked_file_detected`,\n- `char_level_tamper_detected`.",
+        "title": "6. Prioridad en HABLA Observer IA"
+      },
+      "7. Evidencia visual en Workbench": {
+        "code_blocks": [],
+        "items": [
+          "Mostrar alerta roja cuando existan cambios externos.",
+          "Enfocar el primer hallazgo.",
+          "Dibujar huellas rojas sobre l\u00edneas/caracteres afectados.",
+          "Permitir aceptar una nueva baseline solo por decisi\u00f3n humana."
+        ],
+        "level": 3,
+        "text": "- Mostrar alerta roja cuando existan cambios externos.\n- Enfocar el primer hallazgo.\n- Dibujar huellas rojas sobre l\u00edneas/caracteres afectados.\n- Permitir aceptar una nueva baseline solo por decisi\u00f3n humana.",
+        "title": "7. Evidencia visual en Workbench"
+      },
+      "8. Observer findings persistente": {
+        "code_blocks": [],
+        "items": [
+          "Crear una cola/reporte persistente `runtime/artifacts/observer_findings.json`.",
+          "Integrar hallazgos de integridad, scanner, sandbox, lint y runtime.",
+          "Asignar `observationScore`, severidad, fuente, fingerprint SHA-256, evidencia y acci\u00f3n recomendada.",
+          "Mantener `firstSeenAt`, `lastSeenAt`, `occurrenceCount` y estado `active/resolved`.",
+          "Hacer que el estado del Observer y futuras UI puedan leer esa evidencia sin depender de memoria de chat."
+        ],
+        "level": 3,
+        "text": "- Crear una cola/reporte persistente `runtime/artifacts/observer_findings.json`.\n- Integrar hallazgos de integridad, scanner, sandbox, lint y runtime.\n- Asignar `observationScore`, severidad, fuente, fingerprint SHA-256, evidencia y acci\u00f3n recomendada.\n- Mantener `firstSeenAt`, `lastSeenAt`, `occurrenceCount` y estado `active/resolved`.\n- Hacer que el estado del Observer y futuras UI puedan leer esa evidencia sin depender de memoria de chat.",
+        "title": "8. Observer findings persistente"
+      },
+      "9. Frozen Sniper recovery": {
+        "code_blocks": [],
+        "items": [
+          "Congelar evidencia antes de tocar archivos da\u00f1ados.",
+          "Restaurar archivos generados modificados o eliminados usando `agent_file_manifest.json`.",
+          "Mover archivos no registrados a `runtime/frozen_sniper/<run>/quarantine/`, sin borrarlos.",
+          "Persistir `runtime/artifacts/frozen_sniper_recovery_report.json`.",
+          "Exigir confirmaci\u00f3n humana `FROZEN_SNIPER` antes de restaurar o cuarentenar.",
+          "Exponer la acci\u00f3n desde el Workbench cuando existan hallazgos rojos de integridad."
+        ],
+        "level": 3,
+        "text": "- Congelar evidencia antes de tocar archivos da\u00f1ados.\n- Restaurar archivos generados modificados o eliminados usando `agent_file_manifest.json`.\n- Mover archivos no registrados a `runtime/frozen_sniper/<run>/quarantine/`, sin borrarlos.\n- Persistir `runtime/artifacts/frozen_sniper_recovery_report.json`.\n- Exigir confirmaci\u00f3n humana `FROZEN_SNIPER` antes de restaurar o cuarentenar.\n- Exponer la acci\u00f3n desde el Workbench cuando existan hallazgos rojos de integridad.",
+        "title": "9. Frozen Sniper recovery"
+      },
+      "Alcance": {
+        "code_blocks": [],
+        "items": [
+          "planificaci\u00f3n por etapas,",
+          "budgets de tiempo por tarea,",
+          "ciclos de correcci\u00f3n,",
+          "bater\u00eda de benchmarks,",
+          "soporte para agentes reemplazables."
+        ],
+        "level": 2,
+        "text": "- planificaci\u00f3n por etapas,\n- budgets de tiempo por tarea,\n- ciclos de correcci\u00f3n,\n- bater\u00eda de benchmarks,\n- soporte para agentes reemplazables.",
+        "title": "Alcance"
+      },
+      "Algoritmo funcional": {
+        "code_blocks": [],
+        "items": [
+          "Recibir trigger explicito.",
+          "Crear `incidentId` y checkpoint inicial.",
+          "Tomar snapshot con timeout:",
+          "`project_state.json`,",
+          "`task_queue.json`,",
+          "`task_history.jsonl` reciente,",
+          "`final_code_scanner_report.json`,",
+          "`final_typewriter_report.json`,",
+          "`sandbox.json`,",
+          "`file_integrity_report.json`,",
+          "`observer_findings.json`.",
+          "Clasificar causa raiz:",
+          "agente activo,",
+          "cierre incompleto,",
+          "scanner faltante,",
+          "sandbox faltante,",
+          "typewriter fallido,",
+          "integridad fallida,",
+          "UI polling solamente,",
+          "sin evidencia nueva.",
+          "Si solo hay polling de UI y no hay agente activo, cerrar como `completed` con `stopReason=ui_polling_only`.",
+          "Si hay hallazgo real, inspeccionar solo el primer grupo prioritario:",
+          "integridad,",
+          "scanner,",
+          "sandbox,",
+          "typewriter,",
+          "lint,",
+          "runtime.",
+          "Persistir reporte y evento con evidencia.",
+          "Proponer una accion segura o pedir confirmacion humana.",
+          "Detener el incidente cuando se cumpla una condicion terminal."
+        ],
+        "level": 2,
+        "text": "Documento canonico del algoritmo detallado: `docs/observer_engine_algorithm.md`.\n\n1. Recibir trigger explicito.\n2. Crear `incidentId` y checkpoint inicial.\n3. Tomar snapshot con timeout:\n   - `project_state.json`,\n   - `task_queue.json`,\n   - `task_history.jsonl` reciente,\n   - `final_code_scanner_report.json`,\n   - `final_typewriter_report.json`,\n   - `sandbox.json`,\n   - `file_integrity_report.json`,\n   - `observer_findings.json`.\n4. Clasificar causa raiz:\n   - agente activo,\n   - cierre incompleto,\n   - scanner faltante,\n   - sandbox faltante,\n   - typewriter fallido,\n   - integridad fallida,\n   - UI polling solamente,\n   - sin evidencia nueva.\n5. Si solo hay polling de UI y no hay agente activo, cerrar como `completed` con `stopReason=ui_polling_only`.\n6. Si hay hallazgo real, inspeccionar solo el primer grupo prioritario:\n   - integridad,\n   - scanner,\n   - sandbox,\n   - typewriter,\n   - lint,\n   - runtime.\n7. Persistir reporte y evento con evidencia.\n8. Proponer una accion segura o pedir confirmacion humana.\n9. Detener el incidente cuando se cumpla una condicion terminal.",
+        "title": "Algoritmo funcional"
+      },
+      "Arquitectura de m\u00f3dulos": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "Arquitectura de m\u00f3dulos"
+      },
+      "Benchmarks oficiales": {
+        "code_blocks": [],
+        "items": [
+          "smoke-01",
+          "crud-ui-02",
+          "refactor-mid-03",
+          "long-project-04",
+          "recovery-05"
+        ],
+        "level": 1,
+        "text": "- smoke-01\n- crud-ui-02\n- refactor-mid-03\n- long-project-04\n- recovery-05",
+        "title": "Benchmarks oficiales"
+      },
+      "CONTRATO DE HERRAMIENTAS INTERNAS PARA AGENTES": {
+        "code_blocks": [
+          "python3 orchestrator/agent_tools.py <command>"
+        ],
+        "items": [
+          "permitir que agentes Codex usen herramientas internas reales;",
+          "exponer Scanner, Integrity, Observer y Sniper por CLI/API auditable;",
+          "evitar que Observer trabaje sin mision o por polling;",
+          "exigir evidencia JSON antes de declarar exito.",
+          "cada invocacion queda en `runtime/agent_tool_invocations.jsonl` o en el log automatico `runtime/tool_invocation_policy.jsonl` del proyecto;",
+          "`observer-status` no activa misiones;",
+          "`scanner`, `integrity` y `sniper` devuelven reportes reales;",
+          "el CLI devuelve salida compacta por defecto y exige `--full` para payload completo;",
+          "`sniper --confirm FROZEN_SNIPER` queda restringido por politica de seguridad;",
+          "`sniper` automatico solo corre en `--dry-run` durante `recovery_preview`;",
+          "`AGENTS.md` contiene reglas obligatorias de uso.",
+          "Implementado `orchestrator/tool_invocation_policy.py`.",
+          "`AgentRuntime` ejecuta preflight, postflight, task completion gate, recovery preview y project completion gate.",
+          "Los artefactos de la politica quedan bajo `runtime/artifacts/tool_invocations/` y no cuentan como evidencia de producto.",
+          "Checkpoint: `runtime/checkpoints/tool-invocation-policy-20260519T122321-0700.json`."
+        ],
+        "level": 1,
+        "text": "Documento canonico: `docs/agent_internal_tools_contract.md`.\n\nObjetivo:\n- permitir que agentes Codex usen herramientas internas reales;\n- exponer Scanner, Integrity, Observer y Sniper por CLI/API auditable;\n- evitar que Observer trabaje sin mision o por polling;\n- exigir evidencia JSON antes de declarar exito.\n\nComando canonico:\n\n\n\nCriterios de aceptacion:\n- cada invocacion queda en `runtime/agent_tool_invocations.jsonl` o en el log automatico `runtime/tool_invocation_policy.jsonl` del proyecto;\n- `observer-status` no activa misiones;\n- `scanner`, `integrity` y `sniper` devuelven reportes reales;\n- el CLI devuelve salida compacta por defecto y exige `--full` para payload completo;\n- `sniper --confirm FROZEN_SNIPER` queda restringido por politica de seguridad;\n- `sniper` automatico solo corre en `--dry-run` durante `recovery_preview`;\n- `AGENTS.md` contiene reglas obligatorias de uso.\n\nEstado de implementacion 2026-05-19:\n- Implementado `orchestrator/tool_invocation_policy.py`.\n- `AgentRuntime` ejecuta preflight, postflight, task completion gate, recovery preview y project completion gate.\n- Los artefactos de la politica quedan bajo `runtime/artifacts/tool_invocations/` y no cuentan como evidencia de producto.\n- Checkpoint: `runtime/checkpoints/tool-invocation-policy-20260519T122321-0700.json`.\n\n---",
+        "title": "CONTRATO DE HERRAMIENTAS INTERNAS PARA AGENTES"
+      },
+      "Cambios obligatorios en agent_runtime.py": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "Cambios obligatorios en agent_runtime.py"
+      },
+      "Cierre de deuda tecnica seccion 19": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "Cierre de deuda tecnica seccion 19"
+      },
+      "Condiciones de parada": {
+        "code_blocks": [],
+        "items": [
+          "no hay tarea activa y no hay evidencia nueva,",
+          "el mismo fingerprint ya fue reportado el maximo permitido,",
+          "se alcanzo `maxRuntimeSeconds`,",
+          "se alcanzo `maxTicks`,",
+          "el usuario desactivo modo autonomo,",
+          "el incidente llego a `waiting_human`,",
+          "el incidente ya genero una recomendacion accionable,",
+          "el backend no responde a snapshot dentro de timeout,",
+          "el scanner visual completo su presupuesto,",
+          "el cierre final queda bloqueado con evidencia persistida."
+        ],
+        "level": 2,
+        "text": "Observer debe parar el incidente cuando ocurra cualquiera de estas condiciones:\n- no hay tarea activa y no hay evidencia nueva,\n- el mismo fingerprint ya fue reportado el maximo permitido,\n- se alcanzo `maxRuntimeSeconds`,\n- se alcanzo `maxTicks`,\n- el usuario desactivo modo autonomo,\n- el incidente llego a `waiting_human`,\n- el incidente ya genero una recomendacion accionable,\n- el backend no responde a snapshot dentro de timeout,\n- el scanner visual completo su presupuesto,\n- el cierre final queda bloqueado con evidencia persistida.",
+        "title": "Condiciones de parada"
+      },
+      "Contrato de salida del incidente": {
+        "code_blocks": [
+          "{\n  \"incidentId\": \"OBS-YYYYMMDD-HHMMSS-001\",\n  \"projectSlug\": \"sesion-...\",\n  \"completed\": true,\n  \"status\": \"completed|blocked|expired|waiting_human\",\n  \"trigger\": \"agent_closed|observe_now|integrity_failed|...\",\n  \"rootCause\": \"ui_polling_only|integrity_failed|typewriter_binary_file|...\",\n  \"evidencePaths\": [],\n  \"actionsProposed\": [],\n  \"actionsExecuted\": [],\n  \"stopReason\": \"max_ticks|waiting_human|no_new_evidence|...\",\n  \"validation\": {\n    \"snapshotLoaded\": true,\n    \"timeouts\": [],\n    \"findingsCount\": 0\n  }\n}"
+        ],
+        "items": [],
+        "level": 2,
+        "text": "Todo incidente debe devolver:",
+        "title": "Contrato de salida del incidente"
+      },
+      "Criterios de aceptacion": {
+        "code_blocks": [],
+        "items": [
+          "Con proyecto `completed` y `current_task_id=null`, Observer no emite barrido infinito.",
+          "Un mismo hallazgo no aparece mas de 3 veces como mensaje visual continuo.",
+          "`/api/observer/status` responde en menos de 3 segundos o devuelve estado degradado.",
+          "Desactivar modo autonomo detiene incidentes abiertos y cancela animacion visual asociada.",
+          "El scanner visual termina por exito, error o watchdog, nunca queda activo horas.",
+          "Los PNG no se tratan como texto en typewriter ni endpoint de archivo textual.",
+          "`observer_findings.json` puede conservar hallazgos activos sin mantener animacion infinita.",
+          "Cada incidente deja `stopReason` auditable.",
+          "La UI distingue claramente:",
+          "\"Observer idle\",",
+          "\"Incidente bloqueado esperando humano\",",
+          "\"Scanner visual detenido\",",
+          "\"Polling de UI activo\"."
+        ],
+        "level": 2,
+        "text": "- Con proyecto `completed` y `current_task_id=null`, Observer no emite barrido infinito.\n- Un mismo hallazgo no aparece mas de 3 veces como mensaje visual continuo.\n- `/api/observer/status` responde en menos de 3 segundos o devuelve estado degradado.\n- Desactivar modo autonomo detiene incidentes abiertos y cancela animacion visual asociada.\n- El scanner visual termina por exito, error o watchdog, nunca queda activo horas.\n- Los PNG no se tratan como texto en typewriter ni endpoint de archivo textual.\n- `observer_findings.json` puede conservar hallazgos activos sin mantener animacion infinita.\n- Cada incidente deja `stopReason` auditable.\n- La UI distingue claramente:\n  - \"Observer idle\",\n  - \"Incidente bloqueado esperando humano\",\n  - \"Scanner visual detenido\",\n  - \"Polling de UI activo\".\n\n---",
+        "title": "Criterios de aceptacion"
+      },
+      "Criterios de aceptaci\u00f3n": {
+        "code_blocks": [],
+        "items": [
+          "el runtime supera smoke, mediano, largo y recovery sin intervenci\u00f3n manual continua."
+        ],
+        "level": 2,
+        "text": "- el runtime supera smoke, mediano, largo y recovery sin intervenci\u00f3n manual continua.\n\n---",
+        "title": "Criterios de aceptaci\u00f3n"
+      },
+      "Definicion de incidente Observer": {
+        "code_blocks": [
+          ".runtime/observer/incidents/<incidentId>.json\n.runtime/observer/timeline.jsonl\nruntime/artifacts/observer_findings.json\nruntime/checkpoints/"
+        ],
+        "items": [
+          "`incidentId`,",
+          "`projectSlug`,",
+          "`trigger`,",
+          "`startedAt`,",
+          "`deadlineAt`,",
+          "`maxTicks`,",
+          "`status`,",
+          "`currentPhase`,",
+          "`fingerprintsSeen`,",
+          "`evidencePaths`,",
+          "`decision`,",
+          "`stopReason`."
+        ],
+        "level": 2,
+        "text": "Un incidente Observer es una unidad reanudable y persistente con:\n- `incidentId`,\n- `projectSlug`,\n- `trigger`,\n- `startedAt`,\n- `deadlineAt`,\n- `maxTicks`,\n- `status`,\n- `currentPhase`,\n- `fingerprintsSeen`,\n- `evidencePaths`,\n- `decision`,\n- `stopReason`.\n\nDebe persistirse en:",
+        "title": "Definicion de incidente Observer"
+      },
+      "Estado 2026-05-20": {
+        "code_blocks": [],
+        "items": [
+          "19.1 Drift entre contratos Python y schemas JSON.",
+          "19.2 Ambiguedad entre runtime raiz y runtime por proyecto.",
+          "19.3 Backend monolitico.",
+          "19.4 Doble ruta de worker.",
+          "19.5 Frontend con componentes grandes.",
+          "19.6 Frontera de seguridad de validaciones.",
+          "Ninguna de las seis deudas de la seccion 19 queda abierta despues de Fase 5.",
+          "Riesgo residual: `backend/app.py` sigue siendo composition root de Flask/SocketIO para arquitectura, reverse engineering, email commands, sesiones de agente y sockets. La deuda 19.3 se considera cerrada porque los dominios pesados nombrados en auditoria fueron extraidos a servicios/rutas dedicadas.",
+          "`schemas/project_state.schema.json` acepta `human_alignment_pending`.",
+          "`schemas/project_state.schema.json` declara `pending_human_alignment_tasks`.",
+          "`backend/test_project_state_schema_contract.py` compara schema y contrato Python.",
+          "`orchestrator/state_store.py` exige `runtime_dir` explicito y provee constructores intencionales `for_project_runtime` / `for_repo_runtime`.",
+          "`orchestrator/task_queue.py` y `orchestrator/recovery.py` exigen `StateStore` explicito.",
+          "`orchestrator/directive_context.py` y `orchestrator/directive_generator.py` exigen runtime explicito para contexto/directivas.",
+          "`orchestrator/worker_adapter.py` define `TaskWorkerAdapter` y `CodexSubprocessWorkerAdapter`.",
+          "`backend/agent_worker_adapters.py` define `SessionWorkerAdapter`, `ControlPlaneSessionWorkerAdapter` y `LegacyPtySessionWorkerAdapter`.",
+          "`backend/agent_runtime.py` selecciona ruta de sesion por adaptador formal.",
+          "`orchestrator/validator.py` evalua cada `validation_command` con `orchestrator.security_policy.decide_command` antes de ejecutar.",
+          "`orchestrator/validator.py` ejecuta comandos permitidos con `shell=False`.",
+          "`orchestrator/validator.py` persiste decisiones en `runtime/validation_security_events.jsonl`.",
+          "`backend/test_validator_security.py` prueba comandos permitidos, bloqueo de shell, denegacion de desconocidos y comandos invalidos.",
+          "`backend/test_runtime_boundary.py` prueba runtime explicito, adaptadores de worker y persistencia de directivas bajo runtime activo.",
+          "`backend/code_scanner_service.py` contiene la construccion/persistencia del scanner final fuera de `backend/app.py`.",
+          "`backend/test_code_scanner_service.py` prueba el scanner final como servicio unitario.",
+          "`backend/agent_repair_service.py` contiene seleccion de archivos, directiva de reparacion y encolado de tarea de reparacion fuera de `backend/app.py`.",
+          "`backend/test_agent_repair_service.py` prueba la logica de reparacion como servicio unitario.",
+          "`frontend/src/appUtils.js` contiene helpers, constantes y layout/graph utils extraidos de `App.jsx`.",
+          "`frontend/src/components/codeWorkbenchUtils.js` contiene helpers de scanner visual, integridad y reparacion extraidos de `CodeWorkbench.jsx`.",
+          "`frontend/src/components/agentStudioUtils.js` contiene helpers de runtime/agentes/HAR extraidos de `AgentStudio.jsx`.",
+          "`frontend/src/components/LiveReviewerPanel.jsx` contiene el panel de revisor en vivo extraido de `AgentStudio.jsx`.",
+          "`backend/sandbox_service.py` contiene el sandbox runtime real fuera de `backend/app.py`.",
+          "`backend/integrity_service.py` contiene manifiesto forense, sellos, ancla externa, diff por caracter, reporte de integridad y Frozen Sniper fuera de `backend/app.py`.",
+          "`backend/integrity_routes.py` contiene rutas de scanner, integrity report, observer findings, baseline y Frozen Sniper fuera de `backend/app.py`.",
+          "`backend/observer_runtime_service.py` contiene seleccion de proyecto activo y snapshot runtime del Observer fuera de `backend/app.py`.",
+          "`backend/human_alignment_routes.py` registra rutas HAR fuera de `backend/app.py`.",
+          "`backend/editor_routes.py` registra rutas de archivos del editor y reparacion desde Workbench fuera de `backend/app.py`.",
+          "`backend/runtime_admin_service.py` contiene limpieza de runtime/workspace fuera de `backend/app.py`.",
+          "`backend/runtime_admin_routes.py` registra reset runtime y clean-workspace/blanqueo fuera de `backend/app.py`.",
+          "`backend/sandbox_routes.py` registra rutas sandbox fuera de `backend/app.py`.",
+          "`backend/app.py` bajo a 4566 lineas despues de Fase 5.",
+          "`.github/workflows/audit.yml` automatiza py_compile, unittests backend, build/test frontend y validacion JSON de checkpoints.",
+          "`docs/reporte_cierre_auditoria_seccion_19_2026-05-20.md` consolida el reporte humano de cierre para auditoria/inversor.",
+          "`frontend/src/App.jsx` bajo a 1992 lineas.",
+          "`frontend/src/components/CodeWorkbench.jsx` bajo a 1994 lineas.",
+          "`frontend/src/components/AgentStudio.jsx` queda en 1754 lineas.",
+          "Componentes frontend extraidos en Fase 4: `AppTopbar`, `AppLintPanel`, `AppObserverPanel`, `AppRuntimeWorkbenches`, `AppAgentPresenceLayer`, `AppStatusbar`, `CodeWorkbenchTopMenu`, `CodeWorkbenchActivityBar`, `CodeWorkbenchActions`, `CodeWorkbenchSidebar`, `CodeWorkbenchEditorHeader`, `CodeWorkbenchEditorOverlays`, `CodeWorkbenchGutter`, `CodeWorkbenchTextarea`.",
+          "Checkpoint: `runtime/checkpoints/phase-1-section-19-20260519T131739-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/phase-2-section-19-20260519T142613-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/phase-3-section-19-20260519T180025-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/phase-4-section-19-20260520T070929-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/phase-5-section-19-20260520T094539-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/github-actions-audit-20260520T131626-0700.json`.",
+          "Checkpoint: `runtime/checkpoints/audit-report-section-19-20260520T140040-0700.json`.",
+          "`python3 -m py_compile orchestrator/validator.py orchestrator/security_policy.py backend/test_project_state_schema_contract.py backend/test_validator_security.py`",
+          "`python3 -m unittest backend.test_project_state_schema_contract backend.test_validator_security`",
+          "`python3 -m unittest backend.test_security_policy backend.test_human_alignment_review backend.test_project_state_runtime_metadata`",
+          "`python3 -m unittest backend.test_tool_invocation_policy backend.test_control_plane_visual_bridge`",
+          "`jq . schemas/project_state.schema.json`",
+          "`env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_executor_pipe_drain`",
+          "`python3 -m py_compile orchestrator/state_store.py orchestrator/task_queue.py orchestrator/recovery.py orchestrator/directive_context.py orchestrator/directive_generator.py orchestrator/worker_adapter.py orchestrator/executor.py backend/agent_worker_adapters.py backend/agent_runtime.py backend/test_runtime_boundary.py`",
+          "`python3 -m unittest backend.test_runtime_boundary`",
+          "`python3 -m unittest backend.test_control_plane_visual_bridge backend.test_tool_invocation_policy backend.test_executor_pipe_drain backend.test_runtime_boundary`",
+          "`env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_human_alignment_review backend.test_project_state_runtime_metadata`",
+          "`python3 -m unittest backend.test_security_policy backend.test_project_state_schema_contract backend.test_validator_security`",
+          "`jq . runtime/checkpoints/phase-2-section-19-20260519T142613-0700.json`",
+          "`python3 -m py_compile backend/app.py backend/code_scanner_service.py backend/agent_repair_service.py backend/test_code_scanner_service.py backend/test_agent_repair_service.py`",
+          "`python3 -m unittest backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint`",
+          "`python3 -m py_compile backend/app.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py`",
+          "`python3 -m unittest backend.test_runtime_sandbox backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint`",
+          "`python3 -m py_compile backend/app.py backend/editor_routes.py backend/integrity_routes.py backend/human_alignment_routes.py backend/observer_runtime_service.py backend/integrity_service.py backend/runtime_admin_routes.py backend/runtime_admin_service.py backend/sandbox_routes.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py`",
+          "`python3 -m unittest backend.test_code_scanner`",
+          "`python3 -m unittest backend.test_runtime_clean_workspace backend.test_code_scanner backend.test_runtime_sandbox backend.test_observer_auto_shutdown backend.test_human_alignment_review`",
+          "`python3 -m unittest backend.test_app_lint backend.test_code_scanner backend.test_code_scanner_service backend.test_agent_repair_service backend.test_runtime_sandbox backend.test_runtime_clean_workspace backend.test_observer_auto_shutdown backend.test_human_alignment_review backend.test_security_policy backend.test_validator_security backend.test_project_state_schema_contract`",
+          "`python3 -c \"import yaml; yaml.safe_load(open('.github/workflows/audit.yml', encoding='utf-8')); print('workflow yaml ok')\"`",
+          "Validacion local del script de checkpoints embebido en `.github/workflows/audit.yml`.",
+          "`npm run build`",
+          "`npm test`",
+          "Subir el repositorio a GitHub y verificar la primera ejecucion real del workflow `Audit`."
+        ],
+        "level": 2,
+        "text": "Fase 1 y Fase 2 cerradas con codigo, tests y checkpoint.\nFase 3 ejecutada como mitigacion estructural verificable para 19.3 y 19.5.\nFase 4 ejecutada: 19.5 queda cerrada; 19.3 queda avanzada pero no cerrada totalmente.\nFase 5 ejecutada: 19.3 queda cerrada por descomposicion backend verificable.\nGitHub Actions de auditoria creada para automatizar validaciones backend, frontend y checkpoints.\n\nDeudas cerradas:\n- 19.1 Drift entre contratos Python y schemas JSON.\n- 19.2 Ambiguedad entre runtime raiz y runtime por proyecto.\n- 19.3 Backend monolitico.\n- 19.4 Doble ruta de worker.\n- 19.5 Frontend con componentes grandes.\n- 19.6 Frontera de seguridad de validaciones.\n\nDeudas todavia abiertas:\n- Ninguna de las seis deudas de la seccion 19 queda abierta despues de Fase 5.\n- Riesgo residual: `backend/app.py` sigue siendo composition root de Flask/SocketIO para arquitectura, reverse engineering, email commands, sesiones de agente y sockets. La deuda 19.3 se considera cerrada porque los dominios pesados nombrados en auditoria fueron extraidos a servicios/rutas dedicadas.\n\nEvidencia:\n- `schemas/project_state.schema.json` acepta `human_alignment_pending`.\n- `schemas/project_state.schema.json` declara `pending_human_alignment_tasks`.\n- `backend/test_project_state_schema_contract.py` compara schema y contrato Python.\n- `orchestrator/state_store.py` exige `runtime_dir` explicito y provee constructores intencionales `for_project_runtime` / `for_repo_runtime`.\n- `orchestrator/task_queue.py` y `orchestrator/recovery.py` exigen `StateStore` explicito.\n- `orchestrator/directive_context.py` y `orchestrator/directive_generator.py` exigen runtime explicito para contexto/directivas.\n- `orchestrator/worker_adapter.py` define `TaskWorkerAdapter` y `CodexSubprocessWorkerAdapter`.\n- `backend/agent_worker_adapters.py` define `SessionWorkerAdapter`, `ControlPlaneSessionWorkerAdapter` y `LegacyPtySessionWorkerAdapter`.\n- `backend/agent_runtime.py` selecciona ruta de sesion por adaptador formal.\n- `orchestrator/validator.py` evalua cada `validation_command` con `orchestrator.security_policy.decide_command` antes de ejecutar.\n- `orchestrator/validator.py` ejecuta comandos permitidos con `shell=False`.\n- `orchestrator/validator.py` persiste decisiones en `runtime/validation_security_events.jsonl`.\n- `backend/test_validator_security.py` prueba comandos permitidos, bloqueo de shell, denegacion de desconocidos y comandos invalidos.\n- `backend/test_runtime_boundary.py` prueba runtime explicito, adaptadores de worker y persistencia de directivas bajo runtime activo.\n- `backend/code_scanner_service.py` contiene la construccion/persistencia del scanner final fuera de `backend/app.py`.\n- `backend/test_code_scanner_service.py` prueba el scanner final como servicio unitario.\n- `backend/agent_repair_service.py` contiene seleccion de archivos, directiva de reparacion y encolado de tarea de reparacion fuera de `backend/app.py`.\n- `backend/test_agent_repair_service.py` prueba la logica de reparacion como servicio unitario.\n- `frontend/src/appUtils.js` contiene helpers, constantes y layout/graph utils extraidos de `App.jsx`.\n- `frontend/src/components/codeWorkbenchUtils.js` contiene helpers de scanner visual, integridad y reparacion extraidos de `CodeWorkbench.jsx`.\n- `frontend/src/components/agentStudioUtils.js` contiene helpers de runtime/agentes/HAR extraidos de `AgentStudio.jsx`.\n- `frontend/src/components/LiveReviewerPanel.jsx` contiene el panel de revisor en vivo extraido de `AgentStudio.jsx`.\n- `backend/sandbox_service.py` contiene el sandbox runtime real fuera de `backend/app.py`.\n- `backend/integrity_service.py` contiene manifiesto forense, sellos, ancla externa, diff por caracter, reporte de integridad y Frozen Sniper fuera de `backend/app.py`.\n- `backend/integrity_routes.py` contiene rutas de scanner, integrity report, observer findings, baseline y Frozen Sniper fuera de `backend/app.py`.\n- `backend/observer_runtime_service.py` contiene seleccion de proyecto activo y snapshot runtime del Observer fuera de `backend/app.py`.\n- `backend/human_alignment_routes.py` registra rutas HAR fuera de `backend/app.py`.\n- `backend/editor_routes.py` registra rutas de archivos del editor y reparacion desde Workbench fuera de `backend/app.py`.\n- `backend/runtime_admin_service.py` contiene limpieza de runtime/workspace fuera de `backend/app.py`.\n- `backend/runtime_admin_routes.py` registra reset runtime y clean-workspace/blanqueo fuera de `backend/app.py`.\n- `backend/sandbox_routes.py` registra rutas sandbox fuera de `backend/app.py`.\n- `backend/app.py` bajo a 4566 lineas despues de Fase 5.\n- `.github/workflows/audit.yml` automatiza py_compile, unittests backend, build/test frontend y validacion JSON de checkpoints.\n- `docs/reporte_cierre_auditoria_seccion_19_2026-05-20.md` consolida el reporte humano de cierre para auditoria/inversor.\n- `frontend/src/App.jsx` bajo a 1992 lineas.\n- `frontend/src/components/CodeWorkbench.jsx` bajo a 1994 lineas.\n- `frontend/src/components/AgentStudio.jsx` queda en 1754 lineas.\n- Componentes frontend extraidos en Fase 4: `AppTopbar`, `AppLintPanel`, `AppObserverPanel`, `AppRuntimeWorkbenches`, `AppAgentPresenceLayer`, `AppStatusbar`, `CodeWorkbenchTopMenu`, `CodeWorkbenchActivityBar`, `CodeWorkbenchActions`, `CodeWorkbenchSidebar`, `CodeWorkbenchEditorHeader`, `CodeWorkbenchEditorOverlays`, `CodeWorkbenchGutter`, `CodeWorkbenchTextarea`.\n- Checkpoint: `runtime/checkpoints/phase-1-section-19-20260519T131739-0700.json`.\n- Checkpoint: `runtime/checkpoints/phase-2-section-19-20260519T142613-0700.json`.\n- Checkpoint: `runtime/checkpoints/phase-3-section-19-20260519T180025-0700.json`.\n- Checkpoint: `runtime/checkpoints/phase-4-section-19-20260520T070929-0700.json`.\n- Checkpoint: `runtime/checkpoints/phase-5-section-19-20260520T094539-0700.json`.\n- Checkpoint: `runtime/checkpoints/github-actions-audit-20260520T131626-0700.json`.\n- Checkpoint: `runtime/checkpoints/audit-report-section-19-20260520T140040-0700.json`.\n\nValidaciones ejecutadas:\n- `python3 -m py_compile orchestrator/validator.py orchestrator/security_policy.py backend/test_project_state_schema_contract.py backend/test_validator_security.py`\n- `python3 -m unittest backend.test_project_state_schema_contract backend.test_validator_security`\n- `python3 -m unittest backend.test_security_policy backend.test_human_alignment_review backend.test_project_state_runtime_metadata`\n- `python3 -m unittest backend.test_tool_invocation_policy backend.test_control_plane_visual_bridge`\n- `jq . schemas/project_state.schema.json`\n- `env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_executor_pipe_drain`\n- `python3 -m py_compile orchestrator/state_store.py orchestrator/task_queue.py orchestrator/recovery.py orchestrator/directive_context.py orchestrator/directive_generator.py orchestrator/worker_adapter.py orchestrator/executor.py backend/agent_worker_adapters.py backend/agent_runtime.py backend/test_runtime_boundary.py`\n- `python3 -m unittest backend.test_runtime_boundary`\n- `python3 -m unittest backend.test_control_plane_visual_bridge backend.test_tool_invocation_policy backend.test_executor_pipe_drain backend.test_runtime_boundary`\n- `env PYTHONPATH=backend:. python3 -m unittest backend.test_agent_runtime_habla backend.test_human_alignment_review backend.test_project_state_runtime_metadata`\n- `python3 -m unittest backend.test_security_policy backend.test_project_state_schema_contract backend.test_validator_security`\n- `jq . runtime/checkpoints/phase-2-section-19-20260519T142613-0700.json`\n- `python3 -m py_compile backend/app.py backend/code_scanner_service.py backend/agent_repair_service.py backend/test_code_scanner_service.py backend/test_agent_repair_service.py`\n- `python3 -m unittest backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint`\n- `python3 -m py_compile backend/app.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py`\n- `python3 -m unittest backend.test_runtime_sandbox backend.test_code_scanner_service backend.test_agent_repair_service backend.test_code_scanner backend.test_app_lint`\n- `python3 -m py_compile backend/app.py backend/editor_routes.py backend/integrity_routes.py backend/human_alignment_routes.py backend/observer_runtime_service.py backend/integrity_service.py backend/runtime_admin_routes.py backend/runtime_admin_service.py backend/sandbox_routes.py backend/sandbox_service.py backend/code_scanner_service.py backend/agent_repair_service.py`\n- `python3 -m unittest backend.test_code_scanner`\n- `python3 -m unittest backend.test_runtime_clean_workspace backend.test_code_scanner backend.test_runtime_sandbox backend.test_observer_auto_shutdown backend.test_human_alignment_review`\n- `python3 -m unittest backend.test_app_lint backend.test_code_scanner backend.test_code_scanner_service backend.test_agent_repair_service backend.test_runtime_sandbox backend.test_runtime_clean_workspace backend.test_observer_auto_shutdown backend.test_human_alignment_review backend.test_security_policy backend.test_validator_security backend.test_project_state_schema_contract`\n- `python3 -c \"import yaml; yaml.safe_load(open('.github/workflows/audit.yml', encoding='utf-8')); print('workflow yaml ok')\"`\n- Validacion local del script de checkpoints embebido en `.github/workflows/audit.yml`.\n- `npm run build`\n- `npm test`\n\nSiguiente fase:\n- Subir el repositorio a GitHub y verificar la primera ejecucion real del workflow `Audit`.",
+        "title": "Estado 2026-05-20"
+      },
+      "Estados finitos": {
+        "code_blocks": [
+          "idle\nincident_opened\nsnapshotting\nclassifying\nscanning_integrity\nchecking_scanner\nchecking_sandbox\nchecking_typewriter\nchecking_runtime\nproposing_action\nwaiting_human\ncooling_down\ncompleted\nblocked\nexpired"
+        ],
+        "items": [
+          "`idle` no emite scanner visual.",
+          "`completed`, `blocked` y `expired` son estados terminales del incidente.",
+          "Un estado terminal debe apagar el bucle del incidente.",
+          "El proceso global puede quedar vivo como servicio, pero sin barrido ni mensajes repetidos."
+        ],
+        "level": 2,
+        "text": "Estados obligatorios del ciclo:\n\n\n\nReglas:\n- `idle` no emite scanner visual.\n- `completed`, `blocked` y `expired` son estados terminales del incidente.\n- Un estado terminal debe apagar el bucle del incidente.\n- El proceso global puede quedar vivo como servicio, pero sin barrido ni mensajes repetidos.",
+        "title": "Estados finitos"
+      },
+      "FASE 1 \u2014 Estabilizaci\u00f3n del runtime actual": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "FASE 1 \u2014 Estabilizaci\u00f3n del runtime actual"
+      },
+      "FASE 2 \u2014 Orquestaci\u00f3n por tareas": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "FASE 2 \u2014 Orquestaci\u00f3n por tareas"
+      },
+      "FASE 3 \u2014 Autonom\u00eda larga": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "FASE 3 \u2014 Autonom\u00eda larga"
+      },
+      "Firma de repeticion": {
+        "code_blocks": [
+          "projectSlug + state + behavior + focusPath + findingFingerprint + evidenceHash"
+        ],
+        "items": [
+          "dejar un evento `observer_repeated_finding_suppressed`,",
+          "pasar el incidente a `waiting_human` o `completed_with_findings`,",
+          "dejar de emitir el mismo mensaje visual."
+        ],
+        "level": 2,
+        "text": "Cada observacion debe calcular una firma estable:\n\n\n\nSi la misma firma se repite mas de `maxRepeatedEvents`, el Observer debe:\n1. dejar un evento `observer_repeated_finding_suppressed`,\n2. pasar el incidente a `waiting_human` o `completed_with_findings`,\n3. dejar de emitir el mismo mensaje visual.",
+        "title": "Firma de repeticion"
+      },
+      "Flujo principal esperado": {
+        "code_blocks": [
+          "Prompt grande\n\u2192 planner\n\u2192 divisi\u00f3n en tareas peque\u00f1as\n\u2192 task_queue persistente\n\u2192 executor ejecuta una tarea\n\u2192 validator valida evidencia real\n\u2192 state_store guarda checkpoint\n\u2192 recovery act\u00faa si falla\n\u2192 siguiente tarea"
+        ],
+        "items": [],
+        "level": 1,
+        "text": "---",
+        "title": "Flujo principal esperado"
+      },
+      "Nueva tesis operativa": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "No tratar proyectos largos como una sola sesi\u00f3n larga.\nDividir el trabajo en tareas peque\u00f1as, verificables, persistentes y reanudables.",
+        "title": "Nueva tesis operativa"
+      },
+      "Objetivo": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "Soportar proyectos cortos, medianos y largos con la misma base.",
+        "title": "Objetivo"
+      },
+      "PLAN DE CICLO DE VIDA FINITO \u2014 OBSERVER ENGINE": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "PLAN DE CICLO DE VIDA FINITO \u2014 OBSERVER ENGINE"
+      },
+      "PLAN FORENSE \u2014 HABLA Observer IA": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "PLAN FORENSE \u2014 HABLA Observer IA"
+      },
+      "PLANS.md": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "PLANS.md"
+      },
+      "Pasos": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "",
+        "title": "Pasos"
+      },
+      "Presupuestos obligatorios": {
+        "code_blocks": [],
+        "items": [
+          "`maxRuntimeSeconds`: por defecto 180 segundos.",
+          "`maxTicks`: por defecto 30 ticks.",
+          "`maxRepeatedEvents`: por defecto 3 eventos con la misma firma.",
+          "`maxFilesForVisualScan`: por defecto 3 archivos en UI.",
+          "`maxLinesForVisualScan`: por defecto 200 lineas por archivo en UI.",
+          "`endpointTimeoutSeconds`: por defecto 3 segundos para status/snapshot.",
+          "`cooldownSeconds`: por defecto 60 segundos antes de reabrir el mismo fingerprint."
+        ],
+        "level": 2,
+        "text": "Cada incidente debe tener limites duros:\n- `maxRuntimeSeconds`: por defecto 180 segundos.\n- `maxTicks`: por defecto 30 ticks.\n- `maxRepeatedEvents`: por defecto 3 eventos con la misma firma.\n- `maxFilesForVisualScan`: por defecto 3 archivos en UI.\n- `maxLinesForVisualScan`: por defecto 200 lineas por archivo en UI.\n- `endpointTimeoutSeconds`: por defecto 3 segundos para status/snapshot.\n- `cooldownSeconds`: por defecto 60 segundos antes de reabrir el mismo fingerprint.\n\nEl scanner persistente puede leer todo el proyecto si la politica lo exige, pero la animacion visual no puede intentar representar indefinidamente todo el workspace.",
+        "title": "Presupuestos obligatorios"
+      },
+      "Principio operativo": {
+        "code_blocks": [
+          "trigger -> snapshot -> clasificacion -> inspeccion acotada -> decision -> evidencia -> cierre"
+        ],
+        "items": [],
+        "level": 2,
+        "text": "Observer no debe ser un worker permanente.\nObserver debe actuar como un ciclo finito de diagnostico por incidente:\n\n\n\nSi necesita seguir mirando, debe abrir un nuevo incidente con nueva causa, no permanecer indefinidamente en el mismo barrido.",
+        "title": "Principio operativo"
+      },
+      "Problema actual": {
+        "code_blocks": [],
+        "items": [
+          "clasifica tareas grandes como smoke por heur\u00edsticas fr\u00e1giles,",
+          "mata sesiones \u00fatiles por timeouts r\u00edgidos,",
+          "el retry puede quedar esperando indefinidamente al proceso anterior."
+        ],
+        "level": 2,
+        "text": "El sistema actual es fr\u00e1gil por dise\u00f1o porque:\n1. clasifica tareas grandes como smoke por heur\u00edsticas fr\u00e1giles,\n2. mata sesiones \u00fatiles por timeouts r\u00edgidos,\n3. el retry puede quedar esperando indefinidamente al proceso anterior.",
+        "title": "Problema actual"
+      },
+      "Problema detectado": {
+        "code_blocks": [],
+        "items": [
+          "vigilancia forense,",
+          "animacion visual de scanner,",
+          "polling de UI/reviewer/sandbox."
+        ],
+        "level": 2,
+        "text": "El Observer actual puede quedarse emitiendo actividad durante horas porque combina tres cosas distintas en un mismo flujo:\n- vigilancia forense,\n- animacion visual de scanner,\n- polling de UI/reviewer/sandbox.\n\nEso crea una se\u00f1al falsa para el humano: parece que el motor sigue trabajando en el incidente, aunque no exista una tarea activa y el proyecto ya tenga `current_task_id=null`.",
+        "title": "Problema detectado"
+      },
+      "Regla de despliegue": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "Si no pasan todos, no se despliega.\n\n---",
+        "title": "Regla de despliegue"
+      },
+      "Reglas para modo autonomo humano": {
+        "code_blocks": [],
+        "items": [
+          "`humanPinned=true` debe guardar `expiresAt`.",
+          "Por defecto expira en 15 minutos.",
+          "La UI debe mostrar tiempo restante.",
+          "Al expirar, Observer pasa a `idle` y emite `observer_manual_pin_expired`.",
+          "Si el humano quiere mas tiempo, debe renovar explicitamente."
+        ],
+        "level": 2,
+        "text": "El pin humano debe tener expiracion:\n- `humanPinned=true` debe guardar `expiresAt`.\n- Por defecto expira en 15 minutos.\n- La UI debe mostrar tiempo restante.\n- Al expirar, Observer pasa a `idle` y emite `observer_manual_pin_expired`.\n- Si el humano quiere mas tiempo, debe renovar explicitamente.",
+        "title": "Reglas para modo autonomo humano"
+      },
+      "Reparacion especifica del caso actual": {
+        "code_blocks": [],
+        "items": [
+          "Reconocer que no hay tarea activa: `current_task_id=null`.",
+          "Clasificar actividad como `ui_polling_plus_stale_findings`.",
+          "Registrar que el render negro ya fue atendido por el agente.",
+          "Bloquear cierre limpio por:",
+          "integridad fallida,",
+          "typewriter fallido por PNG binario,",
+          "scanner previo desactualizado.",
+          "Detener mensajes repetidos de \"barriendo lineas y rutas\".",
+          "Crear tareas nuevas, separadas:",
+          "`OBSERVER-LIFECYCLE-001`: incidentes finitos y budgets.",
+          "`OBSERVER-LIFECYCLE-002`: expiracion de pin humano.",
+          "`OBSERVER-LIFECYCLE-003`: deduplicacion y supresion de firmas repetidas.",
+          "`OBSERVER-LIFECYCLE-004`: separar scanner visual de Observer.",
+          "`OBSERVER-LIFECYCLE-005`: corregir PNG/typewriter/binarios."
+        ],
+        "level": 2,
+        "text": "El incidente actual debe cerrarse asi:\n1. Reconocer que no hay tarea activa: `current_task_id=null`.\n2. Clasificar actividad como `ui_polling_plus_stale_findings`.\n3. Registrar que el render negro ya fue atendido por el agente.\n4. Bloquear cierre limpio por:\n   - integridad fallida,\n   - typewriter fallido por PNG binario,\n   - scanner previo desactualizado.\n5. Detener mensajes repetidos de \"barriendo lineas y rutas\".\n6. Crear tareas nuevas, separadas:\n   - `OBSERVER-LIFECYCLE-001`: incidentes finitos y budgets.\n   - `OBSERVER-LIFECYCLE-002`: expiracion de pin humano.\n   - `OBSERVER-LIFECYCLE-003`: deduplicacion y supresion de firmas repetidas.\n   - `OBSERVER-LIFECYCLE-004`: separar scanner visual de Observer.\n   - `OBSERVER-LIFECYCLE-005`: corregir PNG/typewriter/binarios.",
+        "title": "Reparacion especifica del caso actual"
+      },
+      "Resultado esperado": {
+        "code_blocks": [],
+        "items": [
+          "divide proyectos grandes,",
+          "ejecuta tarea por tarea,",
+          "valida por evidencia real,",
+          "crea checkpoints,",
+          "se recupera de fallos,",
+          "reanuda tras reinicios,",
+          "desacopla el worker del sistema central."
+        ],
+        "level": 2,
+        "text": "Un runtime que:\n- divide proyectos grandes,\n- ejecuta tarea por tarea,\n- valida por evidencia real,\n- crea checkpoints,\n- se recupera de fallos,\n- reanuda tras reinicios,\n- desacopla el worker del sistema central.\n\n---",
+        "title": "Resultado esperado"
+      },
+      "Separacion obligatoria entre Observer y scanner visual": {
+        "code_blocks": [],
+        "items": [
+          "decide donde mirar,",
+          "resume evidencia,",
+          "propone acciones,",
+          "registra incidentes.",
+          "muestra una reproduccion acotada,",
+          "tiene boton detener,",
+          "tiene watchdog,",
+          "no decide estado del proyecto,",
+          "no mantiene vivo el Observer.",
+          "refresca estado,",
+          "no debe iniciar incidentes,",
+          "no debe extender deadlines,",
+          "no debe reactivar modo autonomo."
+        ],
+        "level": 2,
+        "text": "Observer:\n- decide donde mirar,\n- resume evidencia,\n- propone acciones,\n- registra incidentes.\n\nScanner visual:\n- muestra una reproduccion acotada,\n- tiene boton detener,\n- tiene watchdog,\n- no decide estado del proyecto,\n- no mantiene vivo el Observer.\n\nPolling de UI:\n- refresca estado,\n- no debe iniciar incidentes,\n- no debe extender deadlines,\n- no debe reactivar modo autonomo.",
+        "title": "Separacion obligatoria entre Observer y scanner visual"
+      },
+      "Sprint 1": {
+        "code_blocks": [],
+        "items": [
+          "`schemas/`",
+          "`orchestrator/state_store.py`",
+          "`orchestrator/contracts.py`",
+          "`runtime/project_state.json`",
+          "`runtime/task_queue.json`",
+          "existe persistencia base;",
+          "existen contratos m\u00ednimos;",
+          "la cola y el estado pueden cargarse y guardarse."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nCrear la base persistente del runtime y los contratos m\u00ednimos.\n\nEntregables:\n- `schemas/`\n- `orchestrator/state_store.py`\n- `orchestrator/contracts.py`\n- `runtime/project_state.json`\n- `runtime/task_queue.json`\n\nAceptaci\u00f3n:\n- existe persistencia base;\n- existen contratos m\u00ednimos;\n- la cola y el estado pueden cargarse y guardarse.",
+        "title": "Sprint 1"
+      },
+      "Sprint 10": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/benchmark.py`",
+          "no se despliega si falla la bater\u00eda oficial."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nBenchmarks y puerta de despliegue.\n\nEntregables:\n- `orchestrator/benchmark.py`\n\nAceptaci\u00f3n:\n- no se despliega si falla la bater\u00eda oficial.\n\n---",
+        "title": "Sprint 10"
+      },
+      "Sprint 2": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/planner.py`",
+          "`orchestrator/task_queue.py`",
+          "soporta prioridad;",
+          "soporta dependencias."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nPlanificaci\u00f3n y cola.\n\nEntregables:\n- `orchestrator/planner.py`\n- `orchestrator/task_queue.py`\n\nAceptaci\u00f3n:\n- soporta prioridad;\n- soporta dependencias.",
+        "title": "Sprint 2"
+      },
+      "Sprint 3": {
+        "code_blocks": [],
+        "items": [
+          "`workers/codex_worker.py`",
+          "`orchestrator/executor.py`",
+          "una tarea equivale a un proceso."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nEjecuci\u00f3n acotada por tarea.\n\nEntregables:\n- `workers/codex_worker.py`\n- `orchestrator/executor.py`\n\nAceptaci\u00f3n:\n- una tarea equivale a un proceso.",
+        "title": "Sprint 3"
+      },
+      "Sprint 4": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/validator.py`",
+          "ejecuta validaciones y exige evidencia real."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nValidaci\u00f3n real.\n\nEntregables:\n- `orchestrator/validator.py`\n\nAceptaci\u00f3n:\n- ejecuta validaciones y exige evidencia real.",
+        "title": "Sprint 4"
+      },
+      "Sprint 5": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/recovery.py`",
+          "terminate \u2192 wait \u2192 kill;",
+          "divide tareas tras fallos repetidos."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nRecovery robusto.\n\nEntregables:\n- `orchestrator/recovery.py`\n\nAceptaci\u00f3n:\n- terminate \u2192 wait \u2192 kill;\n- divide tareas tras fallos repetidos.",
+        "title": "Sprint 5"
+      },
+      "Sprint 6": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/policy_loader.py`",
+          "`orchestrator/plan_loader.py`",
+          "`AGENTS.md` se carga como pol\u00edtica del repositorio;",
+          "`PLANS.md` se carga como roadmap ejecutable;",
+          "el runtime puede consultar reglas y alcance sin intervenci\u00f3n manual."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nIntegrar pol\u00edtica y plan como entradas permanentes del control plane.\n\nEntregables:\n- `orchestrator/policy_loader.py`\n- `orchestrator/plan_loader.py`\n\nAceptaci\u00f3n:\n- `AGENTS.md` se carga como pol\u00edtica del repositorio;\n- `PLANS.md` se carga como roadmap ejecutable;\n- el runtime puede consultar reglas y alcance sin intervenci\u00f3n manual.",
+        "title": "Sprint 6"
+      },
+      "Sprint 7": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/directive_context.py`",
+          "`orchestrator/habla_adapter.py`",
+          "el sistema puede reunir pol\u00edtica, plan, estado, cola, historial y checkpoint;",
+          "HABLA BASIC queda integrado como capa procedural reusable."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nConstruir el contexto procedural de tarea con HABLA BASIC.\n\nEntregables:\n- `orchestrator/directive_context.py`\n- `orchestrator/habla_adapter.py`\n\nAceptaci\u00f3n:\n- el sistema puede reunir pol\u00edtica, plan, estado, cola, historial y checkpoint;\n- HABLA BASIC queda integrado como capa procedural reusable.",
+        "title": "Sprint 7"
+      },
+      "Sprint 8": {
+        "code_blocks": [],
+        "items": [
+          "`orchestrator/directive_generator.py`",
+          "`runtime/directives/`",
+          "cada tarea puede producir una directiva persistida en disco;",
+          "el worker deja de depender de prompts manuales permanentes."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nGenerar directivas operativas por tarea.\n\nEntregables:\n- `orchestrator/directive_generator.py`\n- `runtime/directives/`\n\nAceptaci\u00f3n:\n- cada tarea puede producir una directiva persistida en disco;\n- el worker deja de depender de prompts manuales permanentes.",
+        "title": "Sprint 8"
+      },
+      "Sprint 9": {
+        "code_blocks": [],
+        "items": [
+          "modificaci\u00f3n acotada de `agent_runtime.py`",
+          "modos expl\u00edcitos,",
+          "fin de smoke heur\u00edstico,",
+          "timeout por tarea,",
+          "consumo de directivas generadas.",
+          "`agent_runtime.py` deja de operar como sesi\u00f3n monol\u00edtica;",
+          "la tarea activa se ejecuta con una directiva generada por el control plane."
+        ],
+        "level": 2,
+        "text": "Objetivo:\nIntegrar el runtime existente con el nuevo control plane por tareas y directivas.\n\nEntregables:\n- modificaci\u00f3n acotada de `agent_runtime.py`\n- modos expl\u00edcitos,\n- fin de smoke heur\u00edstico,\n- timeout por tarea,\n- consumo de directivas generadas.\n\nAceptaci\u00f3n:\n- `agent_runtime.py` deja de operar como sesi\u00f3n monol\u00edtica;\n- la tarea activa se ejecuta con una directiva generada por el control plane.",
+        "title": "Sprint 9"
+      },
+      "Sprints": {
+        "code_blocks": [],
+        "items": [],
+        "level": 1,
+        "text": "",
+        "title": "Sprints"
+      },
+      "Tesis": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "El sistema no puede confiar solo en que el worker diga \"completado\". Debe crear una baseline auditable, mirar el disco despu\u00e9s, comparar hashes y texto, y explicar cualquier divergencia con evidencia verificable.",
+        "title": "Tesis"
+      },
+      "Triggers permitidos": {
+        "code_blocks": [],
+        "items": [
+          "sesion de agente iniciada,",
+          "sesion de agente cerrada,",
+          "scanner final solicitado,",
+          "integridad solicitada,",
+          "sandbox solicitado,",
+          "usuario presiona \"Observar ahora\",",
+          "usuario activa modo autonomo con pin humano,",
+          "runtime detecta contradiccion entre `completed` y evidencia fallida.",
+          "polling normal de UI,",
+          "refresco de archivos,",
+          "socket heartbeat,",
+          "lectura de status,",
+          "el simple hecho de que Chrome este abierto."
+        ],
+        "level": 2,
+        "text": "Observer solo puede iniciar un incidente por una senal explicita:\n- sesion de agente iniciada,\n- sesion de agente cerrada,\n- scanner final solicitado,\n- integridad solicitada,\n- sandbox solicitado,\n- usuario presiona \"Observar ahora\",\n- usuario activa modo autonomo con pin humano,\n- runtime detecta contradiccion entre `completed` y evidencia fallida.\n\nNo debe iniciar un incidente por:\n- polling normal de UI,\n- refresco de archivos,\n- socket heartbeat,\n- lectura de status,\n- el simple hecho de que Chrome este abierto.",
+        "title": "Triggers permitidos"
+      },
+      "Visi\u00f3n del proyecto": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "Redise\u00f1ar el runtime actual para convertirlo en un orquestador aut\u00f3nomo de proyectos cortos, medianos y largos.",
+        "title": "Visi\u00f3n del proyecto"
+      },
+      "orchestrator/benchmark.py": {
+        "code_blocks": [],
+        "items": [
+          "ejecutar benchmarks oficiales,",
+          "bloquear despliegue si fallan."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- ejecutar benchmarks oficiales,\n- bloquear despliegue si fallan.",
+        "title": "orchestrator/benchmark.py"
+      },
+      "orchestrator/contracts.py": {
+        "code_blocks": [],
+        "items": [
+          "validar Task,",
+          "validar TaskResult,",
+          "validar ProjectState."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- validar Task,\n- validar TaskResult,\n- validar ProjectState.",
+        "title": "orchestrator/contracts.py"
+      },
+      "orchestrator/directive_context.py": {
+        "code_blocks": [],
+        "items": [
+          "reunir pol\u00edtica, plan, estado, cola, historial, fallos y checkpoint actual,",
+          "producir el contexto estructurado de la tarea activa."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- reunir pol\u00edtica, plan, estado, cola, historial, fallos y checkpoint actual,\n- producir el contexto estructurado de la tarea activa.",
+        "title": "orchestrator/directive_context.py"
+      },
+      "orchestrator/directive_generator.py": {
+        "code_blocks": [],
+        "items": [
+          "construir la instrucci\u00f3n exacta del worker para la tarea actual,",
+          "persistir la directiva en disco,",
+          "evitar prompts manuales permanentes como mecanismo final del runtime."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- construir la instrucci\u00f3n exacta del worker para la tarea actual,\n- persistir la directiva en disco,\n- evitar prompts manuales permanentes como mecanismo final del runtime.",
+        "title": "orchestrator/directive_generator.py"
+      },
+      "orchestrator/executor.py": {
+        "code_blocks": [],
+        "items": [
+          "lanzar un worker por tarea,",
+          "esperar resultado o timeout,",
+          "devolver resultado estructurado."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- lanzar un worker por tarea,\n- esperar resultado o timeout,\n- devolver resultado estructurado.",
+        "title": "orchestrator/executor.py"
+      },
+      "orchestrator/habla_adapter.py": {
+        "code_blocks": [],
+        "items": [
+          "incorporar HABLA BASIC como capa procedural reusable,",
+          "transformar el contexto de tarea en gu\u00eda operativa compatible con el generador de directivas."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- incorporar HABLA BASIC como capa procedural reusable,\n- transformar el contexto de tarea en gu\u00eda operativa compatible con el generador de directivas.",
+        "title": "orchestrator/habla_adapter.py"
+      },
+      "orchestrator/plan_loader.py": {
+        "code_blocks": [],
+        "items": [
+          "cargar y normalizar `PLANS.md`,",
+          "exponer fases, sprints, alcance y criterios de aceptaci\u00f3n consumibles por m\u00e1quina."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- cargar y normalizar `PLANS.md`,\n- exponer fases, sprints, alcance y criterios de aceptaci\u00f3n consumibles por m\u00e1quina.",
+        "title": "orchestrator/plan_loader.py"
+      },
+      "orchestrator/planner.py": {
+        "code_blocks": [],
+        "items": [
+          "dividir prompt grande en tareas,",
+          "definir objetivo,",
+          "definir archivos esperados,",
+          "definir validaciones,",
+          "definir dependencias,",
+          "definir prioridad,",
+          "definir timeout,",
+          "definir modo."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- dividir prompt grande en tareas,\n- definir objetivo,\n- definir archivos esperados,\n- definir validaciones,\n- definir dependencias,\n- definir prioridad,\n- definir timeout,\n- definir modo.",
+        "title": "orchestrator/planner.py"
+      },
+      "orchestrator/policy_loader.py": {
+        "code_blocks": [],
+        "items": [
+          "cargar y normalizar `AGENTS.md`,",
+          "exponer reglas duras del repositorio al control plane."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- cargar y normalizar `AGENTS.md`,\n- exponer reglas duras del repositorio al control plane.",
+        "title": "orchestrator/policy_loader.py"
+      },
+      "orchestrator/recovery.py": {
+        "code_blocks": [],
+        "items": [
+          "registrar fallo,",
+          "cerrar proceso,",
+          "crear checkpoint,",
+          "reintentar limpio,",
+          "dividir tarea si es demasiado grande,",
+          "bloquear tarea si supera reintentos."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- registrar fallo,\n- cerrar proceso,\n- crear checkpoint,\n- reintentar limpio,\n- dividir tarea si es demasiado grande,\n- bloquear tarea si supera reintentos.",
+        "title": "orchestrator/recovery.py"
+      },
+      "orchestrator/state_store.py": {
+        "code_blocks": [],
+        "items": [
+          "cargar/guardar estado,",
+          "persistir queue,",
+          "persistir historial,",
+          "persistir failures,",
+          "persistir checkpoints."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- cargar/guardar estado,\n- persistir queue,\n- persistir historial,\n- persistir failures,\n- persistir checkpoints.",
+        "title": "orchestrator/state_store.py"
+      },
+      "orchestrator/task_queue.py": {
+        "code_blocks": [],
+        "items": [
+          "cargar y guardar cola,",
+          "ordenar por dependencias,",
+          "ordenar por prioridad,",
+          "seleccionar siguiente tarea ejecutable."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- cargar y guardar cola,\n- ordenar por dependencias,\n- ordenar por prioridad,\n- seleccionar siguiente tarea ejecutable.",
+        "title": "orchestrator/task_queue.py"
+      },
+      "orchestrator/validator.py": {
+        "code_blocks": [],
+        "items": [
+          "validar evidencia real,",
+          "ejecutar validation_commands,",
+          "decidir si una tarea pasa o falla."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- validar evidencia real,\n- ejecutar validation_commands,\n- decidir si una tarea pasa o falla.",
+        "title": "orchestrator/validator.py"
+      },
+      "workers/codex_worker.py": {
+        "code_blocks": [],
+        "items": [
+          "ejecutar una tarea acotada,",
+          "devolver resultado estructurado."
+        ],
+        "level": 2,
+        "text": "Responsabilidad:\n- ejecutar una tarea acotada,\n- devolver resultado estructurado.\n\n---",
+        "title": "workers/codex_worker.py"
+      }
+    },
+    "source_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+    "sprints": {
+      "1": {
+        "acceptance": [
+          "existe persistencia base;",
+          "existen contratos m\u00ednimos;",
+          "la cola y el estado pueden cargarse y guardarse."
+        ],
+        "deliverables": [
+          "`schemas/`",
+          "`orchestrator/state_store.py`",
+          "`orchestrator/contracts.py`",
+          "`runtime/project_state.json`",
+          "`runtime/task_queue.json`"
+        ],
+        "number": 1,
+        "objective": "Crear la base persistente del runtime y los contratos m\u00ednimos.",
+        "title": "Sprint 1"
+      },
+      "10": {
+        "acceptance": [
+          "no se despliega si falla la bater\u00eda oficial."
+        ],
+        "deliverables": [
+          "`orchestrator/benchmark.py`"
+        ],
+        "number": 10,
+        "objective": "Benchmarks y puerta de despliegue.",
+        "title": "Sprint 10"
+      },
+      "2": {
+        "acceptance": [
+          "soporta prioridad;",
+          "soporta dependencias."
+        ],
+        "deliverables": [
+          "`orchestrator/planner.py`",
+          "`orchestrator/task_queue.py`"
+        ],
+        "number": 2,
+        "objective": "Planificaci\u00f3n y cola.",
+        "title": "Sprint 2"
+      },
+      "3": {
+        "acceptance": [
+          "una tarea equivale a un proceso."
+        ],
+        "deliverables": [
+          "`workers/codex_worker.py`",
+          "`orchestrator/executor.py`"
+        ],
+        "number": 3,
+        "objective": "Ejecuci\u00f3n acotada por tarea.",
+        "title": "Sprint 3"
+      },
+      "4": {
+        "acceptance": [
+          "ejecuta validaciones y exige evidencia real."
+        ],
+        "deliverables": [
+          "`orchestrator/validator.py`"
+        ],
+        "number": 4,
+        "objective": "Validaci\u00f3n real.",
+        "title": "Sprint 4"
+      },
+      "5": {
+        "acceptance": [
+          "terminate \u2192 wait \u2192 kill;",
+          "divide tareas tras fallos repetidos."
+        ],
+        "deliverables": [
+          "`orchestrator/recovery.py`"
+        ],
+        "number": 5,
+        "objective": "Recovery robusto.",
+        "title": "Sprint 5"
+      },
+      "6": {
+        "acceptance": [
+          "`AGENTS.md` se carga como pol\u00edtica del repositorio;",
+          "`PLANS.md` se carga como roadmap ejecutable;",
+          "el runtime puede consultar reglas y alcance sin intervenci\u00f3n manual."
+        ],
+        "deliverables": [
+          "`orchestrator/policy_loader.py`",
+          "`orchestrator/plan_loader.py`"
+        ],
+        "number": 6,
+        "objective": "Integrar pol\u00edtica y plan como entradas permanentes del control plane.",
+        "title": "Sprint 6"
+      },
+      "7": {
+        "acceptance": [
+          "el sistema puede reunir pol\u00edtica, plan, estado, cola, historial y checkpoint;",
+          "HABLA BASIC queda integrado como capa procedural reusable."
+        ],
+        "deliverables": [
+          "`orchestrator/directive_context.py`",
+          "`orchestrator/habla_adapter.py`"
+        ],
+        "number": 7,
+        "objective": "Construir el contexto procedural de tarea con HABLA BASIC.",
+        "title": "Sprint 7"
+      },
+      "8": {
+        "acceptance": [
+          "cada tarea puede producir una directiva persistida en disco;",
+          "el worker deja de depender de prompts manuales permanentes."
+        ],
+        "deliverables": [
+          "`orchestrator/directive_generator.py`",
+          "`runtime/directives/`"
+        ],
+        "number": 8,
+        "objective": "Generar directivas operativas por tarea.",
+        "title": "Sprint 8"
+      },
+      "9": {
+        "acceptance": [
+          "`agent_runtime.py` deja de operar como sesi\u00f3n monol\u00edtica;",
+          "la tarea activa se ejecuta con una directiva generada por el control plane."
+        ],
+        "deliverables": [
+          "modificaci\u00f3n acotada de `agent_runtime.py`",
+          "modos expl\u00edcitos,",
+          "fin de smoke heur\u00edstico,",
+          "timeout por tarea,",
+          "consumo de directivas generadas."
+        ],
+        "number": 9,
+        "objective": "Integrar el runtime existente con el nuevo control plane por tareas y directivas.",
+        "title": "Sprint 9"
+      }
+    }
+  },
+  "policy": {
+    "central_thesis": "Nunca tratar un proyecto largo como una sola sesi\u00f3n larga.\nTodo proyecto debe dividirse en tareas peque\u00f1as, verificables, persistentes y reanudables.",
+    "directive_policy": [
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n."
+    ],
+    "document": "AGENTS.md",
+    "expected_project_structure": "runtime/\n  project_state.json\n  task_queue.json\n  task_history.jsonl\n  failures.jsonl\n  artifacts/\n  checkpoints/\n  directives/\n  logs/\n\norchestrator/\n  planner.py\n  task_queue.py\n  executor.py\n  validator.py\n  recovery.py\n  state_store.py\n  contracts.py\n  policy_loader.py\n  plan_loader.py\n  directive_context.py\n  habla_adapter.py\n  directive_generator.py\n  benchmark.py\n\nworkers/\n  codex_worker.py\n\nschemas/\n  task.schema.json\n  task_result.schema.json\n  project_state.schema.json\n\ntests/\n  test_smoke_mode.py\n  test_retry_recovery.py\n  test_task_queue.py\n  test_resume_checkpoint.py\n  test_long_project_flow.py",
+    "implementation_policy": [
+      "prioriza claridad y trazabilidad,",
+      "deja comentarios \u00fatiles solo donde agreguen valor,",
+      "no inventes \u00e9xito si no hay validaci\u00f3n,",
+      "no cierres una tarea como completa sin evidencia real,",
+      "si falta algo, deja el estado expl\u00edcito en archivos de runtime."
+    ],
+    "mandatory_benchmarks": [
+      "smoke-01",
+      "crud-ui-02",
+      "refactor-mid-03",
+      "long-project-04",
+      "recovery-05"
+    ],
+    "master_rules": [
+      "No depender de la memoria impl\u00edcita de una sola corrida.",
+      "Persistir siempre el estado real en disco.",
+      "No contar progreso sin evidencia real en disco.",
+      "Toda tarea debe ser verificable.",
+      "Toda tarea debe ser reanudable.",
+      "Todo fallo debe dejar traza.",
+      "Todo retry debe tener causa registrada.",
+      "Toda validaci\u00f3n debe quedar en historial.",
+      "Todo cambio importante debe generar checkpoint.",
+      "No acoplar fuertemente el sistema a Codex; Codex es solo un worker.",
+      "Toda directiva operativa del worker debe generarse desde pol\u00edtica, plan, estado y checkpoint; no debe depender de prompts manuales permanentes."
+    ],
+    "repository_purpose": "Este repositorio debe evolucionar hacia un **orquestador aut\u00f3nomo de proyectos**.\nNo debe comportarse como una sola sesi\u00f3n larga de chat.\nDebe comportarse como una m\u00e1quina de ejecuci\u00f3n de proyectos cortos, medianos y largos, con agentes reemplazables.",
+    "runtime_hard_rules": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea."
+    ],
+    "sections": {
+      "1. Control plane": {
+        "code_blocks": [],
+        "items": [],
+        "level": 3,
+        "text": "Python decide el estado real.\nMantiene backlog, prioridades, budgets, checkpoints y retries.",
+        "title": "1. Control plane"
+      },
+      "2. Worker plane": {
+        "code_blocks": [],
+        "items": [
+          "crear archivo,",
+          "refactorizar m\u00f3dulo,",
+          "escribir pruebas,",
+          "corregir un fallo puntual."
+        ],
+        "level": 3,
+        "text": "Cada worker ejecuta una sola tarea acotada.\nUna tarea puede ser:\n- crear archivo,\n- refactorizar m\u00f3dulo,\n- escribir pruebas,\n- corregir un fallo puntual.",
+        "title": "2. Worker plane"
+      },
+      "3. Verification plane": {
+        "code_blocks": [],
+        "items": [
+          "archivos creados,",
+          "archivos modificados,",
+          "tests,",
+          "lint,",
+          "estructura,",
+          "comandos de validaci\u00f3n declarados."
+        ],
+        "level": 3,
+        "text": "Despu\u00e9s de cada tarea se debe validar:\n- archivos creados,\n- archivos modificados,\n- tests,\n- lint,\n- estructura,\n- comandos de validaci\u00f3n declarados.",
+        "title": "3. Verification plane"
+      },
+      "4. Memory plane": {
+        "code_blocks": [],
+        "items": [
+          "project_state,",
+          "task_queue,",
+          "task_history,",
+          "failures,",
+          "checkpoints,",
+          "artifacts."
+        ],
+        "level": 3,
+        "text": "Persistir todo en disco:\n- project_state,\n- task_queue,\n- task_history,\n- failures,\n- checkpoints,\n- artifacts.",
+        "title": "4. Memory plane"
+      },
+      "Arquitectura objetivo": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "El sistema debe dividirse en cuatro planos:",
+        "title": "Arquitectura objetivo"
+      },
+      "Benchmarks obligatorios": {
+        "code_blocks": [],
+        "items": [
+          "smoke-01",
+          "crud-ui-02",
+          "refactor-mid-03",
+          "long-project-04",
+          "recovery-05"
+        ],
+        "level": 2,
+        "text": "El sistema final debe soportar:\n- smoke-01\n- crud-ui-02\n- refactor-mid-03\n- long-project-04\n- recovery-05\n\nSi una versi\u00f3n no pasa todos los benchmarks, no se despliega.",
+        "title": "Benchmarks obligatorios"
+      },
+      "Contrato de salida obligatorio": {
+        "code_blocks": [],
+        "items": [
+          "objetivo cumplido o no,",
+          "archivos creados,",
+          "archivos modificados,",
+          "validaciones ejecutadas,",
+          "resultado de validaci\u00f3n,",
+          "blockers reales,",
+          "recomendaci\u00f3n siguiente."
+        ],
+        "level": 2,
+        "text": "Cada tarea debe devolver:\n- objetivo cumplido o no,\n- archivos creados,\n- archivos modificados,\n- validaciones ejecutadas,\n- resultado de validaci\u00f3n,\n- blockers reales,\n- recomendaci\u00f3n siguiente.",
+        "title": "Contrato de salida obligatorio"
+      },
+      "Estructura esperada del proyecto": {
+        "code_blocks": [
+          "runtime/\n  project_state.json\n  task_queue.json\n  task_history.jsonl\n  failures.jsonl\n  artifacts/\n  checkpoints/\n  directives/\n  logs/\n\norchestrator/\n  planner.py\n  task_queue.py\n  executor.py\n  validator.py\n  recovery.py\n  state_store.py\n  contracts.py\n  policy_loader.py\n  plan_loader.py\n  directive_context.py\n  habla_adapter.py\n  directive_generator.py\n  benchmark.py\n\nworkers/\n  codex_worker.py\n\nschemas/\n  task.schema.json\n  task_result.schema.json\n  project_state.schema.json\n\ntests/\n  test_smoke_mode.py\n  test_retry_recovery.py\n  test_task_queue.py\n  test_resume_checkpoint.py\n  test_long_project_flow.py"
+        ],
+        "items": [],
+        "level": 2,
+        "text": "",
+        "title": "Estructura esperada del proyecto"
+      },
+      "Identidad del sistema": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "El producto final no es \u201cun chat que programa\u201d.\nEl producto final es \u201cun sistema operativo de ejecuci\u00f3n de proyectos con agentes reemplazables\u201d.",
+        "title": "Identidad del sistema"
+      },
+      "Modelo m\u00ednimo de Task": {
+        "code_blocks": [
+          "{\n  \"id\": \"TASK-001\",\n  \"title\": \"Crear estructura base del proyecto\",\n  \"goal\": \"Inicializar carpetas y archivos base\",\n  \"status\": \"pending\",\n  \"priority\": 10,\n  \"dependencies\": [],\n  \"expected_files\": [\"README.md\", \"src/__init__.py\"],\n  \"validation_commands\": [\"pytest -q\", \"ruff check .\"],\n  \"timeout_seconds\": 900,\n  \"max_retries\": 3,\n  \"mode\": \"build\",\n  \"checkpoint_key\": null\n}"
+        ],
+        "items": [],
+        "level": 2,
+        "text": "",
+        "title": "Modelo m\u00ednimo de Task"
+      },
+      "Modelo m\u00ednimo de TaskResult": {
+        "code_blocks": [
+          "{\n  \"task_id\": \"TASK-001\",\n  \"completed\": false,\n  \"files_created\": [],\n  \"files_modified\": [],\n  \"validation_ran\": [],\n  \"validation_passed\": false,\n  \"blockers\": [],\n  \"next_recommendation\": \"\"\n}"
+        ],
+        "items": [],
+        "level": 2,
+        "text": "",
+        "title": "Modelo m\u00ednimo de TaskResult"
+      },
+      "Politica HABLA Observer IA": {
+        "code_blocks": [],
+        "items": [
+          "**Evidencia runtime obligatoria.** El snapshot del Observer debe incluir `runtime/project_state.json`, `runtime/artifacts/final_code_scanner_report.json`, `runtime/artifacts/final_typewriter_report.json` y `runtime/sandbox.json` del proyecto activo cuando existan.",
+          "**Alarma por scanner faltante.** Si un proyecto esta `completed` pero no existe scanner final valido, o el reporte no certifica `magnifier_line_by_line_to_last_line` y `scrolls_to_last_line`, el Observer debe emitir estado `verifying_scanner` antes de hacer observaciones genericas de mapa/flujo.",
+          "**Alarma por sandbox incompleto.** Si el scanner final esta aprobado pero el sandbox no tiene `running=true`, `ready=true` y URL embebible, el Observer debe emitir estado `verifying_sandbox`.",
+          "**Observacion explicable.** Cada evento del Observer debe traer `reason`, `evidence`, `snapshotSummary`, `projectSlug` y accion visual (`uiAction`) para que el humano vea por que el sistema esta mirando esa zona.",
+          "**No accion destructiva.** El Observer puede proponer acciones seguras o pedir autorizacion, pero no ejecuta reparaciones destructivas ni blanqueos sin cumplir las reglas de seguridad."
+        ],
+        "level": 2,
+        "text": "El diferenciador del sistema es observar evidencia que otros agentes no ven. El Observer no debe limitarse a mirar sesiones activas o puntos rojos del mapa; debe cruzar estado persistido, scanner, sandbox, runtime y UI.\n\n1. **Evidencia runtime obligatoria.** El snapshot del Observer debe incluir `runtime/project_state.json`, `runtime/artifacts/final_code_scanner_report.json`, `runtime/artifacts/final_typewriter_report.json` y `runtime/sandbox.json` del proyecto activo cuando existan.\n2. **Alarma por scanner faltante.** Si un proyecto esta `completed` pero no existe scanner final valido, o el reporte no certifica `magnifier_line_by_line_to_last_line` y `scrolls_to_last_line`, el Observer debe emitir estado `verifying_scanner` antes de hacer observaciones genericas de mapa/flujo.\n3. **Alarma por sandbox incompleto.** Si el scanner final esta aprobado pero el sandbox no tiene `running=true`, `ready=true` y URL embebible, el Observer debe emitir estado `verifying_sandbox`.\n4. **Observacion explicable.** Cada evento del Observer debe traer `reason`, `evidence`, `snapshotSummary`, `projectSlug` y accion visual (`uiAction`) para que el humano vea por que el sistema esta mirando esa zona.\n5. **No accion destructiva.** El Observer puede proponer acciones seguras o pedir autorizacion, pero no ejecuta reparaciones destructivas ni blanqueos sin cumplir las reglas de seguridad.",
+        "title": "Politica HABLA Observer IA"
+      },
+      "Politica Human Alignment Review (HAR)": {
+        "code_blocks": [],
+        "items": [
+          "**Activacion automatica.** Al cerrar una tarea grande o proyecto completo con `status=completed`, el control plane debe crear o reutilizar una revision `HUMAN_ALIGNMENT_REVIEW-*` en `runtime/human_alignment_reviews/`.",
+          "**Activacion manual.** Si el humano indica \"quiero cambiar X\", \"no me gusto que usara Y\" o una preferencia equivalente, se debe abrir HAR para el proyecto actual.",
+          "**No tocar codigo al abrir HAR.** La creacion de HAR solo resume lo construido, decisiones detectadas, stack tecnico y evidencias. No puede modificar archivos de producto.",
+          "**Feedback primero.** El agente debe esperar feedback humano explicito antes de convertir preferencias en tareas. Ejemplo: cambiar PostgreSQL por SQL Server es ajuste de direccion, no fallo tecnico.",
+          "**Tareas controladas.** Despues del feedback, HAR debe crear tareas prioritarias `HUMAN_ALIGNMENT_REVIEW-*-NNN` con dependencias, archivos esperados y validaciones. Esas tareas se ejecutan por el control plane normal, no por edicion oculta.",
+          "**Stack auditable.** HAR debe exponer opciones de lenguajes, bases de datos, backend, frontend, visualizacion, realtime, mobile, devops, IA/ML, librerias, embebidos, testing y otros frameworks para capturar preferencias humanas.",
+          "**Trazabilidad.** Cada HAR debe persistir JSON, Markdown, evento en `runtime/task_history.jsonl` y evento HAR en `runtime/human_alignment_reviews/events.jsonl`.",
+          "**Estado posterior.** Cuando el humano envia ajustes, `project_state.status` puede pasar a `human_alignment_pending` hasta que las tareas HAR se ejecuten y validen."
+        ],
+        "level": 2,
+        "text": "HAR es el ciclo formal de alineacion humana despues de un cierre tecnico correcto. Un proyecto puede compilar, validar y quedar `completed`, pero aun necesitar cambios de preferencia humana o direccion de diseno.\n\n1. **Activacion automatica.** Al cerrar una tarea grande o proyecto completo con `status=completed`, el control plane debe crear o reutilizar una revision `HUMAN_ALIGNMENT_REVIEW-*` en `runtime/human_alignment_reviews/`.\n2. **Activacion manual.** Si el humano indica \"quiero cambiar X\", \"no me gusto que usara Y\" o una preferencia equivalente, se debe abrir HAR para el proyecto actual.\n3. **No tocar codigo al abrir HAR.** La creacion de HAR solo resume lo construido, decisiones detectadas, stack tecnico y evidencias. No puede modificar archivos de producto.\n4. **Feedback primero.** El agente debe esperar feedback humano explicito antes de convertir preferencias en tareas. Ejemplo: cambiar PostgreSQL por SQL Server es ajuste de direccion, no fallo tecnico.\n5. **Tareas controladas.** Despues del feedback, HAR debe crear tareas prioritarias `HUMAN_ALIGNMENT_REVIEW-*-NNN` con dependencias, archivos esperados y validaciones. Esas tareas se ejecutan por el control plane normal, no por edicion oculta.\n6. **Stack auditable.** HAR debe exponer opciones de lenguajes, bases de datos, backend, frontend, visualizacion, realtime, mobile, devops, IA/ML, librerias, embebidos, testing y otros frameworks para capturar preferencias humanas.\n7. **Trazabilidad.** Cada HAR debe persistir JSON, Markdown, evento en `runtime/task_history.jsonl` y evento HAR en `runtime/human_alignment_reviews/events.jsonl`.\n8. **Estado posterior.** Cuando el humano envia ajustes, `project_state.status` puede pasar a `human_alignment_pending` hasta que las tareas HAR se ejecuten y validen.",
+        "title": "Politica Human Alignment Review (HAR)"
+      },
+      "Politica de cierre visual y sandbox real": {
+        "code_blocks": [],
+        "items": [
+          "**Scanner final completo.** El scanner visual debe recorrer cada archivo visible desde la linea 1 hasta la ultima linea real. La lupa debe seguir la linea activa del editor, sincronizada con la guia roja de numeros, y no puede limitarse a una pagina parcial o a un rango fijo de pixeles.",
+          "**Reporte auditable del scanner.** El backend debe persistir `runtime/artifacts/final_code_scanner_report.json` y checkpoint final declarando `magnifier_line_by_line_to_last_line`, total de lineas, caracteres y archivos leidos.",
+          "**Sandbox real post-integracion.** Despues de scanner aprobado, el sistema debe arrancar la aplicacion creada en un sandbox local real. Para web/static/node/python web, debe existir un proceso servidor vivo, puerto local, URL HTTP y healthcheck positivo antes de marcarlo `running`.",
+          "**Modal interno obligatorio.** Si la app expone preview web, la UI debe abrir un modal interno con iframe apuntando a `embedUrl`; no basta con dejar solo un link externo ni un estado dummy.",
+          "**Evidencia antes de cierre.** La secuencia final solo se considera completa si writer final, scanner final y sandbox real quedan con evidencia persistida. Si el sandbox no puede responder HTTP, el cierre debe quedar bloqueado o con advertencia visible."
+        ],
+        "level": 2,
+        "text": "Estas reglas son obligatorias cuando una integracion, reparacion o proyecto pasa a `completed`.\n\n1. **Scanner final completo.** El scanner visual debe recorrer cada archivo visible desde la linea 1 hasta la ultima linea real. La lupa debe seguir la linea activa del editor, sincronizada con la guia roja de numeros, y no puede limitarse a una pagina parcial o a un rango fijo de pixeles.\n2. **Reporte auditable del scanner.** El backend debe persistir `runtime/artifacts/final_code_scanner_report.json` y checkpoint final declarando `magnifier_line_by_line_to_last_line`, total de lineas, caracteres y archivos leidos.\n3. **Sandbox real post-integracion.** Despues de scanner aprobado, el sistema debe arrancar la aplicacion creada en un sandbox local real. Para web/static/node/python web, debe existir un proceso servidor vivo, puerto local, URL HTTP y healthcheck positivo antes de marcarlo `running`.\n4. **Modal interno obligatorio.** Si la app expone preview web, la UI debe abrir un modal interno con iframe apuntando a `embedUrl`; no basta con dejar solo un link externo ni un estado dummy.\n5. **Evidencia antes de cierre.** La secuencia final solo se considera completa si writer final, scanner final y sandbox real quedan con evidencia persistida. Si el sandbox no puede responder HTTP, el cierre debe quedar bloqueado o con advertencia visible.",
+        "title": "Politica de cierre visual y sandbox real"
+      },
+      "Politica de herramientas internas para agentes": {
+        "code_blocks": [
+          "python3 orchestrator/agent_tools.py health\npython3 orchestrator/agent_tools.py observer-status\npython3 orchestrator/agent_tools.py observe\npython3 orchestrator/agent_tools.py scanner <projectSlug>\npython3 orchestrator/agent_tools.py integrity <projectSlug>\npython3 orchestrator/agent_tools.py findings <projectSlug>\npython3 orchestrator/agent_tools.py sniper <projectSlug> --dry-run\npython3 orchestrator/agent_tools.py sniper <projectSlug> --confirm FROZEN_SNIPER"
+        ],
+        "items": [
+          "`observer-status` es lectura de estado; no debe iniciar misiones ni mantener vivo el Observer.",
+          "`observe` solo se usa cuando el agente necesita una observacion puntual con razon de tarea.",
+          "`scanner` debe usarse antes de aceptar cierre tecnico, despues de cambios importantes o cuando el humano pida scanner.",
+          "`integrity` debe usarse para detectar cambios externos, codigo borrado, sobrescrituras fuera del ledger o divergencias de baseline.",
+          "`findings` debe leerse antes de reportar que no hay problemas forenses.",
+          "`sniper --dry-run` es permitido para diagnostico y propuesta de recuperacion.",
+          "`sniper --confirm FROZEN_SNIPER` solo puede ejecutarse con confirmacion humana o politica explicita de recovery; debe quedar registrado en historial.",
+          "Ningun agente puede inventar que una herramienta paso: debe citar `statusCode`, `ok`, `reportPath`, `artifactPath` o el blocker real.",
+          "La salida por defecto del CLI debe ser compacta (`outputMode=compact`) para no consumir tokens con evidencia masiva; `--full` solo se usa cuando una tarea acotada necesita el payload completo.",
+          "Si el backend local no responde, el agente debe registrar el blocker y usar validaciones locales alternativas; no debe simular salida de Observer.",
+          "Las salidas de herramientas quedan auditadas en `runtime/agent_tool_invocations.jsonl`.",
+          "Al iniciar o continuar un proyecto, el runtime puede activar Observer en modo mision.",
+          "Al oprimir Scanner, Observer administra la revision como herramienta.",
+          "Al oprimir Sniper, Observer administra la recuperacion como herramienta.",
+          "Con la UI abierta sin tarea, Observer no debe trabajar autonomamente.",
+          "Con polling, reconnect o consulta de status, Observer no debe abrir incidente nuevo.",
+          "Worker plane ejecuta cambios acotados.",
+          "Observer coordina evidencia y herramientas.",
+          "Scanner inspecciona codigo y genera reporte.",
+          "Integrity scan compara contra baseline/ledger.",
+          "Sniper recupera solo bajo reglas de seguridad.",
+          "Control plane decide tareas, retries y cierre con evidencia."
+        ],
+        "level": 2,
+        "text": "Los agentes Codex pueden usar herramientas internas del sistema, pero solo por contrato ejecutable y con evidencia persistida. La instruccion escrita no basta: el agente debe invocar la herramienta real y leer su salida.\n\nInterfaz canonica:\n\n\n\nReglas de uso:\n1. `observer-status` es lectura de estado; no debe iniciar misiones ni mantener vivo el Observer.\n2. `observe` solo se usa cuando el agente necesita una observacion puntual con razon de tarea.\n3. `scanner` debe usarse antes de aceptar cierre tecnico, despues de cambios importantes o cuando el humano pida scanner.\n4. `integrity` debe usarse para detectar cambios externos, codigo borrado, sobrescrituras fuera del ledger o divergencias de baseline.\n5. `findings` debe leerse antes de reportar que no hay problemas forenses.\n6. `sniper --dry-run` es permitido para diagnostico y propuesta de recuperacion.\n7. `sniper --confirm FROZEN_SNIPER` solo puede ejecutarse con confirmacion humana o politica explicita de recovery; debe quedar registrado en historial.\n8. Ningun agente puede inventar que una herramienta paso: debe citar `statusCode`, `ok`, `reportPath`, `artifactPath` o el blocker real.\n9. La salida por defecto del CLI debe ser compacta (`outputMode=compact`) para no consumir tokens con evidencia masiva; `--full` solo se usa cuando una tarea acotada necesita el payload completo.\n10. Si el backend local no responde, el agente debe registrar el blocker y usar validaciones locales alternativas; no debe simular salida de Observer.\n11. Las salidas de herramientas quedan auditadas en `runtime/agent_tool_invocations.jsonl`.\n\nActivacion correcta:\n- Al iniciar o continuar un proyecto, el runtime puede activar Observer en modo mision.\n- Al oprimir Scanner, Observer administra la revision como herramienta.\n- Al oprimir Sniper, Observer administra la recuperacion como herramienta.\n- Con la UI abierta sin tarea, Observer no debe trabajar autonomamente.\n- Con polling, reconnect o consulta de status, Observer no debe abrir incidente nuevo.\n\nContrato de responsabilidad:\n- Worker plane ejecuta cambios acotados.\n- Observer coordina evidencia y herramientas.\n- Scanner inspecciona codigo y genera reporte.\n- Integrity scan compara contra baseline/ledger.\n- Sniper recupera solo bajo reglas de seguridad.\n- Control plane decide tareas, retries y cierre con evidencia.",
+        "title": "Politica de herramientas internas para agentes"
+      },
+      "Politica general de destruccion / blanqueo": {
+        "code_blocks": [
+          "=== DECISION DE BLANQUEO ===\nTarea: ...\nDecision: Blanqueo Total / Selectivo\nMotivo principal: ...\nIntentos fallidos: X\nArchivos/Carpetas a eliminar: ...\nBackups creados en: ...\nProceder: si / no, requiere confirmacion humana en modo seguro"
+        ],
+        "items": [
+          "**Blanqueo por fallo critico de compilacion.** Si el software no compila end-to-end despues de 3 intentos de reparacion consecutivos, o se detecta un estado irrecuperable, el agente debe iniciar protocolo de blanqueo. Antes de blanquear debe crear backup de bases de datos, archivos importantes, runtime e historial; registrar el motivo exacto en `runtime/failures.jsonl` y `runtime/task_history.jsonl`; y solo despues ejecutar la accion destructiva aprobada.",
+          "**Confirmacion humana obligatoria.** Ningun blanqueo total puede ejecutarse de forma 100% autonoma en modo `medium` o `long-run`. El agente debe mostrar el resumen de decision y pedir: `CONFIRMAR BLANQUEO TOTAL DEL WORKSPACE? (si/confirmar)`. Solo una respuesta afirmativa permite proceder. En modo `smoke` o pruebas controladas se permite blanqueo autonomo con registro.",
+          "**Backup siempre antes de destruir.** Nunca se blanquea sin backup previo. Todo blanqueo debe generar backup de codigo fuente del workspace, bases de datos si existen, `runtime/`, configuraciones y `.env*`. Los backups deben guardarse en `backups/blanqueo/YYYYMMDD.../` con `manifest.json`.",
+          "**Blanqueo selectivo inteligente primero.** Antes de un blanqueo total se debe intentar blanqueo selectivo: eliminar carpetas generadas (`__pycache__`, `node_modules`, `build`, `dist`, `venv`, `.venv`, caches), temporales y logs pesados; resetear estado transitorio manteniendo historial base. Solo si el problema persiste o el estado es irrecuperable se escala a blanqueo total.",
+          "**Post-blanqueo y aprendizaje.** Despues de cualquier blanqueo se debe crear la tarea `POST-BLANQUEO-RECOVERY`, analizar causa raiz, y actualizar `lessons_learned/blanqueo-YYYY-MM-DD.md` o `AGENTS.md` con causa raiz, que fallo y que debe prevenirse.",
+          "**Justificacion obligatoria y transparente.** Antes de cualquier blanqueo total o parcial, el agente debe generar una decision auditable con causa raiz, intentos previos, evidencia de irrecuperabilidad o degradacion, riesgos de no blanquear, beneficios esperados, que se elimina, que se preserva y donde quedara el backup. Esa decision debe registrarse como `BLANQUEO_DECISION` en `runtime/failures.jsonl`, en `runtime/task_history.jsonl` y en `runtime/logs/blanqueo_decision_[TIMESTAMP].md`."
+        ],
+        "level": 2,
+        "text": "Estas reglas son obligatorias para cualquier agente, worker, endpoint o boton que tenga permiso de ejecutar `Blanquear Workspace` o cualquier accion destructiva masiva.\n\n1. **Blanqueo por fallo critico de compilacion.** Si el software no compila end-to-end despues de 3 intentos de reparacion consecutivos, o se detecta un estado irrecuperable, el agente debe iniciar protocolo de blanqueo. Antes de blanquear debe crear backup de bases de datos, archivos importantes, runtime e historial; registrar el motivo exacto en `runtime/failures.jsonl` y `runtime/task_history.jsonl`; y solo despues ejecutar la accion destructiva aprobada.\n2. **Confirmacion humana obligatoria.** Ningun blanqueo total puede ejecutarse de forma 100% autonoma en modo `medium` o `long-run`. El agente debe mostrar el resumen de decision y pedir: `CONFIRMAR BLANQUEO TOTAL DEL WORKSPACE? (si/confirmar)`. Solo una respuesta afirmativa permite proceder. En modo `smoke` o pruebas controladas se permite blanqueo autonomo con registro.\n3. **Backup siempre antes de destruir.** Nunca se blanquea sin backup previo. Todo blanqueo debe generar backup de codigo fuente del workspace, bases de datos si existen, `runtime/`, configuraciones y `.env*`. Los backups deben guardarse en `backups/blanqueo/YYYYMMDD.../` con `manifest.json`.\n4. **Blanqueo selectivo inteligente primero.** Antes de un blanqueo total se debe intentar blanqueo selectivo: eliminar carpetas generadas (`__pycache__`, `node_modules`, `build`, `dist`, `venv`, `.venv`, caches), temporales y logs pesados; resetear estado transitorio manteniendo historial base. Solo si el problema persiste o el estado es irrecuperable se escala a blanqueo total.\n5. **Post-blanqueo y aprendizaje.** Despues de cualquier blanqueo se debe crear la tarea `POST-BLANQUEO-RECOVERY`, analizar causa raiz, y actualizar `lessons_learned/blanqueo-YYYY-MM-DD.md` o `AGENTS.md` con causa raiz, que fallo y que debe prevenirse.\n6. **Justificacion obligatoria y transparente.** Antes de cualquier blanqueo total o parcial, el agente debe generar una decision auditable con causa raiz, intentos previos, evidencia de irrecuperabilidad o degradacion, riesgos de no blanquear, beneficios esperados, que se elimina, que se preserva y donde quedara el backup. Esa decision debe registrarse como `BLANQUEO_DECISION` en `runtime/failures.jsonl`, en `runtime/task_history.jsonl` y en `runtime/logs/blanqueo_decision_[TIMESTAMP].md`.\n\nFormato visible obligatorio antes de proceder:",
+        "title": "Politica general de destruccion / blanqueo"
+      },
+      "Pol\u00edtica de directivas operativas": {
+        "code_blocks": [],
+        "items": [
+          "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+          "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+          "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+          "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+          "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n."
+        ],
+        "level": 2,
+        "text": "1. El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n2. El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n3. El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n4. HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n5. Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+        "title": "Pol\u00edtica de directivas operativas"
+      },
+      "Pol\u00edtica de entrega por sprint": {
+        "code_blocks": [],
+        "items": [
+          "modificar solo el alcance asignado,",
+          "dejar artefactos persistidos,",
+          "dejar tests o validaciones asociadas,",
+          "registrar riesgos o pendientes,",
+          "no invadir sprints futuros salvo stubs m\u00ednimos necesarios."
+        ],
+        "level": 2,
+        "text": "Cada sprint debe:\n1. modificar solo el alcance asignado,\n2. dejar artefactos persistidos,\n3. dejar tests o validaciones asociadas,\n4. registrar riesgos o pendientes,\n5. no invadir sprints futuros salvo stubs m\u00ednimos necesarios.",
+        "title": "Pol\u00edtica de entrega por sprint"
+      },
+      "Pol\u00edtica de implementaci\u00f3n": {
+        "code_blocks": [],
+        "items": [
+          "prioriza claridad y trazabilidad,",
+          "deja comentarios \u00fatiles solo donde agreguen valor,",
+          "no inventes \u00e9xito si no hay validaci\u00f3n,",
+          "no cierres una tarea como completa sin evidencia real,",
+          "si falta algo, deja el estado expl\u00edcito en archivos de runtime."
+        ],
+        "level": 2,
+        "text": "Cuando implementes:\n- prioriza claridad y trazabilidad,\n- deja comentarios \u00fatiles solo donde agreguen valor,\n- no inventes \u00e9xito si no hay validaci\u00f3n,\n- no cierres una tarea como completa sin evidencia real,\n- si falta algo, deja el estado expl\u00edcito en archivos de runtime.",
+        "title": "Pol\u00edtica de implementaci\u00f3n"
+      },
+      "Pol\u00edtica de recuperaci\u00f3n de contexto": {
+        "code_blocks": [],
+        "items": [
+          "`ULTIMO_CONTEXTO_CODEX.md`, si existe,",
+          "las entradas recientes de `recuperacioncontexto.md`,",
+          "`PLANS.md` y esta pol\u00edtica cuando el usuario pregunte por planes, arquitectura o continuidad.",
+          "solicitud recibida,",
+          "acciones realizadas,",
+          "archivos creados o modificados,",
+          "validaci\u00f3n corta ejecutada,",
+          "resultado real de la validaci\u00f3n,",
+          "blockers o riesgos,",
+          "punto de reanudaci\u00f3n.",
+          "fecha/hora,",
+          "\u00faltima solicitud del usuario,",
+          "estado real,",
+          "archivos tocados,",
+          "validaci\u00f3n ejecutada,",
+          "siguiente paso exacto."
+        ],
+        "level": 2,
+        "text": "Debe mantenerse `recuperacioncontexto.md` en la ra\u00edz del repositorio.\n\nCada terminal de Codex que trabaje en este repositorio debe tratar la memoria en disco como obligatoria, no opcional.\n\nAl iniciar una intervenci\u00f3n de trabajo debe leer, como m\u00ednimo:\n- `ULTIMO_CONTEXTO_CODEX.md`, si existe,\n- las entradas recientes de `recuperacioncontexto.md`,\n- `PLANS.md` y esta pol\u00edtica cuando el usuario pregunte por planes, arquitectura o continuidad.\n\nCada respuesta de trabajo debe actualizar `recuperacioncontexto.md` antes del cierre final con:\n- solicitud recibida,\n- acciones realizadas,\n- archivos creados o modificados,\n- validaci\u00f3n corta ejecutada,\n- resultado real de la validaci\u00f3n,\n- blockers o riesgos,\n- punto de reanudaci\u00f3n.\n\nCada respuesta de trabajo tambi\u00e9n debe actualizar `ULTIMO_CONTEXTO_CODEX.md` con un resumen corto y sobrescribible del estado actual:\n- fecha/hora,\n- \u00faltima solicitud del usuario,\n- estado real,\n- archivos tocados,\n- validaci\u00f3n ejecutada,\n- siguiente paso exacto.\n\nRegla de cierre: no se debe enviar una respuesta final de trabajo sin dejar esos dos rastros actualizados. Si una validaci\u00f3n no pudo ejecutarse, debe quedar escrito el motivo exacto.\n\nNo se debe basar el estado actual solo en benchmarks viejos. Despu\u00e9s de cada cambio se debe ejecutar una validaci\u00f3n corta enfocada en los archivos m\u00e1s recientes o relacionados con el cambio.",
+        "title": "Pol\u00edtica de recuperaci\u00f3n de contexto"
+      },
+      "Prop\u00f3sito del repositorio": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "Este repositorio debe evolucionar hacia un **orquestador aut\u00f3nomo de proyectos**.\nNo debe comportarse como una sola sesi\u00f3n larga de chat.\nDebe comportarse como una m\u00e1quina de ejecuci\u00f3n de proyectos cortos, medianos y largos, con agentes reemplazables.",
+        "title": "Prop\u00f3sito del repositorio"
+      },
+      "Reglas duras del runtime": {
+        "code_blocks": [],
+        "items": [
+          "El modo smoke no puede inferirse por palabras sueltas.",
+          "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+          "Deben existir modos expl\u00edcitos:",
+          "smoke",
+          "build",
+          "medium",
+          "long-run",
+          "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+          "Cada tarea debe lanzar un worker propio.",
+          "Cada tarea debe tener timeout propio.",
+          "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+          "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+          "long-run no puede comportarse igual que smoke.",
+          "El progreso solo vale si existe evidencia real.",
+          "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+          "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea."
+        ],
+        "level": 2,
+        "text": "1. El modo smoke no puede inferirse por palabras sueltas.\n2. El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n3. Deben existir modos expl\u00edcitos:\n   - smoke\n   - build\n   - medium\n   - long-run\n4. Una sesi\u00f3n debe contener m\u00faltiples tareas.\n5. Cada tarea debe lanzar un worker propio.\n6. Cada tarea debe tener timeout propio.\n7. El retry debe ser por tarea, no por sesi\u00f3n completa.\n8. Si un proceso no cierra con terminate(), debe cerrarse con kill().\n9. long-run no puede comportarse igual que smoke.\n10. El progreso solo vale si existe evidencia real.\n11. Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n12. `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+        "title": "Reglas duras del runtime"
+      },
+      "Reglas maestras": {
+        "code_blocks": [],
+        "items": [
+          "No depender de la memoria impl\u00edcita de una sola corrida.",
+          "Persistir siempre el estado real en disco.",
+          "No contar progreso sin evidencia real en disco.",
+          "Toda tarea debe ser verificable.",
+          "Toda tarea debe ser reanudable.",
+          "Todo fallo debe dejar traza.",
+          "Todo retry debe tener causa registrada.",
+          "Toda validaci\u00f3n debe quedar en historial.",
+          "Todo cambio importante debe generar checkpoint.",
+          "No acoplar fuertemente el sistema a Codex; Codex es solo un worker.",
+          "Toda directiva operativa del worker debe generarse desde pol\u00edtica, plan, estado y checkpoint; no debe depender de prompts manuales permanentes."
+        ],
+        "level": 2,
+        "text": "1. No depender de la memoria impl\u00edcita de una sola corrida.\n2. Persistir siempre el estado real en disco.\n3. No contar progreso sin evidencia real en disco.\n4. Toda tarea debe ser verificable.\n5. Toda tarea debe ser reanudable.\n6. Todo fallo debe dejar traza.\n7. Todo retry debe tener causa registrada.\n8. Toda validaci\u00f3n debe quedar en historial.\n9. Todo cambio importante debe generar checkpoint.\n10. No acoplar fuertemente el sistema a Codex; Codex es solo un worker.\n11. Toda directiva operativa del worker debe generarse desde pol\u00edtica, plan, estado y checkpoint; no debe depender de prompts manuales permanentes.",
+        "title": "Reglas maestras"
+      },
+      "Tesis central": {
+        "code_blocks": [],
+        "items": [],
+        "level": 2,
+        "text": "Nunca tratar un proyecto largo como una sola sesi\u00f3n larga.\nTodo proyecto debe dividirse en tareas peque\u00f1as, verificables, persistentes y reanudables.",
+        "title": "Tesis central"
+      }
+    },
+    "source_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+    "sprint_delivery_policy": [
+      "modificar solo el alcance asignado,",
+      "dejar artefactos persistidos,",
+      "dejar tests o validaciones asociadas,",
+      "registrar riesgos o pendientes,",
+      "no invadir sprints futuros salvo stubs m\u00ednimos necesarios."
+    ],
+    "system_identity": "El producto final no es \u201cun chat que programa\u201d.\nEl producto final es \u201cun sistema operativo de ejecuci\u00f3n de proyectos con agentes reemplazables\u201d."
+  },
+  "project_state": {
+    "blocked_tasks": [],
+    "checkpoints": [],
+    "completed_tasks": [],
+    "created_at": "2026-05-27T06:04:57Z",
+    "current_task_id": "PROMPT-REAL-20260527T060457Z",
+    "failed_tasks": [],
+    "mode": "build",
+    "project_id": "continuity-probe-canary",
+    "schema_version": 1,
+    "status": "running",
+    "updated_at": "2026-05-27T06:04:57Z"
+  },
+  "repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+  "rules": {
+    "active_constraints": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables."
+    ],
+    "directive_policy": [
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n."
+    ],
+    "implementation_policy": [
+      "prioriza claridad y trazabilidad,",
+      "deja comentarios \u00fatiles solo donde agreguen valor,",
+      "no inventes \u00e9xito si no hay validaci\u00f3n,",
+      "no cierres una tarea como completa sin evidencia real,",
+      "si falta algo, deja el estado expl\u00edcito en archivos de runtime."
+    ],
+    "runtime_hard_rules": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea."
+    ],
+    "sprint_delivery_policy": [
+      "modificar solo el alcance asignado,",
+      "dejar artefactos persistidos,",
+      "dejar tests o validaciones asociadas,",
+      "registrar riesgos o pendientes,",
+      "no invadir sprints futuros salvo stubs m\u00ednimos necesarios."
+    ]
+  },
+  "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime",
+  "runtime_errors": [],
+  "schema_version": 1,
+  "sprint": {
+    "acceptance": [],
+    "deliverables": [],
+    "number": null,
+    "objective": "",
+    "out_of_scope_deliverables": [],
+    "source": "not_inferred"
+  },
+  "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+  "task_queue": {
+    "blocked_tasks": [],
+    "overview": {
+      "by_status": {
+        "pending": 1
+      },
+      "next_ready_task_id": "PROMPT-REAL-20260527T060457Z",
+      "total": 1
+    },
+    "ready_task_ids": [
+      "PROMPT-REAL-20260527T060457Z"
+    ],
+    "tasks": [
+      {
+        "checkpoint_key": null,
+        "dependencies": [],
+        "expected_files": [
+          "src/prompt_flight_response.json"
+        ],
+        "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+        "id": "PROMPT-REAL-20260527T060457Z",
+        "max_retries": 0,
+        "mode": "build",
+        "priority": 80,
+        "status": "pending",
+        "timeout_seconds": 120,
+        "title": "Process guarded HABLA BASIC prompt",
+        "validation_commands": [
+          "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T060457Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+        ]
+      }
+    ]
+  },
+  "task_selection": {
+    "project_state_current_task_id": "PROMPT-REAL-20260527T060457Z",
+    "reason": "",
+    "requested_task_id": "PROMPT-REAL-20260527T060457Z",
+    "selected_task_id": "PROMPT-REAL-20260527T060457Z",
+    "source": "requested_task_id"
+  },
+  "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+}

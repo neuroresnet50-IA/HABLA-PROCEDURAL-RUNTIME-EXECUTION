@@ -1,0 +1,57 @@
+{
+  "id": "github-publish-circuitprobe-cli-tk-followup-20260527T031157Z",
+  "createdAt": "2026-05-27T03:11:57Z",
+  "request": "Subir el proyecto completo al repositorio GitHub HABLA-PROCEDURAL-RUNTIME-EXECUTION y dejar GUI/evidencia de lo realizado.",
+  "branch": "codex/publish-complete-runtime-project",
+  "pullRequest": "https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1",
+  "status": "validated_ready_for_commit_and_push",
+  "filesCreated": [
+    "backend/test_continuity_probe.py",
+    "tools/habla_circuit_probe_tk.py",
+    "runtime/continuity_probe/continuity-20260527T025833Z/",
+    "runtime/continuity_probe/continuity-20260527T030026Z/",
+    "runtime/continuity_probe/continuity-20260527T030327Z/",
+    "runtime/continuity_probe/continuity-local-debug/",
+    "workspace/projects/continuity-probe-canary/"
+  ],
+  "filesModified": [
+    "orchestrator/agent_tools.py",
+    "runtime/agent_tool_invocations.jsonl",
+    "runtime/task_history.jsonl",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "validations": [
+    {
+      "command": "python3 -B -m py_compile orchestrator/agent_tools.py backend/test_continuity_probe.py tools/habla_circuit_probe_tk.py",
+      "result": "passed"
+    },
+    {
+      "command": "python3 -m pytest backend/test_continuity_probe.py -q",
+      "result": "passed",
+      "evidence": "2 passed in 1.06s"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py continuity --project continuity-probe-canary --mode read_only --no-harness",
+      "statusCode": 200,
+      "ok": true,
+      "result": "continuity_ok",
+      "reportPath": "runtime/continuity_probe/continuity-20260527T030327Z/report.json"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py continuity --project continuity-probe-canary --mode active_canary",
+      "statusCode": 200,
+      "ok": false,
+      "result": "continuity_failed",
+      "reportPath": "runtime/continuity_probe/continuity-20260527T030026Z/report.json",
+      "blocker": "CyberLACE document hard gate blocked worker before child process launch; validator_passed failed because expected canary evidence was not written."
+    }
+  ],
+  "excludedFromPublish": [
+    "=1760",
+    "=2110",
+    "=2685",
+    "=4080"
+  ],
+  "nextStep": "Commit and push this CircuitProbe CLI/Tk follow-up to PR #1; then review the active_canary CyberLACE blocker as a separate repair task."
+}

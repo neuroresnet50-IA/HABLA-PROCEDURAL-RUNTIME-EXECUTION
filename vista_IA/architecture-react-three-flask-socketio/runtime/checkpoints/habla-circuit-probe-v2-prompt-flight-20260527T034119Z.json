@@ -1,0 +1,97 @@
+{
+  "checkpoint": "habla-circuit-probe-v2-prompt-flight",
+  "createdAt": "2026-05-27T03:41:19Z",
+  "status": "completed",
+  "userRequest": "Implementar V2 controlada del testeador end-to-end: Tkinter envia prompt estructurado, backend recorre capas internas, mide latencias, verifica conexiones y harness sin ejecutar acciones peligrosas por defecto.",
+  "implementation": {
+    "name": "Prompt Flight Recorder V2",
+    "backendEndpoints": [
+      "POST /api/continuity-probe/prompt-flight",
+      "GET /api/continuity-probe/prompt-flight/report/<trace_id>"
+    ],
+    "cliCommand": "python3 orchestrator/agent_tools.py prompt-flight",
+    "guiCommand": "python3 tools/habla_circuit_probe_tk.py",
+    "modes": {
+      "trace_only": "Traza el prompt por HABLA BASIC, politicas, plan, salud backend, observer y harness sin ejecutar worker.",
+      "safe_canary": "Ademas ejecuta un canario controlado de continuidad; no ejecuta el prompt arbitrario como tarea real."
+    },
+    "stages": [
+      "prompt_received",
+      "habla_basic_envelope",
+      "cyberlace_preflight",
+      "policy_loaded",
+      "plan_loaded",
+      "prompt_classified",
+      "task_planned",
+      "backend_health",
+      "observer_status",
+      "harness_summary",
+      "safe_canary_continuity",
+      "response_synthesized"
+    ],
+    "artifactRoot": "runtime/continuity_probe/<traceId>/"
+  },
+  "filesCreated": [
+    "tools/habla_circuit_probe_tk.py",
+    "backend/test_continuity_probe.py",
+    "runtime/continuity_probe/prompt-flight-20260527T033802Z/prompt_flight_report.json",
+    "runtime/continuity_probe/prompt-flight-20260527T033816Z/prompt_flight_report.json",
+    "workspace/projects/continuity-probe-canary/"
+  ],
+  "filesModified": [
+    "orchestrator/continuity_probe.py",
+    "backend/app.py",
+    "orchestrator/agent_tools.py",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "runtime/task_history.jsonl"
+  ],
+  "validations": [
+    {
+      "command": "python3 -B -m py_compile orchestrator/continuity_probe.py backend/app.py orchestrator/agent_tools.py tools/habla_circuit_probe_tk.py backend/test_continuity_probe.py",
+      "ok": true,
+      "result": "Compilacion Python OK"
+    },
+    {
+      "command": "python3 -m unittest backend.test_continuity_probe",
+      "ok": true,
+      "result": "4 tests OK"
+    },
+    {
+      "command": "env OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true,
+      "result": "Backend reiniciado; PID 76563; URL http://127.0.0.1:5001/"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "ok": true,
+      "result": "statusCode=200; service=HABLA Observer IA"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --timeout-seconds 120 prompt-flight --mode trace_only --project continuity-probe-canary --prompt \"Crear una tarea canaria segura y medir como viaja por HABLA BASIC sin ejecutar acciones peligrosas.\"",
+      "ok": true,
+      "result": "traceId=prompt-flight-20260527T033802Z; result=prompt_flight_ok; ok=11 skipped=1 failed=0 blocked=0 total=12"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --timeout-seconds 160 prompt-flight --mode safe_canary --project continuity-probe-canary --prompt \"Crear una tarea canaria segura y medir como viaja por HABLA BASIC ejecutando solo el canario controlado.\"",
+      "ok": true,
+      "result": "traceId=prompt-flight-20260527T033816Z; result=prompt_flight_ok; ok=12 skipped=0 failed=0 blocked=0 total=12"
+    },
+    {
+      "command": "./start.sh status",
+      "ok": true,
+      "result": "Backend activo; PID 76563"
+    }
+  ],
+  "reports": [
+    "runtime/continuity_probe/prompt-flight-20260527T033802Z/prompt_flight_report.json",
+    "runtime/continuity_probe/prompt-flight-20260527T033802Z/prompt_flight_report.md",
+    "runtime/continuity_probe/prompt-flight-20260527T033816Z/prompt_flight_report.json",
+    "runtime/continuity_probe/prompt-flight-20260527T033816Z/prompt_flight_report.md"
+  ],
+  "knownLimits": [
+    "real_session_guarded queda fuera de V2 por seguridad; trace_only y safe_canary son los modos permitidos.",
+    "safe_canary ejecuta solo continuidad controlada, no convierte prompts arbitrarios en acciones reales."
+  ],
+  "nextExactStep": "Usar la GUI con python3 tools/habla_circuit_probe_tk.py o el CLI prompt-flight para observar trazas y latencias de nuevos prompts."
+}

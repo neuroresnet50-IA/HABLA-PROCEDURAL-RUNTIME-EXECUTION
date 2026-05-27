@@ -189,14 +189,21 @@ def _command_to_text(command: Command) -> str:
     return str(command or "")
 
 
+def _command_instruction_text(command: Command) -> str:
+    if isinstance(command, list) and command:
+        return str(command[-1] or "")
+    return str(command or "")
+
+
 def _worker_document_decision(task: dict[str, Any], workspace_path: Path, command: Command) -> dict[str, Any]:
-    command_text = _command_to_text(command)
+    task_requirement = str(task.get("goal") or task.get("title") or task.get("id") or "")
+    instruction_text = _command_instruction_text(command)
     return inspect_runtime_document_inputs(
-        requirement=command_text,
+        requirement=task_requirement,
         project_dir=workspace_path,
         repo_root=REPO_ROOT,
         task=task,
-        directive={"rendered_instruction": command_text},
+        directive={"rendered_instruction": instruction_text},
         session_id=os.environ.get("VISTA_AGENT_SESSION_ID"),
         project_slug=os.environ.get("VISTA_AGENT_PROJECT_SLUG") or workspace_path.name,
         scan_workspace=True,

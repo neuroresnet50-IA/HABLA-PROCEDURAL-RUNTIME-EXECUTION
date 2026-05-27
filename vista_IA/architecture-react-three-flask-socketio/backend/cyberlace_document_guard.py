@@ -46,6 +46,14 @@ WORKSPACE_EXCLUDED_DIRS = {
     "__pycache__", ".pytest_cache", ".mypy_cache", ".next", ".cache",
     "dist", "build", "coverage", "runtime",
 }
+TRUSTED_RUNTIME_CONTROL_FILES = {
+    "project_state.json",
+    "task_queue.json",
+    "task_history.jsonl",
+    "failures.jsonl",
+    "complexity_estimate.json",
+}
+TRUSTED_RUNTIME_CONTROL_DIRS = {"artifacts", "checkpoints", "directives", "logs"}
 PATH_TOKEN_RE = re.compile(
     r"(?<![:A-Za-z0-9])(?P<path>(?:~|[A-Za-z]:)?(?:(?:\.{0,2}/|/)|(?:[A-Za-z0-9_.@+=-]+/))(?:[^\s`'\"<>|;&]+))"
 )
@@ -178,6 +186,22 @@ def _sanitize_hit(hit: Dict[str, Any], text: str, *, source: str, path: str | No
     }
 
 
+def _structural_secret_anchor(text: str, match: re.Match[str]) -> bool:
+    window = text[max(0, match.start() - 32): min(len(text), match.end() + 32)].lower()
+    return any(name in window for name in (
+        "checkpoint_key",
+        "directive_source_hash",
+        "source_hash",
+        "schema_version",
+    ))
+
+
+def _nearby_reassembly_context(text: str, anchor: re.Match[str], *, window: int = 160) -> re.Match[str] | None:
+    start = max(0, anchor.start() - window)
+    end = min(len(text), anchor.end() + window)
+    return REASSEMBLY_CONTEXT_RE.search(text[start:end])
+
+
 def _fragmented_secret_findings(text: str, *, source: str, path: str | None = None) -> List[Dict[str, Any]]:
     """Detect secret material split across names/instructions without storing values."""
 
@@ -186,10 +210,13 @@ def _fragmented_secret_findings(text: str, *, source: str, path: str | None = No
         return []
     match = FRAGMENTED_SECRET_NAME_RE.search(body)
     if not match:
-        anchor = SECRET_ANCHOR_RE.search(body)
-        reassembly = REASSEMBLY_CONTEXT_RE.search(body)
-        if anchor and reassembly:
-            match = anchor if anchor.start() <= reassembly.start() else reassembly
+        for anchor in SECRET_ANCHOR_RE.finditer(body):
+            if _structural_secret_anchor(body, anchor):
+                continue
+            reassembly = _nearby_reassembly_context(body, anchor)
+            if reassembly:
+                match = anchor if anchor.start() <= reassembly.start() else reassembly
+                break
     if not match:
         return []
     return [{
@@ -584,6 +611,26 @@ def _safe_display_path(path: Path, *, repo: Path, project_root: Path) -> str:
             return path.name
 
 
+def _is_generated_runtime_control_reference(path: Path, roots: List[Path], *, source: str) -> bool:
+    if source not in {"task", "directive"}:
+        return False
+    for root in roots:
+        try:
+            relative = path.relative_to(root)
+        except ValueError:
+            continue
+        parts = relative.parts
+        for index, part in enumerate(parts[:-1]):
+            if part != "runtime":
+                continue
+            next_part = parts[index + 1]
+            if index + 2 == len(parts) and next_part in TRUSTED_RUNTIME_CONTROL_FILES:
+                return True
+            if next_part in TRUSTED_RUNTIME_CONTROL_DIRS:
+                return True
+    return False
+
+
 def _external_reference_finding(token: str, *, source: str) -> Dict[str, Any]:
     raw_name = Path(token.replace("~", "")).name or "external"
     return {
@@ -727,6 +774,8 @@ def _collect_paths_for_text(text: str, roots: List[Path], *, source: str) -> tup
             continue
         path = _resolve_referenced_path(raw, roots)
         if path is None:
+            continue
+        if _is_generated_runtime_control_reference(path, resolved_roots, source=source):
             continue
         key = str(path)
         if key in seen:

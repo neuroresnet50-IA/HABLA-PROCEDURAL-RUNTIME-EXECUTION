@@ -1,0 +1,552 @@
+{
+  "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+  "created_at": "2026-05-27T15:00:32Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/POST-BLANQUEO-RECOVERY-20260527T145723Z-a6ae11bd14c3.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/POST-BLANQUEO-RECOVERY-20260527T145723Z-a6ae11bd14c3.md",
+      "source_hash": "a6ae11bd14c375d4c4b9f51a0fe7b0984db413d8025256d7c32707feeebefdd9"
+    },
+    "task": {
+      "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "lessons_learned/blanqueo-2026-05-27.md"
+      ],
+      "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+      "id": "POST-BLANQUEO-RECOVERY",
+      "max_retries": 0,
+      "mode": "build",
+      "priority": 100,
+      "status": "pending",
+      "timeout_seconds": 300,
+      "title": "POST-BLANQUEO-RECOVERY",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "POST-BLANQUEO-RECOVERY",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_acfbdc34721e4dc2b8e7c84e782bd159",
+        "evidence": [],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 0,
+          "severity": "LOW"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-acfc937f23",
+        "severity": "LOW",
+        "stage": "output",
+        "timestamp": "2026-05-27T15:00:26Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_c96d6e8c81144dcdbd90844b4cb7ba1c",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 6809,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 6795,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 6858,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 6844,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 6901,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 6887,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 6950,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 6936,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 6993,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 6979,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 7042,
+            "pattern": "credit_card_like",
+            "sample": "20260527073638",
+            "start": 7028,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 6809,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 6795,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 6858,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 6844,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 6901,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 6887,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 6950,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 6936,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 6993,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 6979,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7042,
+              "pattern": "credit_card_like",
+              "sample": "20260527073638",
+              "start": 7028,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-acfc937f23",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-05-27T14:57:26Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/POST-BLANQUEO-RECOVERY-postflight-20260527T150029Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T15:00:26Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T15:00:28Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "POST-BLANQUEO-RECOVERY",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-05-27T15:00:29Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing",
+          "postflight:findings timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 7,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/POST-BLANQUEO-RECOVERY-preflight-20260527T145725Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": true,
+                "incident": {
+                  "counters": {
+                    "repeatedEvents": 1,
+                    "ticks": 3,
+                    "timeouts": 0
+                  },
+                  "deadlineAt": "2026-05-27T14:57:57.027204Z",
+                  "incidentId": "OBS-20260527-145457-ba127858",
+                  "phase": "waiting_human",
+                  "projectSlug": "continuity-probe-canary",
+                  "rootCause": "active_worker_running",
+                  "status": "waiting_human",
+                  "stopReason": "repeated_finding_suppressed",
+                  "trigger": "integrity_scan_completed"
+                },
+                "state": "waiting_worker"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": false,
+            "timestamp": "2026-05-27T14:57:23Z",
+            "tool": "observer-status"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T14:57:23Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-probe-canary",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 7,
+                "bySeverity": {
+                  "error": 6,
+                  "warning": 1
+                },
+                "bySource": {
+                  "integrity": 7
+                },
+                "observationScore": 100,
+                "resolvedFindings": 146,
+                "totalFindings": 153
+              }
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": false,
+            "timestamp": "2026-05-27T14:57:25Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "POST-BLANQUEO-RECOVERY",
+        "timestamp": "2026-05-27T14:57:25Z",
+        "warnings": [
+          "preflight:integrity timed out; continuing",
+          "Observer findings active: 7"
+        ]
+      },
+      "recovery_preview": null,
+      "task_completion_gate": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/POST-BLANQUEO-RECOVERY-task_completion_gate-20260527T150032Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "task_completion_gate",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T15:00:29Z",
+            "tool": "scanner"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "task_completion_gate",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T15:00:30Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "task_completion_gate",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "POST-BLANQUEO-RECOVERY",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-05-27T15:00:32Z",
+        "warnings": [
+          "task_completion_gate:scanner timed out; continuing",
+          "task_completion_gate:findings timed out; continuing"
+        ]
+      }
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.062913,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-27T15:00:26Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\"",
+          "duration_seconds": 0.066403,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-27T15:00:26Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "lessons_learned/blanqueo-2026-05-27.md",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 1004
+          }
+        ],
+        "found": [
+          "lessons_learned/blanqueo-2026-05-27.md"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "POST-BLANQUEO-RECOVERY",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    }
+  }
+}

@@ -1,0 +1,186 @@
+[
+  {
+    "checkpoint_key": null,
+    "dependencies": [],
+    "expected_files": [
+      "src/prompt_flight_response.json"
+    ],
+    "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+    "id": "PROMPT-REAL-20260527T060457Z",
+    "max_retries": 0,
+    "mode": "build",
+    "priority": 80,
+    "status": "completed",
+    "timeout_seconds": 120,
+    "title": "Process guarded HABLA BASIC prompt",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['src/prompt_flight_response.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T060457Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527072929-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "README.md",
+      "runtime/artifacts/observer_findings.json",
+      "runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json",
+      "runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json",
+      "runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json",
+      "runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+      "runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json",
+      "runtime/complexity_estimate.json"
+    ],
+    "goal": "Crear evidencia runtime.",
+    "id": "RUNTIME-20260527072929-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 1800,
+    "title": "Crear evidencia runtime",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "AGENTS.md"
+    ],
+    "goal": "Implementar AGENTS.md",
+    "id": "RUNTIME-20260527073638-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 40,
+    "status": "blocked",
+    "timeout_seconds": 1200,
+    "title": "Implementar AGENTS.md",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-002-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260527073638-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md"
+    ],
+    "goal": "Implementar ULTIMO_CONTEXTO_CODEX.md",
+    "id": "RUNTIME-20260527073638-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 30,
+    "status": "pending",
+    "timeout_seconds": 1200,
+    "title": "Implementar ULTIMO_CONTEXTO_CODEX.md",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-003-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260527073638-002"
+    ],
+    "expected_files": [
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Implementar recuperacioncontexto.md",
+    "id": "RUNTIME-20260527073638-003",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 20,
+    "status": "pending",
+    "timeout_seconds": 1200,
+    "title": "Implementar recuperacioncontexto.md",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-004-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260527073638-003"
+    ],
+    "expected_files": [
+      "README.md",
+      "runtime/artifacts/agent_file_manifest.json",
+      "runtime/artifacts/agent_file_manifest.seal.json",
+      "runtime/artifacts/file_integrity_report.json",
+      "runtime/artifacts/final_code_scanner_report.json",
+      "runtime/artifacts/final_typewriter_report.json",
+      "runtime/artifacts/observer_findings.json",
+      "runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json"
+    ],
+    "goal": "Implementar runtime/artifacts/handoffs/authorized-redteam-ui-session-handoff-",
+    "id": "RUNTIME-20260527073638-004",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "pending",
+    "timeout_seconds": 1200,
+    "title": "Implementar runtime/artifacts/handoffs/authorized-redteam-ui-session-handoff-",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "AGENTS.md"
+    ],
+    "goal": "Prepare smaller scope for Implementar AGENTS.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260527073638-001-SPLIT-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 39,
+    "status": "blocked",
+    "timeout_seconds": 1200,
+    "title": "Implementar AGENTS.md split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260527073638-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "AGENTS.md"
+    ],
+    "goal": "Complete smaller scope for Implementar AGENTS.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260527073638-001-SPLIT-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 38,
+    "status": "blocked",
+    "timeout_seconds": 1200,
+    "title": "Implementar AGENTS.md split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "lessons_learned/blanqueo-2026-05-27.md"
+    ],
+    "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+    "id": "POST-BLANQUEO-RECOVERY",
+    "max_retries": 0,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 300,
+    "title": "POST-BLANQUEO-RECOVERY",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+    ]
+  }
+]

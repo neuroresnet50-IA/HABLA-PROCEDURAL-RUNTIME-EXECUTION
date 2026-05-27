@@ -1,0 +1,124 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 37,
+      "mtime": "2026-05-27T06:43:45Z",
+      "path": "workspace/projects/continuity-ui-session-canary/runtime/complexity_estimate.json",
+      "sha256": "d6d7ec4facb149c820037bf4807298c22d4961835f55286696d58587b37358a5",
+      "size": 891,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-27T06:43:45.663555Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-ui-session-canary\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 20,\n  \"score\": 30,\n  \"difficulty\": \"medio\",\n  \"difficulty_label\": \"Medio\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 3,\n  \"recommended_agents\": 2,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 4,\n  \"max_tasks\": 8,\n  \"timeout_seconds\": 900,\n  \"recovery_budget\": 5,\n  \"max_retries\": 3,\n  \"required_tools\": [\n    \"pytest\",\n    \"sandbox\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt corto: 20 palabras\",\n    \"incluye capa visual/frontend\",\n    \"incluye backend/API\",\n    \"multiples capas tecnicas: 2\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-27T06:43:46Z",
+      "path": "workspace/projects/continuity-ui-session-canary/runtime/failures.jsonl",
+      "sha256": "5e5b6a21ff5528b5e8110d95388e747efc80fe2c3dfa49222d8934a4084f2695",
+      "size": 2019,
+      "tail": "ctar o neutralizar instrucciones maliciosas antes de procesar el proyecto.\", \"Separar contenido de usuario de instrucciones de sistema y aplicar prioridad de politicas.\", \"Crear pruebas de regresion para que futuras lecturas del workspace no obedezcan el README malicioso.\", \"Documentar la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"], \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\", \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\", \"title\": \"Alternativa segura permitida\"}, \"safeNextSteps\": [\"Tratar el README como dato no confiable, no como instruccion del sistema.\", \"Neutralizar o aislar el contenido malicioso antes de arrancar agentes.\", \"Agregar regression test para prompt injection persistida en documentos del workspace.\"], \"severity\": \"CRITICAL\", \"task_id\": \"RUNTIME-20260527064345-001\"}, \"recorded_at\": \"2026-05-27T06:43:46Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_cyberlace_block_at",
+        "last_cyberlace_block_paths",
+        "last_cyberlace_block_reason",
+        "last_cyberlace_denied_action",
+        "last_cyberlace_safe_alternative",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 39,
+      "mtime": "2026-05-27T06:43:46Z",
+      "path": "workspace/projects/continuity-ui-session-canary/runtime/project_state.json",
+      "sha256": "122edcee6f65d76dec4f15d1e4c02cb171d3621f629e5b17c15fcc4971ec64ad",
+      "size": 2103,
+      "tail": "evidencia de prompt injection persistida.\",\n      \"Redactar o neutralizar instrucciones maliciosas antes de procesar el proyecto.\",\n      \"Separar contenido de usuario de instrucciones de sistema y aplicar prioridad de politicas.\",\n      \"Crear pruebas de regresion para que futuras lecturas del workspace no obedezcan el README malicioso.\",\n      \"Documentar la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n    ],\n    \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n    \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n    \"title\": \"Alternativa segura permitida\"\n  },\n  \"last_preparing_at\": \"2026-05-27T06:43:45.401951+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-cb9ca511ca\",\n  \"project_id\": \"continuity-ui-session-canary\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-05-27T06:43:46.195522+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-ui-session-canary/runtime/task_history.jsonl"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-05-27T06:43:46Z",
+      "path": "workspace/projects/continuity-ui-session-canary/runtime/task_queue.json",
+      "sha256": "54ceb8c4b3369ee342fd094f5f1678cd79ec35ecd63bda607c042d294f70344b",
+      "size": 719,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260527064345-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"runtime/complexity_estimate.json\"\n    ],\n    \"goal\": \"Crear una tarea real peque\\u00f1a desde la ruta normal de la UI y medir toda la transaccion interna del servidor.\",\n    \"id\": \"RUNTIME-20260527064345-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear una tarea real peque\\u00f1a desde la ruta\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 118,
+    "mtime": "2026-05-27T06:43:46Z",
+    "path": "workspace/projects/continuity-ui-session-canary/runtime/checkpoints/runtime-20260527064345-001-cyberlace-document-blocked-20260527T064346Z.json",
+    "sha256": "b714cc4f9ff01e420df9549c95c89f603fa3f68f0341403d17d805f31ac5163f",
+    "size": 5841,
+    "tail": "la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n          ],\n          \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n          \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n          \"title\": \"Alternativa segura permitida\"\n        },\n        \"safeNextSteps\": [\n          \"Tratar el README como dato no confiable, no como instruccion del sistema.\",\n          \"Neutralizar o aislar el contenido malicioso antes de arrancar agentes.\",\n          \"Agregar regression test para prompt injection persistida en documentos del workspace.\"\n        ],\n        \"severity\": \"CRITICAL\",\n        \"task_id\": \"RUNTIME-20260527064345-001\"\n      },\n      \"recorded_at\": \"2026-05-27T06:43:46Z\"\n    },\n    \"project_id\": \"continuity-ui-session-canary\",\n    \"reason\": \"cyberlace_sensitive_document_blocked\",\n    \"task_id\": \"RUNTIME-20260527064345-001\"\n  }\n}\n"
+  },
+  "latestDirective": null,
+  "projectDir": "workspace/projects/continuity-ui-session-canary",
+  "runtimeDir": "workspace/projects/continuity-ui-session-canary/runtime",
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 3,
+    "mtime": "2026-05-27T06:43:46Z",
+    "path": "workspace/projects/continuity-ui-session-canary/runtime/logs/agent-cb9ca511ca-terminal.log",
+    "sha256": "708608e37dec271012c8db0460616f7ad28df40d40679af949b0f644be1a5795",
+    "size": 303,
+    "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[cyberlace] PELIGRO: prompt injection persistida negada. HABLA puede ayudar a aislar, redactar y convertir el documento en evidencia segura.\n"
+  }
+}

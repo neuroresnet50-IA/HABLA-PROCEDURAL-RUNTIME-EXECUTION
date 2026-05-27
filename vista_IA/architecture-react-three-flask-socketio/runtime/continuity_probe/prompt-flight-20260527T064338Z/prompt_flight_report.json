@@ -1,0 +1,751 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-20260527T064338Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 8.773353,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_events.jsonl",
+  "failedStages": [
+    "ui_agent_session_polled"
+  ],
+  "finishedAt": "2026-05-27T06:43:46Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-ui-session-canary",
+  "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+  "reportPath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_failed",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 353.525,
+      "evidence": {
+        "durationMs": 353.525,
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T06:43:39Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 54.061,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 54.061,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 57.141,
+      "evidence": {
+        "durationMs": 57.141,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "outputHash": "12554b0adc1ff0d85bdaa5106eb77ce67dd547a0a8feb151f5c81f1afc8ce1f2",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    "harness_summary": {
+      "durationMs": 5052.074,
+      "evidence": {
+        "durationMs": 5052.074,
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-27T06:43:40Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    "observer_status": {
+      "durationMs": 97.37,
+      "evidence": {
+        "durationMs": 97.37,
+        "finishedAt": "2026-05-27T06:43:40Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T06:43:40Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:40Z"
+    },
+    "plan_loaded": {
+      "durationMs": 85.13,
+      "evidence": {
+        "durationMs": 85.13,
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    "policy_loaded": {
+      "durationMs": 26.565,
+      "evidence": {
+        "durationMs": 26.565,
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    "prompt_classified": {
+      "durationMs": 69.969,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 69.969,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "intent": "build_or_modify",
+        "promptChars": 108,
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "startedAt": "2026-05-27T06:43:39Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    "prompt_received": {
+      "durationMs": 52.178,
+      "evidence": {
+        "durationMs": 52.178,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/input_prompt.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "promptChars": 108,
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    "response_synthesized": {
+      "durationMs": 11.829,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 11.829,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "mode": "ui_session_rest",
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "e1b9880a57910f78e6e44a856756688a328b62f0e0d1e761a9fb0d9156f6bc5f",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-27T06:43:46Z",
+        "taskId": "PROMPT-FLIGHT-20260527T064338Z",
+        "traceId": "prompt-flight-20260527T064338Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    "task_planned": {
+      "durationMs": 12.928,
+      "evidence": {
+        "durationMs": 12.928,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "startedAt": "2026-05-27T06:43:39Z",
+        "taskHash": "1a33ba2f9497fdea2889efd0b80540d03d92b7eef8ff15aa62dfc03e6a800e56",
+        "taskId": "PROMPT-FLIGHT-20260527T064338Z"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 1042.656,
+      "evidence": {
+        "durationMs": 1042.656,
+        "errorCode": "cyberlace_sensitive_document_blocked",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_polls.json",
+        "finalStatus": "blocked",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "lastProgressLabel": "PELIGRO: prompt injection persistida negada. HABLA puede ayudar a aislar, redactar y convertir el documento en evidencia segura.",
+        "lastProgressPercent": 96,
+        "pid": null,
+        "pollCount": 2,
+        "returncode": 126,
+        "sessionId": "agent-cb9ca511ca",
+        "startedAt": "2026-05-27T06:43:45Z",
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-canary/runtime/logs/agent-cb9ca511ca-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: blocked.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 123.899,
+      "evidence": {
+        "durationMs": 123.899,
+        "elapsedMs": 116.74,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_response.json",
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-ui-session-canary",
+        "sessionId": "agent-cb9ca511ca",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-27T06:43:45Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 5.29,
+      "evidence": {
+        "durationMs": 5.29,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_request.json",
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "method": "POST",
+        "payloadHash": "aefe5bb6c353afbefde915d2e94fdfa5611f6dbb6e26792b81a3d1beb4dedffa",
+        "projectSlug": "continuity-ui-session-canary",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-27T06:43:45Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 67.356,
+      "evidence": {
+        "durationMs": 67.356,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_runtime_artifacts.json",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 118,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/checkpoints/runtime-20260527064345-001-cyberlace-document-blocked-20260527T064346Z.json",
+          "sha256": "b714cc4f9ff01e420df9549c95c89f603fa3f68f0341403d17d805f31ac5163f",
+          "size": 5841,
+          "tail": "la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n          ],\n          \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n          \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n          \"title\": \"Alternativa segura permitida\"\n        },\n        \"safeNextSteps\": [\n          \"Tratar el README como dato no confiable, no como instruccion del sistema.\",\n          \"Neutralizar o aislar el contenido malicioso antes de arrancar agentes.\",\n          \"Agregar regression test para prompt injection persistida en documentos del workspace.\"\n        ],\n        \"severity\": \"CRITICAL\",\n        \"task_id\": \"RUNTIME-20260527064345-001\"\n      },\n      \"recorded_at\": \"2026-05-27T06:43:46Z\"\n    },\n    \"project_id\": \"continuity-ui-session-canary\",\n    \"reason\": \"cyberlace_sensitive_document_blocked\",\n    \"task_id\": \"RUNTIME-20260527064345-001\"\n  }\n}\n"
+        },
+        "latestDirective": null,
+        "projectDir": "workspace/projects/continuity-ui-session-canary",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_cyberlace_block_at",
+            "last_cyberlace_block_paths",
+            "last_cyberlace_block_reason",
+            "last_cyberlace_denied_action",
+            "last_cyberlace_safe_alternative",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 39,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/project_state.json",
+          "sha256": "122edcee6f65d76dec4f15d1e4c02cb171d3621f629e5b17c15fcc4971ec64ad",
+          "size": 2103,
+          "tail": "evidencia de prompt injection persistida.\",\n      \"Redactar o neutralizar instrucciones maliciosas antes de procesar el proyecto.\",\n      \"Separar contenido de usuario de instrucciones de sistema y aplicar prioridad de politicas.\",\n      \"Crear pruebas de regresion para que futuras lecturas del workspace no obedezcan el README malicioso.\",\n      \"Documentar la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n    ],\n    \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n    \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n    \"title\": \"Alternativa segura permitida\"\n  },\n  \"last_preparing_at\": \"2026-05-27T06:43:45.401951+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-cb9ca511ca\",\n  \"project_id\": \"continuity-ui-session-canary\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-05-27T06:43:46.195522+00:00\"\n}\n"
+        },
+        "startedAt": "2026-05-27T06:43:46Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/task_queue.json",
+          "sha256": "54ceb8c4b3369ee342fd094f5f1678cd79ec35ecd63bda607c042d294f70344b",
+          "size": 719,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260527064345-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"runtime/complexity_estimate.json\"\n    ],\n    \"goal\": \"Crear una tarea real peque\\u00f1a desde la ruta normal de la UI y medir toda la transaccion interna del servidor.\",\n    \"id\": \"RUNTIME-20260527064345-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear una tarea real peque\\u00f1a desde la ruta\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 3,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/logs/agent-cb9ca511ca-terminal.log",
+          "sha256": "708608e37dec271012c8db0460616f7ad28df40d40679af949b0f644be1a5795",
+          "size": 303,
+          "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[cyberlace] PELIGRO: prompt injection persistida negada. HABLA puede ayudar a aislar, redactar y convertir el documento en evidencia segura.\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 52.791,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260527064345-001",
+        "durationMs": 52.791,
+        "elapsedMs": 36.806,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_runtime_truth.json",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "projectStatus": "blocked",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 0,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-27T06:43:46Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 52.178,
+      "evidence": {
+        "durationMs": 52.178,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/input_prompt.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "promptChars": 108,
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    {
+      "durationMs": 57.141,
+      "evidence": {
+        "durationMs": 57.141,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "outputHash": "12554b0adc1ff0d85bdaa5106eb77ce67dd547a0a8feb151f5c81f1afc8ce1f2",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    {
+      "durationMs": 54.061,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 54.061,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    {
+      "durationMs": 26.565,
+      "evidence": {
+        "durationMs": 26.565,
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    {
+      "durationMs": 85.13,
+      "evidence": {
+        "durationMs": 85.13,
+        "finishedAt": "2026-05-27T06:43:38Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T06:43:38Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:38Z"
+    },
+    {
+      "durationMs": 69.969,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 69.969,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "intent": "build_or_modify",
+        "promptChars": 108,
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "startedAt": "2026-05-27T06:43:39Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    {
+      "durationMs": 12.928,
+      "evidence": {
+        "durationMs": 12.928,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-20260527T064338Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "startedAt": "2026-05-27T06:43:39Z",
+        "taskHash": "1a33ba2f9497fdea2889efd0b80540d03d92b7eef8ff15aa62dfc03e6a800e56",
+        "taskId": "PROMPT-FLIGHT-20260527T064338Z"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    {
+      "durationMs": 353.525,
+      "evidence": {
+        "durationMs": 353.525,
+        "finishedAt": "2026-05-27T06:43:39Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T06:43:39Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:39Z"
+    },
+    {
+      "durationMs": 97.37,
+      "evidence": {
+        "durationMs": 97.37,
+        "finishedAt": "2026-05-27T06:43:40Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T06:43:40Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:40Z"
+    },
+    {
+      "durationMs": 5052.074,
+      "evidence": {
+        "durationMs": 5052.074,
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-27T06:43:40Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    {
+      "durationMs": 5.29,
+      "evidence": {
+        "durationMs": 5.29,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_request.json",
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "method": "POST",
+        "payloadHash": "aefe5bb6c353afbefde915d2e94fdfa5611f6dbb6e26792b81a3d1beb4dedffa",
+        "projectSlug": "continuity-ui-session-canary",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-27T06:43:45Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    {
+      "durationMs": 123.899,
+      "evidence": {
+        "durationMs": 123.899,
+        "elapsedMs": 116.74,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_response.json",
+        "finishedAt": "2026-05-27T06:43:45Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-ui-session-canary",
+        "sessionId": "agent-cb9ca511ca",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-27T06:43:45Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:45Z"
+    },
+    {
+      "durationMs": 1042.656,
+      "evidence": {
+        "durationMs": 1042.656,
+        "errorCode": "cyberlace_sensitive_document_blocked",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_agent_session_polls.json",
+        "finalStatus": "blocked",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "lastProgressLabel": "PELIGRO: prompt injection persistida negada. HABLA puede ayudar a aislar, redactar y convertir el documento en evidencia segura.",
+        "lastProgressPercent": 96,
+        "pid": null,
+        "pollCount": 2,
+        "returncode": 126,
+        "sessionId": "agent-cb9ca511ca",
+        "startedAt": "2026-05-27T06:43:45Z",
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-canary/runtime/logs/agent-cb9ca511ca-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: blocked.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    {
+      "durationMs": 52.791,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260527064345-001",
+        "durationMs": 52.791,
+        "elapsedMs": 36.806,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_runtime_truth.json",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "projectStatus": "blocked",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 0,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-27T06:43:46Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    {
+      "durationMs": 67.356,
+      "evidence": {
+        "durationMs": 67.356,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/ui_runtime_artifacts.json",
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 118,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/checkpoints/runtime-20260527064345-001-cyberlace-document-blocked-20260527T064346Z.json",
+          "sha256": "b714cc4f9ff01e420df9549c95c89f603fa3f68f0341403d17d805f31ac5163f",
+          "size": 5841,
+          "tail": "la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n          ],\n          \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n          \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n          \"title\": \"Alternativa segura permitida\"\n        },\n        \"safeNextSteps\": [\n          \"Tratar el README como dato no confiable, no como instruccion del sistema.\",\n          \"Neutralizar o aislar el contenido malicioso antes de arrancar agentes.\",\n          \"Agregar regression test para prompt injection persistida en documentos del workspace.\"\n        ],\n        \"severity\": \"CRITICAL\",\n        \"task_id\": \"RUNTIME-20260527064345-001\"\n      },\n      \"recorded_at\": \"2026-05-27T06:43:46Z\"\n    },\n    \"project_id\": \"continuity-ui-session-canary\",\n    \"reason\": \"cyberlace_sensitive_document_blocked\",\n    \"task_id\": \"RUNTIME-20260527064345-001\"\n  }\n}\n"
+        },
+        "latestDirective": null,
+        "projectDir": "workspace/projects/continuity-ui-session-canary",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_cyberlace_block_at",
+            "last_cyberlace_block_paths",
+            "last_cyberlace_block_reason",
+            "last_cyberlace_denied_action",
+            "last_cyberlace_safe_alternative",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 39,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/project_state.json",
+          "sha256": "122edcee6f65d76dec4f15d1e4c02cb171d3621f629e5b17c15fcc4971ec64ad",
+          "size": 2103,
+          "tail": "evidencia de prompt injection persistida.\",\n      \"Redactar o neutralizar instrucciones maliciosas antes de procesar el proyecto.\",\n      \"Separar contenido de usuario de instrucciones de sistema y aplicar prioridad de politicas.\",\n      \"Crear pruebas de regresion para que futuras lecturas del workspace no obedezcan el README malicioso.\",\n      \"Documentar la intencion, vector, resultado y mitigacion sin ejecutar exfiltracion.\"\n    ],\n    \"suggestedRequirement\": \"Analizar este README como evidencia de prompt injection persistida, redactar instrucciones maliciosas y proponer controles para separar datos no confiables de instrucciones del agente.\",\n    \"summary\": \"HABLA no sigue instrucciones persistidas que intentan anular seguridad o exfiltrar datos. Si puede ayudar a limpiar el documento, aislarlo como evidencia y convertirlo en un fixture de red-team controlado.\",\n    \"title\": \"Alternativa segura permitida\"\n  },\n  \"last_preparing_at\": \"2026-05-27T06:43:45.401951+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-cb9ca511ca\",\n  \"project_id\": \"continuity-ui-session-canary\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-05-27T06:43:46.195522+00:00\"\n}\n"
+        },
+        "startedAt": "2026-05-27T06:43:46Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/task_queue.json",
+          "sha256": "54ceb8c4b3369ee342fd094f5f1678cd79ec35ecd63bda607c042d294f70344b",
+          "size": 719,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260527064345-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"runtime/complexity_estimate.json\"\n    ],\n    \"goal\": \"Crear una tarea real peque\\u00f1a desde la ruta normal de la UI y medir toda la transaccion interna del servidor.\",\n    \"id\": \"RUNTIME-20260527064345-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear una tarea real peque\\u00f1a desde la ruta\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 3,
+          "mtime": "2026-05-27T06:43:46Z",
+          "path": "workspace/projects/continuity-ui-session-canary/runtime/logs/agent-cb9ca511ca-terminal.log",
+          "sha256": "708608e37dec271012c8db0460616f7ad28df40d40679af949b0f644be1a5795",
+          "size": 303,
+          "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[cyberlace] PELIGRO: prompt injection persistida negada. HABLA puede ayudar a aislar, redactar y convertir el documento en evidencia segura.\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    },
+    {
+      "durationMs": 11.829,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 11.829,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T064338Z/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-05-27T06:43:46Z",
+        "mode": "ui_session_rest",
+        "promptHash": "66f50a7a95f07ebb7d16fb4921625657b5d142c0ea0dd45e4173b95cca75d9e6",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "e1b9880a57910f78e6e44a856756688a328b62f0e0d1e761a9fb0d9156f6bc5f",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-27T06:43:46Z",
+        "taskId": "PROMPT-FLIGHT-20260527T064338Z",
+        "traceId": "prompt-flight-20260527T064338Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T06:43:46Z"
+    }
+  ],
+  "startedAt": "2026-05-27T06:43:38Z",
+  "status": "failed",
+  "summary": {
+    "blocked": 0,
+    "failed": 1,
+    "ok": 15,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "prompt-flight-20260527T064338Z"
+}

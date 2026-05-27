@@ -1,0 +1,95 @@
+{
+  "elapsedMs": 26.09,
+  "runtimeTruth": {
+    "canReleaseZombie": true,
+    "controlPlane": {
+      "currentTaskId": "RUNTIME-20260527073638-002",
+      "currentTaskStatus": "pending",
+      "currentTaskTitle": "Implementar ULTIMO_CONTEXTO_CODEX.md",
+      "persistedRunning": true,
+      "projectStatus": "preparing",
+      "queueCounts": {
+        "blocked": 3,
+        "completed": 3,
+        "failed": 0,
+        "pending": 3,
+        "running": 0
+      },
+      "tasksCompleted": 3,
+      "tasksTotal": 9
+    },
+    "disk": {
+      "lastActivityAgeSeconds": 0.905104398727417,
+      "lastActivityAt": "2026-05-27T17:22:35.829434Z"
+    },
+    "generatedAt": "2026-05-27T17:22:36.735788+00:00",
+    "integrity": {
+      "baselineExists": true,
+      "findings": 7,
+      "hasReport": true,
+      "status": null
+    },
+    "lock": {
+      "currentTaskId": null,
+      "locked": true,
+      "message": "Control plane activo: solo lectura mientras haya tarea en ejecucion.",
+      "projectStatus": "preparing",
+      "reason": "control_plane_active",
+      "sessionId": null
+    },
+    "ok": true,
+    "projectId": "continuity-probe-canary",
+    "reasons": [
+      "no_active_agent_session",
+      "no_live_worker_pid",
+      "persisted_control_plane_running"
+    ],
+    "reviewer": {
+      "latestCheckpoint": "session-preparing-agent-16fdda47aa",
+      "latestHistory": {
+        "recorded_at": "2026-05-27T15:00:32Z",
+        "result": {
+          "blockers": [],
+          "completed": true,
+          "files_created": [],
+          "files_modified": [],
+          "next_recommendation": "Task evidence and validation commands passed.",
+          "task_id": "POST-BLANQUEO-RECOVERY",
+          "validation_passed": true,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+            "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+          ]
+        }
+      },
+      "warningCount": 1,
+      "warnings": [
+        {
+          "code": "runtime_zombie_state",
+          "message": "Persisted running state without active preparing/running session or worker pid.",
+          "severity": "error"
+        }
+      ]
+    },
+    "sandbox": {
+      "ready": null,
+      "running": null,
+      "status": null,
+      "stopReason": null,
+      "url": null
+    },
+    "sessions": {
+      "active": [],
+      "activeCount": 0,
+      "totalRuntimeSessions": 3
+    },
+    "stale": true,
+    "staleThresholdSeconds": 300,
+    "verdict": "zombie",
+    "worker": {
+      "alive": null,
+      "pid": null
+    }
+  },
+  "statusCode": 200
+}

@@ -3601,6 +3601,67 @@ def list_continuity_probe_runs():
     return jsonify({"ok": True, "runs": reports, "memoryRuns": memory_runs})
 
 
+@app.post("/api/continuity-probe/prompt-flight")
+def run_continuity_prompt_flight():
+    payload = request.get_json(silent=True) or {}
+    try:
+        module = _load_continuity_probe_module()
+        prompt = str(payload.get("prompt") or "").strip()
+        if not prompt:
+            return jsonify({"ok": False, "error": "missing_prompt"}), 400
+        mode = str(payload.get("mode") or "trace_only").strip().lower()
+        if mode not in module.PROMPT_FLIGHT_MODES:
+            return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.PROMPT_FLIGHT_MODES)}), 400
+        trace_id = module.safe_slug(payload.get("traceId") or module.new_prompt_trace_id(), "prompt-flight")
+        project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
+        base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
+        base_url = str(base_url_raw or "").rstrip("/")
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 90), 300))
+        include_harness = bool(payload.get("includeHarness", True))
+        report = module.run_prompt_flight_probe(
+            repo_root=PROJECT_ROOT,
+            prompt=prompt,
+            mode=mode,
+            project=project,
+            base_url=base_url,
+            trace_id=trace_id,
+            timeout_seconds=timeout_seconds,
+            include_harness=include_harness,
+        )
+        ok = report.get("result") == "prompt_flight_ok"
+        run = {
+            "ok": ok,
+            "traceId": trace_id,
+            "type": "prompt_flight",
+            "status": report.get("status"),
+            "result": report.get("result"),
+            "mode": mode,
+            "project": project,
+            "summary": report.get("summary"),
+            "reportPath": report.get("reportPath"),
+            "finishedAt": report.get("finishedAt"),
+        }
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = run
+        socketio.emit("agent:observer", {"op": "prompt_flight_completed", "traceId": trace_id, "status": report.get("status"), "result": report.get("result")})
+        return jsonify({"ok": ok, "traceId": trace_id, "run": run, "report": report})
+    except Exception as error:
+        app.logger.exception("continuity_prompt_flight_failed")
+        return jsonify({"ok": False, "error": "continuity_prompt_flight_failed", "message": str(error)}), 500
+
+
+@app.get("/api/continuity-probe/prompt-flight/report/<trace_id>")
+def get_continuity_prompt_flight_report(trace_id: str):
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_prompt_flight_report(repo_root=PROJECT_ROOT, trace_id=trace_id)
+    except Exception as error:
+        return jsonify({"ok": False, "error": "prompt_flight_report_failed", "message": str(error)}), 500
+    if report is None:
+        return jsonify({"ok": False, "error": "prompt_flight_report_not_found"}), 404
+    return jsonify({"ok": True, "traceId": trace_id, "report": report})
+
+
 @app.get("/api/observer/status")
 def get_observer_status():
     full = env_flag_enabled(request.args.get("full"), default=False)

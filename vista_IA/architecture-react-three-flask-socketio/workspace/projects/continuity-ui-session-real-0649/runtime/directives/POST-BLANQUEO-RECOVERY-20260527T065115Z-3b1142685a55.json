@@ -1,0 +1,246 @@
+{
+  "directive_type": "worker_operational_directive",
+  "generated_at": "2026-05-27T06:51:15Z",
+  "operational_directive": {
+    "active_restrictions": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables."
+    ],
+    "closure_criteria": [
+      "TaskResult.completed can be true only with real disk evidence.",
+      "TaskResult.blockers must be empty before closing the task.",
+      "Every expected file must exist under the repository root.",
+      "Every declared validation command must run and return code 0.",
+      "Validation results must be represented in the task result history."
+    ],
+    "complexity_estimate": {
+      "bootstrap_tasks": 4,
+      "confidence": 88,
+      "difficulty": "medio",
+      "difficulty_label": "Medio",
+      "estimate_type": "project_complexity_budget",
+      "generated_at": "2026-05-27T06:49:28.540383Z",
+      "launch_mode": "existing",
+      "max_agents": 8,
+      "max_lace_cycles": 10,
+      "max_retries": 3,
+      "max_tasks": 8,
+      "min_lace_cycles": 2,
+      "project_file_count": 0,
+      "project_slug": "continuity-ui-session-real-0649",
+      "prompt_word_count": 21,
+      "reasons": [
+        "modo runtime solicitado: build",
+        "prompt corto: 21 palabras",
+        "toca runtime/estado persistido",
+        "requiere evidencia auditable",
+        "declara pruebas o validacion"
+      ],
+      "recommended_agents": 2,
+      "recommended_lace_cycles": 3,
+      "recovery_budget": 5,
+      "required_tools": [
+        "findings",
+        "integrity",
+        "pytest",
+        "scanner"
+      ],
+      "risk_flags": [
+        "estado_persistido"
+      ],
+      "runtime_mode": "build",
+      "schema_version": 1,
+      "score": 33,
+      "timeout_seconds": 900
+    },
+    "control_plane_guardrails": [
+      "No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.",
+      "No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.",
+      "El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.",
+      "No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide."
+    ],
+    "controlled_sprint_scope": {
+      "out_of_scope_deliverables": [],
+      "sprint_acceptance": [
+        "Every expected task file must exist under the task workspace root.",
+        "Every validation command must run in the task workspace root and return code 0."
+      ],
+      "sprint_deliverables": [
+        "lessons_learned/blanqueo-2026-05-27.md"
+      ]
+    },
+    "current_operational_objective": {
+      "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+      "mode": "build",
+      "task_id": "POST-BLANQUEO-RECOVERY",
+      "timeout_seconds": 300
+    },
+    "expected_validation": {
+      "acceptance_criteria": [],
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+      ],
+      "validation_ran_must_be_recorded": true
+    },
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649"
+    ],
+    "habla": {
+      "directive_generator_ready": true,
+      "guide_type": "habla_basic_procedure",
+      "objective": {
+        "operational_goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+        "sprint_objective": "",
+        "task_title": "POST-BLANQUEO-RECOVERY"
+      },
+      "task_id": "POST-BLANQUEO-RECOVERY"
+    },
+    "known_risks_or_blockers": [
+      "Prior failure for active task: CyberLACE document hard gate blocked worker before child process launch."
+    ],
+    "lace": {
+      "available": false,
+      "execution_model": "session_level_control_plane_cycles",
+      "log_path": null,
+      "log_preview": "",
+      "policy_path": null,
+      "required_cycles": null,
+      "worker_guardrails": [
+        "do_not_run_all_lace_cycles_inside_one_worker_task",
+        "update_only_the_cycle_supported_by_current_task_evidence",
+        "do_not_extend_task_timeout_for_missing_lace_cycles",
+        "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+        "lace_progress_requires_lace_log_or_product_file_evidence"
+      ]
+    },
+    "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649",
+    "out_of_scope": [],
+    "required_evidence": {
+      "disk_records": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/lessons_learned/blanqueo-2026-05-27.md",
+          "exists": true,
+          "is_file": true,
+          "path": "lessons_learned/blanqueo-2026-05-27.md",
+          "size": 1091
+        }
+      ],
+      "evidence_found": [
+        "lessons_learned/blanqueo-2026-05-27.md"
+      ],
+      "evidence_missing": [],
+      "expected_files": [
+        "lessons_learned/blanqueo-2026-05-27.md"
+      ]
+    },
+    "sprint_deliverables": [
+      "lessons_learned/blanqueo-2026-05-27.md"
+    ],
+    "starting_checkpoint": {
+      "available": true,
+      "checkpoint_key": "runtime-20260527064928-001-retry-3-recovery",
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/runtime/checkpoints/runtime-20260527064928-001-retry-3-recovery.json",
+      "source": "project_state.checkpoints"
+    },
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_expected_files": [
+      "lessons_learned/blanqueo-2026-05-27.md"
+    ],
+    "task_validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+    ],
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649",
+    "visual_bridge": {
+      "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+      "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+      "environment_variables": [
+        "VISTA_AGENT_SESSION_ID",
+        "VISTA_AGENT_PROJECT_SLUG",
+        "VISTA_AGENT_PROJECT_DIR",
+        "VISTA_AGENT_EVENT_FILE",
+        "VISTA_AGENT_BRIDGE"
+      ],
+      "expected_live_artifacts": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css"
+      ],
+      "required_commands": [
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+      ],
+      "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+      "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649"
+    }
+  },
+  "persistence": {
+    "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/runtime/directives/POST-BLANQUEO-RECOVERY-20260527T065115Z-3b1142685a55.json",
+    "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/runtime/directives/POST-BLANQUEO-RECOVERY-20260527T065115Z-3b1142685a55.md"
+  },
+  "rendered_instruction": "Task: POST-BLANQUEO-RECOVERY - POST-BLANQUEO-RECOVERY\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.\nComplejidad operativa:\n- Dificultad: Medio\n- Score: 33 | confianza: 88\n- Agentes recomendados: 2 de max 8\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\n- Herramientas requeridas: findings, integrity, pytest, scanner\nExact deliverables:\n- lessons_learned/blanqueo-2026-05-27.md\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- lessons_learned/blanqueo-2026-05-27.md\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"\n- python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE no detectado en el workspace de tarea para esta directiva.\nStarting checkpoint:\n- runtime-20260527064928-001-retry-3-recovery\nKnown risks or blockers:\n- Prior failure for active task: CyberLACE document hard gate blocked worker before child process launch.\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+  "repository": {
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649"
+    ],
+    "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649",
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649"
+  },
+  "schema_version": 1,
+  "sprint": {
+    "number": null,
+    "objective": ""
+  },
+  "task": {
+    "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+    "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+    "id": "POST-BLANQUEO-RECOVERY",
+    "max_retries": 0,
+    "mode": "build",
+    "timeout_seconds": 300,
+    "title": "POST-BLANQUEO-RECOVERY"
+  },
+  "task_id": "POST-BLANQUEO-RECOVERY",
+  "traceability": {
+    "checkpoint_key": "runtime-20260527064928-001-retry-3-recovery",
+    "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/runtime/checkpoints/runtime-20260527064928-001-retry-3-recovery.json",
+    "checkpoint_source": "project_state.checkpoints",
+    "context_degraded": false,
+    "context_type": "directive_context",
+    "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+    "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-ui-session-real-0649/runtime",
+    "runtime_errors": [],
+    "source_hash": "3b1142685a55cb6c0b36d4fe463d0edf145d495c02950f3426ad37ec3a8f4150"
+  }
+}

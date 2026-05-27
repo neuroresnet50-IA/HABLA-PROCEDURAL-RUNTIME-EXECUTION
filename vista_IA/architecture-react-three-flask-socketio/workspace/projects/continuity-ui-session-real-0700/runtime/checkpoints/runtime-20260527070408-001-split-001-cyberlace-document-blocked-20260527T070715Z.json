@@ -1,0 +1,106 @@
+{
+  "checkpoint_key": "runtime-20260527070408-001-split-001-cyberlace-document-blocked-20260527T070715Z",
+  "created_at": "2026-05-27T07:07:15Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [],
+      "blocksRuntime": true,
+      "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+      "evidence": [
+        {
+          "domain": "private",
+          "line": 1,
+          "path": null,
+          "pattern": "fragmented_secret_reassembly",
+          "sample": "[REDACTED]",
+          "source": "task",
+          "type": "fragmented_sensitive_material"
+        }
+      ],
+      "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "continuity-ui-session-real-0700",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "safeAlternative": {
+        "allowedActions": [
+          "Usar placeholders o fixtures sinteticos.",
+          "Redactar evidencia sensible antes de procesarla.",
+          "Disenar controles de acceso, auditoria y rutas seguras.",
+          "Convertir la tarea en una validacion de arquitectura segura."
+        ],
+        "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+        "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Retirar documentos o valores sensibles del alcance.",
+        "Usar datos sinteticos o redactados.",
+        "Solicitar una revision de arquitectura segura."
+      ],
+      "scannedDocumentCount": 4,
+      "scannedDocuments": [],
+      "sessionId": null,
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 14724,
+        "documents": 4,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [],
+        "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+        "evidence": [
+          {
+            "domain": "private",
+            "line": 1,
+            "path": null,
+            "pattern": "fragmented_secret_reassembly",
+            "sample": "[REDACTED]",
+            "source": "task",
+            "type": "fragmented_sensitive_material"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "continuity-ui-session-real-0700",
+        "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+        "riskScore": 100.0,
+        "safeAlternative": {
+          "allowedActions": [
+            "Usar placeholders o fixtures sinteticos.",
+            "Redactar evidencia sensible antes de procesarla.",
+            "Disenar controles de acceso, auditoria y rutas seguras.",
+            "Convertir la tarea en una validacion de arquitectura segura."
+          ],
+          "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+          "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+          "title": "Alternativa segura permitida"
+        },
+        "safeNextSteps": [
+          "Retirar documentos o valores sensibles del alcance.",
+          "Usar datos sinteticos o redactados.",
+          "Solicitar una revision de arquitectura segura."
+        ],
+        "severity": "CRITICAL",
+        "task_id": "RUNTIME-20260527070408-001-SPLIT-001"
+      },
+      "recorded_at": "2026-05-27T07:07:15Z"
+    },
+    "project_id": "continuity-ui-session-real-0700",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": "RUNTIME-20260527070408-001-SPLIT-001"
+  }
+}

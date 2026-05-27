@@ -1,26 +1,34 @@
-# ULTIMO CONTEXTO CODEX
+# Último contexto Codex
 
-Fecha/hora UTC: 2026-05-27T02:55:10Z
+Fecha/hora: 2026-05-27T17:33:12Z
 
-Ultima solicitud del usuario: revisar bien el repo y subir toda la informacion del proyecto completo al GitHub `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`, incluyendo GUI, evidencia y la informacion local mas reciente.
+Última solicitud del usuario:
+- Subir archivos test y evidencia del sistema en acción continua mientras el desarrollo sigue en curso.
 
-Estado real: PR draft abierto en https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1 sobre la rama `codex/publish-complete-runtime-project`. Commit principal publicado `861e0c4`; commit de cierre publicado `4c92d2e`. Despues del PR aparecio un borrador local de `HABLA CircuitProbe` (`orchestrator/continuity_probe.py` + 2 lineas en `backend/app.py`); fue inspeccionado, `py_compile` paso, y queda preparado para commit/push follow-up.
+Estado real:
+- Rama: `codex/publish-complete-runtime-project`.
+- PR draft: https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
+- Lote continuo validado y listo para commit/push.
+- `backups/` queda fuera por revisión pendiente de exposición pública.
 
-Archivos tocados por el follow-up:
-- `orchestrator/continuity_probe.py`
-- `backend/app.py`
-- `runtime/checkpoints/github-publish-continuity-probe-followup-20260527T025510Z.json`
-- `runtime/task_history.jsonl`
-- `recuperacioncontexto.md`
-- `ULTIMO_CONTEXTO_CODEX.md`
+Archivos tocados:
+- Código: `backend/app.py`, `backend/cyberlace_document_guard.py`, `orchestrator/agent_tools.py`, `orchestrator/continuity_probe.py`, `orchestrator/prompt_flight_probe.py`, `workers/codex_worker.py`.
+- Tests/GUI: `backend/test_continuity_probe.py`, `backend/test_cyberlace_agent_runtime_hooks.py`, `tools/habla_circuit_probe_tk.py`.
+- Evidencia: `runtime/continuity_probe/`, `runtime/checkpoints/`, `runtime/artifacts/handoffs/`, `runtime/cyberlace/evidence/`, `workspace/projects/continuity-*`.
+- Memoria: `runtime/task_history.jsonl`, `recuperacioncontexto.md`, `ULTIMO_CONTEXTO_CODEX.md`.
 
-Validacion ejecutada:
-- Validaciones previas de publicacion: health OK, observer-status OK, secret scan estricto sin matches, py_compile OK, 14 tests Harness/CyberLACE OK, `npm run build` OK, push OK, PR draft OK.
-- Follow-up: `python3 -B -m py_compile backend/app.py orchestrator/continuity_probe.py`: OK.
+Validación ejecutada:
+- `python3 -B -m py_compile ...` -> OK.
+- `python3 -m pytest backend/test_continuity_probe.py backend/test_cyberlace_agent_runtime_hooks.py -q` -> OK, `14 passed in 3.10s`.
+- Scan de secretos candidato -> sin coincidencias.
+- Scan de archivos >95 MB candidato -> sin resultados.
+- `python3 orchestrator/agent_tools.py prompt-flight --project continuity-probe-canary --mode trace_only --no-harness --prompt "Verificar publicacion continua del sistema en accion desde Codex."` -> `statusCode=200`, `ok=true`, `reportPath=runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json`.
 
-Riesgos / blockers:
-- `orchestrator/continuity_probe.py` es borrador valido por sintaxis; no se ejecuto activamente para evitar efectos colaterales.
-- El PR sigue siendo draft y debe revisarse antes de merge.
-- Quedan sin rastrear localmente los archivos vacios `=1760`, `=2110`, `=2685`, `=4080`; no deben subirse.
+Resultado real:
+- Lote continuo listo para commit/push al PR #1.
+- No se publica `backups/` en este lote.
 
-Siguiente paso exacto: commitear y empujar el follow-up de CircuitProbe a `codex/publish-complete-runtime-project` para que el PR #1 quede actualizado; luego revisar https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
+Siguiente paso exacto:
+- Stage explícito, `git diff --cached --check`, commit, push y verificación del PR.
+
+Actualización 2026-05-27T17:36:48Z: también se incluye `orchestrator/prompt_flight_batch.py` y `runtime/continuity_probe/prompt_flight_cases_50.json`; py_compile OK y el archivo contiene 50 casos (`PF-001` a `PF-050`).

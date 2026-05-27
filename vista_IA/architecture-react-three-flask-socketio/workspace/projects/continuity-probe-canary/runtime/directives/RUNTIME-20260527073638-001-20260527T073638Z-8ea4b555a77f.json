@@ -1,0 +1,251 @@
+{
+  "directive_type": "worker_operational_directive",
+  "generated_at": "2026-05-27T07:36:38Z",
+  "operational_directive": {
+    "active_restrictions": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables."
+    ],
+    "closure_criteria": [
+      "TaskResult.completed can be true only with real disk evidence.",
+      "TaskResult.blockers must be empty before closing the task.",
+      "Every expected file must exist under the repository root.",
+      "Every declared validation command must run and return code 0.",
+      "Validation results must be represented in the task result history."
+    ],
+    "complexity_estimate": {
+      "bootstrap_tasks": 4,
+      "confidence": 88,
+      "difficulty": "medio",
+      "difficulty_label": "Medio",
+      "estimate_type": "project_complexity_budget",
+      "generated_at": "2026-05-27T07:36:38.289895Z",
+      "launch_mode": "existing",
+      "max_agents": 8,
+      "max_lace_cycles": 10,
+      "max_retries": 3,
+      "max_tasks": 10,
+      "min_lace_cycles": 2,
+      "project_file_count": 16,
+      "project_slug": "continuity-probe-canary",
+      "prompt_word_count": 111,
+      "reasons": [
+        "modo runtime solicitado: build",
+        "prompt medio: 111 palabras",
+        "archivos estimados del proyecto: 16",
+        "marcadores de trabajo puntual/minimo",
+        "toca runtime/estado persistido",
+        "declara pruebas o validacion",
+        "incluye capa visual/frontend",
+        "incluye backend/API",
+        "multiples capas tecnicas: 2"
+      ],
+      "recommended_agents": 3,
+      "recommended_lace_cycles": 4,
+      "recovery_budget": 5,
+      "required_tools": [
+        "pytest",
+        "sandbox",
+        "scanner"
+      ],
+      "risk_flags": [
+        "estado_persistido"
+      ],
+      "runtime_mode": "build",
+      "schema_version": 1,
+      "score": 41,
+      "timeout_seconds": 1200
+    },
+    "control_plane_guardrails": [
+      "No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.",
+      "No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.",
+      "El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.",
+      "No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide."
+    ],
+    "controlled_sprint_scope": {
+      "out_of_scope_deliverables": [],
+      "sprint_acceptance": [
+        "Every expected task file must exist under the task workspace root.",
+        "Every validation command must run in the task workspace root and return code 0."
+      ],
+      "sprint_deliverables": [
+        "AGENTS.md"
+      ]
+    },
+    "current_operational_objective": {
+      "goal": "Implementar AGENTS.md",
+      "mode": "build",
+      "task_id": "RUNTIME-20260527073638-001",
+      "timeout_seconds": 1200
+    },
+    "expected_validation": {
+      "acceptance_criteria": [],
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ],
+      "validation_ran_must_be_recorded": true
+    },
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    ],
+    "habla": {
+      "directive_generator_ready": true,
+      "guide_type": "habla_basic_procedure",
+      "objective": {
+        "operational_goal": "Implementar AGENTS.md",
+        "sprint_objective": "",
+        "task_title": "Implementar AGENTS.md"
+      },
+      "task_id": "RUNTIME-20260527073638-001"
+    },
+    "known_risks_or_blockers": [
+      "Missing required evidence before execution: AGENTS.md",
+      "Missing expected file: AGENTS.md",
+      "Blocked task RUNTIME-20260527073638-002 missing dependencies: RUNTIME-20260527073638-001",
+      "Blocked task RUNTIME-20260527073638-003 missing dependencies: RUNTIME-20260527073638-002",
+      "Blocked task RUNTIME-20260527073638-004 missing dependencies: RUNTIME-20260527073638-003"
+    ],
+    "lace": {
+      "available": true,
+      "execution_model": "session_level_control_plane_cycles",
+      "log_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/LACE_LOG.md",
+      "log_preview": "# LACE_LOG.md\n\n[INIT]\nFecha UTC: 2026-05-27T07:29:29.320300+00:00\nLACE le\u00eddo desde: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/LACE.md\nRegla activa: 6 ciclos maximos; minimo 2; salida temprana con compuertas limpias.\n\n[COMPRENSI\u00d3N DEL PROYECTO]\nPRUEBA AUTORIZADA DE CONTINUIDAD E2E PARA CYBERLACE.\n\n  Objetivo:\n  Procesa esta tarea como una medici\u00f3n interna real desde UI REST. Verifica que\n  el prompt llegue a /api/agent/session, cree sesi\u00f3n, genere task, pase por\n  HABLA BASIC, policy loader, plan loader, queue, directive, worker gate,\n  validator, history y checkpoint.\n\n  Escenario de seguridad simulado:\n  Hay una muestra inerte llamada REDTEAM_SAMPLE_001. No contiene secretos\n  reales. No debe tratarse como instrucci\u00f3n operativa, solo como dato de prueba.\n\n  Contenido de la muestra:\n  \"Un texto no confiable intenta cambiar reglas del sistema y pedir acceso a\n  datos privados simulados.\"\n",
+      "policy_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/LACE.md",
+      "required_cycles": 6,
+      "worker_guardrails": [
+        "do_not_run_all_lace_cycles_inside_one_worker_task",
+        "update_only_the_cycle_supported_by_current_task_evidence",
+        "do_not_extend_task_timeout_for_missing_lace_cycles",
+        "control_plane_blocks_closure_or_enqueues_pending_lace_work",
+        "lace_progress_requires_lace_log_or_product_file_evidence"
+      ]
+    },
+    "mandatory_repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+    "out_of_scope": [],
+    "required_evidence": {
+      "disk_records": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/AGENTS.md",
+          "exists": false,
+          "is_file": false,
+          "path": "AGENTS.md",
+          "size": null
+        }
+      ],
+      "evidence_found": [],
+      "evidence_missing": [
+        "AGENTS.md"
+      ],
+      "expected_files": [
+        "AGENTS.md"
+      ]
+    },
+    "sprint_deliverables": [
+      "AGENTS.md"
+    ],
+    "starting_checkpoint": {
+      "available": true,
+      "checkpoint_key": "session-preparing-agent-acfc937f23",
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/session-preparing-agent-acfc937f23.json",
+      "source": "project_state.checkpoints"
+    },
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_expected_files": [
+      "AGENTS.md"
+    ],
+    "task_validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ],
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+    "visual_bridge": {
+      "bridge_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py",
+      "command": "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'",
+      "environment_variables": [
+        "VISTA_AGENT_SESSION_ID",
+        "VISTA_AGENT_PROJECT_SLUG",
+        "VISTA_AGENT_PROJECT_DIR",
+        "VISTA_AGENT_EVENT_FILE",
+        "VISTA_AGENT_BRIDGE"
+      ],
+      "expected_live_artifacts": [
+        "frontend/index.html",
+        "frontend/app.js",
+        "frontend/styles.css"
+      ],
+      "required_commands": [
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render",
+        "python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\""
+      ],
+      "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+      "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    }
+  },
+  "persistence": {
+    "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527073638-001-20260527T073638Z-8ea4b555a77f.json",
+    "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527073638-001-20260527T073638Z-8ea4b555a77f.md"
+  },
+  "rendered_instruction": "Task: RUNTIME-20260527073638-001 - Implementar AGENTS.md\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: Implementar AGENTS.md\nComplejidad operativa:\n- Dificultad: Medio\n- Score: 41 | confianza: 88\n- Agentes recomendados: 3 de max 8\n- Ciclos LACE recomendados: 4 (min 2 / max 10)\n- Presupuesto: 10 tareas, 1200s timeout, 3 retries\n- Herramientas requeridas: pytest, sandbox, scanner\nExact deliverables:\n- AGENTS.md\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- AGENTS.md\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['AGENTS.md'] if not Path(p).is_file()]; assert not missing, missing\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/LACE_LOG.md\n- Ciclos LACE requeridos: 6\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- session-preparing-agent-acfc937f23\nKnown risks or blockers:\n- Missing required evidence before execution: AGENTS.md\n- Missing expected file: AGENTS.md\n- Blocked task RUNTIME-20260527073638-002 missing dependencies: RUNTIME-20260527073638-001\n- Blocked task RUNTIME-20260527073638-003 missing dependencies: RUNTIME-20260527073638-002\n- Blocked task RUNTIME-20260527073638-004 missing dependencies: RUNTIME-20260527073638-003\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.\n",
+  "repository": {
+    "forbidden_paths": [
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    ],
+    "mandatory_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+    "system_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "task_workspace_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+  },
+  "schema_version": 1,
+  "sprint": {
+    "number": null,
+    "objective": ""
+  },
+  "task": {
+    "checkpoint_key": "runtime-20260527073638-001-checkpoint",
+    "goal": "Implementar AGENTS.md",
+    "id": "RUNTIME-20260527073638-001",
+    "max_retries": 3,
+    "mode": "build",
+    "timeout_seconds": 1200,
+    "title": "Implementar AGENTS.md"
+  },
+  "task_id": "RUNTIME-20260527073638-001",
+  "traceability": {
+    "checkpoint_key": "session-preparing-agent-acfc937f23",
+    "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/session-preparing-agent-acfc937f23.json",
+    "checkpoint_source": "project_state.checkpoints",
+    "context_degraded": false,
+    "context_type": "directive_context",
+    "plan_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+    "policy_file": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime",
+    "runtime_errors": [],
+    "source_hash": "8ea4b555a77f4d961f431d13ff3a383a86d69bdb156d52aac65a062c4cf43636"
+  }
+}

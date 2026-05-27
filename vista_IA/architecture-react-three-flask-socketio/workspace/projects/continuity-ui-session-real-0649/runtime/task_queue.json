@@ -1,0 +1,39 @@
+[
+  {
+    "checkpoint_key": "runtime-20260527064928-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/circuit_probe_canary.md"
+    ],
+    "goal": "Crear una tarea real peque\u00f1a: genera docs/circuit_probe_canary.md con una frase de validacion, guarda evidencia runtime y reporta el resultado.",
+    "id": "RUNTIME-20260527064928-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "blocked",
+    "timeout_seconds": 900,
+    "title": "Crear una tarea real peque\u00f1a: genera docs/circuit_probe_canary.md con",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "lessons_learned/blanqueo-2026-05-27.md"
+    ],
+    "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+    "id": "POST-BLANQUEO-RECOVERY",
+    "max_retries": 0,
+    "mode": "build",
+    "priority": 100,
+    "status": "completed",
+    "timeout_seconds": 300,
+    "title": "POST-BLANQUEO-RECOVERY",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+    ]
+  }
+]

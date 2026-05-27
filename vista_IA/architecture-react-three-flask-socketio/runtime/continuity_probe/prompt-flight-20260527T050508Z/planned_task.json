@@ -1,0 +1,18 @@
+{
+  "checkpoint_key": null,
+  "dependencies": [],
+  "expected_files": [
+    "src/prompt_flight_response.json"
+  ],
+  "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+  "id": "PROMPT-REAL-20260527T050508Z",
+  "max_retries": 0,
+  "mode": "build",
+  "priority": 80,
+  "status": "pending",
+  "timeout_seconds": 120,
+  "title": "Process guarded HABLA BASIC prompt",
+  "validation_commands": [
+    "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050508Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+  ]
+}

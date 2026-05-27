@@ -1,0 +1,76 @@
+{
+  "timestamp": "2026-05-27T07:12:42Z",
+  "task_id": "HABLA-CIRCUIT-PROBE-V4-UI-SESSION-REST-REAL",
+  "status": "implemented_validated_with_real_runtime_blocker",
+  "summary": "Prompt Flight ui_session_rest now sends the exact AgentStudio REST payload to /api/agent/session, polls the real session, reads runtime-truth and runtime artifacts. Live run proved real worker launch; task failed because nested Codex sandbox could not write files with bwrap loopback error.",
+  "files_created": [
+    "runtime/continuity_probe/prompt-flight-20260527T064338Z/*",
+    "runtime/continuity_probe/prompt-flight-20260527T064928Z/*",
+    "runtime/continuity_probe/prompt-flight-20260527T070404Z/*",
+    "workspace/projects/continuity-ui-session-canary/",
+    "workspace/projects/continuity-ui-session-real-0649/",
+    "workspace/projects/continuity-ui-session-real-0700/"
+  ],
+  "files_modified": [
+    "orchestrator/prompt_flight_probe.py",
+    "orchestrator/continuity_probe.py",
+    "orchestrator/agent_tools.py",
+    "tools/habla_circuit_probe_tk.py",
+    "backend/test_continuity_probe.py",
+    "backend/cyberlace_document_guard.py",
+    "workers/codex_worker.py",
+    "backend/test_cyberlace_agent_runtime_hooks.py",
+    "runtime/task_history.jsonl",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "validation_ran": [
+    {
+      "command": "python3 -B -m py_compile backend/cyberlace_document_guard.py workers/codex_worker.py backend/test_cyberlace_agent_runtime_hooks.py orchestrator/prompt_flight_probe.py orchestrator/continuity_probe.py orchestrator/agent_tools.py tools/habla_circuit_probe_tk.py backend/test_continuity_probe.py backend/app.py",
+      "ok": true
+    },
+    {
+      "command": "python3 -m unittest backend.test_cyberlace_agent_runtime_hooks backend.test_continuity_probe",
+      "ok": true,
+      "tests": 14
+    },
+    {
+      "command": "env OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true,
+      "backendPid": 148917
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "ok": true,
+      "statusCode": 200
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --timeout-seconds 180 prompt-flight --mode ui_session_rest --project continuity-ui-session-real-0700 --prompt ...",
+      "ok": false,
+      "result": "prompt_flight_failed",
+      "traceId": "prompt-flight-20260527T070404Z",
+      "reason": "real worker launched but nested Codex sandbox could not write docs/circuit_probe_canary.md; runtime captured missing expected file and bwrap loopback blocker"
+    }
+  ],
+  "validation_passed": false,
+  "real_evidence": {
+    "serverUrl": "http://127.0.0.1:5001/",
+    "health": {
+      "statusCode": 200,
+      "ok": true
+    },
+    "realRoute": "POST /api/agent/session",
+    "sessionId": "agent-7ea5ba8478",
+    "projectSlug": "continuity-ui-session-real-0700",
+    "reportPath": "runtime/continuity_probe/prompt-flight-20260527T070404Z/prompt_flight_report.json",
+    "runtimeTruth": "workspace/projects/continuity-ui-session-real-0700/runtime/project_state.json",
+    "terminalLog": "workspace/projects/continuity-ui-session-real-0700/runtime/logs/agent-7ea5ba8478-terminal.log",
+    "workerEvidence": "Codex worker launched, attempted apply_patch, failed to write expected file due bwrap loopback sandbox error."
+  },
+  "blockers": [
+    "Nested Codex worker sandbox cannot write inside generated project in this environment: bwrap loopback Failed RTM_NEWADDR and apply_patch write failures.",
+    "The live run did not create docs/circuit_probe_canary.md, so validation correctly failed.",
+    "Prompt-flight timeout was shorter than full backend recovery path in the third live run; report still persisted at runtime/continuity_probe/prompt-flight-20260527T070404Z/prompt_flight_report.json."
+  ],
+  "next_recommendation": "Run the same ui_session_rest mode after fixing nested Codex sandbox permissions, or configure worker execution with a sandbox mode that can write under workspace/projects/<slug>."
+}

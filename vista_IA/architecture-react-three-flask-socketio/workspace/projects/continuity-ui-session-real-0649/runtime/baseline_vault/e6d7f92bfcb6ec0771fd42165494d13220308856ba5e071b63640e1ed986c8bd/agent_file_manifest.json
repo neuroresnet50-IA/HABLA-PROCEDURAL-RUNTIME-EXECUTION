@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "report_type": "agent_file_manifest",
+  "projectId": "continuity-ui-session-real-0649",
+  "createdAt": "2026-05-27T07:03:41.819464+00:00",
+  "source": "final_code_scanner",
+  "scannerReport": {
+    "generatedAt": "2026-05-27T07:03:41.818608+00:00",
+    "artifact": "runtime/artifacts/final_code_scanner_report.json",
+    "checkpoint": "runtime/checkpoints/final-code-scanner-checkpoint.json",
+    "visual_playback": "magnifier_line_by_line_to_last_line"
+  },
+  "summary": {
+    "files": 1,
+    "lines": 12,
+    "characters": 1091,
+    "bytes": 1091
+  },
+  "files": [
+    {
+      "path": "lessons_learned/blanqueo-2026-05-27.md",
+      "name": "blanqueo-2026-05-27.md",
+      "sha256": "188fc54390582d2e75f6e83d7f701f211b049b5e7080cc3ee2424e8f14e9faf2",
+      "lineCount": 12,
+      "characterCount": 1091,
+      "byteCount": 1091,
+      "maxLineLength": 515,
+      "language": "markdown",
+      "status": "agent_final",
+      "content": "# Leccion aprendida de blanqueo\n\nFecha: 2026-05-27T06:51:14.080994+00:00\nDecision: Blanqueo Total\nCausa raiz: Fallo critico de compilacion/validacion end-to-end detectado por AgentRuntime tras 4 intentos consecutivos.\nQue fallo: CyberLACE document hard gate blocked worker before child process launch., Missing expected file: docs/circuit_probe_canary.md, Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\", Validation command failed (1): python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/circuit_probe_canary.md'] if not Path(p).is_file()]; assert not missing, missing\"\nPrevencion futura:\n- ejecutar validaciones end-to-end antes de cerrar tareas\n- no relanzar workers si ya existe evidencia valida en disco\n- pedir confirmacion humana para blanqueo total en modo medium o long-run\n\nBackup: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backups/blanqueo/20260527T065106_716026Z"
+    }
+  ]
+}

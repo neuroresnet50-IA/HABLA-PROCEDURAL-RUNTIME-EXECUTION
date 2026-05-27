@@ -1,0 +1,531 @@
+{
+  "checkpoint_key": "runtime-20260527072929-001-checkpoint",
+  "created_at": "2026-05-27T07:32:11Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527072929-001-20260527T072929Z-39e38e1bfd55.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527072929-001-20260527T072929Z-39e38e1bfd55.md",
+      "source_hash": "39e38e1bfd551b585237dd7e8ca663b3691e31cebc7a79b92d5f9f72b946cd66"
+    },
+    "task": {
+      "checkpoint_key": "runtime-20260527072929-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "README.md",
+        "runtime/artifacts/observer_findings.json",
+        "runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json",
+        "runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json",
+        "runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json",
+        "runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+        "runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json",
+        "runtime/complexity_estimate.json"
+      ],
+      "goal": "Crear evidencia runtime.",
+      "id": "RUNTIME-20260527072929-001",
+      "max_retries": 3,
+      "mode": "build",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 1800,
+      "title": "Crear evidencia runtime",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260527072929-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_61a825dabbe94b83838c024a3e6ca635",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 51,
+            "pattern": "credit_card_like",
+            "sample": "20260527072929",
+            "start": 37,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 871,
+            "pattern": "credit_card_like",
+            "sample": "20260527072929",
+            "start": 857,
+            "type": "sensitive_output"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260527072929",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 871,
+              "pattern": "credit_card_like",
+              "sample": "20260527072929",
+              "start": 857,
+              "type": "sensitive_output"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-efe67ccb8a",
+        "severity": "MEDIUM",
+        "stage": "output",
+        "timestamp": "2026-05-27T07:32:06Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_92750eaae74846c084a3a4906daa84bc",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 306,
+            "pattern": "credit_card_like",
+            "sample": "20260527072929",
+            "start": 292,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 9506,
+            "pattern": "credit_card_like",
+            "sample": "20260527072929",
+            "start": 9492,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 9582,
+            "pattern": "credit_card_like",
+            "sample": "20260527072929",
+            "start": 9568,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 306,
+              "pattern": "credit_card_like",
+              "sample": "20260527072929",
+              "start": 292,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 9506,
+              "pattern": "credit_card_like",
+              "sample": "20260527072929",
+              "start": 9492,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 9582,
+              "pattern": "credit_card_like",
+              "sample": "20260527072929",
+              "start": 9568,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 45,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 45.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-efe67ccb8a",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-05-27T07:30:10Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/RUNTIME-20260527072929-001-postflight-20260527T073207Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260527072929-001",
+            "timedOut": true,
+            "timestamp": "2026-05-27T07:32:06Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "postflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-probe-canary",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 1,
+                "totalFindings": 1
+              }
+            },
+            "taskId": "RUNTIME-20260527072929-001",
+            "timedOut": false,
+            "timestamp": "2026-05-27T07:32:07Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260527072929-001",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-05-27T07:32:07Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/RUNTIME-20260527072929-001-preflight-20260527T073010Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": true,
+                "incident": {
+                  "counters": {
+                    "repeatedEvents": 1,
+                    "ticks": 3,
+                    "timeouts": 0
+                  },
+                  "deadlineAt": "2026-05-27T07:22:28.684817Z",
+                  "incidentId": "OBS-20260527-071928-5fc88079",
+                  "phase": "waiting_human",
+                  "projectSlug": "continuity-ui-session-real-0649",
+                  "rootCause": "project_completed_without_sandbox",
+                  "status": "waiting_human",
+                  "stopReason": "repeated_finding_suppressed",
+                  "trigger": "scanner_requested"
+                },
+                "state": "verifying_sandbox"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "RUNTIME-20260527072929-001",
+            "timedOut": false,
+            "timestamp": "2026-05-27T07:30:10Z",
+            "tool": "observer-status"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260527072929-001",
+        "timestamp": "2026-05-27T07:30:10Z",
+        "warnings": []
+      },
+      "recovery_preview": null,
+      "task_completion_gate": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/RUNTIME-20260527072929-001-task_completion_gate-20260527T073210Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "task_completion_gate",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260527072929-001",
+            "timedOut": true,
+            "timestamp": "2026-05-27T07:32:07Z",
+            "tool": "scanner"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "task_completion_gate",
+            "projectSlug": "continuity-probe-canary",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-probe-canary",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 1,
+                "totalFindings": 1
+              }
+            },
+            "taskId": "RUNTIME-20260527072929-001",
+            "timedOut": false,
+            "timestamp": "2026-05-27T07:32:09Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "task_completion_gate",
+        "projectSlug": "continuity-probe-canary",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260527072929-001",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-05-27T07:32:10Z",
+        "warnings": [
+          "task_completion_gate:scanner timed out; continuing"
+        ]
+      }
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.044375,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-27T07:32:06Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "README.md",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 79
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/observer_findings.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 1752
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 480
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 399
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 399
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 399
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 399
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/complexity_estimate.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 1206
+          }
+        ],
+        "found": [
+          "README.md",
+          "runtime/artifacts/observer_findings.json",
+          "runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json",
+          "runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json",
+          "runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json",
+          "runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+          "runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json",
+          "runtime/complexity_estimate.json"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260527072929-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+    }
+  }
+}

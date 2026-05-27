@@ -1,0 +1,155 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/continuity-20260527T050930Z/events.jsonl",
+    "markdownPath": "runtime/continuity_probe/continuity-20260527T050930Z/report.md",
+    "reportPath": "runtime/continuity_probe/continuity-20260527T050930Z/report.json",
+    "runDir": "runtime/continuity_probe/continuity-20260527T050930Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "checks": {
+    "autopilot_memory": {
+      "evidence": {
+        "jsonRunCount": 0,
+        "path": "runtime/cyberlace/training_runs"
+      },
+      "message": "Autopilot persistent run directory is present.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "backend_health": {
+      "evidence": {
+        "service": "HABLA Observer IA",
+        "statusCode": 200
+      },
+      "message": "Backend health endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "checkpoint_written": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "directive_generated": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "harness_reachable": {
+      "evidence": {
+        "caseCount": 30,
+        "hasRunsKey": true,
+        "statusCode": 200
+      },
+      "message": "Harness training summary endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "history_written": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "imports_loaded": {
+      "evidence": {
+        "modules": [
+          "orchestrator.state_store",
+          "orchestrator.task_queue",
+          "orchestrator.directive_context",
+          "orchestrator.directive_generator",
+          "orchestrator.executor",
+          "orchestrator.validator",
+          "workers.codex_worker"
+        ]
+      },
+      "message": "Core orchestration imports resolved.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "observer_readable": {
+      "evidence": {
+        "enabled": false,
+        "state": "idle",
+        "statusCode": 200
+      },
+      "message": "Observer status is readable without starting a mission.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "plan_loaded": {
+      "evidence": {
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10
+      },
+      "message": "PLANS.md loaded through plan_loader.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "policy_loaded": {
+      "evidence": {
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md"
+      },
+      "message": "AGENTS.md loaded through policy_loader.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "prompt_input": {
+      "evidence": {
+        "evidencePath": "runtime/continuity_probe/continuity-20260527T050930Z/input.json"
+      },
+      "message": "Probe input persisted with traceId.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "queue_persisted": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "safety_learning_readable": {
+      "evidence": {
+        "statusCode": 200,
+        "totalExperiences": 64
+      },
+      "message": "Safety Learning status endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "task_created": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "validator_passed": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    },
+    "worker_executed": {
+      "message": "Skipped because probe mode is not active_canary.",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:30Z"
+    }
+  },
+  "durationSeconds": 0.121903,
+  "eventsPath": "runtime/continuity_probe/continuity-20260527T050930Z/events.jsonl",
+  "failedChecks": [],
+  "finishedAt": "2026-05-27T05:09:30Z",
+  "mode": "harness_canary",
+  "project": "continuity-probe-canary",
+  "reportPath": "runtime/continuity_probe/continuity-20260527T050930Z/report.json",
+  "result": "continuity_ok",
+  "schemaVersion": 1,
+  "startedAt": "2026-05-27T05:09:30Z",
+  "status": "completed",
+  "summary": {
+    "failed": 0,
+    "ok": 9,
+    "skipped": 7,
+    "total": 16,
+    "warning": 0
+  },
+  "traceId": "continuity-20260527T050930Z"
+}
