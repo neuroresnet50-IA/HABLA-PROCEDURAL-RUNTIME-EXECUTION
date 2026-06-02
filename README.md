@@ -432,7 +432,12 @@ Documentos base para esta descripcion:
 - `docs/paper_cientifico_orquestador_autonomo_habla_observer_ia.md`
 - `docs/observer_engine_algorithm.md`
 - `docs/reporte_cierre_auditoria_seccion_19_2026-05-20.md`
+- `docs/CYBERLACE_SECURITY_ANALYSIS.md`
 
 La verdad arquitectonica mas importante es esta:
 
 > HABLA Engine V5 es un harness procedural de ejecucion para trabajo de software con IA. Puede usar Codex, Ollama u otros workers, pero no se reduce a ninguno de ellos. Su valor esta en el control plane, verification plane, memory plane, Observer plane, LACE gate y CyberLACE security layer alrededor del worker.
+>
+> CyberLACE es la pieza que vuelve esa autonomia realmente defendible. No solo bloquea: detecta riesgos cognitivos, explica por que son malos, deja evidencia auditable y propone una ruta de remediacion mas segura. Frente a prompt injection, fuga de memoria sensible, tool calling peligroso, acciones externas o salida con secretos, CyberLACE puede monitorear, redactar, sanitizar, pedir revision humana, bloquear o poner en cuarentena.
+>
+> En una frase: HABLA le da al agente cuerpo operativo; CyberLACE le da sistema inmunologico, criterio de seguridad y capacidad de correccion antes de que la autonomia se convierta en dano.
