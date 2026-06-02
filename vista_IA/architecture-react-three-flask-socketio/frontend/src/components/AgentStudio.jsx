@@ -60,11 +60,53 @@ function getBlockingCyberlaceDecision(session) {
   return null;
 }
 
+function parseCompactProjectTimestamp(value) {
+  const match = String(value || "").match(/(20\d{12})/);
+  if (!match) return 0;
+  const raw = match[1];
+  const year = Number(raw.slice(0, 4));
+  const month = Number(raw.slice(4, 6));
+  const day = Number(raw.slice(6, 8));
+  const hour = Number(raw.slice(8, 10));
+  const minute = Number(raw.slice(10, 12));
+  const second = Number(raw.slice(12, 14));
+  const timestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function getProjectSlugTimestamp(project) {
+  return parseCompactProjectTimestamp(project?.slug || project?.name);
+}
+
+function getProjectMetadataTimestamp(project) {
+  return parseTimestamp(project?.createdAt) || parseTimestamp(project?.updatedAt) || 0;
+}
+
+function compareProjectsByGeneratedAt(left, right) {
+  const leftSlugTimestamp = getProjectSlugTimestamp(left);
+  const rightSlugTimestamp = getProjectSlugTimestamp(right);
+  if (leftSlugTimestamp || rightSlugTimestamp) {
+    return rightSlugTimestamp - leftSlugTimestamp;
+  }
+  return getProjectMetadataTimestamp(right) - getProjectMetadataTimestamp(left);
+}
+
+function getProjectSearchText(project) {
+  return [
+    project?.name,
+    project?.slug,
+    project?.relativePath,
+    project?.description,
+    project?.status,
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
 export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean, onCyberlaceBlock }) {
   const [projects, setProjects] = useState([]);
   const [launchMode, setLaunchMode] = useState("new");
   const [runtimeMode, setRuntimeMode] = useState(DEFAULT_AGENT_RUNTIME_MODE);
   const [selectedProject, setSelectedProject] = useState("");
+  const [projectFilter, setProjectFilter] = useState("");
   const [newProjectName, setNewProjectName] = useState("");
   const [requirement, setRequirement] = useState("");
   const [activeSessionId, setActiveSessionId] = useState(null);
@@ -131,11 +173,35 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
     () => projects.find((project) => project.slug === selectedProject) || null,
     [projects, selectedProject]
   );
+  const latestGeneratedProject = useMemo(() => {
+    return [...projects]
+      .filter((project) => project?.slug && !project.systemDemo && !project.learningMode && !project.evaluatedProject)
+      .sort(compareProjectsByGeneratedAt)[0] || null;
+  }, [projects]);
+  const filteredProjects = useMemo(() => {
+    const query = projectFilter.trim().toLowerCase();
+    const baseProjects = query
+      ? projects.filter((project) => getProjectSearchText(project).includes(query))
+      : projects;
+    const sortedProjects = [...baseProjects].sort((left, right) => (
+      compareProjectsByGeneratedAt(left, right)
+      || String(left.name || left.slug || "").localeCompare(String(right.name || right.slug || ""))
+    ));
+    if (selectedProjectMeta && !sortedProjects.some((project) => project.slug === selectedProjectMeta.slug)) {
+      return [selectedProjectMeta, ...sortedProjects];
+    }
+    return sortedProjects;
+  }, [projects, projectFilter, selectedProjectMeta]);
+  const visibleProjects = filteredProjects.slice(0, 80);
+  const hiddenFilteredProjectCount = Math.max(filteredProjects.length - visibleProjects.length, 0);
   const habla = session?.habla || null;
   const hablaState = habla?.state || null;
   const hablaRuntimeState = hablaState || hablaRuntimeStatus || {};
   const hablaRuntimeAvailable = Boolean(habla?.available || hablaRuntimeStatus?.available);
   const runtimeCommandReady = connected || hablaRuntimeAvailable;
+  const retryableTaskStatus = String(retryableTask?.status || "").toLowerCase();
+  const retryableTaskIsBlocked = retryableTaskStatus === "blocked";
+  const retryableTaskButtonLabel = retryableTaskIsBlocked ? "Relanzar tarea bloqueada" : "Relanzar orden recuperada";
   const lacePolicyLoaded = hablaRuntimeState?.lacePolicyLoaded ?? hablaRuntimeStatus?.lacePolicyLoaded;
   const lacePolicyPath = hablaRuntimeState?.lacePolicyPath || session?.lacePolicyPath || hablaRuntimeStatus?.agentRuntime?.lacePolicySource || "";
   const laceRuntimeLabel = hablaRuntimeState?.laceRuntime || "not_active";
@@ -143,6 +209,11 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const visualNote = describeVisualState(visualState);
   const hablaConfidence = hablaState?.confidence || null;
   const laceCycles = Array.isArray(session?.laceCycles) ? session.laceCycles : [];
+  const laceStatus = session?.laceStatus || null;
+  const laceStatusActive = Boolean(laceStatus?.laceActive);
+  const laceRequiredCycles = Number(laceStatus?.requiredCycles || session?.laceRequiredCycles || 0);
+  const laceValidCycles = Number(laceStatus?.validCycles || session?.laceCompletedCycles || 0);
+  const laceMissingCycles = Number(laceStatus?.missingCycles ?? Math.max(0, laceRequiredCycles - laceValidCycles));
   const reviewerProjectSlug = session?.projectSlug || selectedProject || selectedProjectMeta?.slug || "";
   const liveStage = getLiveStage(session);
   const liveElapsedSeconds = getSessionElapsedSeconds(session, nowTick);
@@ -1528,27 +1599,70 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
                 </button>
               </div>
             ) : (
-              <div className="toolbar-inline compact">
-                <label className="editor-field small grow">
-                  <span>Proyecto existente</span>
-                  <select
-                    value={selectedProject}
-                    onChange={(event) => {
-                      setSelectedProject(event.target.value);
-                      setError("");
-                    }}
-                  >
-                    <option value="">selecciona un proyecto</option>
-                    {projects.map((project) => (
-                      <option key={project.slug} value={project.slug}>
-                        {project.name} · {project.relativePath}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !runtimeCommandReady}>
-                  Abrir proyecto
-                </button>
+              <div className="agent-project-selector">
+                <div className="agent-project-filter-panel">
+                  <label className="editor-field small grow">
+                    <span>Filtrar proyecto</span>
+                    <input
+                      value={projectFilter}
+                      onChange={(event) => setProjectFilter(event.target.value)}
+                      placeholder="buscar sesion-20260601004224, continuity, drone..."
+                    />
+                  </label>
+                  <div className="agent-project-filter-actions">
+                    {latestGeneratedProject ? (
+                      <button
+                        type="button"
+                        className="tool-button agent-latest-project-button"
+                        onClick={() => {
+                          setLaunchMode("existing");
+                          setSelectedProject(latestGeneratedProject.slug);
+                          setProjectFilter(latestGeneratedProject.slug);
+                          setError("");
+                          onSceneFocus?.(latestGeneratedProject.slug);
+                        }}
+                        title={`Seleccionar ultimo proyecto generado: ${latestGeneratedProject.slug}`}
+                      >
+                        Ultimo generado: {latestGeneratedProject.slug}
+                      </button>
+                    ) : null}
+                    {projectFilter ? (
+                      <button
+                        type="button"
+                        className="tool-button"
+                        onClick={() => setProjectFilter("")}
+                      >
+                        Limpiar filtro
+                      </button>
+                    ) : null}
+                  </div>
+                  <small className="agent-project-filter-meta">
+                    {projectFilter ? `${filteredProjects.length} coincidencias` : `${projects.length} proyectos`}
+                    {hiddenFilteredProjectCount ? ` · mostrando 80, oculta ${hiddenFilteredProjectCount} hasta filtrar mas` : ""}
+                  </small>
+                </div>
+                <div className="toolbar-inline compact">
+                  <label className="editor-field small grow">
+                    <span>Proyecto existente</span>
+                    <select
+                      value={selectedProject}
+                      onChange={(event) => {
+                        setSelectedProject(event.target.value);
+                        setError("");
+                      }}
+                    >
+                      <option value="">selecciona un proyecto</option>
+                      {visibleProjects.map((project) => (
+                        <option key={project.slug} value={project.slug}>
+                          {project.slug === latestGeneratedProject?.slug ? "ultimo · " : ""}{project.name} · {project.relativePath}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !runtimeCommandReady}>
+                    Abrir proyecto
+                  </button>
+                </div>
               </div>
             )}
 
@@ -1572,31 +1686,32 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
               </small>
             </div>
 
-            {launchMode === "existing" && selectedProject ? (
-              <div className={`agent-retry-card ${retryableTask ? "is-ready" : "is-empty"}`}>
+            {selectedProject ? (
+              <div className={`agent-retry-card ${retryableTask ? "is-ready" : "is-empty"} ${retryableTaskIsBlocked ? "is-blocked" : ""}`}>
                 <div>
-                  <strong>{retryableTask ? "Ultima orden recuperada" : "Orden recuperable"}</strong>
+                  <strong>{retryableTaskIsBlocked ? "Tarea bloqueada recuperable" : retryableTask ? "Orden recuperada" : "Orden recuperable"}</strong>
                   <span>
                     {isLoadingRetryableTask
                       ? "buscando backups y cola del runtime..."
                       : retryableTask
-                        ? `${retryableTask.id} · ${retryableTask.status || "sin estado"}`
-                        : "no hay orden anterior lista para retomar"}
+                        ? `${retryableTask.id} · ${retryableTask.status || "sin estado"} · mismo workspace`
+                        : "no hay orden anterior lista para relanzar"}
                   </span>
                   <small>
                     {retryableTask?.goalPreview
                       ? retryableTask.goalPreview
-                      : "La accion trabaja sobre el mismo workspace; no crea proyecto nuevo ni blanquea archivos."}
+                      : "Cuando una tarea queda bloqueada o falla, este panel llama retryable-task/relaunch con limpieza de cola y sin crear proyecto nuevo."}
                   </small>
                 </div>
                 {retryableTask ? (
                   <button
                     type="button"
-                    className="tool-button primary"
+                    className="tool-button primary retry-launch-button"
                     onClick={handleRelaunchRetryableTask}
                     disabled={!runtimeCommandReady || isRelaunchingTask || isSending}
+                    title="Relanza la tarea recuperada sobre el mismo proyecto con forceClean=true"
                   >
-                    {isRelaunchingTask ? "Retomando..." : "Retomar aqui"}
+                    {isRelaunchingTask ? "Relanzando..." : retryableTaskButtonLabel}
                   </button>
                 ) : null}
               </div>
@@ -1990,6 +2105,23 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
                 {hablaState.debug.map((item, index) => (
                   <code key={`${index}-${item}`}>{item}</code>
                 ))}
+              </div>
+            ) : null}
+
+            {laceStatus ? (
+              <div className="agent-cycle-grid">
+                <article className={`agent-cycle-card ${laceStatusActive ? "is-current" : "is-pending"}`}>
+                  <strong>Automejora LACE {laceStatusActive ? "activa" : "inactiva"}</strong>
+                  <span>{laceStatus?.closureGateStatus || "sin compuerta"}</span>
+                  <small>{laceStatus?.runtimeMode || session?.runtimeMode || "sin modo"}</small>
+                  <p>Ciclos {laceValidCycles}/{laceRequiredCycles}. Faltan {laceMissingCycles}.</p>
+                </article>
+                <article className={`agent-cycle-card is-${laceStatus?.closureGateStatus || "pending"}`}>
+                  <strong>Cierre LACE</strong>
+                  <span>{laceStatus?.closureGateReason || "sin razon"}</span>
+                  <small>Ciclo actual {laceStatus?.currentCycle || 0}</small>
+                  <p>Salida temprana: {laceStatus?.earlyExitAllowed ? "permitida" : "no permitida"}.</p>
+                </article>
               </div>
             ) : null}
 

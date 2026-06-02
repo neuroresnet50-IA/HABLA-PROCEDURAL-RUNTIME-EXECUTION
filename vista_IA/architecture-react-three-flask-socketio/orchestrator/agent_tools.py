@@ -18,6 +18,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
+try:
+    from orchestrator.runtime_task_cleaner import sweep_with_broom
+except ImportError:  # pragma: no cover - direct script execution fallback.
+    from runtime_task_cleaner import sweep_with_broom  # type: ignore
+
 
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 AUDIT_LOG = Path("runtime/agent_tool_invocations.jsonl")
@@ -170,6 +175,14 @@ def compact_payload(command: str, status_code: int, payload: dict[str, Any], ful
         compact["report"] = compact_report(payload.get("report"))
         compact["observerEvent"] = compact_event(payload.get("observerEvent"))
         compact["fullReportHint"] = "Use --full only when full evidence is required."
+    elif command in {"to-sweep-with-a-broom", "broom"}:
+        compact["phase"] = payload.get("phase")
+        compact["taskId"] = payload.get("taskId")
+        compact["reportPath"] = payload.get("reportPath")
+        compact["actions"] = payload.get("actions")
+        compact["ignoredResidue"] = payload.get("ignoredResidue")
+        compact["warnings"] = payload.get("warnings")
+        compact["fullReportHint"] = "Use --full for the full broom audit report."
     elif command in {"continuity", "prompt-flight"}:
         report = payload.get("report") if isinstance(payload.get("report"), dict) else {}
         run = payload.get("run") if isinstance(payload.get("run"), dict) else {}
@@ -193,6 +206,17 @@ def compact_payload(command: str, status_code: int, payload: dict[str, Any], ful
 def run_command(args: argparse.Namespace) -> tuple[int, dict[str, Any]]:
     base_url = args.base_url
     timeout_seconds = int(getattr(args, "timeout_seconds", 30))
+    if args.command in {"to-sweep-with-a-broom", "broom"}:
+        repo_root = Path(__file__).resolve().parents[1]
+        project_root = repo_root / "workspace" / "projects" / args.project
+        report = sweep_with_broom(
+            project_root,
+            task_id=args.task_id or None,
+            phase=args.phase,
+            dry_run=bool(args.dry_run),
+            reason=args.reason,
+        )
+        return (200 if report.get("ok") else 1), report
     if args.command == "health":
         return request_json(base_url, "GET", "/api/health", timeout_seconds=timeout_seconds)
     if args.command == "observer-status":
@@ -251,6 +275,20 @@ def build_parser() -> argparse.ArgumentParser:
     add_output_flag(subparsers.add_parser("health", help="Check backend health."))
     add_output_flag(subparsers.add_parser("observer-status", help="Read Observer state without starting a new mission."))
     add_output_flag(subparsers.add_parser("observe", help="Ask Observer for one explicit observation."))
+
+    broom = add_output_flag(subparsers.add_parser("to-sweep-with-a-broom", help="Sweep stale per-task runtime residue without deleting canonical evidence."))
+    broom.add_argument("project")
+    broom.add_argument("--task-id", default="", help="Task id that defines the current classification scope.")
+    broom.add_argument("--phase", default="manual", choices=["before_task", "after_task", "manual", "recovery"], help="When the broom is being used.")
+    broom.add_argument("--reason", default="agent_requested_broom", help="Audit reason for this broom invocation.")
+    broom.add_argument("--dry-run", action="store_true", help="Only report what would be swept.")
+
+    broom_alias = add_output_flag(subparsers.add_parser("broom", help="Alias for to-sweep-with-a-broom."))
+    broom_alias.add_argument("project")
+    broom_alias.add_argument("--task-id", default="", help="Task id that defines the current classification scope.")
+    broom_alias.add_argument("--phase", default="manual", choices=["before_task", "after_task", "manual", "recovery"], help="When the broom is being used.")
+    broom_alias.add_argument("--reason", default="agent_requested_broom", help="Audit reason for this broom invocation.")
+    broom_alias.add_argument("--dry-run", action="store_true", help="Only report what would be swept.")
 
     scanner = add_output_flag(subparsers.add_parser("scanner", help="Run final code scanner for a project."))
     scanner.add_argument("project")

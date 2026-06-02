@@ -16,6 +16,7 @@ import subprocess
 import sys
 import threading
 import time
+import urllib.parse
 import urllib.error
 import urllib.request
 from copy import deepcopy
@@ -54,6 +55,8 @@ from orchestrator.complexity_estimator import estimate_complexity
 from orchestrator.email_command_plane import EmailCommandConfig, EmailCommandPlane
 from orchestrator.live_reviewer import build_reviewer_status, load_reviewer_events
 from orchestrator.observer_plane import ObserverConfig, ObserverPlane, build_observer_findings_report
+from orchestrator.observer_ui_behavior_tree import build_observer_ui_behavior_tree, persist_observer_ui_behavior_tree
+from orchestrator.runtime_task_cleaner import sweep_with_broom
 from orchestrator.state_store import StateStore
 from observer_runtime_service import ObserverRuntimeFacade
 from project_graph import (
@@ -193,6 +196,20 @@ OBSERVER_FINDINGS_REPORT_NAME = "observer_findings.json"
 FROZEN_SNIPER_REPORT_NAME = "frozen_sniper_recovery_report.json"
 FROZEN_SNIPER_CONFIRMATION = "FROZEN_SNIPER"
 FILE_WRITE_LEDGER_NAME = "file_write_ledger.jsonl"
+UI_ACTION_QUEUE_NAME = "ui_action_queue.json"
+UI_ACTION_HISTORY_NAME = "ui_action_history.jsonl"
+UI_ACTION_ALLOWED_TOOLS = {
+    "scanner": "Scanner final",
+    "broom": "Escoba runtime",
+    "web_research": "Web research seguro",
+    "typewriter": "Typewriter final",
+    "integrity": "Integrity scan",
+    "lace_gate": "LACE closure gate",
+}
+UI_ACTION_SENSITIVE_QUERY_PATTERN = re.compile(
+    r"\b(api[_-]?key|token|secret|password|passwd|private[_-]?key|credential|credencial|secreto|contrasena)\b",
+    flags=re.IGNORECASE,
+)
 SANDBOX_HOST = os.environ.get("NEURO_LACE_SANDBOX_HOST", "127.0.0.1")
 SANDBOX_PORT_START = int(os.environ.get("NEURO_LACE_SANDBOX_PORT_START", "5600"))
 SANDBOX_PORT_END = int(os.environ.get("NEURO_LACE_SANDBOX_PORT_END", "5699"))
@@ -213,6 +230,8 @@ sandbox_service = SandboxService(
 )
 code_scanner_locks: Dict[str, threading.Lock] = {}
 integrity_action_locks: Dict[str, threading.Lock] = {}
+ui_action_lock = threading.Lock()
+ui_action_recent_signatures: Dict[str, float] = {}
 runtime_action_locks_lock = threading.Lock()
 frontend_asset_cache: Dict[str, Dict[str, Any]] = {}
 frontend_asset_cache_lock = threading.Lock()
@@ -1710,6 +1729,19 @@ def build_default_algorithm(node: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def build_sequential_algorithm_edges(steps: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    edges: List[Dict[str, str]] = []
+    previous_id = ""
+    for step in steps:
+        step_id = str(step.get("id") or "").strip()
+        if not step_id:
+            continue
+        if previous_id and previous_id != step_id:
+            edges.append({"from": previous_id, "to": step_id, "label": ""})
+        previous_id = step_id
+    return edges
+
+
 def normalize_algorithm(algorithm: Any, node: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(algorithm, dict):
         return build_default_algorithm(node)
@@ -1770,6 +1802,9 @@ def normalize_algorithm(algorithm: Any, node: Dict[str, Any]) -> Dict[str, Any]:
                 "label": str(edge.get("label") or ""),
             }
         )
+
+    if not normalized_edges and len(normalized_steps) > 1:
+        normalized_edges = build_sequential_algorithm_edges(normalized_steps)
 
     return {
         "title": str(algorithm.get("title") or f"Algoritmo interno de {node.get('name') or node.get('id')}"),
@@ -2946,6 +2981,23 @@ def emit_observer_event(payload: Dict[str, Any]) -> None:
     event = {key: value for key, value in dict(payload or {}).items() if value is not None}
     socketio.emit("agent:observer", event)
     socketio.emit("agent:visual", event)
+    mouse_action = observer_event_to_mouse_action(event)
+    if mouse_action is not None:
+        mouse_result = enqueue_operational_mouse_action(mouse_action, cooldown_seconds=45)
+        if not mouse_result.get("deduped"):
+            socketio.emit(
+                "agent:visual",
+                {
+                    "op": "operational_mouse_action_queued",
+                    "projectSlug": mouse_action.get("projectSlug"),
+                    "phase": "operational-mouse",
+                    "status": "queued",
+                    "message": f"Mouse operativo preparado: {mouse_action.get('targetToolLabel')}",
+                    "targetTool": mouse_action.get("targetTool"),
+                    "actionId": mouse_action.get("actionId"),
+                    "expectedEvidence": mouse_action.get("expectedEvidence"),
+                },
+            )
 
 
 observer_plane = ObserverPlane(
@@ -3601,6 +3653,48 @@ def list_continuity_probe_runs():
     return jsonify({"ok": True, "runs": reports, "memoryRuns": memory_runs})
 
 
+PROMPT_FLIGHT_WORKER_REQUIRED_MODES = {"safe_canary", "real_session_guarded", "ui_session_rest"}
+
+
+def _prompt_flight_worker_diagnostics() -> Dict[str, Any]:
+    diagnostics = agent_runtime.codex_runtime_diagnostics()
+    return {
+        "ok": True,
+        "result": "worker_runtime_diagnostics",
+        "diagnostics": diagnostics,
+    }
+
+
+def _prompt_flight_worker_gate(mode: str) -> dict[str, Any] | None:
+    normalized_mode = str(mode or "").strip().lower()
+    diagnostics = agent_runtime.codex_runtime_diagnostics()
+    if normalized_mode not in PROMPT_FLIGHT_WORKER_REQUIRED_MODES:
+        return None
+    if diagnostics.get("promptFlightWorkerReady") is True:
+        return None
+    return {
+        "ok": False,
+        "result": "prompt_flight_blocked",
+        "reason": "worker_runtime_not_verified",
+        "message": "Prompt Flight requires a verified worker runtime before creating a batch or case.",
+        "mode": normalized_mode,
+        "effectiveSandboxMode": diagnostics.get("effectiveSandboxMode"),
+        "effectiveApprovalPolicy": diagnostics.get("effectiveApprovalPolicy"),
+        "allowDangerFullAccess": diagnostics.get("allowDangerFullAccess"),
+        "usesDangerBypass": diagnostics.get("usesDangerBypass"),
+        "usesWorkspaceWrite": diagnostics.get("usesWorkspaceWrite"),
+        "safeCommandSummary": diagnostics.get("safeCommandSummary"),
+        "blockers": diagnostics.get("blockers") or [],
+        "requiredAction": diagnostics.get("requiredAction") or "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+        "failedStages": ["worker_runtime_gate"],
+    }
+
+
+@app.get("/api/continuity-probe/prompt-flight/worker-diagnostics")
+def get_prompt_flight_worker_diagnostics():
+    return jsonify(_prompt_flight_worker_diagnostics())
+
+
 @app.post("/api/continuity-probe/prompt-flight")
 def run_continuity_prompt_flight():
     payload = request.get_json(silent=True) or {}
@@ -3612,11 +3706,15 @@ def run_continuity_prompt_flight():
         mode = str(payload.get("mode") or "trace_only").strip().lower()
         if mode not in module.PROMPT_FLIGHT_MODES:
             return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.PROMPT_FLIGHT_MODES)}), 400
+        gate_block = _prompt_flight_worker_gate(mode)
+        if gate_block is not None:
+            return jsonify(gate_block), 409
         trace_id = module.safe_slug(payload.get("traceId") or module.new_prompt_trace_id(), "prompt-flight")
         project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
         base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
         base_url = str(base_url_raw or "").rstrip("/")
-        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 90), 300))
+        max_timeout = int(getattr(module, "MAX_PROMPT_FLIGHT_TIMEOUT_SECONDS", 1200))
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 90), max_timeout))
         include_harness = bool(payload.get("includeHarness", True))
         report = module.run_prompt_flight_probe(
             repo_root=PROJECT_ROOT,
@@ -4845,6 +4943,566 @@ def load_json_file(path: Path, fallback: Any) -> Any:
         return fallback
 
 
+def ui_action_runtime_dir() -> Path:
+    runtime_dir = PROJECT_ROOT / "runtime"
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+    return runtime_dir
+
+
+def ui_action_queue_path() -> Path:
+    return ui_action_runtime_dir() / UI_ACTION_QUEUE_NAME
+
+
+def ui_action_history_path() -> Path:
+    return ui_action_runtime_dir() / UI_ACTION_HISTORY_NAME
+
+
+def atomic_write_json_file(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f".{path.name}.tmp")
+    tmp_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_path.replace(path)
+
+
+def load_ui_action_queue() -> List[Dict[str, Any]]:
+    payload = load_json_file(ui_action_queue_path(), [])
+    if isinstance(payload, dict) and isinstance(payload.get("actions"), list):
+        payload = payload["actions"]
+    return [item for item in payload if isinstance(item, dict)] if isinstance(payload, list) else []
+
+
+def ui_action_time(value: Any) -> datetime | None:
+    if not value:
+        return None
+    raw = str(value).strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def ui_action_is_expired(action: Dict[str, Any]) -> bool:
+    expires_at = ui_action_time(action.get("expiresAt"))
+    return bool(expires_at and expires_at <= datetime.now(timezone.utc))
+
+
+def ui_action_is_queue_active(action: Dict[str, Any]) -> bool:
+    return (
+        isinstance(action, dict)
+        and str(action.get("status") or "queued") in {"queued", "running"}
+        and not ui_action_is_expired(action)
+    )
+
+
+def save_ui_action_queue(actions: List[Dict[str, Any]]) -> None:
+    active_actions = [action for action in actions if ui_action_is_queue_active(action)]
+    atomic_write_json_file(ui_action_queue_path(), active_actions[-100:])
+
+
+def append_ui_action_history(record: Dict[str, Any]) -> None:
+    history_path = ui_action_history_path()
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with history_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=True, sort_keys=True) + "\n")
+
+
+def ui_action_id() -> str:
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    return f"UI-ACTION-{stamp}"
+
+
+def normalize_ui_action_tool(value: Any) -> str:
+    tool = str(value or "").strip().lower().replace("-", "_")
+    return tool if tool in UI_ACTION_ALLOWED_TOOLS else ""
+
+
+def compact_tool_result(payload: Any) -> Dict[str, Any]:
+    if not isinstance(payload, dict):
+        return {"value": str(payload)[:500]}
+    compact: Dict[str, Any] = {}
+    for key in ("ok", "error", "message", "projectId", "reportPath", "artifactPath", "checkpointPath", "url", "status"):
+        if key in payload:
+            compact[key] = payload.get(key)
+    report = payload.get("report")
+    if isinstance(report, dict):
+        compact["reportSummary"] = report.get("summary") or report.get("validation") or {}
+    return compact
+
+
+def queue_tasks_from_payload(payload: Any) -> List[Dict[str, Any]]:
+    if isinstance(payload, dict) and isinstance(payload.get("tasks"), list):
+        payload = payload.get("tasks")
+    if not isinstance(payload, list):
+        return []
+    return [item for item in payload if isinstance(item, dict)]
+
+
+def task_history_ids(history_path: Path) -> set[str]:
+    ids: set[str] = set()
+    try:
+        lines = history_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return ids
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        stack = [record]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, dict):
+                for key in ("task_id", "taskId", "id", "currentTaskId"):
+                    value = item.get(key)
+                    if isinstance(value, str) and value.startswith("LACE-"):
+                        ids.add(value)
+                stack.extend(item.values())
+            elif isinstance(item, list):
+                stack.extend(item)
+    return ids
+
+
+LACE_TASK_ID_PATTERN = re.compile(r"^(LACE-\d{8})-(\d{3})$")
+LACE_DOC_CYCLE_PATTERN = re.compile(r"ciclo-(\d{2,3})\.md$")
+LACE_CHECKPOINT_CYCLE_PATTERN = re.compile(r"lace-cycle-(\d{2,3})")
+
+
+def lace_cycle_from_task(task_id: Any) -> int | None:
+    match = LACE_TASK_ID_PATTERN.match(str(task_id or ""))
+    if not match:
+        return None
+    try:
+        return int(match.group(2))
+    except ValueError:
+        return None
+
+
+def lace_task_prefix(task_id: Any) -> str:
+    match = LACE_TASK_ID_PATTERN.match(str(task_id or ""))
+    return match.group(1) if match else ""
+
+
+def lace_cycle_from_expected_file(task: Dict[str, Any]) -> int | None:
+    for item in task.get("expected_files") or []:
+        match = LACE_DOC_CYCLE_PATTERN.search(str(item or ""))
+        if match:
+            try:
+                return int(match.group(1))
+            except ValueError:
+                return None
+    return None
+
+
+def lace_marker_validation_commands(cycle: int, expected_file: str) -> List[str]:
+    return [
+        f"test -f {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} PROBLEMAS]' {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} MEJORA]' {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} COMPLETADO]' {expected_file}",
+    ]
+
+
+def build_lace_cycle_task(task_id: str, cycle: int, required_cycles: int, dependency: str | None, mode: str) -> Dict[str, Any]:
+    expected_file = f"docs/lace_cycles/ciclo-{cycle:02d}.md"
+    dependencies = [dependency] if dependency else []
+    return {
+        "id": task_id,
+        "title": f"LACE Automejora Ciclo {cycle}",
+        "goal": (
+            f"Ejecutar el ciclo LACE {cycle} de {required_cycles}: analizar evidencia real, "
+            f"aplicar mejora segura si corresponde, escribir {expected_file}, crear checkpoint lace-cycle-{cycle:03d} "
+            "y validar marcadores canonicos antes de cierre."
+        ),
+        "status": "pending",
+        "priority": max(1, 50 - cycle),
+        "dependencies": dependencies,
+        "expected_files": [expected_file],
+        "validation_commands": lace_marker_validation_commands(cycle, expected_file),
+        "timeout_seconds": 2700,
+        "max_retries": 3,
+        "mode": mode if mode in {"build", "medium", "long-run", "smoke"} else "long-run",
+        "checkpoint_key": f"lace-cycle-{cycle:03d}-checkpoint",
+        "kind": "lace_cycle",
+        "execution_strategy": "codex_worker",
+        "selector_reason": "lace_dependency_repair_enqueue_missing_cycle",
+    }
+
+
+def build_lace_dependency_status(project_slug: str, project_dir: Path) -> Dict[str, Any]:
+    runtime_dir = project_dir / "runtime"
+    queue_tasks = queue_tasks_from_payload(load_json_file(runtime_dir / "task_queue.json", []))
+    project_state_payload = load_json_file(runtime_dir / "project_state.json", {})
+    estimate_payload = load_json_file(runtime_dir / "complexity_estimate.json", {})
+    project_state = project_state_payload if isinstance(project_state_payload, dict) else {}
+    estimate = estimate_payload if isinstance(estimate_payload, dict) else {}
+    completed_ids = {str(item) for item in project_state.get("completed_tasks") or [] if str(item).strip()}
+    completed_ids.update(task_history_ids(runtime_dir / "task_history.jsonl"))
+    queue_ids = {str(task.get("id") or "") for task in queue_tasks if str(task.get("id") or "").strip()}
+    # TaskQueue validation requires dependencies to exist in runtime/task_queue.json.
+    # History/state ids are evidence, but they cannot satisfy the queue DAG contract.
+    known_ids = set(queue_ids)
+    lace_tasks = [task for task in queue_tasks if str(task.get("id") or "").startswith("LACE-") or str(task.get("kind") or "").startswith("lace")]
+    dependency_findings: List[Dict[str, Any]] = []
+    for task in lace_tasks:
+        task_id = str(task.get("id") or "")
+        dependencies = [str(item) for item in task.get("dependencies") or [] if str(item).strip()]
+        missing = [dependency for dependency in dependencies if dependency not in known_ids]
+        if missing:
+            dependency_findings.append({
+                "taskId": task_id,
+                "status": str(task.get("status") or "unknown"),
+                "missingDependencies": missing,
+                "dependencies": dependencies,
+            })
+    checkpoints = [str(item) for item in project_state.get("checkpoints") or [] if str(item).strip()]
+    lace_cycle_docs = sorted((project_dir / "docs" / "lace_cycles").glob("ciclo-*.md")) if (project_dir / "docs" / "lace_cycles").is_dir() else []
+    lace_cycle_checkpoints = [item for item in checkpoints if item.startswith("lace-cycle-")]
+    doc_cycles: Dict[int, str] = {}
+    for doc_path in lace_cycle_docs:
+        match = LACE_DOC_CYCLE_PATTERN.search(doc_path.name)
+        if not match:
+            continue
+        try:
+            cycle = int(match.group(1))
+        except ValueError:
+            continue
+        doc_cycles.setdefault(cycle, f"docs/lace_cycles/{doc_path.name}")
+    checkpoint_cycles: Dict[int, List[str]] = {}
+    for checkpoint in lace_cycle_checkpoints:
+        match = LACE_CHECKPOINT_CYCLE_PATTERN.search(checkpoint)
+        if not match:
+            continue
+        try:
+            cycle = int(match.group(1))
+        except ValueError:
+            continue
+        checkpoint_cycles.setdefault(cycle, []).append(checkpoint)
+    task_by_cycle: Dict[int, Dict[str, Any]] = {}
+    for task in lace_tasks:
+        cycle = lace_cycle_from_task(task.get("id")) or lace_cycle_from_expected_file(task)
+        if cycle is not None:
+            task_by_cycle.setdefault(cycle, task)
+    try:
+        recommended = int(estimate.get("recommended_lace_cycles") or project_state.get("lace_required_cycles") or 0)
+    except (TypeError, ValueError):
+        recommended = 0
+    valid_like = min(len(lace_cycle_docs), len(lace_cycle_checkpoints))
+    missing_cycles = max(0, recommended - valid_like)
+    blocked = bool(dependency_findings or missing_cycles > 0 or any(item in {"lace-closure-gate-blocked", "lace-closure-gate-pending"} for item in checkpoints))
+
+    dependency_findings_by_task = {str(item.get("taskId") or ""): item for item in dependency_findings}
+    graph_nodes: List[Dict[str, Any]] = []
+    graph_edges: List[Dict[str, Any]] = []
+    max_cycle = max([recommended, *doc_cycles.keys(), *checkpoint_cycles.keys(), *task_by_cycle.keys()], default=0)
+    for cycle in range(1, max_cycle + 1):
+        task = task_by_cycle.get(cycle)
+        task_id = str(task.get("id") or f"LACE-CYCLE-{cycle:03d}") if task else f"LACE-CYCLE-{cycle:03d}"
+        finding = dependency_findings_by_task.get(task_id) or {}
+        dependencies = [str(item) for item in (task or {}).get("dependencies") or [] if str(item).strip()]
+        missing_dependencies = [str(item) for item in finding.get("missingDependencies") or [] if str(item).strip()]
+        has_doc = cycle in doc_cycles
+        has_checkpoint = cycle in checkpoint_cycles
+        if not task:
+            graph_status = "missing_task" if cycle <= recommended else "orphan_evidence"
+        elif missing_dependencies:
+            graph_status = "ghost_dependency"
+        elif has_doc and has_checkpoint:
+            graph_status = "evidence_present"
+        elif has_doc or has_checkpoint:
+            graph_status = "partial_evidence"
+        else:
+            graph_status = str(task.get("status") or "pending")
+        graph_nodes.append({
+            "id": task_id,
+            "label": f"Ciclo {cycle:02d}",
+            "cycle": cycle,
+            "kind": "lace_cycle",
+            "status": graph_status,
+            "taskStatus": str((task or {}).get("status") or "missing"),
+            "taskId": task_id if task else "",
+            "hasTask": bool(task),
+            "hasDoc": has_doc,
+            "hasCheckpoint": has_checkpoint,
+            "docPath": doc_cycles.get(cycle, ""),
+            "checkpointCount": len(checkpoint_cycles.get(cycle, [])),
+            "dependencies": dependencies,
+            "missingDependencies": missing_dependencies,
+        })
+        if dependencies:
+            for dependency in dependencies:
+                graph_edges.append({
+                    "from": dependency,
+                    "to": task_id,
+                    "status": "missing" if dependency not in known_ids else "linked",
+                })
+        elif cycle > 1:
+            previous_task = task_by_cycle.get(cycle - 1)
+            previous_id = str(previous_task.get("id") or f"LACE-CYCLE-{cycle - 1:03d}") if previous_task else f"LACE-CYCLE-{cycle - 1:03d}"
+            graph_edges.append({
+                "from": previous_id,
+                "to": task_id,
+                "status": "expected_sequence" if task else "missing_task",
+            })
+
+    return {
+        "ok": True,
+        "projectId": project_slug,
+        "generatedAt": utc_now(),
+        "lace": {
+            "active": recommended > 0,
+            "requiredCycles": recommended,
+            "cycleDocs": len(lace_cycle_docs),
+            "cycleCheckpoints": len(lace_cycle_checkpoints),
+            "validCycleEvidenceCount": valid_like,
+            "missingCycles": missing_cycles,
+            "closureBlocked": blocked,
+            "closureStatus": "blocked" if blocked else "ok",
+        },
+        "queue": {
+            "taskCount": len(queue_tasks),
+            "laceTaskCount": len(lace_tasks),
+            "knownTaskIds": len(known_ids),
+        },
+        "dependencyFindings": dependency_findings,
+        "ghostDependencies": sorted({dep for finding in dependency_findings for dep in finding.get("missingDependencies", [])}),
+        "graph": {
+            "nodes": graph_nodes,
+            "edges": graph_edges,
+            "requiredCycles": recommended,
+            "status": "blocked" if blocked else "ok",
+        },
+        "evidence": {
+            "taskQueue": "runtime/task_queue.json",
+            "projectState": "runtime/project_state.json",
+            "complexityEstimate": "runtime/complexity_estimate.json",
+            "laceCycleDocsDir": "docs/lace_cycles",
+        },
+    }
+
+
+def build_lace_repair_plan(project_slug: str, project_dir: Path) -> Dict[str, Any]:
+    status = build_lace_dependency_status(project_slug, project_dir)
+    runtime_dir = project_dir / "runtime"
+    queue_payload = load_json_file(runtime_dir / "task_queue.json", [])
+    queue_tasks = queue_tasks_from_payload(queue_payload)
+    project_state_payload = load_json_file(runtime_dir / "project_state.json", {})
+    estimate_payload = load_json_file(runtime_dir / "complexity_estimate.json", {})
+    project_state = project_state_payload if isinstance(project_state_payload, dict) else {}
+    estimate = estimate_payload if isinstance(estimate_payload, dict) else {}
+    mode = str(estimate.get("runtime_mode") or project_state.get("mode") or "long-run")
+    required = int(status.get("lace", {}).get("requiredCycles") or 0)
+
+    known_ids = {str(task.get("id") or "") for task in queue_tasks if str(task.get("id") or "").strip()}
+
+    known_by_cycle: Dict[int, str] = {}
+    prefixes: list[tuple[int, str]] = []
+    for task_id in sorted(known_ids):
+        cycle = lace_cycle_from_task(task_id)
+        if cycle is None:
+            continue
+        known_by_cycle.setdefault(cycle, task_id)
+        prefix = lace_task_prefix(task_id)
+        if prefix:
+            prefixes.append((cycle, prefix))
+    for task in queue_tasks:
+        task_id = str(task.get("id") or "")
+        if not task_id.startswith("LACE-"):
+            continue
+        cycle = lace_cycle_from_task(task_id) or lace_cycle_from_expected_file(task)
+        if cycle is not None:
+            known_by_cycle.setdefault(cycle, task_id)
+
+    preferred_prefix = sorted(prefixes, key=lambda item: item[0])[-1][1] if prefixes else f"LACE-{datetime.now(timezone.utc).strftime('%Y%m%d')}"
+    cycles_to_create: set[int] = set()
+    valid_like = int(status.get("lace", {}).get("validCycleEvidenceCount") or 0)
+    for cycle in range(1, required + 1):
+        if cycle <= valid_like and cycle in known_by_cycle:
+            continue
+        if cycle not in known_by_cycle:
+            cycles_to_create.add(cycle)
+
+    for ghost in status.get("ghostDependencies") or []:
+        ghost_cycle = lace_cycle_from_task(ghost)
+        if ghost_cycle and ghost_cycle <= max(required, ghost_cycle) and ghost not in known_ids:
+            cycles_to_create.add(ghost_cycle)
+
+    planned_tasks: list[Dict[str, Any]] = []
+    planned_by_cycle = dict(known_by_cycle)
+    for cycle in sorted(cycles_to_create):
+        if cycle in planned_by_cycle:
+            continue
+        task_id = f"{preferred_prefix}-{cycle:03d}"
+        if task_id in known_ids:
+            planned_by_cycle[cycle] = task_id
+            continue
+        dependency = planned_by_cycle.get(cycle - 1) if cycle > 1 else None
+        task = build_lace_cycle_task(task_id, cycle, max(required, cycle), dependency, mode)
+        planned_tasks.append(task)
+        planned_by_cycle[cycle] = task_id
+        known_ids.add(task_id)
+
+    candidate_queue = [*queue_tasks, *planned_tasks]
+    validation_error = ""
+    try:
+        from orchestrator.task_queue import validate_queue as validate_runtime_task_queue
+        validate_runtime_task_queue(candidate_queue)
+    except Exception as error:  # surfaced to UI; no write happens when invalid.
+        validation_error = str(error)
+
+    return {
+        "ok": not validation_error,
+        "projectId": project_slug,
+        "generatedAt": utc_now(),
+        "statusBefore": status,
+        "plannedTasks": planned_tasks,
+        "plannedTaskIds": [task["id"] for task in planned_tasks],
+        "validationError": validation_error,
+        "queueFormat": "dict" if isinstance(queue_payload, dict) else "list",
+        "requiredCycles": required,
+        "validCycleEvidenceCount": valid_like,
+        "missingCycles": max(0, required - valid_like),
+    }
+
+
+def persist_lace_repair_plan(project_dir: Path, plan: Dict[str, Any], *, applied: bool) -> Dict[str, str]:
+    runtime_dir = project_dir / "runtime"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    artifacts_dir = runtime_dir / "artifacts" / "lace_dependency_repair"
+    checkpoints_dir = runtime_dir / "checkpoints"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    checkpoints_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = artifacts_dir / f"{stamp}-lace-dependency-repair.json"
+    checkpoint_path = checkpoints_dir / f"lace-dependency-repair-{stamp}.json"
+    payload = {**plan, "applied": applied, "persistedAt": utc_now()}
+    serialized = json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True) + "\n"
+    artifact_path.write_text(serialized, encoding="utf-8")
+    checkpoint_path.write_text(serialized, encoding="utf-8")
+    return {"artifactPath": str(artifact_path), "checkpointPath": str(checkpoint_path)}
+
+
+def apply_lace_repair_plan(project_dir: Path, plan: Dict[str, Any]) -> None:
+    runtime_dir = project_dir / "runtime"
+    queue_path = runtime_dir / "task_queue.json"
+    queue_payload = load_json_file(queue_path, [])
+    queue_tasks = queue_tasks_from_payload(queue_payload)
+    task_ids = {str(task.get("id") or "") for task in queue_tasks}
+    tasks_to_add = [task for task in plan.get("plannedTasks") or [] if str(task.get("id") or "") not in task_ids]
+    candidate = [*queue_tasks, *tasks_to_add]
+    from orchestrator.task_queue import validate_queue as validate_runtime_task_queue
+    validate_runtime_task_queue(candidate)
+    if isinstance(queue_payload, dict):
+        next_payload = {**queue_payload, "tasks": candidate}
+    else:
+        next_payload = candidate
+    atomic_write_json_file(queue_path, next_payload)
+
+
+def build_ui_mouse_action(
+    *,
+    target_tool: str,
+    project_slug: str,
+    source: str,
+    reason: str,
+    expected_evidence: Any = None,
+    auto_run: bool = True,
+    expires_seconds: int = 120,
+) -> Dict[str, Any]:
+    tool = normalize_ui_action_tool(target_tool)
+    if not tool:
+        raise ValueError("unsupported_ui_tool")
+    now_dt = datetime.now(timezone.utc)
+    now = now_dt.isoformat()
+    expires_at = (now_dt.timestamp() + max(10, min(int(expires_seconds or 120), 600)))
+    action = {
+        "actionId": ui_action_id(),
+        "status": "queued",
+        "createdAt": now,
+        "updatedAt": now,
+        "expiresAt": datetime.fromtimestamp(expires_at, timezone.utc).isoformat(),
+        "source": str(source or "control_plane"),
+        "targetTool": tool,
+        "targetToolLabel": UI_ACTION_ALLOWED_TOOLS[tool],
+        "targetSelector": f'[data-operational-tool="{tool}"]',
+        "action": "click",
+        "projectSlug": normalize_layer_name(project_slug),
+        "reason": str(reason or "runtime_requested_tool"),
+        "expectedEvidence": expected_evidence or {},
+        "autoRun": bool(auto_run),
+        "requiresAutonomousMode": True,
+        "requiresHuman": False,
+        "safetyLevel": "safe",
+    }
+    tree = build_observer_ui_behavior_tree(action)
+    tree_path = persist_observer_ui_behavior_tree(OBSERVER_ROOT, tree)
+    action["behaviorTree"] = tree
+    action["behaviorTreePath"] = tree_path
+    action["governedBy"] = "observer_behavior_tree"
+    return action
+
+
+def ui_action_signature(action: Dict[str, Any]) -> str:
+    return "|".join([
+        str(action.get("source") or ""),
+        str(action.get("projectSlug") or ""),
+        str(action.get("targetTool") or ""),
+        str(action.get("reason") or "")[:180],
+    ])
+
+
+def enqueue_operational_mouse_action(action: Dict[str, Any], *, cooldown_seconds: int = 45) -> Dict[str, Any]:
+    now = time.time()
+    signature = ui_action_signature(action)
+    with ui_action_lock:
+        for key, seen_at in list(ui_action_recent_signatures.items()):
+            if now - seen_at > max(cooldown_seconds, 60):
+                ui_action_recent_signatures.pop(key, None)
+        if signature and now - float(ui_action_recent_signatures.get(signature) or 0) < cooldown_seconds:
+            return {"ok": True, "deduped": True, "signature": signature}
+        actions = load_ui_action_queue()
+        for existing in actions:
+            if ui_action_is_queue_active(existing) and ui_action_signature(existing) == signature:
+                return {"ok": True, "deduped": True, "action": existing, "signature": signature}
+        actions.append(action)
+        save_ui_action_queue(actions)
+        append_ui_action_history({**action, "event": "queued"})
+        if signature:
+            ui_action_recent_signatures[signature] = now
+    socketio.emit("ui:mouse-action", action)
+    return {"ok": True, "action": action, "signature": signature}
+
+
+def observer_event_to_mouse_action(event: Dict[str, Any]) -> Dict[str, Any] | None:
+    phase = str(event.get("phase") or "").strip().lower()
+    action_name = str(event.get("action") or "").strip().lower()
+    project_slug = normalize_layer_name(event.get("projectSlug") or "")
+    if not project_slug:
+        return None
+    if phase == "observer:scanner-evidence" or action_name == "inspect_scanner_evidence":
+        return build_ui_mouse_action(
+            target_tool="scanner",
+            project_slug=project_slug,
+            source="observer_plane",
+            reason=str(event.get("reason") or "Scanner final requerido antes de cierre canonico."),
+            expected_evidence="runtime/artifacts/final_code_scanner_report.json",
+            auto_run=True,
+        )
+    if phase == "observer:file-integrity" or action_name == "inspect_file_integrity":
+        return build_ui_mouse_action(
+            target_tool="integrity",
+            project_slug=project_slug,
+            source="observer_plane",
+            reason=str(event.get("reason") or "Integrity scan requerido por hallazgos de evidencia."),
+            expected_evidence="runtime/artifacts/file_integrity_report.json",
+            auto_run=True,
+        )
+    return None
+
+
 def build_editor_lock_state(project_slug: str, project_dir: Path) -> Dict[str, Any]:
     active_statuses = {"queued", "preparing", "starting", "running"}
     terminal_state_statuses = {"blocked", "completed", "failed", "stopped"}
@@ -5319,6 +5977,266 @@ def persist_project_final_typewriter(project_id: str):
 
 
 
+@app.get("/api/ui-actions/queue")
+def get_ui_action_queue_endpoint():
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        save_ui_action_queue(actions)
+        actions = load_ui_action_queue()
+    return jsonify({"ok": True, "actions": actions})
+
+
+@app.post("/api/ui-actions/enqueue")
+def enqueue_ui_action_endpoint():
+    payload = request.get_json(silent=True) or {}
+    target_tool = normalize_ui_action_tool(payload.get("targetTool") or payload.get("tool"))
+    if not target_tool:
+        return jsonify({"ok": False, "error": "unsupported_ui_tool", "allowedTools": sorted(UI_ACTION_ALLOWED_TOOLS)}), 400
+    try:
+        expires_seconds = int(payload.get("expiresSeconds") or 120)
+    except (TypeError, ValueError):
+        expires_seconds = 120
+    try:
+        project_slug = str(
+            payload.get("projectSlug")
+            or payload.get("projectId")
+            or payload.get("project")
+            or payload.get("scene")
+            or payload.get("workspaceScene")
+            or ""
+        )
+        action = build_ui_mouse_action(
+            target_tool=target_tool,
+            project_slug=project_slug,
+            source=str(payload.get("source") or "control_plane"),
+            reason=str(payload.get("reason") or "runtime_requested_tool"),
+            expected_evidence=payload.get("expectedEvidence") or {},
+            auto_run=payload.get("autoRun") is not False,
+            expires_seconds=expires_seconds,
+        )
+    except ValueError:
+        return jsonify({"ok": False, "error": "unsupported_ui_tool", "allowedTools": sorted(UI_ACTION_ALLOWED_TOOLS)}), 400
+    if not action.get("projectSlug"):
+        return jsonify({"ok": False, "error": "project_required"}), 400
+    result = enqueue_operational_mouse_action(action, cooldown_seconds=0)
+    return jsonify({"ok": True, **result})
+
+
+@app.post("/api/ui-actions/<action_id>/ack")
+def ack_ui_action_endpoint(action_id: str):
+    payload = request.get_json(silent=True) or {}
+    now = utc_now()
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        updated_actions: List[Dict[str, Any]] = []
+        matched = False
+        for action in actions:
+            if str(action.get("actionId") or "") == action_id:
+                matched = True
+                updated_actions.append({**action, "status": "running", "ackAt": now, "updatedAt": now})
+            else:
+                updated_actions.append(action)
+        save_ui_action_queue(updated_actions)
+        append_ui_action_history({
+            "event": "ack",
+            "actionId": action_id,
+            "status": "running",
+            "updatedAt": now,
+            "client": str(payload.get("client") or "operational_mouse"),
+            "matched": matched,
+        })
+    return jsonify({"ok": True, "actionId": action_id, "status": "running", "matched": matched})
+
+
+@app.post("/api/ui-actions/<action_id>/result")
+def record_ui_action_result_endpoint(action_id: str):
+    payload = request.get_json(silent=True) or {}
+    status = str(payload.get("status") or "completed").strip().lower()
+    if status not in {"completed", "failed", "blocked", "running"}:
+        status = "completed"
+    now = utc_now()
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        updated_actions: List[Dict[str, Any]] = []
+        matched_action: Dict[str, Any] | None = None
+        for action in actions:
+            if str(action.get("actionId") or "") == action_id:
+                matched_action = {
+                    **action,
+                    "status": status,
+                    "updatedAt": now,
+                    "result": compact_tool_result(payload.get("result") or {}),
+                }
+                updated_actions.append(matched_action)
+            else:
+                updated_actions.append(action)
+        save_ui_action_queue(updated_actions)
+        history_record = {
+            "event": "result",
+            "actionId": action_id,
+            "status": status,
+            "updatedAt": now,
+            "result": compact_tool_result(payload.get("result") or {}),
+        }
+        if matched_action:
+            history_record.update({
+                "targetTool": matched_action.get("targetTool"),
+                "projectSlug": matched_action.get("projectSlug"),
+                "reason": matched_action.get("reason"),
+            })
+        append_ui_action_history(history_record)
+    return jsonify({"ok": True, "actionId": action_id, "status": status})
+
+
+@app.get("/api/projects/<project_id>/lace-dependency-status")
+def get_project_lace_dependency_status(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    status = build_lace_dependency_status(project_slug, project_dir)
+    return jsonify(status)
+
+
+@app.post("/api/projects/<project_id>/lace-dependency-repair")
+def repair_project_lace_dependency_queue(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    dry_run = payload.get("dryRun", True) is not False
+    confirm = str(payload.get("confirm") or "")
+    plan = build_lace_repair_plan(project_slug, project_dir)
+    if not plan.get("ok"):
+        paths = persist_lace_repair_plan(project_dir, plan, applied=False)
+        return jsonify({"ok": False, "error": "lace_repair_plan_invalid", "plan": plan, **paths}), 400
+    if dry_run:
+        paths = persist_lace_repair_plan(project_dir, plan, applied=False)
+        return jsonify({"ok": True, "dryRun": True, "projectId": project_slug, "plan": plan, **paths})
+    if confirm != "ENQUEUE_LACE":
+        return jsonify({
+            "ok": False,
+            "error": "confirmation_required",
+            "message": "Para escribir en runtime/task_queue.json envia confirm=ENQUEUE_LACE.",
+            "plan": plan,
+        }), 400
+    try:
+        apply_lace_repair_plan(project_dir, plan)
+        status_after = build_lace_dependency_status(project_slug, project_dir)
+        applied_plan = {**plan, "statusAfter": status_after}
+        paths = persist_lace_repair_plan(project_dir, applied_plan, applied=True)
+    except Exception as error:
+        failed_plan = {**plan, "applyError": str(error)}
+        paths = persist_lace_repair_plan(project_dir, failed_plan, applied=False)
+        return jsonify({"ok": False, "error": "lace_repair_apply_failed", "message": str(error), "plan": failed_plan, **paths}), 500
+
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "lace_dependency_repair_applied",
+            "projectSlug": project_slug,
+            "phase": "lace-dependency-repair",
+            "status": "queued" if applied_plan.get("plannedTasks") else "no-op",
+            "message": f"LACE repair encolo {len(applied_plan.get('plannedTasks') or [])} tarea(s) faltantes.",
+            "relativePath": "runtime/task_queue.json",
+            "artifactPath": paths.get("artifactPath"),
+            "checkpointPath": paths.get("checkpointPath"),
+        },
+    )
+    return jsonify({"ok": True, "dryRun": False, "projectId": project_slug, "plan": applied_plan, **paths})
+
+
+@app.post("/api/projects/<project_id>/broom")
+def run_project_broom_endpoint(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    phase = str(payload.get("phase") or "ui_manual").strip() or "ui_manual"
+    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", phase):
+        phase = "ui_manual"
+    runtime_state = load_json_file(project_dir / "runtime" / "project_state.json", {})
+    task_id = str(payload.get("taskId") or runtime_state.get("current_task_id") or runtime_state.get("currentTaskId") or "UI-MANUAL").strip()
+    reason = str(payload.get("reason") or "operational_mouse_broom").strip()[:160] or "operational_mouse_broom"
+    dry_run = bool(payload.get("dryRun", False))
+    lock_state = build_editor_lock_state(project_slug, project_dir)
+    try:
+        report = sweep_with_broom(project_dir, task_id=task_id, phase=phase, dry_run=dry_run, reason=reason)
+    except OSError as error:
+        return jsonify({"ok": False, "error": "broom_failed", "message": str(error)}), 500
+
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "broom_sweep",
+            "projectSlug": project_slug,
+            "phase": phase,
+            "status": "passed" if report.get("ok") else "blocked",
+            "message": "Escoba runtime completo." if report.get("ok") else "Escoba runtime bloqueada.",
+            "visualTool": "to-sweep-with-a-broom",
+            "reportPath": report.get("reportPath"),
+            "lock": lock_state,
+        },
+    )
+    return jsonify({"ok": bool(report.get("ok")), "projectId": project_slug, "lock": lock_state, "report": report, "reportPath": report.get("reportPath")})
+
+
+@app.post("/api/projects/<project_id>/web-research/record")
+def record_project_web_research_endpoint(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    query = str(payload.get("query") or "").strip()
+    if len(query) < 3:
+        return jsonify({"ok": False, "error": "query_too_short"}), 400
+    if UI_ACTION_SENSITIVE_QUERY_PATTERN.search(query):
+        return jsonify({
+            "ok": False,
+            "error": "unsafe_research_query",
+            "message": "CyberLACE bloqueo una busqueda con posibles secretos; usa datos sinteticos o redactados.",
+        }), 400
+
+    safe_query = query[:240]
+    url = "https://duckduckgo.com/html/?q=" + urllib.parse.quote_plus(safe_query)
+    artifact_dir = project_dir / "runtime" / "artifacts" / "web_research"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    artifact_name = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-web-research.json"
+    artifact_path = artifact_dir / artifact_name
+    record = {
+        "ok": True,
+        "projectId": project_slug,
+        "createdAt": utc_now(),
+        "source": str(payload.get("source") or "operational_mouse"),
+        "query": safe_query,
+        "url": url,
+        "notes": str(payload.get("notes") or "")[:1200],
+        "policy": {
+            "realBrowserActionRequired": True,
+            "secretsBlocked": True,
+            "safeRewriteOnly": True,
+        },
+    }
+    artifact_path.write_text(json.dumps(record, ensure_ascii=True, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    relative_artifact = artifact_path.relative_to(project_dir).as_posix()
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "web_research_recorded",
+            "projectSlug": project_slug,
+            "phase": "operational-web-research",
+            "status": "recorded",
+            "message": "Investigacion web segura registrada para abrir en modal.",
+            "url": url,
+            "relativePath": relative_artifact,
+        },
+    )
+    return jsonify({"ok": True, "projectId": project_slug, "url": url, "artifactPath": str(artifact_path), "relativePath": relative_artifact, "record": record})
+
+
 register_sandbox_routes(
     app,
     resolve_editor_project=lambda project_id: resolve_editor_project(project_id),
@@ -5609,6 +6527,14 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
                 "code": "blocked_state_with_pending_queue",
                 "severity": "warning",
                 "message": "Project state is blocked but the queue only has pending work.",
+            }
+        )
+    if state_status == "blocked" and not any(queue_counts.get(status, 0) for status in ("pending", "running", "blocked", "failed")):
+        warnings.append(
+            {
+                "code": "blocked_state_without_blocked_queue",
+                "severity": "error",
+                "message": "Project state is blocked but no pending, running, blocked or failed task remains in the queue.",
             }
         )
 
@@ -6450,9 +7376,14 @@ def clear_pending_project_queue(
             str(task.get("status") or "").strip().lower() in {"pending", "blocked"}
             for task in retained_tasks
         )
+        state_status = str(state_payload.get("status") or "").strip().lower()
+        retained_statuses = {str(task.get("status") or "").strip().lower() for task in retained_tasks}
+        retained_all_completed = bool(retained_tasks) and retained_statuses <= {"completed"}
         if force and not has_active_queue and not has_pending_or_blocked:
             state_payload["status"] = "stopped"
-        elif not has_active_queue and str(state_payload.get("status") or "").strip().lower() in active_statuses:
+        elif not has_active_queue and not has_pending_or_blocked and state_status == "blocked":
+            state_payload["status"] = "completed" if retained_all_completed else "stopped"
+        elif not has_active_queue and state_status in active_statuses:
             state_payload["status"] = "completed"
         state_payload["last_queue_clear_at"] = utc_now()
         state_payload["last_queue_clear_force"] = bool(force)
@@ -6705,6 +7636,132 @@ def relaunch_agent_project_retryable_task(project_id: str):
             "cleanup": cleanup_result,
             "projects": projects,
             "subagentPlan": subagent_plan,
+        }
+    )
+
+
+def _build_cyberlace_safe_continuation_requirement(
+    project_slug: str,
+    safe_prompt: str,
+    retryable_task: Dict[str, Any] | None,
+    *,
+    rescue_id: str = "",
+    source_session_id: str = "",
+) -> str:
+    safe_prompt = str(safe_prompt or "").strip()
+    recovered_requirement = ""
+    if retryable_task is not None:
+        recovered_requirement = _build_retry_requirement(project_slug, retryable_task)
+    else:
+        recovered_requirement = "\n\n".join(
+            [
+                "MODO EJECUCION AGENTICA CONTROLADA.",
+                f"Proyecto existente: {project_slug}.",
+                "No crear proyecto nuevo. Continuar sobre el workspace actual con una tarea segura y verificable.",
+                RETRY_REAL_BROWSER_RULE,
+            ]
+        )
+    metadata_lines = [
+        "[CONTEXTO AUTORIZADO CYBERLACE]",
+        "P_safe fue confirmado con PIN de contexto. El prompt original sigue bloqueado y no debe ejecutarse.",
+    ]
+    if rescue_id:
+        metadata_lines.append(f"rescueId={rescue_id}")
+    if source_session_id:
+        metadata_lines.append(f"sourceSessionId={source_session_id}")
+    return "\n\n".join(
+        [
+            *metadata_lines,
+            "PROMPT SEGURO P_safe:",
+            safe_prompt,
+            "OBJETIVO RECUPERADO BAJO GOBIERNO DE P_safe:",
+            recovered_requirement,
+            "Reglas obligatorias:",
+            "- No procesar ni reconstruir el prompt original bloqueado.",
+            "- No leer, transportar ni exponer secretos reales detectados por CyberLACE.",
+            "- Usar placeholders, datos sinteticos o evidencia redactada cuando haga falta.",
+            "- Persistir evidencia real en filesystem antes de completed=true.",
+        ]
+    )
+
+
+@app.post("/api/agent/projects/<project_id>/cyberlace-safe-continue")
+def continue_agent_project_with_cyberlace_safe_prompt(project_id: str):
+    payload = request.get_json(silent=True) or {}
+    project_slug = normalize_layer_name(project_id)
+    project_dir = workspace_project_dir(project_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 404
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    safe_prompt = str(payload.get("safePrompt") or payload.get("safe_prompt") or payload.get("requirement") or "").strip()
+    if not safe_prompt:
+        return jsonify({"ok": False, "error": "safe_prompt_required", "message": "P_safe es obligatorio para continuar."}), 400
+    if not bool(payload.get("pinAuthenticated")):
+        return jsonify({"ok": False, "error": "pin_authentication_required", "message": "CyberLACE requiere PIN autenticado antes de continuar."}), 401
+
+    try:
+        runtime_mode = normalize_agent_runtime_mode(payload.get("runtimeMode") or payload.get("mode") or "build")
+    except ValueError as error:
+        return jsonify({"ok": False, "error": "invalid_runtime_mode", "message": str(error)}), 400
+
+    cleanup_result = None
+    if bool(payload.get("forceClean", True)):
+        cleanup_result = clear_pending_project_queue(
+            project_slug,
+            statuses=["queued", "starting", "running", "pending", "blocked"],
+            force=True,
+        )
+        if cleanup_result.get("ok") is False:
+            status_code = 423 if cleanup_result.get("error") == "project_locked" else 400
+            return jsonify(cleanup_result), status_code
+
+    retryable_task = _find_retryable_project_task(project_slug, str(payload.get("taskId") or "").strip() or None)
+    requirement = _build_cyberlace_safe_continuation_requirement(
+        project_slug,
+        safe_prompt,
+        retryable_task,
+        rescue_id=str(payload.get("rescueId") or payload.get("rescue_id") or ""),
+        source_session_id=str(payload.get("sourceSessionId") or payload.get("source_session_id") or ""),
+    )
+    project_name = _project_display_name(project_dir, project_slug)
+    session = agent_runtime.start_session(
+        requirement=requirement,
+        project_name=project_name,
+        project_slug=project_slug,
+        bootstrap=False,
+        ensure_new_project=False,
+        mode=runtime_mode,
+    )
+    projects = list_agent_projects_snapshot()
+    sync_runtime_graph(save_state=True)
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "cyberlace_safe_continue_started",
+            "phase": "cyberlace-safe-continue",
+            "status": "running",
+            "projectSlug": project_slug,
+            "sessionId": session.get("sessionId"),
+            "message": "P_safe autenticado con PIN; continuacion segura iniciada sobre el mismo proyecto.",
+            "rescueId": str(payload.get("rescueId") or payload.get("rescue_id") or ""),
+            "retryableTaskId": retryable_task.get("id") if isinstance(retryable_task, dict) else "",
+        },
+    )
+    return jsonify(
+        {
+            "ok": True,
+            "projectId": project_slug,
+            "session": session,
+            "task": retryable_task,
+            "cleanup": cleanup_result,
+            "projects": projects,
+            "hardBlockStillEnforced": True,
+            "pinAuthenticated": True,
         }
     )
 

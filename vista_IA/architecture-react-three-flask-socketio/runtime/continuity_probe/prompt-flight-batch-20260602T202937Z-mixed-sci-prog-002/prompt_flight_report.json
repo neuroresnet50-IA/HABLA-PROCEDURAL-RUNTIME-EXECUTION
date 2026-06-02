@@ -1,0 +1,875 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 990.383195,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_events.jsonl",
+  "failedStages": [
+    "ui_agent_session_polled"
+  ],
+  "finishedAt": "2026-06-02T20:58:25Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-mixed-pf-002-2",
+  "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+  "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_failed",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 206.76,
+      "evidence": {
+        "durationMs": 206.76,
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-06-02T20:41:56Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 13.836,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 13.836,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 1.639,
+      "evidence": {
+        "durationMs": 1.639,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/habla_basic_envelope.json",
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "outputHash": "905d3d06bd54b2e5658e2353b1ef190d068f71538d8b5e5e86fb31943dc0eec3",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    "harness_summary": {
+      "durationMs": 526.596,
+      "evidence": {
+        "durationMs": 526.596,
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-06-02T20:41:57Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    "observer_status": {
+      "durationMs": 5.252,
+      "evidence": {
+        "durationMs": 5.252,
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "observerEnabled": true,
+        "observerState": "idle",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    "plan_loaded": {
+      "durationMs": 74.758,
+      "evidence": {
+        "durationMs": 74.758,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    "policy_loaded": {
+      "durationMs": 4.816,
+      "evidence": {
+        "durationMs": 4.816,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    "prompt_classified": {
+      "durationMs": 172.132,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 172.132,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_classification.json",
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "intent": "build_or_modify",
+        "promptChars": 362,
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    "prompt_received": {
+      "durationMs": 6.812,
+      "evidence": {
+        "durationMs": 6.812,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/input_prompt.json",
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "promptChars": 362,
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    "response_synthesized": {
+      "durationMs": 2.452,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 2.452,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "mode": "ui_session_rest",
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "32a497f782f7a272ec11821e889661d9d04f62c5a3c876039e20efce16f506f8",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-06-02T20:58:25Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260602T202937Z-mixed-sci-prog-002",
+        "traceId": "prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    "task_planned": {
+      "durationMs": 51.61,
+      "evidence": {
+        "durationMs": 51.61,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "startedAt": "2026-06-02T20:41:56Z",
+        "taskHash": "3e3a921f05af521994e0d89e004c22f727b1e37930dd5c3d5f3f9ca7735fcc43",
+        "taskId": "PROMPT-FLIGHT-batch-20260602T202937Z-mixed-sci-prog-002"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 987744.348,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 900,
+        "durationMs": 987744.348,
+        "errorCode": "control_plane_blocked",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_polls.json",
+        "finalStatus": "blocked",
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "lastProgressLabel": "El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260602-001'], queue_blocked=['LACE-20260602-001'].",
+        "lastProgressPercent": 94,
+        "monitorBudgetSeconds": 1020,
+        "pid": null,
+        "pollCount": 756,
+        "returncode": 126,
+        "sessionId": "agent-bc38bb50da",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime/logs/agent-bc38bb50da-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: blocked.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 58.926,
+      "evidence": {
+        "durationMs": 58.926,
+        "elapsedMs": 55.826,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_response.json",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-mixed-pf-002-2",
+        "sessionId": "agent-bc38bb50da",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 2.264,
+      "evidence": {
+        "durationMs": 2.264,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_request.json",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "method": "POST",
+        "payloadHash": "9f1f8d2ac6c75d55b7847af81517c31e722223a79ef014152642aaac0b7dbc7b",
+        "projectSlug": "continuity-mixed-pf-002",
+        "runtimeMode": "build",
+        "startedAt": "2026-06-02T20:41:57Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 9.907,
+      "evidence": {
+        "durationMs": 9.907,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": true,
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "infrastructureFailureMarkers": [
+          "bwrap: loopback",
+          "failed rtm_newaddr",
+          "operation not permitted",
+          "codex's linux sandbox uses bubblewrap",
+          "bubblewrap",
+          "user namespaces"
+        ],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 609,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/lace-20260602-001-retry-0-recovery.json",
+          "sha256": "960735c4b895f5678e754e2ee18e010f261b0de2cf7c10d9d3711050bc28b602",
+          "size": 128084,
+          "tail": "onvertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.\",\n      \"id\": \"LACE-20260602-001\",\n      \"max_retries\": 2,\n      \"mode\": \"build\",\n      \"priority\": 99,\n      \"status\": \"pending\",\n      \"timeout_seconds\": 900,\n      \"title\": \"Completar ciclo LACE 01\",\n      \"validation_commands\": [\n        \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_002_mathematics.md', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n        \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n      ]\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 303,
+          "mtime": "2026-06-02T20:42:55Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/directives/LACE-20260602-001-20260602T204255Z-a07f7b030c59.json",
+          "sha256": "d1cbf07fc637335764f32d3857e55948abe7a775aed29129fad8e174f08b2686",
+          "size": 29463,
+          "tail": "a monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260602-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 01\"\n  },\n  \"task_id\": \"LACE-20260602-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"lace-closure-gate-pending\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/lace-closure-gate-pending.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"a07f7b030c59d420591947a0b2e8ab83d709fb0cc46b04eda6365a86da0619d8\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [
+          "Worker infrastructure failure detected: bwrap: loopback, failed rtm_newaddr, operation not permitted, codex's linux sandbox uses bubblewrap, bubblewrap, user namespaces",
+          "Task timed out after 900 seconds"
+        ],
+        "projectDir": "workspace/projects/continuity-mixed-pf-002-2",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 27,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/project_state.json",
+          "sha256": "c8305a4be2e10bb8fecc1553ca01422bd2b6c8d670cfd7e80fad812ab73587f4",
+          "size": 773,
+          "tail": "{\n  \"blocked_tasks\": [\n    \"LACE-20260602-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-bc38bb50da\",\n    \"complexity-estimate\",\n    \"runtime-20260602204158-001-checkpoint\",\n    \"runtime-20260602204158-002-checkpoint\",\n    \"lace-closure-gate-pending\",\n    \"lace-20260602-001-retry-0-recovery\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260602204158-001\",\n    \"RUNTIME-20260602204158-002\"\n  ],\n  \"created_at\": \"2026-06-02T20:41:57.600394+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-02T20:41:57.600394+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-bc38bb50da\",\n  \"project_id\": \"continuity-mixed-pf-002-2\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-06-02T20:58:22.159536+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": true,
+        "startedAt": "2026-06-02T20:58:25Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 270,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/task_queue.json",
+          "sha256": "7d7ac8cf73cef0c1354cf9d7da3a4ef1203533dc9267c9f36f8aeee8481a1df0",
+          "size": 17908,
+          "tail": "ndo evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260602-010\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 90,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 10\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_002_mathematics.md', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-10.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-10 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-10 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-10 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 403,
+          "mtime": "2026-06-02T20:58:24Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/logs/agent-bc38bb50da-terminal.log",
+          "sha256": "aed552443b02ccf2f3283f8294d435a891d227f56410d463306ee7eb1d6c81e9",
+          "size": 13707,
+          "tail": "e,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Herramientas internas (broom_after_task):\n{\n  \"phase\": \"after_task\",\n  \"closureAllowed\": null,\n  \"activeFindings\": null,\n  \"warnings\": [],\n  \"blockers\": null,\n  \"artifactPath\": null,\n  \"reportPath\": \"runtime/artifacts/broom/20260602T205822.162911Z-LACE-20260602-001-after_task.json\",\n  \"tool\": \"to-sweep-with-a-broom\",\n  \"actions\": [],\n  \"ignoredResidue\": [],\n  \"invocations\": []\n}\n[control-plane] Resumen de cola:\n{\n  \"status\": \"failed\",\n  \"stopped_reason\": \"queue_idle\",\n  \"tasks_executed\": 3,\n  \"ready_task_ids\": [],\n  \"lace_gate\": {\n    \"status\": \"not_ready\",\n    \"reason\": \"queue_not_fully_completed\"\n  },\n  \"tool_policy_final\": null,\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"blocked\",\n    \"event_op\": \"session_blocked\",\n    \"event_status\": \"blocked\",\n    \"phase\": \"blocked\",\n    \"outcome\": \"blocked_control_plane\",\n    \"error_code\": \"control_plane_blocked\",\n    \"message\": \"El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260602-001'], queue_blocked=['LACE-20260602-001'].\",\n    \"completed\": false,\n    \"warnings\": [\n      \"failure_events=1\"\n    ]\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 145.762,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "LACE-20260602-002",
+        "durationMs": 145.762,
+        "elapsedMs": 142.975,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_runtime_truth.json",
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "projectStatus": "blocked",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 2,
+          "failed": 0,
+          "pending": 9,
+          "running": 0
+        },
+        "startedAt": "2026-06-02T20:58:25Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    "worker_sandbox_preflight": {
+      "durationMs": 9.243,
+      "evidence": {
+        "blockers": [],
+        "durationMs": 9.243,
+        "effectiveApprovalPolicy": "never",
+        "effectiveSandboxMode": "danger-full-access",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "mode": "ui_session_rest",
+        "requiredAction": "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+        "safeCommandSummary": "codex --dangerously-bypass-approvals-and-sandbox",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200,
+        "usesDangerBypass": true,
+        "usesWorkspaceWrite": false
+      },
+      "message": "Worker sandbox preflight passed before Prompt Flight execution.",
+      "name": "worker_sandbox_preflight",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 6.812,
+      "evidence": {
+        "durationMs": 6.812,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/input_prompt.json",
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "promptChars": 362,
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    {
+      "durationMs": 1.639,
+      "evidence": {
+        "durationMs": 1.639,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/habla_basic_envelope.json",
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "outputHash": "905d3d06bd54b2e5658e2353b1ef190d068f71538d8b5e5e86fb31943dc0eec3",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    {
+      "durationMs": 13.836,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 13.836,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    {
+      "durationMs": 4.816,
+      "evidence": {
+        "durationMs": 4.816,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    {
+      "durationMs": 74.758,
+      "evidence": {
+        "durationMs": 74.758,
+        "finishedAt": "2026-06-02T20:41:55Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:55Z"
+    },
+    {
+      "durationMs": 172.132,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 172.132,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_classification.json",
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "intent": "build_or_modify",
+        "promptChars": 362,
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "startedAt": "2026-06-02T20:41:55Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    {
+      "durationMs": 51.61,
+      "evidence": {
+        "durationMs": 51.61,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "startedAt": "2026-06-02T20:41:56Z",
+        "taskHash": "3e3a921f05af521994e0d89e004c22f727b1e37930dd5c3d5f3f9ca7735fcc43",
+        "taskId": "PROMPT-FLIGHT-batch-20260602T202937Z-mixed-sci-prog-002"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    {
+      "durationMs": 206.76,
+      "evidence": {
+        "durationMs": 206.76,
+        "finishedAt": "2026-06-02T20:41:56Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-06-02T20:41:56Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:56Z"
+    },
+    {
+      "durationMs": 9.243,
+      "evidence": {
+        "blockers": [],
+        "durationMs": 9.243,
+        "effectiveApprovalPolicy": "never",
+        "effectiveSandboxMode": "danger-full-access",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "mode": "ui_session_rest",
+        "requiredAction": "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+        "safeCommandSummary": "codex --dangerously-bypass-approvals-and-sandbox",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200,
+        "usesDangerBypass": true,
+        "usesWorkspaceWrite": false
+      },
+      "message": "Worker sandbox preflight passed before Prompt Flight execution.",
+      "name": "worker_sandbox_preflight",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 5.252,
+      "evidence": {
+        "durationMs": 5.252,
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "observerEnabled": true,
+        "observerState": "idle",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 526.596,
+      "evidence": {
+        "durationMs": 526.596,
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-06-02T20:41:57Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 2.264,
+      "evidence": {
+        "durationMs": 2.264,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_request.json",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "method": "POST",
+        "payloadHash": "9f1f8d2ac6c75d55b7847af81517c31e722223a79ef014152642aaac0b7dbc7b",
+        "projectSlug": "continuity-mixed-pf-002",
+        "runtimeMode": "build",
+        "startedAt": "2026-06-02T20:41:57Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 58.926,
+      "evidence": {
+        "durationMs": 58.926,
+        "elapsedMs": 55.826,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_response.json",
+        "finishedAt": "2026-06-02T20:41:57Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-mixed-pf-002-2",
+        "sessionId": "agent-bc38bb50da",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:41:57Z"
+    },
+    {
+      "durationMs": 987744.348,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 900,
+        "durationMs": 987744.348,
+        "errorCode": "control_plane_blocked",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_agent_session_polls.json",
+        "finalStatus": "blocked",
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "lastProgressLabel": "El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260602-001'], queue_blocked=['LACE-20260602-001'].",
+        "lastProgressPercent": 94,
+        "monitorBudgetSeconds": 1020,
+        "pid": null,
+        "pollCount": 756,
+        "returncode": 126,
+        "sessionId": "agent-bc38bb50da",
+        "startedAt": "2026-06-02T20:41:57Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime/logs/agent-bc38bb50da-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: blocked.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    {
+      "durationMs": 145.762,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "LACE-20260602-002",
+        "durationMs": 145.762,
+        "elapsedMs": 142.975,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_runtime_truth.json",
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "projectStatus": "blocked",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 2,
+          "failed": 0,
+          "pending": 9,
+          "running": 0
+        },
+        "startedAt": "2026-06-02T20:58:25Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    {
+      "durationMs": 9.907,
+      "evidence": {
+        "durationMs": 9.907,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": true,
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "infrastructureFailureMarkers": [
+          "bwrap: loopback",
+          "failed rtm_newaddr",
+          "operation not permitted",
+          "codex's linux sandbox uses bubblewrap",
+          "bubblewrap",
+          "user namespaces"
+        ],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 609,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/lace-20260602-001-retry-0-recovery.json",
+          "sha256": "960735c4b895f5678e754e2ee18e010f261b0de2cf7c10d9d3711050bc28b602",
+          "size": 128084,
+          "tail": "onvertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.\",\n      \"id\": \"LACE-20260602-001\",\n      \"max_retries\": 2,\n      \"mode\": \"build\",\n      \"priority\": 99,\n      \"status\": \"pending\",\n      \"timeout_seconds\": 900,\n      \"title\": \"Completar ciclo LACE 01\",\n      \"validation_commands\": [\n        \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_002_mathematics.md', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n        \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n      ]\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 303,
+          "mtime": "2026-06-02T20:42:55Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/directives/LACE-20260602-001-20260602T204255Z-a07f7b030c59.json",
+          "sha256": "d1cbf07fc637335764f32d3857e55948abe7a775aed29129fad8e174f08b2686",
+          "size": 29463,
+          "tail": "a monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260602-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 01\"\n  },\n  \"task_id\": \"LACE-20260602-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"lace-closure-gate-pending\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/lace-closure-gate-pending.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002-2/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"a07f7b030c59d420591947a0b2e8ab83d709fb0cc46b04eda6365a86da0619d8\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [
+          "Worker infrastructure failure detected: bwrap: loopback, failed rtm_newaddr, operation not permitted, codex's linux sandbox uses bubblewrap, bubblewrap, user namespaces",
+          "Task timed out after 900 seconds"
+        ],
+        "projectDir": "workspace/projects/continuity-mixed-pf-002-2",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 27,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/project_state.json",
+          "sha256": "c8305a4be2e10bb8fecc1553ca01422bd2b6c8d670cfd7e80fad812ab73587f4",
+          "size": 773,
+          "tail": "{\n  \"blocked_tasks\": [\n    \"LACE-20260602-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-bc38bb50da\",\n    \"complexity-estimate\",\n    \"runtime-20260602204158-001-checkpoint\",\n    \"runtime-20260602204158-002-checkpoint\",\n    \"lace-closure-gate-pending\",\n    \"lace-20260602-001-retry-0-recovery\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260602204158-001\",\n    \"RUNTIME-20260602204158-002\"\n  ],\n  \"created_at\": \"2026-06-02T20:41:57.600394+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-02T20:41:57.600394+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-bc38bb50da\",\n  \"project_id\": \"continuity-mixed-pf-002-2\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-06-02T20:58:22.159536+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": true,
+        "startedAt": "2026-06-02T20:58:25Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 270,
+          "mtime": "2026-06-02T20:58:22Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/task_queue.json",
+          "sha256": "7d7ac8cf73cef0c1354cf9d7da3a4ef1203533dc9267c9f36f8aeee8481a1df0",
+          "size": 17908,
+          "tail": "ndo evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260602-010\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 90,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 10\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_002_mathematics.md', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-10.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-10 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-10 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-10 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 403,
+          "mtime": "2026-06-02T20:58:24Z",
+          "path": "workspace/projects/continuity-mixed-pf-002-2/runtime/logs/agent-bc38bb50da-terminal.log",
+          "sha256": "aed552443b02ccf2f3283f8294d435a891d227f56410d463306ee7eb1d6c81e9",
+          "size": 13707,
+          "tail": "e,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Herramientas internas (broom_after_task):\n{\n  \"phase\": \"after_task\",\n  \"closureAllowed\": null,\n  \"activeFindings\": null,\n  \"warnings\": [],\n  \"blockers\": null,\n  \"artifactPath\": null,\n  \"reportPath\": \"runtime/artifacts/broom/20260602T205822.162911Z-LACE-20260602-001-after_task.json\",\n  \"tool\": \"to-sweep-with-a-broom\",\n  \"actions\": [],\n  \"ignoredResidue\": [],\n  \"invocations\": []\n}\n[control-plane] Resumen de cola:\n{\n  \"status\": \"failed\",\n  \"stopped_reason\": \"queue_idle\",\n  \"tasks_executed\": 3,\n  \"ready_task_ids\": [],\n  \"lace_gate\": {\n    \"status\": \"not_ready\",\n    \"reason\": \"queue_not_fully_completed\"\n  },\n  \"tool_policy_final\": null,\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"blocked\",\n    \"event_op\": \"session_blocked\",\n    \"event_status\": \"blocked\",\n    \"phase\": \"blocked\",\n    \"outcome\": \"blocked_control_plane\",\n    \"error_code\": \"control_plane_blocked\",\n    \"message\": \"El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260602-001'], queue_blocked=['LACE-20260602-001'].\",\n    \"completed\": false,\n    \"warnings\": [\n      \"failure_events=1\"\n    ]\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    },
+    {
+      "durationMs": 2.452,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 2.452,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-06-02T20:58:25Z",
+        "mode": "ui_session_rest",
+        "promptHash": "a0a2185e50be3c50855e094f619db28da816bc3010f182b30ba826319f9f5414",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "32a497f782f7a272ec11821e889661d9d04f62c5a3c876039e20efce16f506f8",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-06-02T20:58:25Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260602T202937Z-mixed-sci-prog-002",
+        "traceId": "prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-06-02T20:58:25Z"
+    }
+  ],
+  "startedAt": "2026-06-02T20:41:55Z",
+  "status": "failed",
+  "summary": {
+    "blocked": 0,
+    "failed": 1,
+    "ok": 16,
+    "skipped": 1,
+    "total": 18
+  },
+  "traceId": "prompt-flight-batch-20260602T202937Z-mixed-sci-prog-002"
+}

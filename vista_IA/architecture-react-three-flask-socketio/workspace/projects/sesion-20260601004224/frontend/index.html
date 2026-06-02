@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Castle Runner DQN - LACE Quest</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Castle Runner DQN LACE Quest">
+      <canvas id="world" data-render-mode="fallback-2d" aria-label="Escena 3D del juego"></canvas>
+
+      <section class="top-hud" aria-label="Tablero principal">
+        <div class="brand">
+          <span class="brand-mark">CR</span>
+          <div>
+            <h1>Castle Runner DQN: LACE Quest</h1>
+            <p id="event-value">iniciando agente autonomo</p>
+          </div>
+        </div>
+
+        <div class="score-grid">
+          <div class="metric">
+            <span>Score</span>
+            <strong id="score-value">0</strong>
+          </div>
+          <div class="metric">
+            <span>Distancia</span>
+            <strong id="distance-value">0 m</strong>
+          </div>
+          <div class="metric">
+            <span>Velocidad</span>
+            <strong id="speed-value">1 m/s</strong>
+          </div>
+          <div class="metric">
+            <span>Recompensa</span>
+            <strong id="reward-value">0.00</strong>
+          </div>
+          <div class="metric">
+            <span>Camara</span>
+            <strong id="camera-value">orbital</strong>
+          </div>
+          <div class="metric">
+            <span>Mundo</span>
+            <strong id="stage-value">Valle</strong>
+          </div>
+          <div class="metric">
+            <span>Politica IA</span>
+            <strong id="policy-value">run</strong>
+          </div>
+          <div class="metric">
+            <span>Director</span>
+            <strong id="pressure-value">estable 0%</strong>
+          </div>
+        </div>
+      </section>
+
+      <aside class="agent-panel" aria-label="Estado del agente">
+        <div class="panel-title">
+          <span>Agente DQN</span>
+          <b id="episode-value">Episodio 1</b>
+        </div>
+        <div class="bars">
+          <label>
+            Exploracion
+            <span class="bar"><i id="epsilon-bar"></i></span>
+          </label>
+          <label>
+            Valor Q
+            <span class="bar"><i id="q-bar"></i></span>
+          </label>
+          <label>
+            Energia
+            <span class="bar"><i id="energy-bar"></i></span>
+          </label>
+        </div>
+        <ol id="leaderboard" class="leaderboard" aria-label="Mejores carreras"></ol>
+      </aside>
+
+      <section class="bottom-hud" aria-label="Progreso hacia el castillo">
+        <div class="track">
+          <i id="progress-marker"></i>
+        </div>
+        <div class="objectives">
+          <span>Monedas <b id="coins-value">0</b></span>
+          <span>Combo <b id="combo-value">x1</b></span>
+          <span>Amenaza <b id="threat-value">0%</b></span>
+          <span>Castillo <b id="castle-value">900 m</b></span>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -27,6 +27,7 @@ try:
     from .habla_adapter import build_habla_guide
     from .plan_loader import load_plan
     from .policy_loader import load_policy
+    from .runtime_failure_classifier import classify_runtime_failure
     from .state_store import StateStore
     from .task_queue import TaskQueue
     from .validator import validate_task_execution
@@ -37,6 +38,7 @@ except ImportError:  # pragma: no cover - supports direct script execution.
     from habla_adapter import build_habla_guide  # type: ignore
     from plan_loader import load_plan  # type: ignore
     from policy_loader import load_policy  # type: ignore
+    from runtime_failure_classifier import classify_runtime_failure  # type: ignore
     from state_store import StateStore  # type: ignore
     from task_queue import TaskQueue  # type: ignore
     from validator import validate_task_execution  # type: ignore
@@ -45,7 +47,11 @@ except ImportError:  # pragma: no cover - supports direct script execution.
 DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 DEFAULT_PROJECT = "continuity-probe-canary"
 PROMPT_FLIGHT_MODES = {"trace_only", "safe_canary", "real_session_guarded", "ui_session_rest"}
+PROMPT_FLIGHT_WORKER_REQUIRED_MODES = {"safe_canary", "real_session_guarded", "ui_session_rest"}
 TERMINAL_BAD_STATUSES = {"failed", "disconnected", "missing_evidence", "timeout"}
+MAX_PROMPT_FLIGHT_TIMEOUT_SECONDS = 1200
+UI_SESSION_POSTFLIGHT_GRACE_SECONDS = 120
+MAX_UI_SESSION_MONITOR_SECONDS = 3600
 
 
 def utc_now() -> str:
@@ -126,7 +132,7 @@ class PromptFlightProbe:
         self.project = safe_slug(project)
         self.base_url = str(base_url or "").rstrip("/")
         self.trace_id = safe_slug(trace_id or new_prompt_trace_id(), "prompt-flight")
-        self.timeout_seconds = max(5, min(int(timeout_seconds or 90), 300))
+        self.timeout_seconds = max(5, min(int(timeout_seconds or 90), MAX_PROMPT_FLIGHT_TIMEOUT_SECONDS))
         self.include_harness = bool(include_harness)
         self.project_dir = self.repo_root / "workspace" / "projects" / self.project
         self.runtime_dir = self.project_dir / "runtime"
@@ -181,6 +187,7 @@ class PromptFlightProbe:
         self._stage("prompt_classified", self._stage_prompt_classified)
         self._stage("task_planned", self._stage_task_planned)
         self._stage("backend_health", self._stage_backend_health)
+        self._stage("worker_sandbox_preflight", self._stage_worker_sandbox_preflight)
         self._stage("observer_status", self._stage_observer_status)
         if self.include_harness:
             self._stage("harness_summary", self._stage_harness_summary)
@@ -336,6 +343,9 @@ class PromptFlightProbe:
         )
         path = self.run_dir / "cyberlace_preflight.json"
         self._write_json(path, decision)
+        findings = decision.get("evidence") if isinstance(decision.get("evidence"), list) else []
+        evidence_patterns = sorted({str(item.get("pattern") or "") for item in findings if isinstance(item, dict) and str(item.get("pattern") or "")})
+        evidence_types = sorted({str(item.get("type") or "") for item in findings if isinstance(item, dict) and str(item.get("type") or "")})
         blocked = bool(decision.get("blocked") is True or decision.get("blocksRuntime") is True or str(decision.get("runtimeAction") or "").upper() in {"BLOCK", "QUARANTINE", "HUMAN_REVIEW"})
         return {
             "status": "blocked" if blocked else "ok",
@@ -345,6 +355,9 @@ class PromptFlightProbe:
             "riskScore": decision.get("riskScore"),
             "blocked": blocked,
             "safeAlternative": decision.get("safeAlternative"),
+            "evidencePatterns": evidence_patterns,
+            "evidenceTypes": evidence_types,
+            "findingCount": len(findings),
         }
 
     def _stage_policy_loaded(self) -> dict[str, Any]:
@@ -379,6 +392,30 @@ class PromptFlightProbe:
             return {"status": "skipped", "message": "No baseUrl supplied for backend health."}
         status_code, payload = self._request_json("GET", "/api/health", timeout=8)
         return {"status": "ok" if status_code == 200 and payload.get("ok") is not False else "failed", "message": "Backend health checked.", "statusCode": status_code, "service": payload.get("service")}
+
+    def _stage_worker_sandbox_preflight(self) -> dict[str, Any]:
+        if self.mode not in PROMPT_FLIGHT_WORKER_REQUIRED_MODES:
+            return {"status": "skipped", "message": "Worker sandbox preflight is not required for trace-only mode.", "mode": self.mode}
+        if not self.base_url:
+            if self.mode == "real_session_guarded":
+                return {"status": "ok", "message": "Worker sandbox preflight passed for local direct worker execution.", "mode": self.mode, "preflightMode": "local_direct_worker"}
+            return {"status": "blocked", "message": "Worker sandbox preflight requires a backend baseUrl.", "mode": self.mode}
+        status_code, payload = self._request_json("GET", "/api/continuity-probe/prompt-flight/worker-diagnostics", timeout=10)
+        diagnostics = payload.get("diagnostics") if isinstance(payload.get("diagnostics"), dict) else {}
+        ready = bool(status_code == 200 and payload.get("ok") is not False and diagnostics.get("promptFlightWorkerReady") is True)
+        return {
+            "status": "ok" if ready else "blocked",
+            "message": "Worker sandbox preflight passed before Prompt Flight execution." if ready else "Worker sandbox preflight blocked Prompt Flight before launching a case.",
+            "statusCode": status_code,
+            "mode": self.mode,
+            "effectiveSandboxMode": diagnostics.get("effectiveSandboxMode"),
+            "effectiveApprovalPolicy": diagnostics.get("effectiveApprovalPolicy"),
+            "usesDangerBypass": diagnostics.get("usesDangerBypass"),
+            "usesWorkspaceWrite": diagnostics.get("usesWorkspaceWrite"),
+            "safeCommandSummary": diagnostics.get("safeCommandSummary"),
+            "blockers": diagnostics.get("blockers") or [],
+            "requiredAction": diagnostics.get("requiredAction") or "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+        }
 
     def _stage_observer_status(self) -> dict[str, Any]:
         if not self.base_url:
@@ -596,7 +633,7 @@ class PromptFlightProbe:
             "projectName": self.project,
             "projectSlug": self.project,
             "requirement": self.prompt,
-            "ensureNewProject": False,
+            "ensureNewProject": True,
             "bootstrapProject": False,
             "runtimeMode": "build",
             "subagentPlan": None,
@@ -633,6 +670,7 @@ class PromptFlightProbe:
             self.project = safe_slug(str(session.get("projectSlug") or self.project), self.project)
             self.project_dir = self.repo_root / "workspace" / "projects" / self.project
             self.runtime_dir = self.project_dir / "runtime"
+            self.report["project"] = self.project
         ok = status_code == 200 and payload.get("ok") is True and bool(session.get("sessionId"))
         return {
             "status": "ok" if ok else "failed",
@@ -647,13 +685,35 @@ class PromptFlightProbe:
             "errorCode": session.get("errorCode"),
         }
 
+    def _ui_session_active_task_timeout_seconds(self, session: dict[str, Any]) -> int | None:
+        control_plane = session.get("controlPlane") if isinstance(session.get("controlPlane"), dict) else {}
+        active_task = control_plane.get("activeTask") if isinstance(control_plane.get("activeTask"), dict) else {}
+        for key in ("timeout_seconds", "timeoutSeconds"):
+            try:
+                value = int(active_task.get(key) or 0)
+            except (TypeError, ValueError):
+                value = 0
+            if value > 0:
+                return value
+        return None
+
+    def _ui_session_monitor_budget_seconds(self, session: dict[str, Any]) -> int:
+        budget = int(self.timeout_seconds)
+        active_task_timeout = self._ui_session_active_task_timeout_seconds(session)
+        if active_task_timeout:
+            budget = max(budget, active_task_timeout + UI_SESSION_POSTFLIGHT_GRACE_SECONDS)
+        return max(5, min(budget, MAX_UI_SESSION_MONITOR_SECONDS))
+
     def _stage_ui_agent_session_polled(self) -> dict[str, Any]:
         session_id = str(self.ui_session.get("sessionId") or "").strip()
         if not session_id:
             return {"status": "failed", "message": "No sessionId returned by /api/agent/session."}
         terminal_statuses = {"completed", "failed", "stopped", "blocked"}
         polls: list[dict[str, Any]] = []
-        deadline = time.monotonic() + self.timeout_seconds
+        poll_started = time.monotonic()
+        monitor_budget_seconds = self._ui_session_monitor_budget_seconds(self.ui_session)
+        active_task_timeout_seconds = self._ui_session_active_task_timeout_seconds(self.ui_session)
+        deadline = poll_started + monitor_budget_seconds
         final_session = dict(self.ui_session)
         poll_index = 0
         while True:
@@ -667,6 +727,11 @@ class PromptFlightProbe:
             session = payload.get("session") if isinstance(payload.get("session"), dict) else {}
             if session:
                 final_session = dict(session)
+                next_budget = self._ui_session_monitor_budget_seconds(final_session)
+                if next_budget > monitor_budget_seconds:
+                    monitor_budget_seconds = next_budget
+                    active_task_timeout_seconds = self._ui_session_active_task_timeout_seconds(final_session)
+                    deadline = max(deadline, poll_started + monitor_budget_seconds)
             snapshot = {
                 "poll": poll_index,
                 "at": utc_now(),
@@ -688,14 +753,32 @@ class PromptFlightProbe:
             if time.monotonic() >= deadline:
                 break
             time.sleep(1.0)
+        final_status = str(final_session.get("status") or "unknown").lower()
+        stop_after_timeout: dict[str, Any] = {}
+        if final_status not in terminal_statuses:
+            stop_after_timeout = self._stop_ui_session_after_timeout(session_id, terminal_statuses)
+            stopped_session = stop_after_timeout.get("finalSession") if isinstance(stop_after_timeout.get("finalSession"), dict) else {}
+            if stopped_session:
+                final_session = dict(stopped_session)
+                final_status = str(final_session.get("status") or final_status).lower()
+
         self.ui_session = final_session
         self.ui_session_polls = polls
         path = self.run_dir / "ui_agent_session_polls.json"
-        self._write_json(path, {"sessionId": session_id, "polls": polls, "finalSession": self._compact(final_session, limit=4000)})
-        final_status = str(final_session.get("status") or "unknown").lower()
-        if final_status in terminal_statuses:
+        self._write_json(path, {
+            "sessionId": session_id,
+            "polls": polls,
+            "finalSession": self._compact(final_session, limit=4000),
+            "stopAfterTimeout": self._compact(stop_after_timeout, limit=4000),
+            "monitorBudgetSeconds": monitor_budget_seconds,
+            "activeTaskTimeoutSeconds": active_task_timeout_seconds,
+        })
+        if final_status in terminal_statuses and not stop_after_timeout:
             status = "ok" if final_status == "completed" else "failed"
             message = f"Real UI session reached terminal status: {final_status}."
+        elif stop_after_timeout:
+            status = "timeout"
+            message = "Real UI session timed out; stop was requested before continuing."
         else:
             status = "timeout"
             message = "Real UI session did not reach a terminal status before monitor timeout."
@@ -712,7 +795,86 @@ class PromptFlightProbe:
             "returncode": final_session.get("returncode"),
             "errorCode": final_session.get("errorCode"),
             "terminalLogPath": final_session.get("terminalLogPath"),
+            "monitorBudgetSeconds": monitor_budget_seconds,
+            "activeTaskTimeoutSeconds": active_task_timeout_seconds,
+            "stopRequestedAfterTimeout": bool(stop_after_timeout),
+            "stopConfirmedAfterTimeout": bool(stop_after_timeout.get("stopConfirmed")) if stop_after_timeout else False,
+            "stopEvidencePath": stop_after_timeout.get("evidencePath") if stop_after_timeout else None,
+            "stopStatusCode": stop_after_timeout.get("stopStatusCode") if stop_after_timeout else None,
+            "stopError": stop_after_timeout.get("stopError") if stop_after_timeout else None,
         }
+
+    def _stop_ui_session_after_timeout(self, session_id: str, terminal_statuses: set[str]) -> dict[str, Any]:
+        evidence_path = self.run_dir / "ui_agent_session_stop_after_timeout.json"
+        result: dict[str, Any] = {
+            "sessionId": session_id,
+            "requestedAt": utc_now(),
+            "reason": "prompt_flight_poll_timeout",
+            "stopRequest": None,
+            "confirmPolls": [],
+            "stopConfirmed": False,
+            "finalStatus": "unknown",
+            "finalSession": {},
+            "evidencePath": self._relative(evidence_path),
+        }
+        confirm_timeout_seconds = min(max(20.0, self.timeout_seconds * 0.2), 60.0)
+        confirm_poll_limit = max(8, int(confirm_timeout_seconds / 2))
+        confirm_deadline = time.monotonic() + confirm_timeout_seconds
+        result["confirmTimeoutSeconds"] = round(confirm_timeout_seconds, 3)
+        result["confirmPollLimit"] = confirm_poll_limit
+        status_code, payload, elapsed_ms = self._request_json_payload(
+            "POST",
+            f"/api/agent/session/{quote(session_id)}/stop",
+            {},
+            timeout=15,
+        )
+        stop_session = payload.get("session") if isinstance(payload.get("session"), dict) else {}
+        result["stopRequest"] = {
+            "statusCode": status_code,
+            "elapsedMs": elapsed_ms,
+            "ok": payload.get("ok"),
+            "error": payload.get("error"),
+            "sessionStatus": stop_session.get("status"),
+        }
+        if stop_session:
+            result["finalSession"] = stop_session
+            result["finalStatus"] = str(stop_session.get("status") or "unknown").lower()
+        for attempt in range(1, confirm_poll_limit + 1):
+            current_status = str(result.get("finalStatus") or "unknown").lower()
+            if current_status in terminal_statuses:
+                break
+            poll_code, poll_payload, poll_elapsed_ms = self._request_json_payload(
+                "GET",
+                f"/api/agent/session/{quote(session_id)}",
+                None,
+                timeout=5,
+            )
+            session = poll_payload.get("session") if isinstance(poll_payload.get("session"), dict) else {}
+            poll_snapshot = {
+                "attempt": attempt,
+                "at": utc_now(),
+                "statusCode": poll_code,
+                "elapsedMs": poll_elapsed_ms,
+                "sessionStatus": session.get("status"),
+                "progressPercent": session.get("progressPercent"),
+                "progressLabel": session.get("progressLabel"),
+                "errorCode": session.get("errorCode"),
+            }
+            result["confirmPolls"].append(poll_snapshot)
+            if session:
+                result["finalSession"] = session
+                result["finalStatus"] = str(session.get("status") or "unknown").lower()
+            if str(result.get("finalStatus") or "unknown").lower() in terminal_statuses:
+                break
+            remaining = confirm_deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            time.sleep(min(2.0, max(0.1, remaining)))
+        result["stopConfirmed"] = str(result.get("finalStatus") or "unknown").lower() in terminal_statuses
+        result["stopStatusCode"] = status_code
+        result["stopError"] = payload.get("error")
+        self._write_json(evidence_path, _json_safe(result))
+        return result
 
     def _stage_ui_runtime_truth_read(self) -> dict[str, Any]:
         project_slug = str(self.ui_session.get("projectSlug") or self.project).strip()
@@ -765,6 +927,20 @@ class PromptFlightProbe:
         terminal_log = self.ui_session.get("terminalLogPath")
         terminal_path = Path(str(terminal_log)) if terminal_log else None
         artifacts["terminalLog"] = self._file_summary(terminal_path) if terminal_path else None
+        latest_history = self._latest_jsonl_entry(runtime_dir / "task_history.jsonl")
+        latest_failure = self._latest_jsonl_entry(runtime_dir / "failures.jsonl")
+        artifacts["latestHistory"] = self._compact(latest_history, limit=1000)
+        artifacts["latestFailure"] = self._compact(latest_failure, limit=1000)
+        latest_failure_for_classification, ignored_failure_reason = self._latest_failure_for_classification(latest_history, latest_failure)
+        artifacts["latestFailureIncludedInClassification"] = latest_failure_for_classification is not None
+        if ignored_failure_reason:
+            artifacts["latestFailureIgnoredReason"] = ignored_failure_reason
+        classification = classify_runtime_failure(
+            latest_history,
+            latest_failure_for_classification,
+            artifacts.get("terminalLog", {}).get("tail") if isinstance(artifacts.get("terminalLog"), dict) else None,
+        )
+        artifacts["runtimeFailureClassification"] = classification
         path = self.run_dir / "ui_runtime_artifacts.json"
         self._write_json(path, artifacts)
         state_exists = bool(artifacts["files"].get("project_state.json", {}).get("exists"))
@@ -779,6 +955,10 @@ class PromptFlightProbe:
             "latestDirective": artifacts.get("latestDirective"),
             "latestCheckpoint": artifacts.get("latestCheckpoint"),
             "terminalLog": artifacts.get("terminalLog"),
+            "runtimeInfrastructureFailure": bool(classification.get("infrastructureFailure")),
+            "fatalInfrastructureFailure": bool(classification.get("fatalInfrastructureFailure")),
+            "infrastructureFailureMarkers": classification.get("markers"),
+            "latestTaskResultBlockers": self._latest_task_result_blockers(latest_history),
         }
 
     def _stage_response_synthesized(self) -> dict[str, Any]:
@@ -930,7 +1110,7 @@ class PromptFlightProbe:
             "projectName": self.project,
             "projectSlug": self.project,
             "requirement": self.prompt,
-            "ensureNewProject": False,
+            "ensureNewProject": True,
             "bootstrapProject": False,
             "runtimeMode": "build",
             "subagentPlan": None,
@@ -1013,6 +1193,75 @@ class PromptFlightProbe:
                 payload["jsonError"] = "invalid_json"
         return payload
 
+    def _latest_jsonl_entry(self, path: Path) -> dict[str, Any] | None:
+        if not path.is_file():
+            return None
+        try:
+            lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+        except OSError:
+            return None
+        for line in reversed(lines):
+            if not line.strip():
+                continue
+            try:
+                payload = json.loads(line)
+            except json.JSONDecodeError:
+                return {"raw": line[-1200:]}
+            return payload if isinstance(payload, dict) else {"value": payload}
+        return None
+
+    def _latest_task_result_blockers(self, history_entry: dict[str, Any] | None) -> list[str]:
+        if not isinstance(history_entry, dict):
+            return []
+        result = history_entry.get("result") if isinstance(history_entry.get("result"), dict) else {}
+        blockers = result.get("blockers") if isinstance(result.get("blockers"), list) else []
+        return [str(item) for item in blockers if str(item).strip()][:8]
+
+    def _latest_failure_for_classification(self, latest_history: dict[str, Any] | None, latest_failure: dict[str, Any] | None) -> tuple[dict[str, Any] | None, str]:
+        if not isinstance(latest_failure, dict):
+            return None, ""
+        history_task_id = self._task_id_from_runtime_record(latest_history)
+        failure_task_id = self._task_id_from_runtime_record(latest_failure)
+        if history_task_id and failure_task_id and history_task_id != failure_task_id:
+            return None, f"stale_failure_for_different_task:{failure_task_id}"
+        if not self._history_entry_is_validated_completion(latest_history):
+            return latest_failure, ""
+        history_recorded_at = self._recorded_at_key(latest_history)
+        failure_recorded_at = self._recorded_at_key(latest_failure)
+        if history_recorded_at and failure_recorded_at and history_recorded_at >= failure_recorded_at:
+            return None, "superseded_by_validated_history"
+        return latest_failure, ""
+
+    def _history_entry_is_validated_completion(self, history_entry: dict[str, Any] | None) -> bool:
+        if not isinstance(history_entry, dict):
+            return False
+        result = history_entry.get("result") if isinstance(history_entry.get("result"), dict) else {}
+        blockers = result.get("blockers") if isinstance(result.get("blockers"), list) else []
+        return result.get("completed") is True and result.get("validation_passed") is True and not blockers
+
+    def _task_id_from_runtime_record(self, value: Any) -> str:
+        if isinstance(value, dict):
+            for key in ("task_id", "taskId", "currentTaskId"):
+                raw = value.get(key)
+                if isinstance(raw, str) and raw.strip():
+                    return raw.strip()
+            for item in value.values():
+                found = self._task_id_from_runtime_record(item)
+                if found:
+                    return found
+        if isinstance(value, list):
+            for item in value:
+                found = self._task_id_from_runtime_record(item)
+                if found:
+                    return found
+        return ""
+
+    def _recorded_at_key(self, record: dict[str, Any] | None) -> str:
+        if not isinstance(record, dict):
+            return ""
+        raw = record.get("recorded_at") or record.get("timestamp") or record.get("at") or ""
+        return str(raw).strip()
+
     def _finalize(self) -> dict[str, Any]:
         stages = self.report.get("stages") if isinstance(self.report.get("stages"), list) else []
         failed = [stage.get("name") for stage in stages if isinstance(stage, dict) and stage.get("status") in TERMINAL_BAD_STATUSES]
@@ -1055,6 +1304,7 @@ class PromptFlightProbe:
         self.report["summary"] = counts
 
     def _write_report(self) -> None:
+        self.report["project"] = self.project
         self.report["durationSeconds"] = round(time.monotonic() - self.started, 6)
         self.report["reportPath"] = self._relative(self.report_path)
         self.report["eventsPath"] = self._relative(self.events_path)

@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-math-pf-001",
+  "generatedAt": "2026-05-28T03:00:04.176906Z",
+  "summary": {
+    "totalFindings": 4,
+    "activeFindings": 1,
+    "resolvedFindings": 3,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1
+    },
+    "bySource": {
+      "sandbox": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-b582ed52cadb7057",
+      "fingerprintSha256": "b582ed52cadb70579adb8d72c905b722bf6e8bab2beef7527881859c127bb48f",
+      "projectSlug": "continuity-math-pf-001",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T02:46:09.452701Z",
+      "lastSeenAt": "2026-05-28T03:00:04.176906Z",
+      "occurrenceCount": 41,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-7eb825cf99c668ed",
+      "fingerprintSha256": "7eb825cf99c668ed54f891f3288187ec84d68eed59d51715d49e8eb19f6bd911",
+      "projectSlug": "continuity-math-pf-001",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "docs/mathematics_case_001.md",
+      "focusPath": "docs/mathematics_case_001.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "646e3096caad4a3baf1b540bdcc5f074fe5f698962e7216b0476617b465bd1b9",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 1,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 1,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-math-pf-001"
+          }
+        }
+      ],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T02:46:01.561245Z",
+      "lastSeenAt": "2026-05-28T02:46:25.654140Z",
+      "occurrenceCount": 6,
+      "resolvedAt": "2026-05-28T02:46:25.953291Z"
+    },
+    {
+      "id": "observer-9c837347976c9c69",
+      "fingerprintSha256": "9c837347976c9c6905fcd8b9a30f006865750d5ceb408f4bf62b44879c7c65e9",
+      "projectSlug": "continuity-math-pf-001",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-math-pf-001/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T00:47:43.152698Z",
+      "lastSeenAt": "2026-05-28T00:48:19.105050Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T00:48:30.547045Z"
+    },
+    {
+      "id": "observer-19cc70b53bed24b8",
+      "fingerprintSha256": "19cc70b53bed24b8d074dbb8308193c9ccb6be01972ace4968b913ae3c41f36a",
+      "projectSlug": "continuity-math-pf-001",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/mathematics_case_001.md",
+      "focusPath": "workspace/projects/continuity-math-pf-001/docs/mathematics_case_001.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T02:46:22.827943Z",
+      "lastSeenAt": "2026-05-28T02:46:25.654140Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T02:46:25.953291Z"
+    }
+  ]
+}

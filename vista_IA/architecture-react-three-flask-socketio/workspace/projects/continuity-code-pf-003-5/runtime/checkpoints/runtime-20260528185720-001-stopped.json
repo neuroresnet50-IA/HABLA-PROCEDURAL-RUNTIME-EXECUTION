@@ -1,0 +1,433 @@
+{
+  "checkpoint_key": "runtime-20260528185720-001-stopped",
+  "created_at": "2026-05-28T18:59:17Z",
+  "payload": {
+    "reason": "stop_requested",
+    "task": {
+      "checkpoint_key": "runtime-20260528185720-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "runtime/complexity_estimate.json"
+      ],
+      "goal": "Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.",
+      "id": "RUNTIME-20260528185720-001",
+      "max_retries": 3,
+      "mode": "build",
+      "priority": 20,
+      "status": "pending",
+      "timeout_seconds": 900,
+      "title": "Crear estrategia de pruebas para una API REST",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "task_result": {
+      "blockers": [
+        "Worker process stopped because session stop was requested"
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "RUNTIME-20260528185720-001",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_f4d28813312c4b4092697b719a6773a8",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 51,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 37,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 549,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 535,
+            "type": "sensitive_output"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 549,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 535,
+              "type": "sensitive_output"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-5869555bea",
+        "severity": "MEDIUM",
+        "stage": "output",
+        "timestamp": "2026-05-28T18:58:05Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_1e0fb45a2b1b4c90a6e7eba61d51018c",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 313,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 299,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 7669,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 7655,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 7718,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 7704,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8430,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 8416,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8506,
+            "pattern": "credit_card_like",
+            "sample": "20260528185720",
+            "start": 8492,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 313,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 299,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7669,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 7655,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7718,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 7704,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8430,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 8416,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8506,
+              "pattern": "credit_card_like",
+              "sample": "20260528185720",
+              "start": 8492,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-5869555bea",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-05-28T18:57:45Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/artifacts/tool_invocations/RUNTIME-20260528185720-001-postflight-20260528T185807Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-code-pf-003-5",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260528185720-001",
+            "timedOut": true,
+            "timestamp": "2026-05-28T18:58:05Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "postflight",
+            "projectSlug": "continuity-code-pf-003-5",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-code-pf-003-5",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 0,
+                "totalFindings": 0
+              }
+            },
+            "taskId": "RUNTIME-20260528185720-001",
+            "timedOut": false,
+            "timestamp": "2026-05-28T18:58:07Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "continuity-code-pf-003-5",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260528185720-001",
+        "taskResult": {
+          "blocker_count": 1,
+          "completed": false,
+          "validation_passed": false
+        },
+        "timestamp": "2026-05-28T18:58:07Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/artifacts/tool_invocations/RUNTIME-20260528185720-001-preflight-20260528T185745Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-code-pf-003-5",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": true,
+                "incident": {
+                  "counters": {
+                    "repeatedEvents": 0,
+                    "ticks": 2,
+                    "timeouts": 0
+                  },
+                  "deadlineAt": "2026-05-28T18:58:52.736622Z",
+                  "incidentId": "OBS-20260528-185552-1838d8d1",
+                  "phase": "inspecting",
+                  "projectSlug": "continuity-code-pf-001-4",
+                  "rootCause": "active_worker_running",
+                  "status": "open",
+                  "stopReason": "",
+                  "trigger": "upsert_flow_edge"
+                },
+                "state": "idle"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "RUNTIME-20260528185720-001",
+            "timedOut": false,
+            "timestamp": "2026-05-28T18:57:45Z",
+            "tool": "observer-status"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "continuity-code-pf-003-5",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260528185720-001",
+        "timestamp": "2026-05-28T18:57:45Z",
+        "warnings": []
+      },
+      "recovery_preview": null,
+      "task_completion_gate": null
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.163273,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-28T18:58:05Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/complexity_estimate.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/complexity_estimate.json",
+            "size": 870
+          }
+        ],
+        "found": [
+          "runtime/complexity_estimate.json"
+        ],
+        "missing": [],
+        "records": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "runtime/complexity_estimate.json",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5/runtime/complexity_estimate.json",
+            "size": 870
+          }
+        ],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260528185720-001",
+      "validation_passed": false,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-5"
+    }
+  }
+}

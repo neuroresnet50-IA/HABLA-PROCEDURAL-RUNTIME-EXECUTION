@@ -1,0 +1,417 @@
+{
+  "checkpoint_key": "runtime-20260528005914-001-stopped",
+  "created_at": "2026-05-28T01:02:15Z",
+  "payload": {
+    "reason": "stop_requested",
+    "task": {
+      "checkpoint_key": "runtime-20260528005914-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "docs/mathematics_case_001.md"
+      ],
+      "goal": "Resolver un sistema lineal 3x3 y explicar como verificar la solucion con sustitucion.; Escribe la solucion o plan en docs/mathematics_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+      "id": "RUNTIME-20260528005914-001",
+      "max_retries": 2,
+      "mode": "build",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 600,
+      "title": "Resolver un sistema lineal 3x3 y explicar como",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "task_result": {
+      "blockers": [
+        "Worker process stopped because session stop was requested",
+        "Missing expected file: docs/mathematics_case_001.md",
+        "Validation command failed with return code 1: python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "RUNTIME-20260528005914-001",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_c49bdefe9d11477785afcee64e7e2fa4",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 51,
+            "pattern": "credit_card_like",
+            "sample": "20260528005914",
+            "start": 37,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 801,
+            "pattern": "credit_card_like",
+            "sample": "20260528005914",
+            "start": 787,
+            "type": "sensitive_output"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260528005914",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 801,
+              "pattern": "credit_card_like",
+              "sample": "20260528005914",
+              "start": 787,
+              "type": "sensitive_output"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-8cc2db351b",
+        "severity": "MEDIUM",
+        "stage": "output",
+        "timestamp": "2026-05-28T01:02:10Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_a8fc307b6f664ace84ca25c5e9bb13f0",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 305,
+            "pattern": "credit_card_like",
+            "sample": "20260528005914",
+            "start": 291,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8600,
+            "pattern": "credit_card_like",
+            "sample": "20260528005914",
+            "start": 8586,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8676,
+            "pattern": "credit_card_like",
+            "sample": "20260528005914",
+            "start": 8662,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 305,
+              "pattern": "credit_card_like",
+              "sample": "20260528005914",
+              "start": 291,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8600,
+              "pattern": "credit_card_like",
+              "sample": "20260528005914",
+              "start": 8586,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8676,
+              "pattern": "credit_card_like",
+              "sample": "20260528005914",
+              "start": 8662,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 45,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 45.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-8cc2db351b",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-05-28T00:59:59Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260528005914-001-postflight-20260528T010213Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-math-pf-001",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260528005914-001",
+            "timedOut": true,
+            "timestamp": "2026-05-28T01:02:10Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-math-pf-001",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260528005914-001",
+            "timedOut": true,
+            "timestamp": "2026-05-28T01:02:12Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "continuity-math-pf-001",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260528005914-001",
+        "taskResult": {
+          "blocker_count": 3,
+          "completed": false,
+          "validation_passed": false
+        },
+        "timestamp": "2026-05-28T01:02:13Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing",
+          "postflight:findings timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260528005914-001-preflight-20260528T005957Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-math-pf-001",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": true,
+                "incident": null,
+                "state": "idle"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "RUNTIME-20260528005914-001",
+            "timedOut": false,
+            "timestamp": "2026-05-28T00:59:55Z",
+            "tool": "observer-status"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "continuity-math-pf-001",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260528005914-001",
+            "timedOut": true,
+            "timestamp": "2026-05-28T00:59:55Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "continuity-math-pf-001",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260528005914-001",
+            "timedOut": true,
+            "timestamp": "2026-05-28T00:59:56Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "continuity-math-pf-001",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260528005914-001",
+        "timestamp": "2026-05-28T00:59:57Z",
+        "warnings": [
+          "preflight:integrity timed out; continuing",
+          "preflight:findings timed out; continuing"
+        ]
+      },
+      "recovery_preview": null,
+      "task_completion_gate": null
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.378809,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 1,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['docs/mathematics_case_001.md'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-28T01:02:09Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001"
+          },
+          "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError: ['docs/mathematics_case_001.md']\n",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [
+          "Missing expected file: docs/mathematics_case_001.md"
+        ],
+        "expected_files": [
+          {
+            "exists": false,
+            "is_file": false,
+            "path": "docs/mathematics_case_001.md",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": null
+          }
+        ],
+        "found": [],
+        "missing": [
+          "docs/mathematics_case_001.md"
+        ],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260528005914-001",
+      "validation_passed": false,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-001"
+    }
+  }
+}

@@ -1,0 +1,186 @@
+{
+  "schema_version": 2,
+  "task_id": "RUNTIME-20260528200325-001",
+  "estimate_type": "persistent_fifo_queue_design_budget",
+  "generated_at": "2026-05-28T20:06:58Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001-5",
+  "starting_checkpoint": "complexity-estimate",
+  "scope_guard": {
+    "current_deliverable": "runtime/complexity_estimate.json",
+    "deferred_deliverables": [
+      "docs/advanced_programming_case_001.md"
+    ],
+    "control_plane_files_not_modified": [
+      "runtime/project_state.json",
+      "runtime/task_queue.json",
+      "runtime/task_history.jsonl",
+      "runtime/failures.jsonl",
+      "runtime/checkpoints/",
+      "runtime/directives/",
+      "runtime/logs/"
+    ]
+  },
+  "project_file_count": 1,
+  "prompt_word_count": 33,
+  "score": 34,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "confidence": 88,
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "worker_lace_cycle_scope": "solo ciclo acotado de esta tarea; los ciclos restantes pertenecen al control plane",
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido",
+    "orden_fifo",
+    "claim_atomico",
+    "reanudacion",
+    "retry_por_tarea"
+  ],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 33 palabras",
+    "toca runtime/estado persistido",
+    "requiere evidencia auditable",
+    "la cola debe mantener orden FIFO sin depender de memoria implicita",
+    "cada task debe transicionar por estados verificables"
+  ],
+  "fifo_queue_design": {
+    "goal": "Cola FIFO persistente con estados pending, running, completed y failed.",
+    "storage_model": "Archivo JSON canonico con escritura atomica mediante temporal y rename; bloqueo de archivo para claim/transition cuando exista concurrencia.",
+    "ordering_key": [
+      "created_at",
+      "sequence"
+    ],
+    "stable_order_rule": "El siguiente item elegible es el pending con menor sequence; created_at solo respalda auditoria y depuracion.",
+    "states": {
+      "pending": "Tarea creada y elegible cuando sus dependencies estan completadas.",
+      "running": "Tarea reclamada por un worker propio con started_at, worker_id y timeout_seconds.",
+      "completed": "Tarea validada con evidencia real en disco y validation_passed=true.",
+      "failed": "Tarea agotada o bloqueada con causa registrada y retry_count persistido."
+    },
+    "state_transitions": [
+      "pending -> running",
+      "running -> completed",
+      "running -> failed",
+      "failed -> pending cuando retry_count < max_retries y existe causa de retry registrada"
+    ],
+    "claim_contract": {
+      "operation": "claim_next(mode)",
+      "preconditions": [
+        "mode explicito en smoke, build, medium o long-run",
+        "dependencies completadas",
+        "status == pending",
+        "now no excede budget de sesion"
+      ],
+      "effects": [
+        "asigna worker_id",
+        "status pasa a running",
+        "started_at queda persistido",
+        "attempt_id queda persistido"
+      ]
+    },
+    "completion_contract": {
+      "operation": "complete(task_id, task_result)",
+      "preconditions": [
+        "task_result.task_id coincide",
+        "expected_files existen bajo root",
+        "validation_commands retornan 0",
+        "blockers esta vacio"
+      ],
+      "effects": [
+        "status pasa a completed",
+        "completed_at queda persistido",
+        "validation_ran y evidence_paths se conservan en historial por control plane"
+      ]
+    },
+    "failure_contract": {
+      "operation": "fail_or_retry(task_id, cause)",
+      "preconditions": [
+        "cause no vacia",
+        "fallo observable de worker, timeout, validacion o dependencia"
+      ],
+      "effects": [
+        "registra causa",
+        "incrementa retry_count por tarea",
+        "reencola como pending solo si retry_count < max_retries",
+        "marca failed si agota retries"
+      ]
+    }
+  },
+  "mode_policy": {
+    "explicit_modes": [
+      "smoke",
+      "build",
+      "medium",
+      "long-run"
+    ],
+    "smoke_rule": "smoke solo se acepta por configuracion explicita, nunca por palabras sueltas del prompt.",
+    "long_run_rule": "long-run debe permitir multiples tareas, checkpoints y retries por tarea; no puede colapsar a comportamiento smoke."
+  },
+  "verification_plan": {
+    "minimum_validation": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+    "follow_up_validation_for_implementation": [
+      "tests/test_task_queue.py para orden FIFO, dependencies y transiciones",
+      "tests/test_retry_recovery.py para retry por tarea",
+      "tests/test_resume_checkpoint.py para reanudacion desde disco",
+      "tests/test_smoke_mode.py para modo smoke explicito"
+    ],
+    "evidence_required": [
+      "archivo de cola persistido",
+      "historial de transiciones",
+      "fallos con causa",
+      "validaciones ejecutadas por tarea"
+    ]
+  },
+  "tool_evidence": {
+    "findings": {
+      "statusCode": 200,
+      "ok": true,
+      "reportPath": "runtime/artifacts/observer_findings.json",
+      "activeFindings": 0
+    },
+    "integrity": {
+      "statusCode": 200,
+      "ok": true,
+      "reportPath": "runtime/artifacts/file_integrity_report.json",
+      "totalFindings": 0
+    },
+    "scanner": {
+      "statusCode": 423,
+      "ok": false,
+      "reportPath": null,
+      "error": "project_locked",
+      "lock": {
+        "locked": true,
+        "reason": "agent_session_active",
+        "sessionId": "agent-c47a19df54",
+        "message": "Agente activo: el editor esta en lectura viva hasta que cierre la sesion."
+      },
+      "follow_up": "El control plane debe reintentar scanner cuando cierre la sesion activa."
+    }
+  },
+  "local_validation_evidence": {
+    "expected_file_exists": true,
+    "json_parse_passed": true,
+    "scanner_approved": false
+  },
+  "next_task_dependency": {
+    "blocked_task": "RUNTIME-20260528200325-002",
+    "reason": "Depende de que esta estimacion exista y sea validada antes de escribir docs/advanced_programming_case_001.md."
+  }
+}

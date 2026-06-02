@@ -1,0 +1,167 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "fifo_queue_design",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_goal",
+        "task_id",
+        "timeout_seconds",
+        "tool_evidence",
+        "updated_at"
+      ],
+      "lineCount": 145,
+      "mtime": "2026-05-28T18:56:04Z",
+      "path": "workspace/projects/continuity-code-pf-001-4/runtime/complexity_estimate.json",
+      "sha256": "13dfbbbf79453aa941c4e226edbdb497ba44a9295ae57a459fe6fea84c8bb147",
+      "size": 5521,
+      "tail": "eted antes de claim.\",\n      \"Validar estados permitidos: pending, running, completed, failed.\",\n      \"Validar que terminate() escale a kill() si el worker no cierra.\"\n    ],\n    \"risks\": [\n      \"Race conditions si dos workers reclaman la misma tarea sin lock atomico.\",\n      \"Starvation si una tarea pending bloqueada por dependencias queda al frente sin filtrado de elegibilidad.\",\n      \"Falsos completed si el worker reporta exito sin evidencia de archivos y validaciones.\",\n      \"Contaminacion de retries si se reintenta toda la sesion en lugar de la tarea fallida.\"\n    ],\n    \"non_goals_for_this_task\": [\n      \"No implementar task_queue.py.\",\n      \"No editar runtime/task_queue.json.\",\n      \"No cerrar tareas desde archivos internos del control plane.\"\n    ]\n  },\n  \"tool_evidence\": {\n    \"findings\": {\n      \"statusCode\": 200,\n      \"ok\": true,\n      \"reportPath\": \"runtime/artifacts/observer_findings.json\"\n    },\n    \"integrity\": {\n      \"statusCode\": 200,\n      \"ok\": true,\n      \"reportPath\": \"runtime/artifacts/file_integrity_report.json\"\n    },\n    \"scanner_pre_edit\": {\n      \"statusCode\": 423,\n      \"ok\": false,\n      \"error\": \"project_locked\"\n    }\n  },\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T18:56:33Z",
+      "path": "workspace/projects/continuity-code-pf-001-4/runtime/failures.jsonl",
+      "sha256": "39a5195e1a8e8c9abded5b9bfd15d31de9439d4ee5ca086ce95b41d03016f9a9",
+      "size": 477,
+      "tail": "{\"failure\": {\"blocked_task_ids\": [\"RUNTIME-20260528185248-001\"], \"checkpoint_key\": \"manual-stop-agent-bb4ee4db65\", \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/manual-stop-agent-bb4ee4db65.json\", \"failure_type\": \"manual_stop\", \"session_id\": \"agent-bb4ee4db65\", \"task_id\": \"RUNTIME-20260528185248-001\"}, \"recorded_at\": \"2026-05-28T18:56:33Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-28T18:56:33Z",
+      "path": "workspace/projects/continuity-code-pf-001-4/runtime/project_state.json",
+      "sha256": "d73bdfa8b181161cb440aa2ae5309c02a6d0d5738e4ad08b9dd8479672f29fd0",
+      "size": 582,
+      "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260528185248-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-bb4ee4db65\",\n    \"complexity-estimate\",\n    \"manual-stop-agent-bb4ee4db65\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-bb4ee4db65\",\n  \"project_id\": \"continuity-code-pf-001-4\",\n  \"schema_version\": 1,\n  \"status\": \"stopped\",\n  \"updated_at\": \"2026-05-28T18:56:33.186317+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-001-4/runtime/task_history.jsonl"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-28T18:56:32Z",
+      "path": "workspace/projects/continuity-code-pf-001-4/runtime/task_queue.json",
+      "sha256": "054b8e6822d2b5093ae016d3aaaffe2e2c45ef6b0ead2e9d5c71b0edb9663b64",
+      "size": 1531,
+      "tail": "mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260528185248-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_001.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528185248-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 15,
+    "mtime": "2026-05-28T18:56:33Z",
+    "path": "workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/manual-stop-agent-bb4ee4db65.json",
+    "sha256": "174fda006cd5e8f8cd600a59ef93da4c49da42bc28e686fc1c92b6eee44212e2",
+    "size": 445,
+    "tail": "{\n  \"checkpoint_key\": \"manual-stop-agent-bb4ee4db65\",\n  \"created_at\": \"2026-05-28T18:56:33Z\",\n  \"payload\": {\n    \"active_task_id\": \"RUNTIME-20260528185248-001\",\n    \"blocked_task_ids\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"previous_current_task_id\": \"RUNTIME-20260528185248-001\",\n    \"previous_status\": \"running\",\n    \"project_slug\": \"continuity-code-pf-001-4\",\n    \"reason\": \"manual_stop\",\n    \"session_id\": \"agent-bb4ee4db65\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 242,
+    "mtime": "2026-05-28T18:52:48Z",
+    "path": "workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json",
+    "sha256": "2b4b4f5bb823b01017ffcd7ba898878a67ccd55faa2252e7513af96b33231ec7",
+    "size": 22668,
+    "tail": "nning, completed y failed.\",\n    \"id\": \"RUNTIME-20260528185248-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\"\n  },\n  \"task_id\": \"RUNTIME-20260528185248-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"28f16ceb06eba3e8a57179916f74923b9d281dfaa2e3b30fd86e4f524c5e6e82\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blocked_task_ids": [
+        "RUNTIME-20260528185248-001"
+      ],
+      "checkpoint_key": "manual-stop-agent-bb4ee4db65",
+      "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/manual-stop-agent-bb4ee4db65.json",
+      "failure_type": "manual_stop",
+      "session_id": "agent-bb4ee4db65",
+      "task_id": "RUNTIME-20260528185248-001"
+    },
+    "recorded_at": "2026-05-28T18:56:33Z"
+  },
+  "latestFailureIncludedInClassification": true,
+  "latestHistory": null,
+  "projectDir": "workspace/projects/continuity-code-pf-001-4",
+  "runtimeDir": "workspace/projects/continuity-code-pf-001-4/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 24,
+    "mtime": "2026-05-28T18:56:32Z",
+    "path": "workspace/projects/continuity-code-pf-001-4/runtime/logs/agent-bb4ee4db65-terminal.log",
+    "sha256": "4ad2b481be7e3c1f6f445988578eb8ab35374aecff9f0a672a325f2e08a1dbdf",
+    "size": 1211,
+    "tail": "ane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260528185248-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/artifacts/tool_invocations/RUNTIME-20260528185248-001-preflight-20260528T185307Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260528185248-001 con timeout 900s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json.\n\n[agent] Sesion detenida por el usuario.\n"
+  }
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "checkpoint_key": "runtime-20260530131145-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/mathematics_case_030.md"
+    ],
+    "goal": "Detectar un error comun en una demostracion algebraica y corregirlo.; Escribe la solucion o plan en docs/mathematics_case_030.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+    "id": "RUNTIME-20260530131145-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 600,
+    "title": "Detectar un error comun en una demostracion algebraica",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_030.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  }
+]

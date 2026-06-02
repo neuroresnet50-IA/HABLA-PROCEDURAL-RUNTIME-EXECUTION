@@ -1,0 +1,166 @@
+{
+  "checkpoint_key": "runtime-20260601021634-001-split-001-checkpoint",
+  "created_at": "2026-06-01T02:43:33Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/runtime/directives/RUNTIME-20260601021634-001-SPLIT-001-20260601T024154Z-6e3e171dbe30.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/runtime/directives/RUNTIME-20260601021634-001-SPLIT-001-20260601T024154Z-6e3e171dbe30.md",
+      "source_hash": "6e3e171dbe3007220069f7b1c7dd41a13ea06f199aeb77b4973c5774b23c1ba4"
+    },
+    "execution": {
+      "reason": "existing_evidence_validated",
+      "skipped_worker": true
+    },
+    "task": {
+      "checkpoint_key": "runtime-20260601021634-001-split-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html"
+      ],
+      "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+      "id": "RUNTIME-20260601021634-001-SPLIT-001",
+      "max_retries": 4,
+      "mode": "build",
+      "priority": 9,
+      "status": "pending",
+      "timeout_seconds": 3600,
+      "title": "Build runnable static web app split 1",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "frontend/index.html"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260601021634-001-SPLIT-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.692467,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-06-01T02:42:24Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day",
+          "duration_seconds": 3.530891,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+            "--workspace",
+            ".",
+            "--frontend",
+            "frontend",
+            "--mode",
+            "smoke",
+            "--light",
+            "day"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+              "--workspace",
+              ".",
+              "--frontend",
+              "frontend",
+              "--mode",
+              "smoke",
+              "--light",
+              "day"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-06-01T02:42:24Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224"
+          },
+          "stderr": "",
+          "stdout": "{\n  \"ok\": true,\n  \"blockers\": [],\n  \"dom\": {\n    \"render_mode\": \"fallback-2d\",\n    \"distance_text\": \"0 m\",\n    \"speed_text\": \"4.9 m/s\",\n    \"event_text\": \"dash hacia recompensa\"\n  },\n  \"screenshot\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/runtime/artifacts/browser_render_smoke.png\",\n  \"metrics\": {\n    \"width\": 1280,\n    \"height\": 720,\n    \"mean_rgb\": [\n      99.8,\n      119.51,\n      119.16\n    ],\n    \"non_dark_ratio\": 0.9405,\n    \"bright_ratio\": 0.708,\n    \"central_non_dark_ratio\": 1.0,\n    \"central_bright_ratio\": 0.9003\n  },\n  \"browser_stderr_tail\": [\n    \"[2519198:2519242:0531/194225.419461:ERROR:gpu/ipc/client/command_buffer_proxy_impl.cc:285] ContextResult::kTransientFailure: Failed to send GpuControl.CreateCommandBuffer.\",\n    \"119217 bytes written to file /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/runtime/artifacts/browser_render_smoke.png\"\n  ]\n}\n",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": true,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/frontend/index.html",
+            "size": 2582
+          }
+        ],
+        "found": [
+          "frontend/index.html"
+        ],
+        "missing": [],
+        "records": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": true,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224/frontend/index.html",
+            "size": 2582
+          }
+        ],
+        "reported_created": [],
+        "reported_modified": [
+          "frontend/index.html"
+        ],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260601021634-001-SPLIT-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260601004224"
+    }
+  }
+}

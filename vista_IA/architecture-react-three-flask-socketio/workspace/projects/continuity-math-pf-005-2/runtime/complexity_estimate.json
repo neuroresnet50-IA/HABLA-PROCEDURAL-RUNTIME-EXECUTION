@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-29T05:23:40.314092Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-math-pf-005-2",
+  "project_file_count": 0,
+  "prompt_word_count": 31,
+  "score": 29,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "risk_flags": [],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt corto: 10 palabras",
+    "archivos estimados del proyecto: 18",
+    "declara pruebas o validacion",
+    "control_plane_artifact_fast_path",
+    "codex worker skipped for deterministic runtime artifact"
+  ],
+  "confidence": 88,
+  "analysis_updated_at": "2026-05-29T05:24:41Z",
+  "task_id": "RUNTIME-20260529052340-001",
+  "task_title": "Resolver una ecuacion cuadratica y documentar discriminante, raices",
+  "task_goal": "Resolver una ecuacion cuadratica y documentar discriminante, raices y validacion.",
+  "task_scope": "complexity_estimate_only",
+  "expected_files": [
+    "runtime/complexity_estimate.json"
+  ],
+  "fast_path": {
+    "executor": "control_plane_artifact_executor",
+    "reason": "runtime_complexity_estimate",
+    "codex_skipped": true,
+    "validator_remains_authority": true
+  },
+  "control_plane_contract": {
+    "owner": "control_plane",
+    "closure": "validator confirms runtime/complexity_estimate.json exists in the workspace",
+    "worker_may_edit_control_plane_state": false,
+    "task_summary": "Resolver una ecuacion cuadratica y documentar discriminante, raices y validacion.",
+    "out_of_scope": [
+      "runtime/project_state.json",
+      "runtime/task_queue.json",
+      "runtime/task_history.jsonl",
+      "runtime/failures.jsonl"
+    ]
+  }
+}

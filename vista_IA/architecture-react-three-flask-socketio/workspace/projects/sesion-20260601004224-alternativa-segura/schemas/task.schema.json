@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "task.schema.json",
+  "title": "Task",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "goal",
+    "status",
+    "priority",
+    "dependencies",
+    "expected_files",
+    "validation_commands",
+    "timeout_seconds",
+    "max_retries",
+    "mode",
+    "checkpoint_key"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "running", "completed", "failed", "blocked"]
+    },
+    "priority": {
+      "type": "integer"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_files": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "validation_commands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "timeout_seconds": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "max_retries": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["smoke", "build", "medium", "long-run"]
+    },
+    "checkpoint_key": {
+      "type": ["string", "null"]
+    }
+  }
+}

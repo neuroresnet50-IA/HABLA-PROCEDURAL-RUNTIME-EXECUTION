@@ -1,0 +1,60 @@
+[
+  {
+    "checkpoint_key": "runtime-lace-manual-base",
+    "dependencies": [],
+    "expected_files": [
+      "docs/base.md"
+    ],
+    "goal": "Crear base para validar LACE gate.",
+    "id": "RUNTIME-LACE-MANUAL-001",
+    "max_retries": 0,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 30,
+    "title": "Base LACE manual",
+    "validation_commands": []
+  },
+  {
+    "checkpoint_key": "lace-cycle-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-LACE-MANUAL-001"
+    ],
+    "expected_files": [
+      "LACE_LOG.md",
+      "docs/lace_cycles/ciclo-01.md"
+    ],
+    "goal": "Completar el ciclo LACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260601-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 01",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-002-checkpoint",
+    "dependencies": [
+      "LACE-20260601-001"
+    ],
+    "expected_files": [
+      "LACE_LOG.md",
+      "docs/lace_cycles/ciclo-02.md"
+    ],
+    "goal": "Completar el ciclo LACE 02 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260601-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 02",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-02.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-2 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-2 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-2 COMPLETADO]' in text, 'missing completado marker'\""
+    ]
+  }
+]

@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-geom-pf-011",
+  "generatedAt": "2026-05-28T03:16:47.666223Z",
+  "summary": {
+    "totalFindings": 4,
+    "activeFindings": 2,
+    "resolvedFindings": 2,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1,
+      "warning": 1
+    },
+    "bySource": {
+      "sandbox": 1,
+      "lint": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-e18c3ba2d793f1d9",
+      "fingerprintSha256": "e18c3ba2d793f1d9c32421d77ce92d49016f3ce6cfd3515befcf9b42ebb0df4f",
+      "projectSlug": "continuity-geom-pf-011",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-011/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T03:16:44.000981Z",
+      "lastSeenAt": "2026-05-28T03:16:47.666223Z",
+      "occurrenceCount": 4,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-c244593dbd4a4242",
+      "fingerprintSha256": "c244593dbd4a424253465c8f8e0de1d0719c2fe27b00ad6b1b5b06e45401d995",
+      "projectSlug": "continuity-geom-pf-011",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-geom-pf-011/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T03:16:40.237408Z",
+      "lastSeenAt": "2026-05-28T03:16:47.666223Z",
+      "occurrenceCount": 6,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-a245bdc93b7ad095",
+      "fingerprintSha256": "a245bdc93b7ad0951c0526cf770f6e12714e304b41b93e62f099e1a170259980",
+      "projectSlug": "continuity-geom-pf-011",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-011/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T03:14:56.545759Z",
+      "lastSeenAt": "2026-05-28T03:16:40.740557Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T03:16:44.000981Z"
+    },
+    {
+      "id": "observer-162ecee7cd62d462",
+      "fingerprintSha256": "162ecee7cd62d462f060dab21ef9b36738263883598541601da1230a569a89bb",
+      "projectSlug": "continuity-geom-pf-011",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/geometry_case_011.md",
+      "focusPath": "workspace/projects/continuity-geom-pf-011/docs/geometry_case_011.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T03:16:40.237408Z",
+      "lastSeenAt": "2026-05-28T03:16:40.740557Z",
+      "occurrenceCount": 2,
+      "resolvedAt": "2026-05-28T03:16:44.000981Z"
+    }
+  ]
+}

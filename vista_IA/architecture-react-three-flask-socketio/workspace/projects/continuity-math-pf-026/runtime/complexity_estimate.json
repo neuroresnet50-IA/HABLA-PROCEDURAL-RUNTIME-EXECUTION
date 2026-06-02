@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T22:29:06.185249Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-math-pf-026",
+  "project_file_count": 0,
+  "prompt_word_count": 32,
+  "score": 29,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "task_scope": {
+    "task_id": "RUNTIME-20260528222906-001",
+    "declared_deliverable": "runtime/complexity_estimate.json",
+    "validation_artifacts": [
+      "tests/test_physical_units_consistency.py"
+    ],
+    "deferred_deliverables": [
+      {
+        "task_id": "RUNTIME-20260528222906-002",
+        "path": "docs/mathematics_case_026.md",
+        "reason": "La cola de tareas lo declara como entregable dependiente, no como salida de esta tarea."
+      }
+    ]
+  },
+  "physical_units_consistency_test": {
+    "formula": "F = m * a",
+    "purpose": "Verificar que ambos lados de la formula tienen la misma dimension fisica.",
+    "left_side": {
+      "symbol": "F",
+      "unit": "newton",
+      "base_units": {
+        "kg": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "right_side": {
+      "expression": "m * a",
+      "factors": [
+        {
+          "symbol": "m",
+          "meaning": "masa",
+          "base_units": {
+            "kg": 1
+          }
+        },
+        {
+          "symbol": "a",
+          "meaning": "aceleracion",
+          "base_units": {
+            "m": 1,
+            "s": -2
+          }
+        }
+      ],
+      "combined_base_units": {
+        "kg": 1,
+        "m": 1,
+        "s": -2
+      }
+    },
+    "expected_result": "consistent",
+    "acceptance_check": "left_side.base_units debe coincidir exactamente con right_side.combined_base_units."
+  },
+  "risk_flags": [],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 32 palabras",
+    "requiere evidencia auditable",
+    "declara pruebas o validacion"
+  ],
+  "confidence": 88
+}

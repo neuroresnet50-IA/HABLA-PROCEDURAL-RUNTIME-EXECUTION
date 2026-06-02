@@ -1,0 +1,20 @@
+[
+  {
+    "checkpoint_key": "runtime-20260530134837-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/mathematics_case_048.md"
+    ],
+    "goal": "Crear un validador textual para una solucion matematica paso a paso.; Escribe la solucion o plan en docs/mathematics_case_048.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+    "id": "RUNTIME-20260530134837-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 600,
+    "title": "Crear un validador textual para una solucion matematica",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_048.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  }
+]

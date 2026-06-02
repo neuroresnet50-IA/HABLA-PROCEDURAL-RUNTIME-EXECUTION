@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-code-pf-002",
+  "generatedAt": "2026-05-28T16:10:21.238630Z",
+  "summary": {
+    "totalFindings": 4,
+    "activeFindings": 1,
+    "resolvedFindings": 3,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1
+    },
+    "bySource": {
+      "sandbox": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-6f54058bb976a1fb",
+      "fingerprintSha256": "6f54058bb976a1fbc2225e42c2c46c90ec3918f0d1ddd8a33b53fb5d548b6805",
+      "projectSlug": "continuity-code-pf-002",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-27T19:21:19.432558Z",
+      "lastSeenAt": "2026-05-28T16:10:21.238630Z",
+      "occurrenceCount": 253,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-178b53402ebe2f04",
+      "fingerprintSha256": "178b53402ebe2f04ce63b5fc348584120d559a177de445080a086aa9b4df64b6",
+      "projectSlug": "continuity-code-pf-002",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "docs/advanced_programming_case_002.md",
+      "focusPath": "docs/advanced_programming_case_002.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "d715bd1860f1406eba74baa4e9a30d6c0a4426b7da8b10e51da30ef7e802f84c",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 1,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 1,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-code-pf-002"
+          }
+        }
+      ],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T16:08:40.559446Z",
+      "lastSeenAt": "2026-05-28T16:10:18.134895Z",
+      "occurrenceCount": 6,
+      "resolvedAt": "2026-05-28T16:10:21.238630Z"
+    },
+    {
+      "id": "observer-8cf67d7dbbd3afb4",
+      "fingerprintSha256": "8cf67d7dbbd3afb478068845e55927cab8fdb36a770e4fd64ca2353c961896ca",
+      "projectSlug": "continuity-code-pf-002",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-code-pf-002/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-27T18:48:43.829594Z",
+      "lastSeenAt": "2026-05-27T18:48:43.829594Z",
+      "occurrenceCount": 1,
+      "resolvedAt": "2026-05-27T18:49:19.029540Z"
+    },
+    {
+      "id": "observer-bf97b007b372e7b6",
+      "fingerprintSha256": "bf97b007b372e7b6516cb46813993f15f7ac4f76ef3556196e3eaf76054a6478",
+      "projectSlug": "continuity-code-pf-002",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/advanced_programming_case_002.md",
+      "focusPath": "workspace/projects/continuity-code-pf-002/docs/advanced_programming_case_002.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T16:10:10.429646Z",
+      "lastSeenAt": "2026-05-28T16:10:18.134895Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T16:10:21.238630Z"
+    }
+  ]
+}

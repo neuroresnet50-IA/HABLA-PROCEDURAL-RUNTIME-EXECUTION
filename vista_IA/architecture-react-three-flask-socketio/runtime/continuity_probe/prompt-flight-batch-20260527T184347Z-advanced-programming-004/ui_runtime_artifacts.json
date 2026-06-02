@@ -1,0 +1,136 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 35,
+      "mtime": "2026-05-27T18:53:29Z",
+      "path": "workspace/projects/continuity-code-pf-004/runtime/complexity_estimate.json",
+      "sha256": "e8bd60e0f02d85893a10d4103fde943e93c5cb7aa468a3fe2f0127b16924b95c",
+      "size": 827,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-27T18:53:29.919616Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-code-pf-004\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 32,\n  \"score\": 24,\n  \"difficulty\": \"facil\",\n  \"difficulty_label\": \"Facil\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 2,\n  \"recommended_agents\": 1,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 1,\n  \"max_tasks\": 3,\n  \"timeout_seconds\": 600,\n  \"recovery_budget\": 2,\n  \"max_retries\": 2,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt medio: 32 palabras\",\n    \"requiere evidencia auditable\"\n  ],\n  \"confidence\": 83\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-004/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 18,
+      "mtime": "2026-05-27T18:54:43Z",
+      "path": "workspace/projects/continuity-code-pf-004/runtime/project_state.json",
+      "sha256": "bcd97f08b371de89352b8f89770c170884ece6938184598382f1418e4f347848",
+      "size": 532,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-841e413cbf\",\n    \"complexity-estimate\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-27T18:53:29.610236+00:00\",\n  \"current_task_id\": \"RUNTIME-20260527185329-001\",\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-27T18:53:29.610236+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-841e413cbf\",\n  \"project_id\": \"continuity-code-pf-004\",\n  \"schema_version\": 1,\n  \"status\": \"running\",\n  \"updated_at\": \"2026-05-27T18:54:43.007658+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-004/runtime/task_history.jsonl"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-05-27T18:54:42Z",
+      "path": "workspace/projects/continuity-code-pf-004/runtime/task_queue.json",
+      "sha256": "be87c5350914ca75130e509eb5e91cf1bef11eee681fead97c826cd10c4a9afe",
+      "size": 838,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260527185329-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_004.md\"\n    ],\n    \"goal\": \"Explicar un patron retry con backoff y causa registrada por intento.; Escribe la solucion o plan en docs/advanced_programming_case_004.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260527185329-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"running\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Explicar un patron retry con backoff y causa\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_004.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 42,
+    "mtime": "2026-05-27T18:53:29Z",
+    "path": "workspace/projects/continuity-code-pf-004/runtime/checkpoints/complexity-estimate.json",
+    "sha256": "022103e8bbf3ebb92a9a5788655220487b0fe41145bf9c70162f4711626d02f0",
+    "size": 1130,
+    "tail": "{\n  \"checkpoint_key\": \"complexity-estimate\",\n  \"created_at\": \"2026-05-27T18:53:29Z\",\n  \"payload\": {\n    \"estimate\": {\n      \"bootstrap_tasks\": 1,\n      \"confidence\": 83,\n      \"difficulty\": \"facil\",\n      \"difficulty_label\": \"Facil\",\n      \"estimate_type\": \"project_complexity_budget\",\n      \"generated_at\": \"2026-05-27T18:53:29.919616Z\",\n      \"launch_mode\": \"existing\",\n      \"max_agents\": 8,\n      \"max_lace_cycles\": 10,\n      \"max_retries\": 2,\n      \"max_tasks\": 3,\n      \"min_lace_cycles\": 2,\n      \"project_file_count\": 0,\n      \"project_slug\": \"continuity-code-pf-004\",\n      \"prompt_word_count\": 32,\n      \"reasons\": [\n        \"modo runtime solicitado: build\",\n        \"prompt medio: 32 palabras\",\n        \"requiere evidencia auditable\"\n      ],\n      \"recommended_agents\": 1,\n      \"recommended_lace_cycles\": 2,\n      \"recovery_budget\": 2,\n      \"required_tools\": [\n        \"findings\",\n        \"integrity\",\n        \"scanner\"\n      ],\n      \"risk_flags\": [],\n      \"runtime_mode\": \"build\",\n      \"schema_version\": 1,\n      \"score\": 24,\n      \"timeout_seconds\": 600\n    },\n    \"reason\": \"complexity_estimate_created\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 240,
+    "mtime": "2026-05-27T18:53:30Z",
+    "path": "workspace/projects/continuity-code-pf-004/runtime/directives/RUNTIME-20260527185329-001-20260527T185330Z-f4a5a7224a26.json",
+    "sha256": "4e6631bdf6d3d047540e5a2549006d55d2e7c7db12d60d4f93a273256c8a87cf",
+    "size": 23231,
+    "tail": "no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260527185329-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Explicar un patron retry con backoff y causa\"\n  },\n  \"task_id\": \"RUNTIME-20260527185329-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"f4a5a7224a268df3fd0b4fc3d1153ac7d31c5ff093f795e498813281ede84ebf\"\n  }\n}\n"
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-004",
+  "runtimeDir": "workspace/projects/continuity-code-pf-004/runtime",
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 22,
+    "mtime": "2026-05-27T18:54:42Z",
+    "path": "workspace/projects/continuity-code-pf-004/runtime/logs/agent-841e413cbf-terminal.log",
+    "sha256": "08eb45443db9775e47e63055892e049eb6082356d4e222eafb4c3a6009d1e359",
+    "size": 1166,
+    "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260527185329-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/tool_invocations/RUNTIME-20260527185329-001-preflight-20260527T185442Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260527185329-001 con timeout 600s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/directives/RUNTIME-20260527185329-001-20260527T185330Z-f4a5a7224a26.json.\n"
+  }
+}

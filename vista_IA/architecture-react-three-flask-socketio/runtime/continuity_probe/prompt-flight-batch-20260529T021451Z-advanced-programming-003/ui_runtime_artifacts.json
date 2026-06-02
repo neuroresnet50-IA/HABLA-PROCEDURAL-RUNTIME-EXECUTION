@@ -1,0 +1,174 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "analysis_updated_at",
+        "bootstrap_tasks",
+        "confidence",
+        "control_plane_contract",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "expected_files",
+        "fast_path",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_goal",
+        "task_id",
+        "task_scope",
+        "task_title",
+        "timeout_seconds"
+      ],
+      "lineCount": 65,
+      "mtime": "2026-05-29T02:19:26Z",
+      "path": "workspace/projects/continuity-code-pf-003-8/runtime/complexity_estimate.json",
+      "sha256": "c63b3a2d958f32511a0c9dd65725d2c2516d4a509c1434afaf80bf6e758fb61c",
+      "size": 2000,
+      "tail": "mados del proyecto: 18\",\n    \"incluye backend/API\",\n    \"control_plane_artifact_fast_path\",\n    \"codex worker skipped for deterministic runtime artifact\"\n  ],\n  \"confidence\": 88,\n  \"analysis_updated_at\": \"2026-05-29T02:19:26Z\",\n  \"task_id\": \"RUNTIME-20260529021813-001\",\n  \"task_title\": \"Crear estrategia de pruebas para una API REST\",\n  \"task_goal\": \"Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.\",\n  \"task_scope\": \"complexity_estimate_only\",\n  \"expected_files\": [\n    \"runtime/complexity_estimate.json\"\n  ],\n  \"fast_path\": {\n    \"executor\": \"control_plane_artifact_executor\",\n    \"reason\": \"runtime_complexity_estimate\",\n    \"codex_skipped\": true,\n    \"validator_remains_authority\": true\n  },\n  \"control_plane_contract\": {\n    \"owner\": \"control_plane\",\n    \"closure\": \"validator confirms runtime/complexity_estimate.json exists in the workspace\",\n    \"worker_may_edit_control_plane_state\": false,\n    \"task_summary\": \"Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.\",\n    \"out_of_scope\": [\n      \"runtime/project_state.json\",\n      \"runtime/task_queue.json\",\n      \"runtime/task_history.jsonl\",\n      \"runtime/failures.jsonl\"\n    ]\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-003-8/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 23,
+      "mtime": "2026-05-29T02:20:00Z",
+      "path": "workspace/projects/continuity-code-pf-003-8/runtime/project_state.json",
+      "sha256": "b763c4a64df86968c88e05001f582033f17b50a0ed8b69de9b9865f44b54c011",
+      "size": 672,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-536d20f6fb\",\n    \"complexity-estimate\",\n    \"runtime-20260529021813-001-checkpoint\",\n    \"runtime-20260529021813-002-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260529021813-001\",\n    \"RUNTIME-20260529021813-002\"\n  ],\n  \"created_at\": \"2026-05-29T02:18:13.113369+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-29T02:18:13.113369+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-536d20f6fb\",\n  \"project_id\": \"continuity-code-pf-003-8\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-29T02:20:00.386716+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-05-29T02:20:00Z",
+      "path": "workspace/projects/continuity-code-pf-003-8/runtime/task_history.jsonl",
+      "sha256": "9ce9b4ee1574065e16f33b395949a68374a89a9118d0fa95f2127312d4a9062c",
+      "size": 976,
+      "tail": "{\"recorded_at\": \"2026-05-29T02:19:30Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529021813-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-29T02:20:00Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/advanced_programming_case_003.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529021813-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-29T02:20:00Z",
+      "path": "workspace/projects/continuity-code-pf-003-8/runtime/task_queue.json",
+      "sha256": "77093f665b6a7af6f4a81bc1346da20b4cf8ceee624f55f665fa26443d45ff69",
+      "size": 1520,
+      "tail": "   \"mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260529021813-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260529021813-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_003.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260529021813-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 481,
+    "mtime": "2026-05-29T02:20:00Z",
+    "path": "workspace/projects/continuity-code-pf-003-8/runtime/checkpoints/runtime-20260529021813-002-checkpoint.json",
+    "sha256": "472781d2b5515fd766feba139a0274370422f221b122791a11d9ef89dd5e4dab",
+    "size": 18389,
+    "tail": "MBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/docs/advanced_programming_case_003.md\",\n            \"size\": 469\n          }\n        ],\n        \"found\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/advanced_programming_case_003.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/docs/advanced_programming_case_003.md\",\n            \"size\": 469\n          }\n        ],\n        \"reported_created\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260529021813-002\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 270,
+    "mtime": "2026-05-29T02:19:38Z",
+    "path": "workspace/projects/continuity-code-pf-003-8/runtime/directives/RUNTIME-20260529021813-002-20260529T021938Z-2d9ee52b46ca.json",
+    "sha256": "f19f3318cf945a8815943cff01babffeccea1c2d948b9e09ead42c0276a887f0",
+    "size": 24510,
+    "tail": "1813-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\"\n  },\n  \"task_id\": \"RUNTIME-20260529021813-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260529021813-001-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/runtime/checkpoints/runtime-20260529021813-001-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"2d9ee52b46ca031c9a724b79adba1d45a13e1af34f909d82e20028f2b46ae9ca\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-29T02:20:00Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/advanced_programming_case_003.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260529021813-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-003-8",
+  "runtimeDir": "workspace/projects/continuity-code-pf-003-8/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 406,
+    "mtime": "2026-05-29T02:20:10Z",
+    "path": "workspace/projects/continuity-code-pf-003-8/runtime/logs/agent-536d20f6fb-terminal.log",
+    "sha256": "81c9dee2489420c508b684b1c85d16039dc5ae574112f8d480aba0a30b2a9a9c",
+    "size": 13880,
+    "tail": ",\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-8/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260529T022008Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

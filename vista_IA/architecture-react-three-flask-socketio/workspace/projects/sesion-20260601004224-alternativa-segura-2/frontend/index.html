@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Alternativa Segura</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block" aria-label="Proyecto activo">
+        <span class="brand-mark" aria-hidden="true">AS</span>
+        <div>
+          <h1>Alternativa Segura</h1>
+          <p>Runtime sintetico con evidencia redactada</p>
+        </div>
+      </div>
+      <div class="status-rail" aria-label="Estado general">
+        <span class="status-pill ok">Synthetic only</span>
+        <span class="status-pill guard">Access gated</span>
+        <span class="status-pill neutral" id="modePill">Mode: build</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="control-band" aria-label="Controles operativos">
+        <div class="control-group">
+          <label for="roleSelect">Rol</label>
+          <select id="roleSelect">
+            <option value="auditor">Auditor</option>
+            <option value="planner">Planner</option>
+            <option value="viewer">Viewer</option>
+          </select>
+        </div>
+
+        <div class="segmented" role="group" aria-label="Filtro de evidencia">
+          <button class="segment active" type="button" data-filter="all">Todo</button>
+          <button class="segment" type="button" data-filter="ready">Listo</button>
+          <button class="segment" type="button" data-filter="blocked">Bloqueado</button>
+        </div>
+
+        <div class="control-actions">
+          <button class="primary-action" type="button" id="redactButton">Redactar</button>
+          <button class="secondary-action" type="button" id="exportButton">Informe</button>
+        </div>
+      </section>
+
+      <section class="metric-strip" aria-label="Metricas de cierre">
+        <article class="metric">
+          <span class="metric-label">Archivos esperados</span>
+          <strong id="filesMetric">3/3</strong>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Riesgo residual</span>
+          <strong id="riskMetric">Bajo</strong>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Evidencia redactada</span>
+          <strong id="redactionMetric">0</strong>
+        </article>
+        <article class="metric">
+          <span class="metric-label">Acceso</span>
+          <strong id="accessMetric">Auditor</strong>
+        </article>
+      </section>
+
+      <section class="workspace-grid" aria-label="Consola de proyecto">
+        <div class="panel queue-panel">
+          <div class="panel-heading">
+            <h2>Backlog operativo</h2>
+            <span id="queueCount">0 tareas</span>
+          </div>
+          <div class="task-list" id="taskList"></div>
+        </div>
+
+        <div class="panel map-panel">
+          <div class="panel-heading">
+            <h2>Mapa de evidencia</h2>
+            <span id="mapSummary">0 nodos</span>
+          </div>
+          <canvas id="world" width="760" height="420" data-render-mode="fallback-2d" aria-label="Mapa visual de evidencias sinteticas"></canvas>
+          <div class="live-hud" aria-label="HUD de render">
+            <span>Velocidad <strong id="speed-value">18 m/s</strong></span>
+            <span>Distancia <strong id="distance-value">3 archivos</strong></span>
+            <span>Evento <strong id="event-value">fallback-2d ready</strong></span>
+          </div>
+        </div>
+
+        <div class="panel policy-panel">
+          <div class="panel-heading">
+            <h2>Controles</h2>
+            <span id="policySummary">Activo</span>
+          </div>
+          <ul class="policy-list" id="policyList"></ul>
+        </div>
+      </section>
+
+      <section class="ledger-section" aria-label="Historial redactado">
+        <div class="section-heading">
+          <h2>Ledger sintetico</h2>
+          <p id="ledgerSummary">Eventos seguros sin datos sensibles locales.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Hora</th>
+                <th scope="col">Actor</th>
+                <th scope="col">Evento</th>
+                <th scope="col">Evidencia</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="ledgerBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <dialog class="report-modal" id="reportModal" aria-labelledby="reportTitle">
+      <div class="modal-header">
+        <h2 id="reportTitle">Informe redactado</h2>
+        <button class="icon-button" type="button" id="closeReport" aria-label="Cerrar">x</button>
+      </div>
+      <pre id="reportOutput"></pre>
+    </dialog>
+  </body>
+</html>

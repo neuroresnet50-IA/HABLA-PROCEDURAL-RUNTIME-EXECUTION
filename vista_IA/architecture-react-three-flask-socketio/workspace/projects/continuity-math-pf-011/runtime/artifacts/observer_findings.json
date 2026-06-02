@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-math-pf-011",
+  "generatedAt": "2026-05-28T21:56:07.348137Z",
+  "summary": {
+    "totalFindings": 5,
+    "activeFindings": 2,
+    "resolvedFindings": 3,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1,
+      "warning": 1
+    },
+    "bySource": {
+      "sandbox": 1,
+      "lint": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-ea658078e597d12d",
+      "fingerprintSha256": "ea658078e597d12d45b7ba8101322e221042312759fb530d70a25552e90cc343",
+      "projectSlug": "continuity-math-pf-011",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-011/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T21:56:00.219655Z",
+      "lastSeenAt": "2026-05-28T21:56:07.348137Z",
+      "occurrenceCount": 2,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-06f24d9fa757179d",
+      "fingerprintSha256": "06f24d9fa757179daf13f7e9ee2e332753dfc5ec007bbbb29c1fffdea328a39f",
+      "projectSlug": "continuity-math-pf-011",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-math-pf-011/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T21:55:26.789014Z",
+      "lastSeenAt": "2026-05-28T21:56:07.348137Z",
+      "occurrenceCount": 5,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-abd689899a802e2b",
+      "fingerprintSha256": "abd689899a802e2b7766ca114623707c2cb70c0ead1a87db9176ae4989eac598",
+      "projectSlug": "continuity-math-pf-011",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-011/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T21:50:46.200651Z",
+      "lastSeenAt": "2026-05-28T21:55:51.809173Z",
+      "occurrenceCount": 4,
+      "resolvedAt": "2026-05-28T21:56:00.219655Z"
+    },
+    {
+      "id": "observer-3e3f51ac8701324e",
+      "fingerprintSha256": "3e3f51ac8701324ed5ae90e9c771701364707de0287a1304ddd6b39a021ac6d8",
+      "projectSlug": "continuity-math-pf-011",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "workspace/projects/continuity-math-pf-011/LACE_LOG.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T21:55:26.789014Z",
+      "lastSeenAt": "2026-05-28T21:55:26.789014Z",
+      "occurrenceCount": 1,
+      "resolvedAt": "2026-05-28T21:55:50.578124Z"
+    },
+    {
+      "id": "observer-c5dad353b88118a3",
+      "fingerprintSha256": "c5dad353b88118a30f8e01d3a58a48e9df14af05d056ef3695cdd8bfa9f86fd1",
+      "projectSlug": "continuity-math-pf-011",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/mathematics_case_011.md",
+      "focusPath": "workspace/projects/continuity-math-pf-011/docs/mathematics_case_011.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T21:55:26.789014Z",
+      "lastSeenAt": "2026-05-28T21:55:51.809173Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T21:56:00.219655Z"
+    }
+  ]
+}

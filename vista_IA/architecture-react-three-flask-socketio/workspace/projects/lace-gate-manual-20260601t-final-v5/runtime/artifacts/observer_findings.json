@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "lace-gate-manual-20260601t-final-v5",
+  "generatedAt": "2026-06-02T15:19:46.786696Z",
+  "summary": {
+    "totalFindings": 6,
+    "activeFindings": 1,
+    "resolvedFindings": 5,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1
+    },
+    "bySource": {
+      "sandbox": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-28ffc88886118548",
+      "fingerprintSha256": "28ffc888861185489790795da959b59df14cbc728a1a5df3567f1dd07445937a",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/lace-gate-manual-20260601t-final-v5/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-06-02T15:14:27.707882Z",
+      "lastSeenAt": "2026-06-02T15:19:46.786696Z",
+      "occurrenceCount": 12,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-7274a934cd2bd095",
+      "fingerprintSha256": "7274a934cd2bd09591fba36a76cc172d1d461b7f87203ef4b9a2ded6ad982626",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/lace-gate-manual-20260601t-final-v5/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-01T17:57:02.346193Z",
+      "lastSeenAt": "2026-06-02T15:14:15.182745Z",
+      "occurrenceCount": 164,
+      "resolvedAt": "2026-06-02T15:14:27.707882Z"
+    },
+    {
+      "id": "observer-21907eb2bc072370",
+      "fingerprintSha256": "21907eb2bc0723708684b917a75f2b0899d156df0c9c5df65f2cc8cb5e6770d2",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "workspace/projects/lace-gate-manual-20260601t-final-v5/LACE_LOG.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-01T17:57:02.346193Z",
+      "lastSeenAt": "2026-06-01T19:44:12.310856Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-01T20:38:58.216999Z"
+    },
+    {
+      "id": "observer-283534ab9960163b",
+      "fingerprintSha256": "283534ab9960163b7d5be6007286c0d1d568846128edea46cb003c06be1bc144",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/base.md",
+      "focusPath": "workspace/projects/lace-gate-manual-20260601t-final-v5/docs/base.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-01T17:57:02.346193Z",
+      "lastSeenAt": "2026-06-01T19:44:12.310856Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-01T20:38:58.216999Z"
+    },
+    {
+      "id": "observer-8c6c340d1b99e436",
+      "fingerprintSha256": "8c6c340d1b99e436f69b76aef7fab7b2b5180d4ad49f6c14b238464b7140df93",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/lace_cycles/ciclo-02.md",
+      "focusPath": "workspace/projects/lace-gate-manual-20260601t-final-v5/docs/lace_cycles/ciclo-02.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-01T17:57:02.346193Z",
+      "lastSeenAt": "2026-06-01T19:44:12.310856Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-01T20:38:58.216999Z"
+    },
+    {
+      "id": "observer-c8f10a720661a988",
+      "fingerprintSha256": "c8f10a720661a98802244db26c636956f74b08ead89752611597824de50b79d9",
+      "projectSlug": "lace-gate-manual-20260601t-final-v5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/lace_cycles/ciclo-01.md",
+      "focusPath": "workspace/projects/lace-gate-manual-20260601t-final-v5/docs/lace_cycles/ciclo-01.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-01T17:57:02.346193Z",
+      "lastSeenAt": "2026-06-01T19:44:12.310856Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-01T20:38:58.216999Z"
+    }
+  ]
+}

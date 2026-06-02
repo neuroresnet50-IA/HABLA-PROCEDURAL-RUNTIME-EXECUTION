@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T16:21:24.603696Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001-2",
+  "project_file_count": 0,
+  "prompt_word_count": 33,
+  "score": 34,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido"
+  ],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 33 palabras",
+    "toca runtime/estado persistido",
+    "requiere evidencia auditable"
+  ],
+  "confidence": 88,
+  "task_design": {
+    "task_id": "RUNTIME-20260528162124-001",
+    "title": "Disenar una cola FIFO persistente con estados pending, running, completed y failed",
+    "deliverable": "runtime/complexity_estimate.json",
+    "scope_boundary": "Diseno acotado; no modifica runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl, runtime/failures.jsonl, checkpoints, directives ni logs internos del control plane."
+  },
+  "persistent_fifo_queue_design": {
+    "storage_contract": {
+      "canonical_path": "runtime/task_queue.json",
+      "owner": "control_plane",
+      "worker_access": "read-only unless a future task explicitly owns queue implementation",
+      "write_strategy": "atomic temp file write followed by fsync and rename",
+      "concurrency_guard": "single writer lock around load-modify-save operations"
+    },
+    "record_model": {
+      "required_fields": [
+        "id",
+        "title",
+        "goal",
+        "status",
+        "priority",
+        "dependencies",
+        "expected_files",
+        "validation_commands",
+        "timeout_seconds",
+        "max_retries",
+        "mode",
+        "checkpoint_key"
+      ],
+      "queue_fields": [
+        "created_at",
+        "updated_at",
+        "enqueued_at",
+        "started_at",
+        "finished_at",
+        "attempts",
+        "last_error",
+        "lease_expires_at"
+      ],
+      "status_values": [
+        "pending",
+        "running",
+        "completed",
+        "failed"
+      ],
+      "mode_values": [
+        "smoke",
+        "build",
+        "medium",
+        "long-run"
+      ]
+    },
+    "fifo_semantics": {
+      "ordering_key": "enqueued_at then stable insertion index",
+      "enqueue": "append a new task with status=pending at the tail of the queue",
+      "claim_next": "select the first pending task whose dependencies are completed and atomically transition it to running",
+      "completion": "transition running to completed only after declared validations pass and expected evidence exists on disk",
+      "failure": "transition running to failed when timeout, validation failure, or exhausted retries are recorded",
+      "retry": "retry is attached to the failed task record; it increments attempts and returns the task to pending only when attempts < max_retries",
+      "dependency_rule": "a pending task is claimable only when every dependency id has status=completed"
+    },
+    "state_transitions": [
+      {
+        "from": "pending",
+        "to": "running",
+        "trigger": "claim_next_worker",
+        "evidence": [
+          "started_at",
+          "worker_id",
+          "lease_expires_at"
+        ]
+      },
+      {
+        "from": "running",
+        "to": "completed",
+        "trigger": "validator_passed",
+        "evidence": [
+          "finished_at",
+          "validation_results",
+          "files_created_or_modified"
+        ]
+      },
+      {
+        "from": "running",
+        "to": "failed",
+        "trigger": "validator_failed_or_timeout",
+        "evidence": [
+          "finished_at",
+          "last_error",
+          "failure_report_path"
+        ]
+      },
+      {
+        "from": "failed",
+        "to": "pending",
+        "trigger": "retry_allowed",
+        "evidence": [
+          "attempts",
+          "retry_reason"
+        ]
+      }
+    ],
+    "runtime_rules": {
+      "smoke_mode_source": "explicit configuration only",
+      "session_shape": "a session contains multiple tasks; each task launches its own worker",
+      "timeouts": "timeout_seconds is evaluated per task, not per session",
+      "termination": "worker terminate is attempted first; kill is required if terminate does not close the process",
+      "progress": "progress is counted only from disk evidence and persisted validation history"
+    },
+    "verification_plan": [
+      "schema validation for every queued task",
+      "unit test: enqueue preserves FIFO order",
+      "unit test: claim_next skips blocked dependencies",
+      "unit test: running task timeout produces failed with last_error",
+      "unit test: retry returns failed task to pending only below max_retries",
+      "integration test: validation_passed is required before completed"
+    ],
+    "complexity_assessment": {
+      "implementation_difficulty": "medium",
+      "main_risks": [
+        "concurrent writers corrupting the JSON queue",
+        "implicit smoke detection changing runtime behavior",
+        "session-level retries hiding task-level failures",
+        "completed status without disk evidence"
+      ],
+      "recommended_next_task": "Implementar orchestrator/task_queue.py con atomic writes, schema checks y pruebas FIFO enfocadas."
+    }
+  }
+}

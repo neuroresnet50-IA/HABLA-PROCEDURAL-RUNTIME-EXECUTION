@@ -278,7 +278,9 @@ def seed_canonical_lace_cycle_evidence(store: StateStore, project_dir: Path, cyc
                 f"# Ciclo {cycle_number:02d}\n\n"
                 "- Estado: validated\n"
                 "- Valido para cierre LACE: si\n"
-                "- Validacion registrada: si\n"
+                "- Validacion registrada: si\n\n"
+                + build_valid_lace_cycle(cycle_number)
+                + "\n"
             ),
             encoding="utf-8",
         )
@@ -830,7 +832,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             cycle_doc = project_dir / "docs" / "lace_cycles" / "ciclo-07.md"
             cycle_doc.parent.mkdir(parents=True, exist_ok=True)
             cycle_doc.write_text(
-                "# Ciclo 07\n\n- Estado: completed\n- Valido para cierre LACE: si\n",
+                "# Ciclo 07\n\n- Estado: completed\n- Valido para cierre LACE: si\n\n" + build_valid_lace_cycle(7) + "\n",
                 encoding="utf-8",
             )
             queue = TaskQueue(store)
@@ -1376,6 +1378,58 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
         )
 
         self.assertEqual(decision["action"], "retry")
+
+
+    def test_task_broom_emits_visual_cleanup_event_without_blocking_runtime(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "broom-visual"
+            runtime_dir = project_dir / "runtime"
+            runtime._ensure_control_plane_runtime(runtime_dir, project_dir.name, "build")
+            task = create_task(
+                task_id="TASK-BROOM-001",
+                title="Broom visual smoke",
+                goal="Crear evidencia visual de limpieza runtime.",
+                priority=10,
+                expected_files=["docs/broom.md"],
+                validation_commands=[],
+                mode="build",
+            )
+            session = AgentSession(
+                session_id="agent-broom-visual",
+                project_name="Broom Visual",
+                project_slug=project_dir.name,
+                project_dir=project_dir,
+                requirement="show broom sweep",
+                prompt="",
+                command=[],
+                event_file=runtime_dir / "logs" / "agent-broom-visual-events.jsonl",
+                terminal_file=runtime_dir / "logs" / "agent-broom-visual-terminal.log",
+                control_plane_enabled=True,
+                control_plane_runtime_dir=str(runtime_dir),
+                runtime_mode="build",
+            )
+            runtime.sessions[session.session_id] = session
+
+            report = runtime._run_task_broom(
+                workspace=project_dir,
+                task=task,
+                phase="before_task",
+                session_id=session.session_id,
+                reason="test_visual_broom",
+            )
+
+            self.assertTrue(report["ok"])
+            broom_events = [event for event in visual_events if event.get("op") == "broom_sweep"]
+            self.assertEqual(len(broom_events), 1)
+            self.assertEqual(broom_events[0]["phase"], "before_task")
+            self.assertEqual(broom_events[0]["taskId"], "TASK-BROOM-001")
+            self.assertEqual(broom_events[0]["visualTool"], "to-sweep-with-a-broom")
+            self.assertEqual(runtime.sessions[session.session_id].visual_event_count, 1)
+            self.assertFalse(is_material_project_path("runtime/artifacts/broom/latest.json"))
+            self.assertIn('"op": "broom_sweep"', session.event_file.read_text(encoding="utf-8"))
 
     def test_visual_events_file_is_consumed_and_control_plane_sync_is_filtered(self) -> None:
         with TemporaryDirectory() as tmpdir:

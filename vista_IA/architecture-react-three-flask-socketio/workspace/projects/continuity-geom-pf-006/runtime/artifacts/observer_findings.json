@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-geom-pf-006",
+  "generatedAt": "2026-05-28T03:14:13.430177Z",
+  "summary": {
+    "totalFindings": 3,
+    "activeFindings": 2,
+    "resolvedFindings": 1,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1,
+      "warning": 1
+    },
+    "bySource": {
+      "sandbox": 1,
+      "lint": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-1ef096be013f53ab",
+      "fingerprintSha256": "1ef096be013f53ab22c9982c5cccc0bd09dd2d2c60c16679962f0a52a156fbb6",
+      "projectSlug": "continuity-geom-pf-006",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T03:14:07.923715Z",
+      "lastSeenAt": "2026-05-28T03:14:13.430177Z",
+      "occurrenceCount": 3,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-fd5a125dea71faa7",
+      "fingerprintSha256": "fd5a125dea71faa7befe9c9c2c18ab6fed20a8df7cd4616aae59cfc51daf2ebe",
+      "projectSlug": "continuity-geom-pf-006",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/geometry_case_006.md",
+      "focusPath": "workspace/projects/continuity-geom-pf-006/docs/geometry_case_006.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T03:11:59.716478Z",
+      "lastSeenAt": "2026-05-28T03:14:13.430177Z",
+      "occurrenceCount": 6,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-78f8731c73809dc6",
+      "fingerprintSha256": "78f8731c73809dc675e5e695ee8bc6db498c85778c44a68fef764ee8c3e069a4",
+      "projectSlug": "continuity-geom-pf-006",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T03:10:44.656974Z",
+      "lastSeenAt": "2026-05-28T03:13:52.217308Z",
+      "occurrenceCount": 5,
+      "resolvedAt": "2026-05-28T03:14:07.923715Z"
+    }
+  ]
+}

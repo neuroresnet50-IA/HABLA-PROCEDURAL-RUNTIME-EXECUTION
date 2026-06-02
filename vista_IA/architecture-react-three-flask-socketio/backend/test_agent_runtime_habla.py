@@ -1,9 +1,20 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import json
+import sys
 import unittest
 from unittest.mock import patch
 import time
+
+BACKEND_DIR = Path(__file__).resolve().parent
+REPO_ROOT = BACKEND_DIR.parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
+
+from orchestrator.state_store import StateStore
+from orchestrator.task_queue import TaskQueue
 
 from agent_runtime import (
     AgentRuntime,
@@ -11,7 +22,10 @@ from agent_runtime import (
     LaceContext,
     build_lace_cycle_plan,
     initialize_lace_log,
+    build_codex_command_config,
     build_preferred_shell_path,
+    get_codex_runtime_diagnostics,
+    normalize_codex_exec_policy,
     resolve_codex_command_tokens,
 )
 
@@ -176,6 +190,114 @@ class AgentRuntimeHablaTest(unittest.TestCase):
         cd_index = command.index("-C")
         self.assertEqual(command[cd_index + 2], "exec")
         self.assertNotIn("--full-auto", command)
+
+    def test_normalize_codex_exec_policy_requires_full_danger_gate(self) -> None:
+        self.assertEqual(
+            normalize_codex_exec_policy(None, None, None),
+            ("workspace-write", "never", False),
+        )
+        self.assertEqual(
+            normalize_codex_exec_policy("danger-full-access", "never", None),
+            ("workspace-write", "never", False),
+        )
+        self.assertEqual(
+            normalize_codex_exec_policy("danger-full-access", "on-request", "1"),
+            ("workspace-write", "on-request", False),
+        )
+        self.assertEqual(
+            normalize_codex_exec_policy("danger-full-access", "never", "1"),
+            ("danger-full-access", "never", True),
+        )
+
+    def test_codex_runtime_diagnostics_blocks_workspace_write_for_prompt_flight(self) -> None:
+        diagnostics = get_codex_runtime_diagnostics({})
+
+        self.assertFalse(diagnostics["promptFlightWorkerReady"])
+        self.assertEqual(diagnostics["effectiveSandboxMode"], "workspace-write")
+        self.assertTrue(diagnostics["usesWorkspaceWrite"])
+        self.assertFalse(diagnostics["usesDangerBypass"])
+        self.assertIn("codex_inner_exec_uses_workspace_write", diagnostics["blockers"])
+        self.assertEqual(diagnostics["requiredAction"], "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap")
+
+    def test_codex_runtime_diagnostics_ready_with_authorized_danger_bypass(self) -> None:
+        diagnostics = get_codex_runtime_diagnostics(
+            {
+                "VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX": "1",
+                "VISTA_CODEX_EXEC_SANDBOX_MODE": "danger-full-access",
+                "VISTA_CODEX_EXEC_APPROVAL_POLICY": "never",
+            }
+        )
+
+        self.assertTrue(diagnostics["promptFlightWorkerReady"])
+        self.assertEqual(diagnostics["effectiveSandboxMode"], "danger-full-access")
+        self.assertTrue(diagnostics["usesDangerBypass"])
+        self.assertFalse(diagnostics["usesWorkspaceWrite"])
+        self.assertEqual(diagnostics["blockers"], [])
+        self.assertIn("--dangerously-bypass-approvals-and-sandbox", diagnostics["safeCommandSummary"])
+
+    def test_build_codex_command_config_degrades_unauthorized_danger_request(self) -> None:
+        config = build_codex_command_config(
+            {
+                "VISTA_CODEX_EXEC_SANDBOX_MODE": "danger-full-access",
+                "VISTA_CODEX_EXEC_APPROVAL_POLICY": "never",
+            }
+        )
+
+        self.assertTrue(config["degradedForSafety"])
+        self.assertEqual(config["effectiveSandboxMode"], "workspace-write")
+        self.assertFalse(config["usesDangerBypass"])
+
+    def test_build_codex_command_uses_danger_bypass_only_with_local_gate(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            with patch.dict(
+                "os.environ",
+                {
+                    "VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX": "1",
+                    "VISTA_CODEX_EXEC_SANDBOX_MODE": "danger-full-access",
+                    "VISTA_CODEX_EXEC_APPROVAL_POLICY": "never",
+                },
+                clear=True,
+            ):
+                runtime = self.build_runtime(Path(tmpdir) / "app", [])
+            command = runtime._build_codex_command(Path(tmpdir) / "project", "haz algo")
+        self.assertIn("--dangerously-bypass-approvals-and-sandbox", command)
+        self.assertNotIn("-s", command)
+        self.assertNotIn("danger-full-access", command)
+
+    def test_build_codex_command_falls_back_when_danger_gate_is_incomplete(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            with patch.dict(
+                "os.environ",
+                {
+                    "VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX": "1",
+                    "VISTA_CODEX_EXEC_SANDBOX_MODE": "danger-full-access",
+                    "VISTA_CODEX_EXEC_APPROVAL_POLICY": "on-request",
+                },
+                clear=True,
+            ):
+                runtime = self.build_runtime(Path(tmpdir) / "app", [])
+            command = runtime._build_codex_command(Path(tmpdir) / "project", "haz algo")
+        self.assertNotIn("--dangerously-bypass-approvals-and-sandbox", command)
+        approval_index = command.index("-a")
+        sandbox_index = command.index("-s")
+        self.assertEqual(command[approval_index + 1], "on-request")
+        self.assertEqual(command[sandbox_index + 1], "workspace-write")
+        self.assertNotIn("danger-full-access", command)
+
+    def test_launcher_flag_sets_local_worker_no_bwrap_gate(self) -> None:
+        launcher = Path(__file__).resolve().parents[1] / "start_prompt_flight_tkinter.sh"
+        self.assertTrue(launcher.is_file())
+        text = launcher.read_text(encoding="utf-8")
+        self.assertIn("--local-worker-no-bwrap", text)
+        self.assertIn('LOCAL_WORKER_NO_BWRAP="0"', text)
+        self.assertIn('LOCAL_WORKER_NO_BWRAP="1"', text)
+        self.assertIn("export VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX=1", text)
+        self.assertIn("export VISTA_CODEX_EXEC_SANDBOX_MODE=danger-full-access", text)
+        self.assertIn("export VISTA_CODEX_EXEC_APPROVAL_POLICY=never", text)
+        self.assertLess(
+            text.index('if [[ "$LOCAL_WORKER_NO_BWRAP" == "1" ]]'),
+            text.index("export VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX=1"),
+        )
 
     def test_build_codex_command_respects_inner_exec_env_override(self) -> None:
         with TemporaryDirectory() as tmpdir:
@@ -944,6 +1066,78 @@ class AgentRuntimeHablaTest(unittest.TestCase):
 
             self.assertIn("No hay nodos cargados en el editor visual.", prompt)
             self.assertNotIn("workspace/projects/other/src/main.js", prompt)
+
+
+    def test_control_plane_host_write_simple_file_passes_validator_before_history(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = self.build_runtime(app_root, visual_events)
+            project_dir = runtime.projects_root / "host-write-control"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            runtime_dir = project_dir / "runtime"
+            runtime._ensure_control_plane_runtime(runtime_dir, project_dir.name, "build")
+            store = StateStore(runtime_dir)
+            task = {
+                "id": "HOST-WRITE-CONTROL-001",
+                "title": "Host write control plane smoke",
+                "goal": "Create the file docs/host_write_control.md. Its complete contents must be exactly HOST_WRITE_CONTROL_OK.",
+                "status": "pending",
+                "priority": 10,
+                "dependencies": [],
+                "expected_files": ["docs/host_write_control.md"],
+                "validation_commands": [],
+                "timeout_seconds": 30,
+                "max_retries": 0,
+                "mode": "build",
+                "checkpoint_key": None,
+            }
+            TaskQueue(store, bootstrap_empty=True).enqueue(task)
+            session = AgentSession(
+                session_id="agent-host-write-test",
+                project_name="Host Write Test",
+                project_slug=project_dir.name,
+                project_dir=project_dir,
+                requirement=task["goal"],
+                prompt="",
+                command=[],
+                status="running",
+                terminal_file=runtime_dir / "logs" / "agent-host-write-test-terminal.log",
+                event_file=runtime_dir / "logs" / "agent-host-write-test-events.jsonl",
+                control_plane_enabled=True,
+                control_plane_runtime_dir=str(runtime_dir),
+                runtime_mode="build",
+            )
+            runtime.sessions[session.session_id] = session
+            prepared = {
+                "runtime_dir": runtime_dir,
+                "task": task,
+                "directive": {"traceability": {"source_hash": "test"}},
+                "directive_json_path": str(runtime_dir / "directives" / "host-write.json"),
+                "directive_markdown_path": str(runtime_dir / "directives" / "host-write.md"),
+            }
+
+            with patch.object(runtime, "_cyberlace_guard", return_value={"blocked": False}), \
+                patch.object(runtime, "_cyberlace_should_block", return_value=False), \
+                patch.object(runtime, "_cyberlace_should_redact", return_value=False), \
+                patch.object(runtime, "_sync_lace_runtime", return_value=None):
+                result = runtime._execute_prepared_control_plane_task(
+                    prepared,
+                    command=["codex", "-a", "never", "-s", "workspace-write"],
+                    workspace=project_dir,
+                    session_id=session.session_id,
+                )
+
+            evidence_file = project_dir / "docs" / "host_write_control.md"
+            history = store.load_task_history()
+            self.assertEqual(result["status"], "completed")
+            self.assertEqual(result["execution"]["execution"]["execution_strategy"], "host_write")
+            self.assertEqual(evidence_file.read_text(encoding="utf-8"), "HOST_WRITE_CONTROL_OK")
+            self.assertTrue(result["task_result"]["completed"])
+            self.assertTrue(result["task_result"]["validation_passed"])
+            self.assertEqual(history[-1]["result"]["task_id"], task["id"])
+            self.assertTrue(history[-1]["result"]["completed"])
+            self.assertIn("HostWriteExecutor", session.output)
 
 
 if __name__ == "__main__":

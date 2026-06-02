@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://runtime-orchestrator.local/schemas/project_state.schema.json",
+  "title": "ProjectState",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "project_id",
+    "status",
+    "mode",
+    "current_task_id",
+    "completed_tasks",
+    "failed_tasks",
+    "blocked_tasks",
+    "checkpoints",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "schema_version": { "type": "integer", "const": 1 },
+    "project_id": { "type": "string", "minLength": 1 },
+    "status": {
+      "type": "string",
+      "enum": [
+        "initialized",
+        "preparing",
+        "running",
+        "paused",
+        "completed",
+        "failed",
+        "blocked",
+        "stopped",
+        "human_alignment_pending"
+      ]
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["smoke", "build", "medium", "long-run"]
+    },
+    "current_task_id": { "type": ["string", "null"], "minLength": 1 },
+    "completed_tasks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "failed_tasks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "blocked_tasks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "checkpoints": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "created_at": { "type": "string", "format": "date-time" },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "live_app": { "type": ["object", "null"], "additionalProperties": true },
+    "pending_control_plane_work": { "type": ["object", "null"], "additionalProperties": true },
+    "pending_human_alignment_tasks": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "last_queue_clear_at": { "type": "string", "format": "date-time" },
+    "last_queue_clear_force": { "type": "boolean" },
+    "last_queue_clear_removed_task_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "last_preparing_at": { "type": "string", "format": "date-time" },
+    "preparing_session_id": { "type": ["string", "null"], "minLength": 1 },
+    "last_released_zombie_task_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "last_released_zombie_at": { "type": "string", "format": "date-time" },
+    "last_released_zombie_reason": { "type": "string" },
+    "last_runtime_repair_at": { "type": "string", "format": "date-time" },
+    "last_runtime_repair_reason": { "type": "string" },
+    "last_cyberlace_block_at": { "type": "string", "format": "date-time" },
+    "last_cyberlace_block_reason": { "type": "string" },
+    "last_cyberlace_block_paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "last_cyberlace_denied_action": { "type": ["string", "null"], "minLength": 1 },
+    "last_cyberlace_safe_alternative": { "type": ["object", "null"], "additionalProperties": true }
+  }
+}

@@ -133,6 +133,49 @@ class ToolInvocationPolicyTest(unittest.TestCase):
             self.assertTrue(report["closureAllowed"])
             self.assertEqual(report["activeFindings"], 2)
 
+
+    def test_required_scanner_project_lock_is_deferred_not_blocking(self) -> None:
+        class LockedScannerRunner(FakeToolRunner):
+            def invoke(self, tool: str, *, project: str = "", dry_run: bool = False, confirm: str = "") -> dict[str, Any]:
+                self.calls.append({"tool": tool, "project": project, "dryRun": dry_run, "confirm": confirm})
+                if tool == "scanner":
+                    return {
+                        "statusCode": 423,
+                        "ok": False,
+                        "error": "project_locked",
+                        "message": "agent_session_active",
+                    }
+                return super().invoke(tool, project=project, dry_run=dry_run, confirm=confirm)
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir) / "demo-project"
+            runtime_dir = workspace / "runtime"
+            runtime_dir.mkdir(parents=True)
+            runner = LockedScannerRunner()
+            policy = ToolInvocationPolicy(
+                runtime_dir=runtime_dir,
+                workspace=workspace,
+                project_slug="demo-project",
+                runner=runner,
+                strict_closure=True,
+            )
+            task_result = {
+                "task_id": "TASK-001",
+                "completed": True,
+                "files_created": ["README.md"],
+                "files_modified": [],
+                "validation_ran": ["python3 -c 'print(1)'"],
+                "validation_passed": True,
+                "blockers": [],
+                "next_recommendation": "done",
+            }
+
+            report = policy.run_task_completion_gate(create_task(), task_result)
+
+            self.assertTrue(report["closureAllowed"])
+            self.assertEqual(report["blockers"], [])
+            self.assertTrue(any("scanner deferred" in item for item in report["warnings"]))
+
     def test_recovery_preview_uses_sniper_dry_run_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir) / "demo-project"

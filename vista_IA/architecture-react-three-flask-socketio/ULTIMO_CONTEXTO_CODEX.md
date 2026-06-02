@@ -1,34 +1,39 @@
-# Último contexto Codex
+# Ultimo Contexto Codex
 
-Fecha/hora: 2026-05-27T17:33:12Z
+Fecha/hora: 2026-06-02T21:50:55+00:00
 
-Última solicitud del usuario:
-- Subir archivos test y evidencia del sistema en acción continua mientras el desarrollo sigue en curso.
+Ultima solicitud del usuario:
+Rechequear los cambios grandes, subir nuevamente todo al GitHub y confirmar que el repositorio sea publico/legible.
 
 Estado real:
-- Rama: `codex/publish-complete-runtime-project`.
-- PR draft: https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1.
-- Lote continuo validado y listo para commit/push.
-- `backups/` queda fuera por revisión pendiente de exposición pública.
+GitHub reporta `visibility=PUBLIC` y API publica `private=false` para `neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`. Se preparo un snapshot grande con backend, frontend, orquestador, workers, pruebas, runtime versionado, evidencias y proyectos de workspace. Se excluyen artefactos locales pesados o transitorios: `backups/`, `.runtime/`, `.venv/`, `frontend/node_modules/`, `runtime/*.pid` y archivos `=*`.
 
 Archivos tocados:
-- Código: `backend/app.py`, `backend/cyberlace_document_guard.py`, `orchestrator/agent_tools.py`, `orchestrator/continuity_probe.py`, `orchestrator/prompt_flight_probe.py`, `workers/codex_worker.py`.
-- Tests/GUI: `backend/test_continuity_probe.py`, `backend/test_cyberlace_agent_runtime_hooks.py`, `tools/habla_circuit_probe_tk.py`.
-- Evidencia: `runtime/continuity_probe/`, `runtime/checkpoints/`, `runtime/artifacts/handoffs/`, `runtime/cyberlace/evidence/`, `workspace/projects/continuity-*`.
-- Memoria: `runtime/task_history.jsonl`, `recuperacioncontexto.md`, `ULTIMO_CONTEXTO_CODEX.md`.
+- `.gitignore`
+- `backend/`
+- `frontend/src/`
+- `orchestrator/`
+- `workers/`
+- `schemas/`
+- `tools/`
+- `docs/`
+- `runtime/`
+- `workspace/projects/`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
 
-Validación ejecutada:
-- `python3 -B -m py_compile ...` -> OK.
-- `python3 -m pytest backend/test_continuity_probe.py backend/test_cyberlace_agent_runtime_hooks.py -q` -> OK, `14 passed in 3.10s`.
-- Scan de secretos candidato -> sin coincidencias.
-- Scan de archivos >95 MB candidato -> sin resultados.
-- `python3 orchestrator/agent_tools.py prompt-flight --project continuity-probe-canary --mode trace_only --no-harness --prompt "Verificar publicacion continua del sistema en accion desde Codex."` -> `statusCode=200`, `ok=true`, `reportPath=runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json`.
-
-Resultado real:
-- Lote continuo listo para commit/push al PR #1.
-- No se publica `backups/` en este lote.
+Validacion ejecutada:
+- Health interno: OK, `statusCode=200`, `ok=true`.
+- GitHub publico/API: OK, `visibility=PUBLIC`, `private=false`.
+- Escaneo >95MB: OK, sin candidatos fuera de exclusiones.
+- Escaneo estricto de secretos: OK despues de redactar token sintetico `ghp_FAKE...`.
+- Python compile: OK.
+- `bash -n start_prompt_flight_tkinter.sh`: OK.
+- Pytest enfocado: OK, `174 passed in 25.00s`.
+- Frontend build: OK, warning no fatal de chunk Vite.
 
 Siguiente paso exacto:
-- Stage explícito, `git diff --cached --check`, commit, push y verificación del PR.
+Terminar `git diff --cached --check`, hacer commit `Publish latest runtime action updates`, push a `origin/codex/publish-complete-runtime-project` y verificar PR #1.
 
-Actualización 2026-05-27T17:36:48Z: también se incluye `orchestrator/prompt_flight_batch.py` y `runtime/continuity_probe/prompt_flight_cases_50.json`; py_compile OK y el archivo contiene 50 casos (`PF-001` a `PF-050`).
+Riesgos:
+El runtime esta vivo y puede generar cambios nuevos despues del corte. El contenido esta en rama/PR hasta merge a `main`; el repositorio ya es publico.

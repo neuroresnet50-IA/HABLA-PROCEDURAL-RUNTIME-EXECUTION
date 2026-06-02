@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-code-pf-002-5",
+  "generatedAt": "2026-05-28T20:13:47.118029Z",
+  "summary": {
+    "totalFindings": 5,
+    "activeFindings": 2,
+    "resolvedFindings": 3,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1,
+      "warning": 1
+    },
+    "bySource": {
+      "sandbox": 1,
+      "lint": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-db0b81b40180c582",
+      "fingerprintSha256": "db0b81b40180c582dfd2801ca01ab59ef2c504097b6e3c7055af08ebe15a0d68",
+      "projectSlug": "continuity-code-pf-002-5",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002-5/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T20:13:45.136771Z",
+      "lastSeenAt": "2026-05-28T20:13:47.118029Z",
+      "occurrenceCount": 2,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-6ac96988479b3e15",
+      "fingerprintSha256": "6ac96988479b3e15c5c0dba5b53c29765fe5525a178c6143b8de6232a6e5d5ef",
+      "projectSlug": "continuity-code-pf-002-5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-code-pf-002-5/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T20:13:36.640905Z",
+      "lastSeenAt": "2026-05-28T20:13:47.118029Z",
+      "occurrenceCount": 4,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-c9b9dd1b7ac68a3b",
+      "fingerprintSha256": "c9b9dd1b7ac68a3bc9047a943eb1fa16b9a3a32c94373cce4e2b956e4de47038",
+      "projectSlug": "continuity-code-pf-002-5",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002-5/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T20:12:47.294955Z",
+      "lastSeenAt": "2026-05-28T20:13:42.167496Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T20:13:45.136771Z"
+    },
+    {
+      "id": "observer-7c13ff4932275593",
+      "fingerprintSha256": "7c13ff4932275593a5abb07aa68284452ec04d72f177540e696d2ab0c98cb3c3",
+      "projectSlug": "continuity-code-pf-002-5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "workspace/projects/continuity-code-pf-002-5/LACE_LOG.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T20:13:36.640905Z",
+      "lastSeenAt": "2026-05-28T20:13:36.640905Z",
+      "occurrenceCount": 1,
+      "resolvedAt": "2026-05-28T20:13:42.167496Z"
+    },
+    {
+      "id": "observer-610fab910a044336",
+      "fingerprintSha256": "610fab910a04433673dca98dcc2387cebeefdd859da0e18e225f32102033a60c",
+      "projectSlug": "continuity-code-pf-002-5",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/advanced_programming_case_002.md",
+      "focusPath": "workspace/projects/continuity-code-pf-002-5/docs/advanced_programming_case_002.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T20:13:36.640905Z",
+      "lastSeenAt": "2026-05-28T20:13:45.136771Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-05-28T20:13:47.118029Z"
+    }
+  ]
+}

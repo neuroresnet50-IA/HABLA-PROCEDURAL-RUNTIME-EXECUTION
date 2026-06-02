@@ -52,6 +52,10 @@ function buildPath(source, target) {
       path: `M ${source.x} ${source.y} C ${midX} ${source.y}, ${midX} ${target.y}, ${target.x} ${target.y}`,
       labelX: midX,
       labelY: (source.y + target.y) / 2 - 14,
+      sourceX: source.x,
+      sourceY: source.y,
+      targetX: target.x,
+      targetY: target.y,
     };
   }
 
@@ -60,6 +64,10 @@ function buildPath(source, target) {
     path: `M ${source.x} ${source.y} C ${source.x} ${midY}, ${target.x} ${midY}, ${target.x} ${target.y}`,
     labelX: (source.x + target.x) / 2,
     labelY: midY - 14,
+    sourceX: source.x,
+    sourceY: source.y,
+    targetX: target.x,
+    targetY: target.y,
   };
 }
 
@@ -303,7 +311,7 @@ function buildSequenceLayout(sequenceBlocks, sequenceTransitions, activeSequence
     const blockSteps = block?.algorithm?.steps || [];
     if (!blockSteps.length) return;
 
-    const blockEdges = block?.algorithm?.edges || [];
+    const blockEdges = buildRenderableEdges(blockSteps, block?.algorithm?.edges || []);
     const localBounds = getBounds(blockSteps);
     const xOffset = cursorX - localBounds.minX;
     const yOffset = SEQUENCE_TOP - localBounds.minY;
@@ -352,7 +360,7 @@ function buildSequenceLayout(sequenceBlocks, sequenceTransitions, activeSequence
         from: stepIdMap.get(edge.from),
         to: stepIdMap.get(edge.to),
         label: edge.label || "",
-        kind: "internal",
+        kind: edge.kind === "derived" ? "derived" : "internal",
       }))
       .filter((edge) => edge.from && edge.to));
 
@@ -407,6 +415,31 @@ function buildSequenceLayout(sequenceBlocks, sequenceTransitions, activeSequence
   };
 }
 
+function buildSequentialFallbackEdges(steps) {
+  const edges = [];
+  for (let index = 1; index < steps.length; index += 1) {
+    const from = steps[index - 1]?.id;
+    const to = steps[index]?.id;
+    if (!from || !to || from === to) continue;
+    edges.push({
+      id: `derived-${from}-${to}-${index}`,
+      from,
+      to,
+      label: index === 1 ? "flujo" : "",
+      kind: "derived",
+      type: "sequence",
+    });
+  }
+  return edges;
+}
+
+function buildRenderableEdges(steps, edges) {
+  const stepIds = new Set((steps || []).map((step) => step.id));
+  const validEdges = (edges || []).filter((edge) => stepIds.has(edge?.from) && stepIds.has(edge?.to));
+  if (validEdges.length || stepIds.size < 2) return validEdges;
+  return buildSequentialFallbackEdges(steps || []);
+}
+
 export default function AlgorithmFlow({
   algorithm,
   nodeName,
@@ -444,7 +477,8 @@ export default function AlgorithmFlow({
     [activeSequenceNodeId, nodeIssuesById, sequenceBlocks, sequenceMode, sequenceTransitions, stepIssuesByNodeId]
   );
   const renderedSteps = sequenceMode ? sequenceLayout?.steps || [] : steps;
-  const renderedEdges = sequenceMode ? sequenceLayout?.edges || [] : algorithm?.edges || [];
+  const rawRenderedEdges = sequenceMode ? sequenceLayout?.edges || [] : algorithm?.edges || [];
+  const renderedEdges = useMemo(() => buildRenderableEdges(renderedSteps, rawRenderedEdges), [rawRenderedEdges, renderedSteps]);
   const renderedGroups = sequenceMode ? sequenceLayout?.groups || [] : [];
   const stepMap = useMemo(() => new Map(renderedSteps.map((step) => [step.id, step])), [renderedSteps]);
   const bounds = useMemo(
@@ -751,23 +785,31 @@ export default function AlgorithmFlow({
             const toStep = stepMap.get(edge.to);
             if (!fromStep || !toStep) return null;
             const geometry = getEdgeGeometry(fromStep, toStep);
+            const isBridge = edge.kind === "bridge";
+            const isDerived = edge.kind === "derived";
             return (
               <g key={`${edge.from}-${edge.to}-${index}`}>
                 <path
                   d={geometry.path}
                   fill="none"
-                  stroke={edge.kind === "bridge" ? "#0f172a" : "#1f1f1f"}
-                  strokeWidth={edge.kind === "bridge" ? "3.4" : "2.6"}
-                  strokeDasharray={edge.kind === "bridge" && edge.type === "reference" ? "14 10" : undefined}
+                  stroke={isBridge ? "#0f172a" : isDerived ? "#dc2626" : "#1f1f1f"}
+                  strokeWidth={isBridge ? "3.4" : isDerived ? "2.9" : "2.6"}
+                  strokeDasharray={isDerived ? "8 6" : isBridge && edge.type === "reference" ? "14 10" : undefined}
                   markerEnd="url(#algorithm-arrow)"
                 />
+                {isDerived ? (
+                  <>
+                    <circle cx={geometry.sourceX} cy={geometry.sourceY} r="4.8" fill="#dc2626" opacity="0.9" />
+                    <circle cx={geometry.targetX} cy={geometry.targetY} r="4.8" fill="#dc2626" opacity="0.9" />
+                  </>
+                ) : null}
                 {edge.label ? (
                   <text
                     x={geometry.labelX}
                     y={geometry.labelY}
                     fontSize="14"
-                    fontWeight={edge.kind === "bridge" ? "700" : "500"}
-                    fill={edge.kind === "bridge" ? "#0f172a" : "#5b5b5b"}
+                    fontWeight={isBridge || isDerived ? "700" : "500"}
+                    fill={isBridge ? "#0f172a" : isDerived ? "#991b1b" : "#5b5b5b"}
                     textAnchor="middle"
                   >
                     {edge.label}

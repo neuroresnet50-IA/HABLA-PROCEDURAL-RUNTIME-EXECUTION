@@ -1,0 +1,94 @@
+{
+  "elapsedMs": 142.975,
+  "runtimeTruth": {
+    "canReleaseZombie": false,
+    "controlPlane": {
+      "currentTaskId": "LACE-20260602-002",
+      "currentTaskStatus": "pending",
+      "currentTaskTitle": "Completar ciclo LACE 02",
+      "persistedRunning": false,
+      "projectStatus": "blocked",
+      "queueCounts": {
+        "blocked": 1,
+        "completed": 2,
+        "failed": 0,
+        "pending": 9,
+        "running": 0
+      },
+      "tasksCompleted": 2,
+      "tasksTotal": 12
+    },
+    "disk": {
+      "lastActivityAgeSeconds": 3.5519144535064697,
+      "lastActivityAt": "2026-06-02T20:58:22.159700Z"
+    },
+    "generatedAt": "2026-06-02T20:58:25.712001+00:00",
+    "integrity": {
+      "baselineExists": false,
+      "findings": 0,
+      "hasReport": true,
+      "status": null
+    },
+    "lock": {
+      "currentTaskId": null,
+      "locked": false,
+      "message": "Proyecto sin agente activo: edicion humana habilitada.",
+      "projectStatus": "blocked",
+      "reason": "project_idle",
+      "sessionId": null
+    },
+    "ok": true,
+    "projectId": "continuity-mixed-pf-002-2",
+    "reasons": [
+      "no_active_agent_session",
+      "no_live_worker_pid"
+    ],
+    "reviewer": {
+      "latestCheckpoint": "lace-20260602-001-retry-0-recovery",
+      "latestHistory": {
+        "recorded_at": "2026-06-02T20:58:22Z",
+        "result": {
+          "blockers": [
+            "Worker infrastructure failure detected: bwrap: loopback, failed rtm_newaddr, operation not permitted, codex's linux sandbox uses bubblewrap, bubblewrap, user namespaces",
+            "Task timed out after 900 seconds"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [
+            "docs/mixed_science_programming_case_002_mathematics.md",
+            "runtime/artifacts/observer_findings.json"
+          ],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "LACE-20260602-001",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_002_mathematics.md', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+            "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\""
+          ]
+        }
+      },
+      "warningCount": 0,
+      "warnings": []
+    },
+    "sandbox": {
+      "ready": null,
+      "running": null,
+      "status": null,
+      "stopReason": null,
+      "url": null
+    },
+    "sessions": {
+      "active": [],
+      "activeCount": 0,
+      "totalRuntimeSessions": 2
+    },
+    "stale": false,
+    "staleThresholdSeconds": 300,
+    "verdict": "idle",
+    "worker": {
+      "alive": null,
+      "pid": null
+    }
+  },
+  "statusCode": 200
+}

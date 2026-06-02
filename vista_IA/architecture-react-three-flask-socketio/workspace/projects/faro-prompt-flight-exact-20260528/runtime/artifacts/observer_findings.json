@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "faro-prompt-flight-exact-20260528",
+  "generatedAt": "2026-05-28T02:33:01.409730Z",
+  "summary": {
+    "totalFindings": 4,
+    "activeFindings": 1,
+    "resolvedFindings": 3,
+    "observationScore": 82,
+    "bySeverity": {
+      "error": 1
+    },
+    "bySource": {
+      "sandbox": 1
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-7b517867db5cf968",
+      "fingerprintSha256": "7b517867db5cf968e911136953e3d83ffa16ebeef9dfd521aceaad00858db5d3",
+      "projectSlug": "faro-prompt-flight-exact-20260528",
+      "source": "sandbox",
+      "state": "verifying_sandbox",
+      "behavior": "verify_sandbox_evidence",
+      "severity": "error",
+      "observationScore": 82,
+      "message": "Sandbox real incompleto despues de scanner aprobado.",
+      "reason": "Despues del scanner aprobado debe existir servidor sandbox real con URL y healthcheck listo.",
+      "relativePath": "runtime/sandbox.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-exact-20260528/runtime/sandbox.json",
+      "uiAction": {
+        "type": "flow-zoom",
+        "targetId": "algorithm-flow-section"
+      },
+      "evidence": {
+        "sandboxStatus": null,
+        "running": null,
+        "ready": null,
+        "embedUrl": null,
+        "healthcheck": {}
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T00:52:02.246835Z",
+      "lastSeenAt": "2026-05-28T02:33:01.409730Z",
+      "occurrenceCount": 53,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-0beebeebe66aa08b",
+      "fingerprintSha256": "0beebeebe66aa08b28863a67bd8f9971b35d8c0898b6c4539f54c1e29ae90e01",
+      "projectSlug": "faro-prompt-flight-exact-20260528",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-exact-20260528/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T00:32:56.969787Z",
+      "lastSeenAt": "2026-05-28T00:33:45.322805Z",
+      "occurrenceCount": 4,
+      "resolvedAt": "2026-05-28T00:52:02.246835Z"
+    },
+    {
+      "id": "observer-791f475ce68f9358",
+      "fingerprintSha256": "791f475ce68f93580e6d8757703a4b963656fa0b76c310e2c50ab53cb580a24f",
+      "projectSlug": "faro-prompt-flight-exact-20260528",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/faro-prompt-flight-exact-20260528/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T00:30:02.248255Z",
+      "lastSeenAt": "2026-05-28T00:30:02.248255Z",
+      "occurrenceCount": 1,
+      "resolvedAt": "2026-05-28T00:30:07.932517Z"
+    },
+    {
+      "id": "observer-137ace3ba7faf872",
+      "fingerprintSha256": "137ace3ba7faf8722325d9f8dd1c8cbed842945986671882dc3933034744369d",
+      "projectSlug": "faro-prompt-flight-exact-20260528",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El bloque interno termina sin salida y puede haber un corte en el harness del algoritmo.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/faro_prompt_flight_exact_20260528.txt",
+      "focusPath": "workspace/projects/faro-prompt-flight-exact-20260528/docs/faro_prompt_flight_exact_20260528.txt",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "algorithm_dead_end",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "workspace__projects__faro-prompt-flight-exact-20260528__docs__faro_prompt_flight_exact_20260528_txt",
+        "stepId": "validate"
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-05-28T00:33:44.552220Z",
+      "lastSeenAt": "2026-05-28T00:55:56.652034Z",
+      "occurrenceCount": 10,
+      "resolvedAt": "2026-05-28T01:02:35.375043Z"
+    }
+  ]
+}

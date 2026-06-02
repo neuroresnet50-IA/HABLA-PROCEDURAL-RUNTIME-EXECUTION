@@ -1,0 +1,408 @@
+{
+  "checkpoint_key": "post-blanqueo-recovery-stopped",
+  "created_at": "2026-05-27T19:20:20Z",
+  "payload": {
+    "reason": "stop_requested",
+    "task": {
+      "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "lessons_learned/blanqueo-2026-05-27.md"
+      ],
+      "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
+      "id": "POST-BLANQUEO-RECOVERY",
+      "max_retries": 0,
+      "mode": "build",
+      "priority": 100,
+      "status": "pending",
+      "timeout_seconds": 300,
+      "title": "POST-BLANQUEO-RECOVERY",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+      ]
+    },
+    "task_result": {
+      "blockers": [
+        "Worker process stopped because session stop was requested"
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "POST-BLANQUEO-RECOVERY",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
+      ]
+    },
+    "tool_invocations": {
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_a551eb684a1e4b128a618adb32e0511d",
+        "evidence": [],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 0,
+          "severity": "LOW"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-841e413cbf",
+        "severity": "LOW",
+        "stage": "output",
+        "timestamp": "2026-05-27T19:20:19Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_7b95fd4485db4e51b67b50aed60531e7",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 7685,
+            "pattern": "credit_card_like",
+            "sample": "20260527185329",
+            "start": 7671,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 7685,
+              "pattern": "credit_card_like",
+              "sample": "20260527185329",
+              "start": 7671,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 15,
+          "severity": "LOW"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 15.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-841e413cbf",
+        "severity": "LOW",
+        "stage": "tool",
+        "timestamp": "2026-05-27T19:08:20Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/tool_invocations/POST-BLANQUEO-RECOVERY-postflight-20260527T192020Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "continuity-code-pf-004",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T19:20:19Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "postflight",
+            "projectSlug": "continuity-code-pf-004",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-code-pf-004",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 2,
+                "totalFindings": 2
+              }
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": false,
+            "timestamp": "2026-05-27T19:20:20Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "continuity-code-pf-004",
+        "schema_version": 1,
+        "taskId": "POST-BLANQUEO-RECOVERY",
+        "taskResult": {
+          "blocker_count": 1,
+          "completed": false,
+          "validation_passed": false
+        },
+        "timestamp": "2026-05-27T19:20:20Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/tool_invocations/POST-BLANQUEO-RECOVERY-preflight-20260527T190819Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-code-pf-004",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": true,
+                "incident": {
+                  "counters": {
+                    "repeatedEvents": 1,
+                    "ticks": 3,
+                    "timeouts": 0
+                  },
+                  "deadlineAt": "2026-05-27T19:09:53.163434Z",
+                  "incidentId": "OBS-20260527-190653-1572624f",
+                  "phase": "waiting_human",
+                  "projectSlug": "continuity-code-pf-005",
+                  "rootCause": "active_worker_running",
+                  "status": "waiting_human",
+                  "stopReason": "repeated_finding_suppressed",
+                  "trigger": "worker_started"
+                },
+                "state": "waiting_worker"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": false,
+            "timestamp": "2026-05-27T19:08:17Z",
+            "tool": "observer-status"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "continuity-code-pf-004",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": true,
+            "timestamp": "2026-05-27T19:08:18Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/observer_findings.json",
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "continuity-code-pf-004",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "ok": true,
+              "projectId": "continuity-code-pf-004",
+              "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004/runtime/artifacts/observer_findings.json",
+              "statusCode": 200,
+              "summary": {
+                "activeFindings": 0,
+                "bySeverity": {},
+                "bySource": {},
+                "observationScore": 0,
+                "resolvedFindings": 2,
+                "totalFindings": 2
+              }
+            },
+            "taskId": "POST-BLANQUEO-RECOVERY",
+            "timedOut": false,
+            "timestamp": "2026-05-27T19:08:19Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "continuity-code-pf-004",
+        "schema_version": 1,
+        "taskId": "POST-BLANQUEO-RECOVERY",
+        "timestamp": "2026-05-27T19:08:19Z",
+        "warnings": [
+          "preflight:integrity timed out; continuing"
+        ]
+      },
+      "recovery_preview": null,
+      "task_completion_gate": null
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.097014,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-27T19:20:19Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\"",
+          "duration_seconds": 0.082849,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-05-27T19:20:19Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "lessons_learned/blanqueo-2026-05-27.md",
+            "reported_created": false,
+            "reported_modified": false,
+            "size": 1120
+          }
+        ],
+        "found": [
+          "lessons_learned/blanqueo-2026-05-27.md"
+        ],
+        "missing": [],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "POST-BLANQUEO-RECOVERY",
+      "validation_passed": false,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-004"
+    }
+  }
+}

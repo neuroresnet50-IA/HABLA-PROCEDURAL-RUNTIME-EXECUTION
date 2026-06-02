@@ -1,6 +1,8 @@
+import json
 import unittest
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import patch
 
 BACKEND_DIR = Path(__file__).resolve().parent
@@ -72,6 +74,54 @@ class RuntimeCleanWorkspaceEndpointTest(unittest.TestCase):
         backup.assert_called_once()
         cleaner.assert_called_once_with()
         recovery.assert_called_once()
+
+    def test_clear_pending_queue_unblocks_project_when_blocked_task_removed(self):
+        with TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            projects_root = root / "workspace" / "projects"
+            runtime_root = root / ".runtime"
+            project_dir = projects_root / "demo-project"
+            runtime_dir = project_dir / "runtime"
+            runtime_dir.mkdir(parents=True)
+            (runtime_dir / "task_queue.json").write_text(
+                json.dumps(
+                    [
+                        {"id": "DONE-001", "status": "completed", "expected_files": ["done.txt"]},
+                        {"id": "BLOCKED-001", "status": "blocked", "expected_files": ["blocked.txt"]},
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            (runtime_dir / "project_state.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "project_id": "demo-project",
+                        "status": "blocked",
+                        "current_task_id": "BLOCKED-001",
+                        "completed_tasks": ["DONE-001"],
+                        "blocked_tasks": ["BLOCKED-001"],
+                        "failed_tasks": [],
+                    }
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            with patch.object(backend_app, "AGENT_PROJECTS_ROOT", projects_root), patch.object(
+                backend_app, "RUNTIME_ROOT", runtime_root
+            ):
+                result = backend_app.clear_pending_project_queue("demo-project", statuses=["blocked"], force=False)
+
+            self.assertTrue(result["ok"])
+            self.assertEqual(result["removedTaskIds"], ["BLOCKED-001"])
+            next_queue = json.loads((runtime_dir / "task_queue.json").read_text(encoding="utf-8"))
+            next_state = json.loads((runtime_dir / "project_state.json").read_text(encoding="utf-8"))
+            self.assertEqual([task["id"] for task in next_queue], ["DONE-001"])
+            self.assertEqual(next_state["status"], "completed")
+            self.assertIsNone(next_state["current_task_id"])
+            self.assertEqual(next_state["blocked_tasks"], [])
 
     def test_total_medium_requires_policy_confirmation(self):
         client = backend_app.app.test_client()

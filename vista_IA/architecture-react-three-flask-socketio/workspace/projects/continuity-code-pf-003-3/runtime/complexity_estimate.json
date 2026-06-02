@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T16:30:01.395207Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-003-3",
+  "project_file_count": 0,
+  "prompt_word_count": 36,
+  "score": 31,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "risk_flags": [],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 36 palabras",
+    "requiere evidencia auditable",
+    "incluye backend/API"
+  ],
+  "confidence": 88,
+  "task_id": "RUNTIME-20260528163001-001",
+  "goal": "Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.",
+  "strategy_artifact": "docs/advanced_programming_case_003.md",
+  "covered_status_codes": [
+    200,
+    400,
+    404,
+    500
+  ],
+  "testing_strategy": {
+    "scope": [
+      "Contratos JSON de requests y responses",
+      "Codigos HTTP publicos",
+      "Errores de validacion, recurso inexistente y fallo interno controlado"
+    ],
+    "cases": [
+      {
+        "status_code": 200,
+        "scenario": "Operacion valida completada",
+        "assertions": [
+          "status code 200",
+          "Content-Type JSON",
+          "payload con datos esperados",
+          "sin campo de error"
+        ]
+      },
+      {
+        "status_code": 400,
+        "scenario": "Request invalido",
+        "assertions": [
+          "status code 400",
+          "mensaje de validacion claro",
+          "campos invalidos reportados cuando aplique"
+        ]
+      },
+      {
+        "status_code": 404,
+        "scenario": "Recurso inexistente",
+        "assertions": [
+          "status code 404",
+          "mensaje estable de no encontrado",
+          "sin datos parciales"
+        ]
+      },
+      {
+        "status_code": 500,
+        "scenario": "Fallo interno simulado",
+        "assertions": [
+          "status code 500",
+          "respuesta generica segura",
+          "sin stack trace en la respuesta",
+          "correlacion/log interno disponible"
+        ]
+      }
+    ],
+    "recommended_validation": [
+      "pytest",
+      "validacion de esquema JSON",
+      "fixtures deterministas",
+      "mock o monkeypatch para dependencia fallida en caso 500"
+    ]
+  }
+}

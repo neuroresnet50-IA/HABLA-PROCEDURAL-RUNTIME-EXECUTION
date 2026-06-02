@@ -1,0 +1,142 @@
+# HABLA Session Prelude
+
+## Requerimiento humano
+Construir una prueba por induccion para la formula de la suma de los primeros n enteros positivos, separando caso base, hipotesis inductiva y paso inductivo. Escribe la solucion o plan en docs/mixed_science_programming_case_002_mathematics.md, manten el cambio pequeno, registra evidencia, usa contenido educativo seguro y no modifiques archivos no relacionados.
+
+## Estado del motor HABLA
+- disponible: si
+- knowledgeType: CALCULO
+- toolRequired: calculator
+- strategy: calcular_exactamente
+- safeToAnswer: False
+- blocked: True
+- blockReason: No se obtuvo evidencia suficiente después de los intentos.
+- confidence.dato: 99
+- confidence.fecha: 100
+- confidence.fuente: 100
+- confidence.calculo: 99
+- confidence.inferencia: 0
+- confidence.global: 99.5
+
+## LACE
+- ciclos minimos: 2
+- ciclos maximos: 3
+- salida temprana: scanner, sandbox, integrity, findings y cola sin pendientes
+- policyPath: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002/LACE.md
+- logPath: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-002/LACE_LOG.md
+
+## Triangulacion
+No hay valores numéricos para triangular.
+
+## Respuesta tentativa del motor
+No puedo responder con seguridad suficiente. Causa: No se obtuvo evidencia suficiente después de los intentos.
+
+## Directiva HABLA para Codex
+```text
+LACE v2.0 ESTA ACTIVO Y FUE LEIDO ANTES DE ARRANCAR EL AGENTE.
+REGLA ABSOLUTA: no declares proyecto terminado hasta completar 10 ciclos documentados en LACE_LOG.md.
+Cada ciclo debe usar HABLA por capas: interpretación, clasificación, planificación, ReAct, evidencia, triangulación, confianza, autocrítica, memoria y acción final.
+Antes de modificar código, escribe THOUGHT/ACTION/OBSERVATION en LACE_LOG.md.
+Antes de cerrar, verifica la puerta de cierre LACE.
+
+PROTOCOLO DE RESPUESTA CONTROLADA POR HABLA V5.0 + LACE
+
+PREGUNTA HUMANA:
+Construir una prueba por induccion para la formula de la suma de los primeros n enteros positivos, separando caso base, hipotesis inductiva y paso inductivo. Escribe la solucion o plan en docs/mixed_science_programming_case_002_mathematics.md, manten el cambio pequeno, registra evidencia, usa contenido educativo seguro y no modifiques archivos no relacionados.
+
+TIPO DE CONOCIMIENTO:
+CALCULO
+
+EVIDENCIA:
+- Sin evidencia externa útil.
+
+SUBTAREAS COMPUESTAS:
+- No aplica.
+
+TRIANGULACION:
+No hay valores numéricos para triangular.
+
+CONFIANZA POR COMPONENTE:
+- dato: 99
+- fecha: 100
+- fuente: 100
+- calculo: 99
+- inferencia: 0
+- global: 99.5
+
+REGLAS OBLIGATORIAS:
+1. No inventes datos.
+2. No ocultes incertidumbre.
+3. Separa hecho, cálculo e inferencia.
+4. Si es estimación, dilo explícitamente.
+5. Si la evidencia es insuficiente, declara el límite.
+
+ESTADO CONSTITUCIONAL:
+- safe_to_answer: False
+- blocked: True
+- block_reason: No se obtuvo evidencia suficiente después de los intentos.
+
+INSTRUCCION:
+Responde al usuario en español, como chat natural, pero respetando todas las reglas anteriores.
+```
+
+## Prompt HABLA BASIC
+```text
+PROTOCOLO habla_reasoning_agent_v4:
+
+OBJETIVO:
+Resolver la pregunta humana sin inventar información, usando clasificación semántica, ReAct, RAG, triangulación, confianza por componente, verificación constitucional y memoria episódica.
+
+ENTRADA:
+-> DEFINE pregunta_usuario COMO "Construir una prueba por induccion para la formula de la suma de los primeros n enteros positivos, separando caso base, hipotesis inductiva y paso inductivo. Escribe la solucion o plan en docs/mixed_science_programming_case_002_mathematics.md, manten el cambio pequeno, registra evidencia, usa contenido educativo seguro y no modifiques archivos no relacionados."
+-> VERIFICA pregunta_usuario ≠ ""
+
+FASE 0: SEMANTIC_CLASSIFIER
+-> ANALIZA pregunta_usuario por significado
+-> CLASIFICA como HECHO_TEMPORAL, CALCULO, HECHO_ESTABLE o INFERENCIA_OPINION
+
+FASE 1: THOUGHT
+-> DEFINE estrategia según clasificación
+
+FASE 2: ACTION
+-> USA herramienta obligatoria si aplica
+
+FASE 3: OBSERVATION
+-> SI no hay evidencia, cambia estrategia y reintenta
+
+FASE 4: RAG_RECUPERATION
+-> RECUPERA fragmentos candidatos sin validarlos todavía
+
+FASE 5: TRIANGULATE
+-> COMPARA fuentes y detecta consistencia, contradicción o evidencia limitada
+
+FASE 6: CONFIDENCE_PER_COMPONENT
+-> ASIGNA confianza a dato, fecha, fuente, cálculo e inferencia
+
+FASE 7: CONSTITUTIONAL_CHECK
+-> NO inventar
+-> NO ocultar incertidumbre
+-> SEPARAR hecho, cálculo e inferencia
+-> BLOQUEAR si evidencia insuficiente
+
+FASE 8: ANSWER
+-> RESPONDE con dato, margen, confianza y límites
+
+FASE 9: EPISODIC_MEMORY_UPDATE
+-> GUARDA tipo, herramienta, resultado y confianza
+FIN PROTOCOLO
+```
+
+## Traza resumida
+- PLANNER => pregunta atómica
+- MEMORY_TOOL_ORDER => ['calculator']
+- THOUGHT => intento=1, tool=calculator
+- OBSERVATION => vacío con calculator
+- THOUGHT => intento=2, tool=calculator
+- OBSERVATION => vacío con calculator
+- THOUGHT => intento=3, tool=calculator
+- OBSERVATION => vacío con calculator
+- THOUGHT => intento=4, tool=calculator
+- OBSERVATION => vacío con calculator
+- TRIANGULATE => sin valores
+- CONFIDENCE => dato=99, fuente=100

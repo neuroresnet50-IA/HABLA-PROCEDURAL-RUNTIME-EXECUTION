@@ -1,0 +1,173 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "deliverables",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "explicit_modes",
+        "generated_at",
+        "goal",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "rest_api_test_strategy",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_id",
+        "timeout_seconds",
+        "updated_at",
+        "validation_plan"
+      ],
+      "lineCount": 157,
+      "mtime": "2026-05-28T20:49:16Z",
+      "path": "workspace/projects/continuity-code-pf-003-7/runtime/complexity_estimate.json",
+      "sha256": "37e796b34b6314faaa0c9b8f3169b40e5a9f9acde31c28a889aa6a8a6dc0b1f4",
+      "size": 6369,
+      "tail": "le con timeout propio.\"\n    ]\n  },\n  \"validation_plan\": {\n    \"expected_validation_command\": \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n    \"json_syntax_command\": \"python3 -m json.tool runtime/complexity_estimate.json\",\n    \"pytest_probe_command\": \"python3 -m pytest --version\",\n    \"scanner_command\": \"python3 orchestrator/agent_tools.py scanner continuity-code-pf-003-7\",\n    \"integrity_command\": \"python3 orchestrator/agent_tools.py integrity continuity-code-pf-003-7\",\n    \"findings_command\": \"python3 orchestrator/agent_tools.py findings continuity-code-pf-003-7\"\n  },\n  \"risk_flags\": [\n    \"No existe aun una API concreta en este workspace; la estrategia queda desacoplada del framework hasta que una tarea posterior cree el endpoint.\",\n    \"La herramienta integrity puede depender del backend Observer y debe reintentarse si devuelve timeout.\"\n  ],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt medio: 36 palabras\",\n    \"requiere evidencia auditable\",\n    \"incluye backend/API\",\n    \"la cobertura minima debe contemplar respuestas 200, 400, 404 y 500\"\n  ]\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-003-7/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 23,
+      "mtime": "2026-05-28T20:55:35Z",
+      "path": "workspace/projects/continuity-code-pf-003-7/runtime/project_state.json",
+      "sha256": "8ce189c9e92033597894b96725a4a5bc6abd5905b20b3ec340ae8132d47f36ea",
+      "size": 672,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-8f4caf6ea5\",\n    \"complexity-estimate\",\n    \"runtime-20260528204434-001-checkpoint\",\n    \"runtime-20260528204434-002-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528204434-001\",\n    \"RUNTIME-20260528204434-002\"\n  ],\n  \"created_at\": \"2026-05-28T20:44:34.673233+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T20:44:34.673233+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-8f4caf6ea5\",\n  \"project_id\": \"continuity-code-pf-003-7\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T20:55:35.583581+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-05-28T20:55:35Z",
+      "path": "workspace/projects/continuity-code-pf-003-7/runtime/task_history.jsonl",
+      "sha256": "baa1d9d35de6dfa7eabfb0a6b294ce50f3a1b3804a763b31eafc85b8156692ce",
+      "size": 976,
+      "tail": "{\"recorded_at\": \"2026-05-28T20:55:25Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260528204434-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-28T20:55:35Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/advanced_programming_case_003.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260528204434-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-28T20:55:35Z",
+      "path": "workspace/projects/continuity-code-pf-003-7/runtime/task_queue.json",
+      "sha256": "a32aefab8b4093b14f5169248bf351d9379ea8b27d9b0c5b61cfcf77d2167a5d",
+      "size": 1520,
+      "tail": "   \"mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260528204434-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260528204434-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_003.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528204434-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 547,
+    "mtime": "2026-05-28T20:55:35Z",
+    "path": "workspace/projects/continuity-code-pf-003-7/runtime/checkpoints/runtime-20260528204434-002-checkpoint.json",
+    "sha256": "528996ef84df3a6b7aacc4a5dd93a651351286d6db475d8a1085ca9ee533acbb",
+    "size": 21022,
+    "tail": "MBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/docs/advanced_programming_case_003.md\",\n            \"size\": 469\n          }\n        ],\n        \"found\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/advanced_programming_case_003.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/docs/advanced_programming_case_003.md\",\n            \"size\": 469\n          }\n        ],\n        \"reported_created\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528204434-002\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 362,
+    "mtime": "2026-05-28T20:55:27Z",
+    "path": "workspace/projects/continuity-code-pf-003-7/runtime/directives/RUNTIME-20260528204434-002-20260528T205526Z-5d7891c8aef9.json",
+    "sha256": "ce99bcdcdbd4193154d687e4352e923182e131f987ac113a453f7da68f075d6a",
+    "size": 30038,
+    "tail": "4434-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\"\n  },\n  \"task_id\": \"RUNTIME-20260528204434-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260528204434-001-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/runtime/checkpoints/runtime-20260528204434-001-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"5d7891c8aef9061e775d137d75858b58449b08efbe57a545685ab4eb3315818f\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T20:55:35Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/advanced_programming_case_003.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260528204434-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-003-7",
+  "runtimeDir": "workspace/projects/continuity-code-pf-003-7/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 421,
+    "mtime": "2026-05-28T20:55:39Z",
+    "path": "workspace/projects/continuity-code-pf-003-7/runtime/logs/agent-8f4caf6ea5-terminal.log",
+    "sha256": "22a03d2de37de00b01729993fd419f81d2f581e3f4b300feac3fb0cc1f64bb1b",
+    "size": 14272,
+    "tail": ",\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 6,\n            \"totalFindings\": 7\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-7/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T205539Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

@@ -2,9 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 
 const AUTH_TOKEN_STORAGE_KEY = "hablaAuthToken";
 const AUTH_INTRO_STORAGE_KEY = "hablaAuthIntroCompleted";
+const AUTH_SESSION_READY_KEY = "hablaAuthSessionReady";
+const UI_REFRESH_SUPPRESS_AUTH_KEY = "hablaUiRefreshSuppressAuthGate";
+const UI_REFRESH_SUPPRESS_MAX_MS = 120000;
+const AUTH_SESSION_READY_MAX_MS = 12 * 60 * 60 * 1000;
 const DEFAULT_LOADING_MS = 1200;
 const AUTH_REQUEST_TIMEOUT_MS = 45000;
 const AUTH_RETRY_DELAY_MS = 600;
+
+function envFlag(value, defaultValue = false) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized) return defaultValue;
+  return ["1", "true", "yes", "on"].includes(normalized);
+}
+
+const REMEMBER_SESSION_ENABLED = envFlag(import.meta.env.VITE_HABLA_REMEMBER_SESSION, false);
+const LOCAL_TEMPORARY_AUTH_ENABLED = envFlag(import.meta.env.VITE_HABLA_LOCAL_TEMP_AUTH, false);
 
 function storageGet(key) {
   try {
@@ -28,6 +41,40 @@ function storageRemove(key) {
   } catch {
     // Ignore storage failures.
   }
+}
+
+function sessionGet(key) {
+  try {
+    return window.sessionStorage.getItem(key) || "";
+  } catch {
+    return "";
+  }
+}
+
+function sessionSet(key, value) {
+  try {
+    window.sessionStorage.setItem(key, String(value));
+  } catch {
+    // Session storage can be blocked; keep the current in-memory flow.
+  }
+}
+
+function sessionRemove(key) {
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function uiRefreshCanSuppressAuthGate() {
+  const now = Date.now();
+  const suppressAt = Number(sessionGet(UI_REFRESH_SUPPRESS_AUTH_KEY) || 0);
+  const readyAt = Number(sessionGet(AUTH_SESSION_READY_KEY) || 0);
+  const suppressFresh = Number.isFinite(suppressAt) && suppressAt > 0 && now - suppressAt <= UI_REFRESH_SUPPRESS_MAX_MS;
+  const sessionFresh = Number.isFinite(readyAt) && readyAt > 0 && now - readyAt <= AUTH_SESSION_READY_MAX_MS;
+  if (!suppressFresh) sessionRemove(UI_REFRESH_SUPPRESS_AUTH_KEY);
+  return suppressFresh && sessionFresh;
 }
 
 function buildApiUrl(apiBaseUrl, path) {
@@ -148,7 +195,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
     return Number.isFinite(rawValue) && rawValue >= 0 ? rawValue : DEFAULT_LOADING_MS;
   }, []);
   const [phase, setPhase] = useState("checking");
-  const [mode, setMode] = useState("register");
+  const [mode, setMode] = useState("login");
   const [progress, setProgress] = useState(0);
   const [sessionToken, setSessionToken] = useState("");
   const [profile, setProfile] = useState(null);
@@ -160,19 +207,38 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
 
   useEffect(() => {
     let cancelled = false;
-    const existingToken = storageGet(AUTH_TOKEN_STORAGE_KEY);
+    if (uiRefreshCanSuppressAuthGate()) {
+      sessionRemove(UI_REFRESH_SUPPRESS_AUTH_KEY);
+      storageSet(AUTH_INTRO_STORAGE_KEY, "1");
+      setPhase("authenticated");
+      return () => {
+        cancelled = true;
+      };
+    }
+    const existingToken = REMEMBER_SESSION_ENABLED ? storageGet(AUTH_TOKEN_STORAGE_KEY) : "";
+    if (!REMEMBER_SESSION_ENABLED) {
+      storageRemove(AUTH_TOKEN_STORAGE_KEY);
+    }
     async function checkAuthService() {
       try {
         const payload = await authFetch(apiBaseUrl, "/api/health");
         const postgres = payload?.auth?.postgres || {};
         if (!postgres.configured || postgres.driver === "missing" || postgres.ready === false) {
-          setMessage("PostgreSQL aun no esta configurado para autenticacion. Puedes entrar en modo local temporal.");
+          setMessage(
+            LOCAL_TEMPORARY_AUTH_ENABLED
+              ? "PostgreSQL no esta listo. El acceso local temporal solo esta habilitado por configuracion explicita de desarrollo."
+              : "PostgreSQL no esta listo. El acceso queda bloqueado hasta que el login real este disponible."
+          );
           setPhase("unavailable");
           return false;
         }
         return true;
       } catch (error) {
-        setMessage(error.message || "Autenticacion temporalmente no disponible. Puedes entrar en modo local.");
+        setMessage(
+          LOCAL_TEMPORARY_AUTH_ENABLED
+            ? (error.message || "Autenticacion temporalmente no disponible; acceso local temporal habilitado por configuracion explicita.")
+            : (error.message || "Autenticacion temporalmente no disponible. La aplicacion no permite saltar el login real.")
+        );
         setPhase("unavailable");
         return false;
       }
@@ -245,12 +311,22 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
 
   function completeAuth(payload) {
     if (payload.token) {
-      storageSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+      if (REMEMBER_SESSION_ENABLED) {
+        storageSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+      } else {
+        storageRemove(AUTH_TOKEN_STORAGE_KEY);
+      }
       setSessionToken(payload.token);
     }
     setProfile(payload.user || null);
+    sessionSet(AUTH_SESSION_READY_KEY, String(Date.now()));
     setMessage("");
     setFieldErrors({});
+    setPhase("authenticated");
+  }
+
+  function completeLocalTemporaryAuth() {
+    sessionSet(AUTH_SESSION_READY_KEY, String(Date.now()));
     setPhase("authenticated");
   }
 
@@ -347,19 +423,21 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
             </div>
             <div>
               <p className="welcome-auth-eyebrow">HABLA Observer IA</p>
-              <h2>Acceso local temporal</h2>
-              <span>PostgreSQL pendiente de configuracion</span>
+              <h2>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Acceso local temporal" : "Login requerido"}</h2>
+              <span>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Modo local habilitado explicitamente" : "PostgreSQL/auth requerido"}</span>
             </div>
           </div>
           <div className="welcome-auth-content">
             <p className="welcome-auth-message" role="alert">{message || "Servicio temporalmente no disponible."}</p>
             <div className="welcome-auth-demo-access">
-              <strong>La aplicacion principal no fue bloqueada</strong>
-              <span>El login real se activara cuando PostgreSQL quede configurado y disponible.</span>
+              <strong>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Acceso local temporal habilitado" : "Acceso bloqueado por seguridad"}</strong>
+              <span>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Este modo solo debe usarse en desarrollo controlado." : "La aplicacion no permite saltar el login real."}</span>
             </div>
-            <button type="button" className="welcome-auth-submit" onClick={() => setPhase("authenticated")}>
-              Entrar al sistema local
-            </button>
+            {LOCAL_TEMPORARY_AUTH_ENABLED ? (
+              <button type="button" className="welcome-auth-submit" onClick={completeLocalTemporaryAuth}>
+                Entrar al sistema local
+              </button>
+            ) : null}
           </div>
         </div>
       </section>

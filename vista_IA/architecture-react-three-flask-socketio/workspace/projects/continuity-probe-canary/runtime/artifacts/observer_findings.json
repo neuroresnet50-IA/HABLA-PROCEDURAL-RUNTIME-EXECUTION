@@ -2,17 +2,19 @@
   "schema_version": 1,
   "report_type": "observer_findings",
   "projectId": "continuity-probe-canary",
-  "generatedAt": "2026-05-27T16:59:11.785903Z",
+  "generatedAt": "2026-05-28T15:45:28.779791Z",
   "summary": {
-    "totalFindings": 153,
-    "activeFindings": 1,
+    "totalFindings": 158,
+    "activeFindings": 6,
     "resolvedFindings": 152,
     "observationScore": 82,
     "bySeverity": {
-      "error": 1
+      "error": 1,
+      "warning": 5
     },
     "bySource": {
-      "sandbox": 1
+      "sandbox": 1,
+      "integrity": 5
     }
   },
   "findings": [
@@ -43,8 +45,298 @@
       "proposedActions": [],
       "status": "active",
       "firstSeenAt": "2026-05-27T07:32:57.174785Z",
-      "lastSeenAt": "2026-05-27T16:59:11.785903Z",
-      "occurrenceCount": 210,
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 309,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-3a09947f6e2ec021",
+      "fingerprintSha256": "3a09947f6e2ec02137753f608cc3c14077c8ab1c64b645aa5ed61ed4e98052de",
+      "projectSlug": "continuity-probe-canary",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "src/continuity_probe.txt",
+      "focusPath": "src/continuity_probe.txt",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "bbf83bfabc9a9d2dbfcdb4a96d364feee7d547c5e610c3a765bcc0921699164c",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 5,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 5,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-probe-canary"
+          }
+        }
+      ],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T15:16:51.917388Z",
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 99,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-3abd3f333a6edb36",
+      "fingerprintSha256": "3abd3f333a6edb36edfcdbd0420748c132a25f3f4d2b16de7ad06cb2dbf7337a",
+      "projectSlug": "continuity-probe-canary",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "docs/habla-session.md",
+      "focusPath": "docs/habla-session.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "e870184979f294cea042d2fd64c460c8eef9e7cc3448cc75a3df0689a1db896e",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 5,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 5,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-probe-canary"
+          }
+        }
+      ],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T15:16:51.917388Z",
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 99,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-51b1432bc209a3c4",
+      "fingerprintSha256": "51b1432bc209a3c443c7df6b35b70e63afd5541858943e6a19df8e3b378f8c19",
+      "projectSlug": "continuity-probe-canary",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "LACE_LOG.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "beebdec5cf68af9562287d8899b0952c7e968e13163949dd91eec719a4aa8da2",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 5,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 5,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-probe-canary"
+          }
+        }
+      ],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T15:16:51.917388Z",
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 99,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-5c0bc82b7ce0e1a4",
+      "fingerprintSha256": "5c0bc82b7ce0e1a4b07d28370510fbb8c77bc1a073fc3fe138223193b3f30bd4",
+      "projectSlug": "continuity-probe-canary",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "LACE.md",
+      "focusPath": "LACE.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "64d398c438699d1150647d98672e86e655375733bdc7afec917126537268203a",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 5,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 5,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-probe-canary"
+          }
+        }
+      ],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T15:16:51.917388Z",
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 99,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-d17f4305361ac565",
+      "fingerprintSha256": "d17f4305361ac5659f6d1099c343167d500cdf70cd66939080b5fdf65a58981e",
+      "projectSlug": "continuity-probe-canary",
+      "source": "integrity",
+      "state": "untracked_file_detected",
+      "behavior": "inspect_file_integrity",
+      "severity": "warning",
+      "observationScore": 78,
+      "message": "Archivo nuevo no registrado en baseline del agente.",
+      "reason": "El hash actual del archivo no coincide con la baseline y no hay escritura interna registrada.",
+      "relativePath": "README.md",
+      "focusPath": "README.md",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "findingType": "untracked_file",
+        "line": 1,
+        "column": 1,
+        "length": 1,
+        "expectedSha256": "",
+        "actualSha256": "5701413e1577eee73e61e80d4cf6de81717d704ebd722a834aeca97544ba6241",
+        "expectedText": null,
+        "actualText": null,
+        "summary": {
+          "totalFindings": 5,
+          "modifiedFiles": 0,
+          "deletedFiles": 0,
+          "untrackedFiles": 5,
+          "baselineFindings": 0,
+          "registeredWrites": 0
+        },
+        "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/file_integrity_report.json"
+      },
+      "proposedActions": [
+        {
+          "id": "refresh_graph",
+          "label": "Refrescar grafo",
+          "requiresApproval": false,
+          "payload": {}
+        },
+        {
+          "id": "audit_map",
+          "label": "Reauditar mapa",
+          "requiresApproval": false,
+          "payload": {
+            "scene": "continuity-probe-canary"
+          }
+        }
+      ],
+      "status": "active",
+      "firstSeenAt": "2026-05-28T15:16:51.917388Z",
+      "lastSeenAt": "2026-05-28T15:45:28.779791Z",
+      "occurrenceCount": 99,
       "resolvedAt": null
     },
     {

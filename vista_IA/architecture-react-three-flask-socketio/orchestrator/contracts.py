@@ -8,6 +8,7 @@ from typing import Any
 
 ALLOWED_MODES = frozenset({"smoke", "build", "medium", "long-run"})
 ALLOWED_TASK_STATUSES = frozenset({"pending", "running", "completed", "failed", "blocked"})
+OPTIONAL_TASK_FIELDS = frozenset({"kind", "execution_strategy", "selector_reason"})
 ALLOWED_PROJECT_STATUSES = frozenset(
     {
         "initialized",
@@ -67,7 +68,7 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
         "mode",
         "checkpoint_key",
     }
-    _require_exact_fields(task, required, "Task")
+    _require_fields(task, required, OPTIONAL_TASK_FIELDS, "Task")
 
     normalized = dict(task)
     _expect_non_empty_string(normalized["id"], "Task.id")
@@ -82,6 +83,12 @@ def validate_task(task: dict[str, Any]) -> dict[str, Any]:
     _expect_non_negative_int(normalized["max_retries"], "Task.max_retries")
     _expect_choice(normalized["mode"], ALLOWED_MODES, "Task.mode")
     _expect_optional_non_empty_string(normalized["checkpoint_key"], "Task.checkpoint_key")
+    if "kind" in normalized:
+        _expect_optional_non_empty_string(normalized["kind"], "Task.kind")
+    if "execution_strategy" in normalized:
+        _expect_optional_non_empty_string(normalized["execution_strategy"], "Task.execution_strategy")
+    if "selector_reason" in normalized:
+        _expect_optional_non_empty_string(normalized["selector_reason"], "Task.selector_reason")
     return normalized
 
 

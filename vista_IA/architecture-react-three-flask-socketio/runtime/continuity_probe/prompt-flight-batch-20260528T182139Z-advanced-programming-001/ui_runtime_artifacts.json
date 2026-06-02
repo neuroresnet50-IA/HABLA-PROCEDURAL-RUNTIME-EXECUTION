@@ -1,0 +1,678 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "acceptance_criteria",
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "fifo_queue_design",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "next_task_handoff",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_goal",
+        "task_id",
+        "timeout_seconds",
+        "updated_at"
+      ],
+      "lineCount": 138,
+      "mtime": "2026-05-28T18:25:03Z",
+      "path": "workspace/projects/continuity-code-pf-001-3/runtime/complexity_estimate.json",
+      "sha256": "f8f6fc791c9e936b542d91e21f2bd6b65aea75195a509865b3bc08282a196718",
+      "size": 4354,
+      "tail": "ejecutar multiples tareas con workers independientes\"\n    },\n    \"validation_policy\": {\n      \"progress_requires_disk_evidence\": true,\n      \"expected_task_result_fields\": [\n        \"task_id\",\n        \"completed\",\n        \"files_created\",\n        \"files_modified\",\n        \"validation_ran\",\n        \"validation_passed\",\n        \"blockers\",\n        \"next_recommendation\"\n      ]\n    }\n  },\n  \"acceptance_criteria\": [\n    \"La cola conserva orden FIFO entre tareas disponibles.\",\n    \"Los estados validos son exactamente pending, running, completed y failed.\",\n    \"El retry ocurre por tarea y deja causa registrada.\",\n    \"La persistencia se escribe de forma atomica y reanudable.\",\n    \"Los workers no escriben estado interno del control plane.\"\n  ],\n  \"next_task_handoff\": {\n    \"blocked_task\": \"RUNTIME-20260528182139-002\",\n    \"expected_file\": \"docs/advanced_programming_case_001.md\",\n    \"summary\": \"Convertir este contrato de diseno en documentacion o implementacion acotada sin invadir el control plane.\"\n  },\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt medio: 33 palabras\",\n    \"toca runtime/estado persistido\",\n    \"requiere evidencia auditable\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T18:29:44Z",
+      "path": "workspace/projects/continuity-code-pf-001-3/runtime/failures.jsonl",
+      "sha256": "c9ec12a1dd88d1b14e8d4aeab13b74dc2032cde26c94bf7584647bae18011686",
+      "size": 111183,
+      "tail": "\"is_file\": true, \"path\": \"runtime/complexity_estimate.json\", \"reported_created\": false, \"reported_modified\": true, \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/complexity_estimate.json\", \"size\": 4354}], \"found\": [\"runtime/complexity_estimate.json\"], \"missing\": [], \"records\": [{\"exists\": true, \"is_file\": true, \"path\": \"runtime/complexity_estimate.json\", \"reported_created\": false, \"reported_modified\": true, \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/complexity_estimate.json\", \"size\": 4354}], \"reported_created\": [], \"reported_modified\": [\"runtime/complexity_estimate.json\"], \"reported_outside_expected\": []}, \"task_id\": \"RUNTIME-20260528182139-001\", \"validation_passed\": false, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\"}}, \"max_retries\": 3, \"retry_count\": 0, \"task_id\": \"RUNTIME-20260528182139-001\"}, \"recorded_at\": \"2026-05-28T18:29:44Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-28T18:29:44Z",
+      "path": "workspace/projects/continuity-code-pf-001-3/runtime/project_state.json",
+      "sha256": "cf9cca8f62bea79ec4666c4b96cc0a8a45821141800f08f816788a5d86cad02b",
+      "size": 597,
+      "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260528182139-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-86fe60a173\",\n    \"complexity-estimate\",\n    \"runtime-20260528182139-001-retry-0-recovery\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-28T18:21:39.425895+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T18:21:39.425895+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-86fe60a173\",\n  \"project_id\": \"continuity-code-pf-001-3\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-05-28T18:29:44.938579+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T18:29:44Z",
+      "path": "workspace/projects/continuity-code-pf-001-3/runtime/task_history.jsonl",
+      "sha256": "3d37852974f32f8a79ae77a32c7bb23de792cc4916d9ac42df766a68d30289ad",
+      "size": 665,
+      "tail": "{\"recorded_at\": \"2026-05-28T18:29:44Z\", \"result\": {\"blockers\": [\"Worker reported blocker: scanner canonico bloqueado: statusCode=423, ok=false, error=project_locked; backend confirma lock por sesion/control plane activo\"], \"completed\": false, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Fix blockers, rerun the isolated task if needed, then validate again.\", \"task_id\": \"RUNTIME-20260528182139-001\", \"validation_passed\": false, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-28T18:29:44Z",
+      "path": "workspace/projects/continuity-code-pf-001-3/runtime/task_queue.json",
+      "sha256": "9947c3b6c38499e5ee8ae5c031e69a0cbf4f901daca1166b7804e4765b55b312",
+      "size": 1531,
+      "tail": "mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260528182139-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260528182139-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_001.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528182139-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 553,
+    "mtime": "2026-05-28T18:29:44Z",
+    "path": "workspace/projects/continuity-code-pf-001-3/runtime/checkpoints/runtime-20260528182139-001-retry-0-recovery.json",
+    "sha256": "be682a5897553a1918c9ca1852aaba8c0aa2deca190955abd61b6bb1699fe90e",
+    "size": 118408,
+    "tail": "    \"reported_created\": [],\n          \"reported_modified\": [\n            \"runtime/complexity_estimate.json\"\n          ],\n          \"reported_outside_expected\": []\n        },\n        \"task_id\": \"RUNTIME-20260528182139-001\",\n        \"validation_passed\": false,\n        \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\"\n      }\n    },\n    \"retry_count\": 0,\n    \"task\": {\n      \"checkpoint_key\": \"runtime-20260528182139-001-checkpoint\",\n      \"dependencies\": [],\n      \"expected_files\": [\n        \"runtime/complexity_estimate.json\"\n      ],\n      \"goal\": \"Disenar una cola FIFO persistente con estados pending, running, completed y failed.\",\n      \"id\": \"RUNTIME-20260528182139-001\",\n      \"max_retries\": 3,\n      \"mode\": \"build\",\n      \"priority\": 20,\n      \"status\": \"pending\",\n      \"timeout_seconds\": 900,\n      \"title\": \"Disenar una cola FIFO persistente con estados pending\",\n      \"validation_commands\": [\n        \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n      ]\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 242,
+    "mtime": "2026-05-28T18:21:39Z",
+    "path": "workspace/projects/continuity-code-pf-001-3/runtime/directives/RUNTIME-20260528182139-001-20260528T182139Z-0cf9a2d5de57.json",
+    "sha256": "fb0f7c8ca26e01036e41aead2925361f4bb3e4363917895e650bc2f4eaa28c24",
+    "size": 22668,
+    "tail": "nning, completed y failed.\",\n    \"id\": \"RUNTIME-20260528182139-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\"\n  },\n  \"task_id\": \"RUNTIME-20260528182139-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"0cf9a2d5de5781bda3225852d59cb4474d2c0156711b545fcc2daf0239b66f00\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "decision": {
+        "action": "block",
+        "extendTimeout": false,
+        "nextRecommendation": "run_scanner_after_session_unlock",
+        "postflightLockContention": true,
+        "reason": "Scanner is locked by the active agent session; defer scanner to control-plane postflight after the worker releases the project lock.",
+        "retry": false,
+        "retry_count": 0,
+        "scannerDeferred": true,
+        "split": false
+      },
+      "failure": {
+        "execution": {
+          "approval_policy": "never",
+          "child_pid": 608077,
+          "command": [
+            "/home/neurodriver/.npm-global/bin/codex",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "-C",
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3",
+            "exec",
+            "--skip-git-repo-check",
+            "Task: RUNTIME-20260528182139-001 - Disenar una cola FIFO persistente con estados pending\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\nControl-plane ownership:\n- No edites runtime/project_state.json,..."
+          ],
+          "command_text": "/home/neurodriver/.npm-global/bin/codex --dangerously-bypass-approvals-and-sandbox -C /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3 exec --skip-git-repo-check Task: RUNTIME-20260528182139-001 - Disenar una cola FIFO persistente con estados pending\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-...",
+          "deferred_postflight_blockers": [],
+          "duration_seconds": 454.849973,
+          "execution_strategy": "codex_worker",
+          "expected_files": [
+            "runtime/complexity_estimate.json"
+          ],
+          "fatal_infrastructure_markers": [],
+          "infrastructure_failure": false,
+          "infrastructure_failure_type": null,
+          "infrastructure_markers": [],
+          "returncode": 0,
+          "sandbox_mode": "danger-full-access",
+          "selector_reason": "host_write_not_applicable",
+          "shell": false,
+          "stderr": "[output truncated; omitted 1211532 chars]\na de `runtime/complexity_estimate.json`: pass.\n+- `findings continuity-code-pf-001-3`: `statusCode=200`, `ok=true`, `activeFindings=0`.\n+- `integrity continuity-code-pf-001-3`: `statusCode=200`, `ok=true`.\n+- `scanner continuity-code-pf-001-3`: `statusCode=423`, `ok=false`, `error=project_locked`.\n+\n+Siguiente paso exacto:\n+- Reintentar scanner canonico cuando el proyecto quede idle y luego ejecutar `RUNTIME-20260528182139-002` para escribir `docs/advanced_programming_case_001.md` usando el contrato de cola ya persistido.\ndiff --git a/workspace/projects/continuity-code-pf-001-3/recuperacioncontexto.md b/workspace/projects/continuity-code-pf-001-3/recuperacioncontexto.md\nnew file mode 100644\nindex 0000000000000000000000000000000000000000..06bdc426b2d66c71e8a8b332368cf69e2d281383\n--- /dev/null\n+++ b/workspace/projects/continuity-code-pf-001-3/recuperacioncontexto.md\n@@ -0,0 +1,41 @@\n+# Recuperacion de contexto Codex\n+\n+## 2026-05-28T18:28:23Z ...",
+          "stdout": "Implement\u00e9 el entregable declarado en `runtime/complexity_estimate.json`: ahora incluye el contrato de dise\u00f1o para una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`, transiciones, persistencia at\u00f3mica, claim FIFO, retries por tarea y modos expl\u00edcitos.\n\nTambi\u00e9n actualic\u00e9 `LACE_LOG.md`, `recuperacioncontexto.md` y `ULTIMO_CONTEXTO_CODEX.md`. No edit\u00e9 `runtime/project_state.json`, `runtime/task_queue.json`, historial, failures, checkpoints, directives ni logs.\n\n```json\n{\n  \"task_id\": \"RUNTIME-20260528182139-001\",\n  \"completed\": false,\n  \"files_created\": [\"recuperacioncontexto.md\", \"ULTIMO_CONTEXTO_CODEX.md\"],\n  \"files_modified\": [\"runtime/complexity_estimate.json\", \"LACE_LOG.md\"],\n  \"validation_ran\": [\n    \"python3 -m json.tool runtime/complexity_estimate.json\",\n    \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n    \"agent_tools.py findings co...",
+          "task_id": "RUNTIME-20260528182139-001",
+          "task_kind": null
+        },
+        "task_result": {
+          "blockers": [
+            "Worker reported blocker: scanner canonico bloqueado: statusCode=423, ok=false, error=project_locked; backend confirma lock por sesion/control plane activo"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [
+            "runtime/complexity_estimate.json"
+          ],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "RUNTIME-20260528182139-001",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+          ]
+        },
+        "tool_invocations": {
+          "cyberlace_output": {
+            "action": "MONITOR",
+            "agentId": "control-plane-worker",
+            "allowed": true,
+            "blocksRuntime": false,
+            "enabled": true,
+            "error": null,
+            "eventId": "cyberlace_5ed6150ff698437391f5c9e9b048e83b",
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 51,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 37,
+                "type": "sensitive_output"
+              },
+              {
+                "domain": "financial",
+                "end": 680,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 666,
+                "type": "sensitive_output"
+              }
+            ],
+            "mode": "monitor",
+            "modified_payload": null,
+            "ok": true,
+            "policyMatches": [],
+            "rawDecision": {
+              "action": "MONITOR",
+              "allowed": true,
+              "category": "semantic_firewall",
+              "confidence": 0.75,
+              "evidence": [
+                {
+                  "domain": "financial",
+                  "end": 51,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 37,
+                  "type": "sensitive_output"
+                },
+                {
+                  "domain": "financial",
+                  "end": 680,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 666,
+                  "type": "sensitive_output"
+                }
+              ],
+              "modified_payload": null,
+              "policy_matches": [],
+              "reason": "Modo monitor: se registra riesgo sin bloquear",
+              "risk_score": 50,
+              "severity": "MEDIUM"
+            },
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "recommendedAction": "MONITOR",
+            "recordType": "decision",
+            "redactsPayload": false,
+            "requiresHumanReview": false,
+            "riskScore": 50.0,
+            "runtimeAction": "ALLOW"
+          },
+          "cyberlace_tool": {
+            "action": "MONITOR",
+            "agentId": "control-plane-worker",
+            "allowed": true,
+            "blocksRuntime": false,
+            "enabled": true,
+            "error": null,
+            "eventId": "cyberlace_7cef1cb9ce034d269adfe99f6c01af35",
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 313,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 299,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7676,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 7662,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7725,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 7711,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8437,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 8423,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8513,
+                "pattern": "credit_card_like",
+                "sample": "20260528182139",
+                "start": 8499,
+                "type": "sensitive_data_in_tool_args"
+              }
+            ],
+            "mode": "monitor",
+            "modified_payload": null,
+            "ok": true,
+            "policyMatches": [],
+            "rawDecision": {
+              "action": "MONITOR",
+              "allowed": true,
+              "category": "semantic_firewall",
+              "confidence": 0.75,
+              "evidence": [
+                {
+                  "domain": "financial",
+                  "end": 313,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 299,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 7676,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 7662,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 7725,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 7711,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 8437,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 8423,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 8513,
+                  "pattern": "credit_card_like",
+                  "sample": "20260528182139",
+                  "start": 8499,
+                  "type": "sensitive_data_in_tool_args"
+                }
+              ],
+              "modified_payload": null,
+              "policy_matches": [],
+              "reason": "Modo monitor: se registra riesgo sin bloquear",
+              "risk_score": 50,
+              "severity": "MEDIUM"
+            },
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "recommendedAction": "MONITOR",
+            "recordType": "decision",
+            "redactsPayload": false,
+            "requiresHumanReview": false,
+            "riskScore": 50.0,
+            "runtimeAction": "ALLOW"
+          },
+          "postflight": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/tool_invocations/RUNTIME-20260528182139-001-postflight-20260528T182934Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": null,
+                "dryRun": false,
+                "error": "timeout",
+                "ok": false,
+                "phase": "postflight",
+                "projectSlug": "continuity-code-pf-001-3",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 0,
+                "summary": {
+                  "error": "timeout",
+                  "message": "timed out",
+                  "ok": false,
+                  "statusCode": 0
+                },
+                "taskId": "RUNTIME-20260528182139-001",
+                "timedOut": true,
+                "timestamp": "2026-05-28T18:29:31Z",
+                "tool": "integrity"
+              },
+              {
+                "artifactPath": null,
+                "dryRun": false,
+                "error": "timeout",
+                "ok": false,
+                "phase": "postflight",
+                "projectSlug": "continuity-code-pf-001-3",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 0,
+                "summary": {
+                  "error": "timeout",
+                  "message": "timed out",
+                  "ok": false,
+                  "statusCode": 0
+                },
+                "taskId": "RUNTIME-20260528182139-001",
+                "timedOut": true,
+                "timestamp": "2026-05-28T18:29:33Z",
+                "tool": "findings"
+              }
+            ],
+            "phase": "postflight",
+            "projectSlug": "continuity-code-pf-001-3",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260528182139-001",
+            "taskResult": {
+              "blocker_count": 1,
+              "completed": false,
+              "validation_passed": false
+            },
+            "timestamp": "2026-05-28T18:29:34Z",
+            "warnings": [
+              "postflight:integrity timed out; continuing",
+              "postflight:findings timed out; continuing"
+            ]
+          },
+          "preflight": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/tool_invocations/RUNTIME-20260528182139-001-preflight-20260528T182157Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": null,
+                "dryRun": false,
+                "error": null,
+                "ok": true,
+                "phase": "preflight",
+                "projectSlug": "continuity-code-pf-001-3",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 200,
+                "summary": {
+                  "observer": {
+                    "activeProjectSlug": "",
+                    "enabled": false,
+                    "incident": null,
+                    "state": "idle"
+                  },
+                  "ok": true,
+                  "statusCode": 200
+                },
+                "taskId": "RUNTIME-20260528182139-001",
+                "timedOut": false,
+                "timestamp": "2026-05-28T18:21:57Z",
+                "tool": "observer-status"
+              }
+            ],
+            "phase": "preflight",
+            "projectSlug": "continuity-code-pf-001-3",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260528182139-001",
+            "timestamp": "2026-05-28T18:21:57Z",
+            "warnings": []
+          },
+          "recovery_preview": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/tool_invocations/RUNTIME-20260528182139-001-recovery_preview-20260528T182935Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/observer_findings.json",
+                "dryRun": false,
+                "error": null,
+                "ok": true,
+                "phase": "recovery_preview",
+                "projectSlug": "continuity-code-pf-001-3",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 200,
+                "summary": {
+                  "ok": true,
+                  "projectId": "continuity-code-pf-001-3",
+                  "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/observer_findings.json",
+                  "statusCode": 200,
+                  "summary": {
+                    "activeFindings": 0,
+                    "bySeverity": {},
+                    "bySource": {},
+                    "observationScore": 0,
+                    "resolvedFindings": 3,
+                    "totalFindings": 3
+                  }
+                },
+                "taskId": "RUNTIME-20260528182139-001",
+                "timedOut": false,
+                "timestamp": "2026-05-28T18:29:34Z",
+                "tool": "findings"
+              },
+              {
+                "artifactPath": null,
+                "dryRun": true,
+                "error": "timeout",
+                "ok": false,
+                "phase": "recovery_preview",
+                "projectSlug": "continuity-code-pf-001-3",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 0,
+                "summary": {
+                  "error": "timeout",
+                  "message": "timed out",
+                  "ok": false,
+                  "statusCode": 0
+                },
+                "taskId": "RUNTIME-20260528182139-001",
+                "timedOut": true,
+                "timestamp": "2026-05-28T18:29:34Z",
+                "tool": "sniper"
+              }
+            ],
+            "phase": "recovery_preview",
+            "projectSlug": "continuity-code-pf-001-3",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260528182139-001",
+            "taskResult": {
+              "blocker_count": 1,
+              "completed": false,
+              "validation_passed": false
+            },
+            "timestamp": "2026-05-28T18:29:35Z",
+            "warnings": [
+              "recovery_preview:sniper timed out; continuing"
+            ]
+          },
+          "task_completion_gate": null
+        },
+        "validation": {
+          "commands": [
+            {
+              "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+              "duration_seconds": 0.02289,
+              "normalized_command": [
+                "python3",
+                "-B",
+                "-c",
+                "from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+              ],
+              "returncode": 0,
+              "security_blocked": false,
+              "security_decision": {
+                "category": "test_or_build",
+                "command": [
+                  "python3",
+                  "-B",
+                  "-c",
+                  "from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+                ],
+                "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3",
+                "decision": "allow",
+                "reason": "Matched risk category: test_or_build",
+                "recorded_at": "2026-05-28T18:29:31Z",
+                "risk_level": "low",
+                "schema_version": 1,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3"
+              },
+              "stderr": "",
+              "stdout": "",
+              "timed_out": false
+            }
+          ],
+          "evidence": {
+            "blockers": [],
+            "expected_files": [
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_estimate.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/complexity_estimate.json",
+                "size": 4354
+              }
+            ],
+            "found": [
+              "runtime/complexity_estimate.json"
+            ],
+            "missing": [],
+            "records": [
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_estimate.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/complexity_estimate.json",
+                "size": 4354
+              }
+            ],
+            "reported_created": [],
+            "reported_modified": [
+              "runtime/complexity_estimate.json"
+            ],
+            "reported_outside_expected": []
+          },
+          "task_id": "RUNTIME-20260528182139-001",
+          "validation_passed": false,
+          "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3"
+        }
+      },
+      "max_retries": 3,
+      "retry_count": 0,
+      "task_id": "RUNTIME-20260528182139-001"
+    },
+    "recorded_at": "2026-05-28T18:29:44Z"
+  },
+  "latestFailureIncludedInClassification": true,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T18:29:44Z",
+    "result": {
+      "blockers": [
+        "Worker reported blocker: scanner canonico bloqueado: statusCode=423, ok=false, error=project_locked; backend confirma lock por sesion/control plane activo"
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [
+        "runtime/complexity_estimate.json"
+      ],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "RUNTIME-20260528182139-001",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-001-3",
+  "runtimeDir": "workspace/projects/continuity-code-pf-001-3/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 103,
+    "mtime": "2026-05-28T18:29:44Z",
+    "path": "workspace/projects/continuity-code-pf-001-3/runtime/logs/agent-86fe60a173-terminal.log",
+    "sha256": "afec074e3e2d43b857e59a42b139be8a0f1c74536a5a3a28534aae40b137dcf1",
+    "size": 3685,
+    "tail": "ions\": [\n    {\n      \"tool\": \"findings\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-3/runtime/artifacts/observer_findings.json\"\n    },\n    {\n      \"tool\": \"sniper\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Resumen de cola:\n{\n  \"status\": \"failed\",\n  \"stopped_reason\": \"queue_idle\",\n  \"tasks_executed\": 1,\n  \"ready_task_ids\": [],\n  \"lace_gate\": {\n    \"status\": \"not_applicable\",\n    \"reason\": \"runtime_mode_not_long_run\"\n  },\n  \"tool_policy_final\": null,\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"blocked\",\n    \"event_op\": \"session_blocked\",\n    \"event_status\": \"blocked\",\n    \"phase\": \"blocked\",\n    \"error_code\": \"control_plane_blocked\",\n    \"message\": \"El estado canonico mantiene bloqueos activos: blocked_tasks=['RUNTIME-20260528182139-001'], queue_blocked=['RUNTIME-20260528182139-001'].\",\n    \"completed\": false,\n    \"warnings\": [\n      \"failure_events=1\"\n    ]\n  }\n}\n"
+  }
+}

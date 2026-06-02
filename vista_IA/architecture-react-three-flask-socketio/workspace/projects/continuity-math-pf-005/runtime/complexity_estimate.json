@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T21:34:12.493263Z",
+  "last_updated_at": "2026-05-28T21:37:17Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-math-pf-005",
+  "project_file_count": 0,
+  "prompt_word_count": 31,
+  "score": 29,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "risk_flags": [],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 31 palabras",
+    "requiere evidencia auditable",
+    "declara pruebas o validacion"
+  ],
+  "confidence": 88,
+  "task_resolution": {
+    "task_id": "RUNTIME-20260528213412-001",
+    "status": "resolved_as_general_case",
+    "input_limit": "No se entregaron coeficientes numericos; no se inventan valores.",
+    "equation": "a*x^2 + b*x + c = 0, a != 0",
+    "discriminant": {
+      "symbol": "Delta",
+      "formula": "b^2 - 4*a*c",
+      "interpretation": [
+        {
+          "condition": "Delta > 0",
+          "result": "dos raices reales distintas"
+        },
+        {
+          "condition": "Delta = 0",
+          "result": "una raiz real doble"
+        },
+        {
+          "condition": "Delta < 0",
+          "result": "dos raices complejas conjugadas"
+        }
+      ]
+    },
+    "roots": [
+      "x1 = (-b + sqrt(Delta)) / (2*a)",
+      "x2 = (-b - sqrt(Delta)) / (2*a)"
+    ],
+    "complex_roots_when_delta_negative": [
+      "x1 = (-b + i*sqrt(-Delta)) / (2*a)",
+      "x2 = (-b - i*sqrt(-Delta)) / (2*a)"
+    ],
+    "validation": {
+      "method": "sustitucion algebraica",
+      "claim": "Al sustituir cada raiz en a*x^2 + b*x + c, la expresion se reduce a 0 usando Delta = b^2 - 4*a*c.",
+      "pytest_file": "tests/test_quadratic_case_005.py"
+    },
+    "examples": [
+      {
+        "name": "dos_raices_reales",
+        "coefficients": {
+          "a": 1,
+          "b": -5,
+          "c": 6
+        },
+        "discriminant": 1,
+        "roots": [
+          3,
+          2
+        ]
+      },
+      {
+        "name": "raiz_doble",
+        "coefficients": {
+          "a": 1,
+          "b": 2,
+          "c": 1
+        },
+        "discriminant": 0,
+        "roots": [
+          -1,
+          -1
+        ]
+      },
+      {
+        "name": "raices_complejas",
+        "coefficients": {
+          "a": 1,
+          "b": 0,
+          "c": 1
+        },
+        "discriminant": -4,
+        "roots": [
+          {
+            "real": 0,
+            "imag": 1
+          },
+          {
+            "real": 0,
+            "imag": -1
+          }
+        ]
+      }
+    ],
+    "artifact_files": [
+      "docs/mathematics_case_005.md",
+      "runtime/complexity_estimate.json",
+      "tests/test_quadratic_case_005.py"
+    ]
+  }
+}

@@ -167,5 +167,28 @@ class WorkspaceVisualSyncRegressionTest(unittest.TestCase):
             )
 
 
+    def test_normalize_algorithm_derives_sequence_edges_when_steps_have_no_valid_edges(self) -> None:
+        algorithm = {
+            "title": "Flujo desconectado",
+            "source": "agent_live",
+            "steps": [
+                {"id": "start", "type": "start", "label": "Inicio", "x": 100, "y": 50},
+                {"id": "process", "type": "process", "label": "Procesar", "x": 100, "y": 170},
+                {"id": "end", "type": "end", "label": "Fin", "x": 100, "y": 290},
+            ],
+            "edges": [],
+        }
+
+        normalized = backend_app.normalize_algorithm(
+            algorithm,
+            {"id": "demo-node", "name": "demo.py", "codeLanguage": "python"},
+        )
+
+        self.assertEqual(
+            [(edge["from"], edge["to"]) for edge in normalized["edges"]],
+            [("start", "process"), ("process", "end")],
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

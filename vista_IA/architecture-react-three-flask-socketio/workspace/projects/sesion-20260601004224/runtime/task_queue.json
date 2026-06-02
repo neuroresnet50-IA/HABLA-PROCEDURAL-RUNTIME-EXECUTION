@@ -1,0 +1,287 @@
+[
+  {
+    "checkpoint_key": "runtime-20260601005556-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "desarrollenun juego 3D de mario bros con toda la logica de tableros scores el juego debe de ser autonomo controlado por IA y un agente DQN APRENDIZAJE PO REFUERZO CON RECONPENZA Y CASTILLO CREEEN NUEVAS COSA QUE HAGAN EL JUEGO MAS EMOCIONANTE",
+    "id": "RUNTIME-20260601005556-001",
+    "max_retries": 3,
+    "mode": "medium",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 1800,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260601021634-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260601004224. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260601012514-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: EL PROYECTO DEL JUEGO DE MARIO BROS 3D sesion-20260601004224 workspace/projects/sesion-20260601004224 6 archivos detectados en el proyecto seleccionadoESTA MUY BASICO SE NESCITA ALGO MAS AVANZADO SE BEBE DE VER EL PERSONAJE REAL COMO SE VE EN EL UNDO REAL CON VIGOTE SU SOMBRERO UN UN PERSONAJE REALMENTE AVANZADO NO SE VEN ENEMIGOS LAS TORTUGAS ENEMOISGAS NO SE VEN LOS HONGOS ENEMIGOS SE NESECITA IMPLEMENTAR ORBITCONTROLS PARA PODER ROTAR LA VISTA DESDE CUALQUIER ANGULO EL PERSONAJE DE MARIO BROS SOLO ES UN CUADRADO GRANDE ENSIKJMA DE OTRO ESO SE VE MUY BASICO NO SE VEN UN MUNDO REAL ATRAS CON NUVES NO SE VE UN MUNDO DERAS AL FONDO DONDE SE SIENTA QUE LA REALIDAD AURMWENTADA VA PASANDO EN EL JUEGO PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: Dificultad Medio: 3 subagente(s), 4 ciclo(s) LACE y hasta 10 tarea(s). Dificultad: Medio | score: 44 | ciclos LACE: 4 | max tareas: 10 Herramientas requeridas: sandbox, scanner Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno. Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - frontend/index.html - frontend/styles.css - frontend/app.js Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\" - python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day",
+    "id": "RUNTIME-20260601021634-001",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260601021634-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260601021634-001-SPLIT-001",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260601021634-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260601021634-001-SPLIT-002",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260601021634-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260601021634-001-SPLIT-003",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260601021634-001-SPLIT-003"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "orchestrator/contracts.py",
+      "orchestrator/state_store.py",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json"
+    ],
+    "goal": "Completar el ciclo LACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260601-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 01",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'orchestrator/contracts.py', 'orchestrator/state_store.py', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-002-checkpoint",
+    "dependencies": [
+      "LACE-20260601-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "orchestrator/contracts.py",
+      "orchestrator/state_store.py",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json"
+    ],
+    "goal": "Completar el ciclo LACE 02 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260601-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 02",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'orchestrator/contracts.py', 'orchestrator/state_store.py', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-02.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-2 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-2 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-2 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-003-checkpoint",
+    "dependencies": [
+      "LACE-20260601-002"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "orchestrator/contracts.py",
+      "orchestrator/state_store.py",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/agent_file_manifest.json"
+    ],
+    "goal": "Completar el ciclo LACE 03 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260601-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 03",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'orchestrator/contracts.py', 'orchestrator/state_store.py', 'recuperacioncontexto.md', 'runtime/artifacts/agent_file_manifest.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-03.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-3 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-3 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-3 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260602152017-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "[CONTEXTO AUTORIZADO CYBERLACE] P_safe fue confirmado con PIN de contexto. El prompt original sigue bloqueado y no debe ejecutarse. rescueId=CYBERLACE-RESCUE-20260601222554-55a09539 sourceSessionId=agent-4f3d430a9a PROMPT SEGURO P_safe: [PROMPT SEGURO GENERADO POR CYBERLACE] Proyecto: sesion-20260601004224 Sesion origen: agent-4f3d430a9a Redisenar esta tarea con datos sinteticos, evidencia redactada, controles de acceso y sin procesar informacion sensible local. Reglas de continuacion segura: - No ejecutar el prompt original bloqueado. - No incluir secretos, credenciales, bypasses ni acciones destructivas no verificadas. - Mantener cambios dentro del workspace autorizado. - Validar por filesystem y registrar evidencia antes de completed=true. OBJETIVO RECUPERADO BAJO GOBIERNO DE P_safe: MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260601004224. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260602144656-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: [CONTEXTO AUTORIZADO CYBERLACE] P_safe fue confirmado con PIN de contexto. El prompt original sigue bloqueado y no debe ejecutarse. rescueId=CYBERLACE-RESCUE-20260601222554-55a09539 sourceSessionId=agent-4f3d430a9a PROMPT SEGURO P_safe: [PROMPT SEGURO GENERADO POR CYBERLACE] Proyecto: sesion-20260601004224 Sesion origen: agent-4f3d430a9a Redisenar esta tarea con datos sinteticos, evidencia redactada, controles de acceso y sin procesar informacion sensible local. Reglas de continuacion segura: - No ejecutar el prompt original bloqueado. - No incluir secretos, credenciales, bypasses ni acciones destructivas no verificadas. - Mantener cambios dentro del workspace autorizado. - Validar por filesystem y registrar evidencia antes de completed=true. OBJETIVO RECUPERADO BAJO GOBIERNO DE P_safe: MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260601004224. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260601222410-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: [CONTEXTO AUTORIZADO CYBERLACE] P_safe fue confirmado con PIN de contexto. El prompt original sigue bloqueado y no debe ejecutarse. rescueId=CYBERLACE-RESCUE-20260601221548-f47889a0 sourceSessionId=agent-b997ff6731 PROMPT SEGURO P_safe: [PROMPT SEGURO GENERADO POR CYBERLACE] Proyecto: sesion-20260601004224 Sesion origen: agent-b997ff6731 Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales. Reglas de continuacion segura: - No ejecutar el prompt original bloqueado. - No incluir secretos, credenciales, bypasses ni acciones destructivas no verificadas. - Mantener cambios dentro del workspace autorizado. - Validar por filesystem y registrar evidencia antes de completed=true. OBJETIVO RECUPERADO BAJO GOBIERNO DE P_safe: MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260601004224. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260601214854-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260601004224. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260601012514-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: EL PROYECTO DEL JUEGO DE MARIO BROS 3D sesion-20260601004224 workspace/projects/sesion-20260601004224 6 archivos detectados en el proyecto seleccionadoESTA MUY BASICO SE NESCITA ALGO MAS AVANZADO SE BEBE DE VER EL PERSONAJE REAL COMO SE VE EN EL UNDO REAL CON VIGOTE SU SOMBRERO UN UN PERSONAJE REALMENTE AVANZADO NO SE VEN ENEMIGOS LAS TORTUGAS ENEMOISGAS NO SE VEN LOS HONGOS ENEMIGOS SE NESECITA IMPLEMENTAR ORBITCONTROLS PARA PODER ROTAR LA VISTA DESDE CUALQUIER ANGULO EL PERSONAJE DE MARIO BROS SOLO ES UN CUADRADO GRANDE ENSIKJMA DE OTRO ESO SE VE MUY BASICO NO SE VEN UN MUNDO REAL ATRAS CON NUVES NO SE VE UN MUNDO DERAS AL FONDO DONDE SE SIENTA QUE LA REALIDAD AURMWENTADA VA PASANDO EN EL JUEGO PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: Dificultad Medio: 3 subagente(s), 4 ciclo(s) LACE y hasta 10 tarea(s). Dificultad: Medio | score: 44 | ciclos LACE: 4 | max tareas: 10 Herramientas requeridas: sandbox, scanner Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno. Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - frontend/index.html - frontend/styles.css - frontend/app.js Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\" - python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - frontend/index.html - frontend/styles.css - frontend/app.js Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\" - python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day Reglas obligatorias: - No procesar ni reconstruir el prompt original bloqueado. - No leer, transportar ni exponer secretos reales detectados por CyberLACE. - Usar placeholders, datos sinteticos o evidencia redactada cuando haga falta. - Persistir evidencia real en filesystem antes de completed=true. Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - frontend/index.html - frontend/styles.css - frontend/app.js Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\" - python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day Reglas obligatorias: - No procesar ni reconstruir el prompt original bloqueado. - No leer, transportar ni exponer secretos reales detectados por CyberLACE. - Usar placeholders, datos sinteticos o evidencia redactada cuando haga falta. - Persistir evidencia real en filesystem antes de completed=true. Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - frontend/index.html - frontend/styles.css - frontend/app.js Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\" - python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day Reglas obligatorias: - No procesar ni reconstruir el prompt original bloqueado. - No leer, transportar ni exponer secretos reales detectados por CyberLACE. - Usar placeholders, datos sinteticos o evidencia redactada cuando haga falta. - Persistir evidencia real en filesystem antes de completed=true.",
+    "id": "RUNTIME-20260602152017-001",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 4500,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260602152017-001-split-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260602152017-001-SPLIT-001",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 9,
+    "status": "completed",
+    "timeout_seconds": 4500,
+    "title": "Build runnable static web app split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260602152017-001-split-002-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260602152017-001-SPLIT-002",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 8,
+    "status": "completed",
+    "timeout_seconds": 4500,
+    "title": "Build runnable static web app split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260602152017-001-split-003-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260602152017-001-SPLIT-003",
+    "max_retries": 4,
+    "mode": "build",
+    "priority": 7,
+    "status": "completed",
+    "timeout_seconds": 4500,
+    "title": "Build runnable static web app split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260602160033-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "en el proyecto sesion-20260601004224 debemos cambiar la pocicion del actor mario bros que do mirando de frente ala pantalla y la ruta del corredor que debe de seguir no concuerda con la pocicion de como debe de quedar el autor mario bros se nesesita girar el autor mario bros 90 grados ala izquierda para que el perfil quede apuntando ala misma direccion de el corredor por donde se mueve el juego real PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: Dificultad Extradificil: 6 subagente(s), 8 ciclo(s) LACE y hasta 32 tarea(s). Dificultad: Extradificil | score: 75 | ciclos LACE: 8 | max tareas: 32 Herramientas requeridas: findings, integrity, sandbox, scanner Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260602160033-001",
+    "max_retries": 4,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 5400,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  }
+]

@@ -54,6 +54,25 @@ TRUSTED_RUNTIME_CONTROL_FILES = {
     "complexity_estimate.json",
 }
 TRUSTED_RUNTIME_CONTROL_DIRS = {"artifacts", "checkpoints", "directives", "logs"}
+TRUSTED_REPO_REFERENCE_FILES = {"AGENTS.md", "PLANS.md"}
+TRUSTED_PROJECT_CONTROL_DOCUMENTS = {
+    "LACE.md",
+    "LACE_LOG.md",
+    "docs/habla-session.md",
+}
+TRUSTED_PROJECT_CONTROL_PREFIXES = (
+    "docs/lace_cycles/",
+)
+TRUSTED_REPO_SOURCE_DIR_PREFIXES = (
+    ("backend",),
+    ("orchestrator",),
+    ("workers",),
+    ("frontend", "src"),
+    ("schemas",),
+    ("tools",),
+)
+TRUSTED_REPO_POLICY_DIR_PREFIXES = (("docs",),)
+TRUSTED_GENERATED_SOURCES = {"requirement", "task", "directive"}
 PATH_TOKEN_RE = re.compile(
     r"(?<![:A-Za-z0-9])(?P<path>(?:~|[A-Za-z]:)?(?:(?:\.{0,2}/|/)|(?:[A-Za-z0-9_.@+=-]+/))(?:[^\s`'\"<>|;&]+))"
 )
@@ -196,10 +215,27 @@ def _structural_secret_anchor(text: str, match: re.Match[str]) -> bool:
     ))
 
 
+WEAK_FRAGMENT_ANCHORS = {"api"}
+STRONG_FRAGMENT_CONTEXT_RE = re.compile(
+    r"(?i)(?<![A-Za-z0-9])(?:api[_ -]?keys?|token|secret|password|passwd|pwd|"
+    r"credential|credencial|private[_ -]?key|bearer|ghp|pat|openai|aws|"
+    r"stripe|paypal|cvv|cvc)(?![A-Za-z0-9])"
+)
+
+
 def _nearby_reassembly_context(text: str, anchor: re.Match[str], *, window: int = 160) -> re.Match[str] | None:
     start = max(0, anchor.start() - window)
     end = min(len(text), anchor.end() + window)
     return REASSEMBLY_CONTEXT_RE.search(text[start:end])
+
+
+def _weak_fragment_anchor_without_secret_context(text: str, anchor: re.Match[str], *, window: int = 160) -> bool:
+    anchor_text = anchor.group(0).lower()
+    if anchor_text not in WEAK_FRAGMENT_ANCHORS:
+        return False
+    start = max(0, anchor.start() - window)
+    end = min(len(text), anchor.end() + window)
+    return STRONG_FRAGMENT_CONTEXT_RE.search(text[start:end]) is None
 
 
 def _fragmented_secret_findings(text: str, *, source: str, path: str | None = None) -> List[Dict[str, Any]]:
@@ -212,6 +248,8 @@ def _fragmented_secret_findings(text: str, *, source: str, path: str | None = No
     if not match:
         for anchor in SECRET_ANCHOR_RE.finditer(body):
             if _structural_secret_anchor(body, anchor):
+                continue
+            if _weak_fragment_anchor_without_secret_context(body, anchor):
                 continue
             reassembly = _nearby_reassembly_context(body, anchor)
             if reassembly:
@@ -631,6 +669,37 @@ def _is_generated_runtime_control_reference(path: Path, roots: List[Path], *, so
     return False
 
 
+def _matches_prefix(parts: tuple[str, ...], prefixes: tuple[tuple[str, ...], ...]) -> bool:
+    return any(parts[:len(prefix)] == prefix for prefix in prefixes)
+
+
+def _is_trusted_repo_reference(path: Path, roots: List[Path], *, source: str) -> bool:
+    if source not in TRUSTED_GENERATED_SOURCES or len(roots) < 2:
+        return False
+    resolved = path.resolve()
+    project_root = roots[0].resolve()
+    repo = roots[-1].resolve()
+    if _is_relative_to(resolved, project_root):
+        return False
+    try:
+        relative = resolved.relative_to(repo)
+    except ValueError:
+        return False
+
+    name = resolved.name.lower()
+    if name in SENSITIVE_TEXT_FILENAMES or name.startswith("id_"):
+        return False
+
+    parts = relative.parts
+    if len(parts) == 1 and parts[0] in TRUSTED_REPO_REFERENCE_FILES:
+        return True
+    if _matches_prefix(parts, TRUSTED_REPO_SOURCE_DIR_PREFIXES):
+        return True
+    if source in {"task", "directive"} and _matches_prefix(parts, TRUSTED_REPO_POLICY_DIR_PREFIXES):
+        return True
+    return False
+
+
 def _external_reference_finding(token: str, *, source: str) -> Dict[str, Any]:
     raw_name = Path(token.replace("~", "")).name or "external"
     return {
@@ -672,6 +741,17 @@ def _read_text_document(path: Path) -> str | None:
         return None
 
 
+def _is_trusted_project_control_document(display_path: str) -> bool:
+    normalized = str(display_path or "").replace("\\", "/").lstrip("/")
+    parts = normalized.split("workspace/projects/", 1)
+    if len(parts) == 2:
+        tail = parts[1].split("/", 1)
+        normalized = tail[1] if len(tail) == 2 else ""
+    if normalized in TRUSTED_PROJECT_CONTROL_DOCUMENTS:
+        return True
+    return any(normalized.startswith(prefix) for prefix in TRUSTED_PROJECT_CONTROL_PREFIXES)
+
+
 def _inspect_document(path: Path, *, source: str, display_path: str) -> tuple[List[Dict[str, Any]], Dict[str, Any] | None]:
     if not _is_text_document(path):
         return [], None
@@ -679,6 +759,13 @@ def _inspect_document(path: Path, *, source: str, display_path: str) -> tuple[Li
         size = path.stat().st_size
     except OSError:
         return [_scan_limit_finding(reason="document_stat_failed", path=display_path)], None
+    if _is_trusted_project_control_document(display_path):
+        return [], {
+            "path": display_path,
+            "bytes": size,
+            "blockedFindings": 0,
+            "trustedRuntimeControl": True,
+        }
     if size > MAX_DOCUMENT_SCAN_BYTES:
         return [_scan_limit_finding(reason="document_too_large", path=display_path)], {
             "path": display_path,
@@ -776,6 +863,8 @@ def _collect_paths_for_text(text: str, roots: List[Path], *, source: str) -> tup
         if path is None:
             continue
         if _is_generated_runtime_control_reference(path, resolved_roots, source=source):
+            continue
+        if _is_trusted_repo_reference(path, resolved_roots, source=source):
             continue
         key = str(path)
         if key in seen:
@@ -881,6 +970,11 @@ def inspect_runtime_document_inputs(
 
     findings: List[Dict[str, Any]] = []
     for source, text in text_sources:
+        if source == "directive":
+            # Generated directives include trusted AGENTS/PLANS policy text. The
+            # untrusted payload is already represented by requirement/task and
+            # by referenced/workspace documents below.
+            continue
         findings.extend(_inspect_text(text, source=source))
 
     referenced_paths: List[Path] = []

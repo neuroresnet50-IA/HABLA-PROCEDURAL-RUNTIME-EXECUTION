@@ -79,6 +79,10 @@ function buildEdgePath(sourceNode, targetNode) {
     path: `M ${source.x} ${source.y} C ${c1.x} ${c1.y}, ${c2.x} ${c2.y}, ${target.x} ${target.y}`,
     labelX: (source.x + target.x) * 0.5,
     labelY: (source.y + target.y) * 0.5 - 14,
+    sourceX: source.x,
+    sourceY: source.y,
+    targetX: target.x,
+    targetY: target.y,
   };
 }
 
@@ -450,6 +454,9 @@ export default function ArchitectureCanvas({
             <marker id={edgeMarkerId} markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
               <path d="M 0 0 L 12 6 L 0 12 z" fill="#98a8c6" />
             </marker>
+            <marker id={`${edgeMarkerId}-derived`} markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M 0 0 L 12 6 L 0 12 z" fill="#ef4444" />
+            </marker>
           </defs>
 
           <rect x="0" y="0" width={Math.max(1, frameSize.width || 1)} height={Math.max(1, frameSize.height || 1)} fill="#07101c" />
@@ -502,6 +509,7 @@ export default function ArchitectureCanvas({
             if (!sourceNode || !targetNode) return null;
             const geometry = buildEdgePath(sourceNode, targetNode);
             const isSelected = edge.id === selectedEdgeId;
+            const isDerived = Boolean(edge.derived);
             return (
               <g key={edge.id} onClick={(event) => {
                 event.stopPropagation();
@@ -510,11 +518,17 @@ export default function ArchitectureCanvas({
                 <path
                   d={geometry.path}
                   fill="none"
-                  stroke={isSelected ? "#f8fafc" : "#98a8c6"}
-                  strokeWidth={isSelected ? 4 : 3}
-                  strokeDasharray={edge.dashed ? "10 8" : undefined}
-                  markerEnd={`url(#${edgeMarkerId})`}
+                  stroke={isSelected ? "#f8fafc" : isDerived ? "#ef4444" : "#98a8c6"}
+                  strokeWidth={isSelected ? 4 : isDerived ? 3.3 : 3}
+                  strokeDasharray={edge.dashed || isDerived ? "10 8" : undefined}
+                  markerEnd={`url(#${isDerived ? `${edgeMarkerId}-derived` : edgeMarkerId})`}
                 />
+                {isDerived ? (
+                  <>
+                    <circle cx={geometry.sourceX} cy={geometry.sourceY} r="5" fill="#ef4444" opacity="0.9" />
+                    <circle cx={geometry.targetX} cy={geometry.targetY} r="5" fill="#ef4444" opacity="0.9" />
+                  </>
+                ) : null}
                 <text x={geometry.labelX} y={geometry.labelY} textAnchor="middle" className="architecture-edge-label">
                   {edge.label}
                 </text>

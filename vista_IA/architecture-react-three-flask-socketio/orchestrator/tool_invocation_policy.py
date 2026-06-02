@@ -242,7 +242,11 @@ class ToolInvocationPolicy:
         return any(path.exists() for path in candidates)
 
     def _required_invocations_ok(self, invocations: list[dict[str, Any]]) -> bool:
-        return all(item.get("ok") is True for item in invocations if item.get("required"))
+        return all(
+            item.get("ok") is True or _is_deferred_scanner_lock(item)
+            for item in invocations
+            if item.get("required")
+        )
 
     def _persist_invocation(self, invocation: dict[str, Any]) -> None:
         log_path = self.runtime_dir / TOOL_LOG_NAME
@@ -310,11 +314,26 @@ def _active_findings_count(invocation: dict[str, Any]) -> int:
     return value if isinstance(value, int) and not isinstance(value, bool) else 0
 
 
+def _is_deferred_scanner_lock(invocation: dict[str, Any]) -> bool:
+    summary = invocation.get("summary") if isinstance(invocation, dict) else None
+    if not isinstance(summary, dict):
+        summary = {}
+    error = str(invocation.get("error") or summary.get("error") or "").lower()
+    message = str(summary.get("message") or "").lower()
+    return (
+        invocation.get("tool") == "scanner"
+        and invocation.get("statusCode") == 423
+        and ("project_locked" in error or "project_locked" in message)
+    )
+
+
 def _warnings(invocations: list[dict[str, Any]]) -> list[str]:
     warnings: list[str] = []
     for item in invocations:
         if item.get("ok") is not True:
-            if item.get("timedOut"):
+            if _is_deferred_scanner_lock(item):
+                warnings.append(f"{item.get('phase')}:scanner deferred until active session releases project lock")
+            elif item.get("timedOut"):
                 warnings.append(f"{item.get('phase')}:{item.get('tool')} timed out; continuing")
             else:
                 warnings.append(f"{item.get('phase')}:{item.get('tool')} did not return ok=true")
@@ -328,7 +347,7 @@ def _blockers(invocations: list[dict[str, Any]]) -> list[str]:
     return [
         f"Required tool failed: {item.get('tool')} statusCode={item.get('statusCode')}"
         for item in invocations
-        if item.get("required") and item.get("ok") is not True
+        if item.get("required") and item.get("ok") is not True and not _is_deferred_scanner_lock(item)
     ]
 
 

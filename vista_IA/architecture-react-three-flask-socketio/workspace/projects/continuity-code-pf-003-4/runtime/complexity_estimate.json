@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T18:33:28Z",
+  "task_id": "RUNTIME-20260528183032-001",
+  "goal": "Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-003-4",
+  "project_file_count": 0,
+  "prompt_word_count": 36,
+  "score": 31,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "risk_flags": [],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 36 palabras",
+    "requiere evidencia auditable",
+    "incluye backend/API"
+  ],
+  "confidence": 88,
+  "rest_api_test_strategy": {
+    "objective": "Definir una suite pytest verificable para cubrir respuestas REST exitosas, errores de validacion, recursos inexistentes y fallos internos controlados.",
+    "scope": {
+      "in_scope": [
+        "Pruebas HTTP de endpoints REST con cliente de test o requests contra servidor local.",
+        "Validacion de status code, estructura JSON, headers relevantes y efectos secundarios observables.",
+        "Fixtures para datos validos, payloads invalidos, IDs inexistentes y simulacion de excepciones internas."
+      ],
+      "out_of_scope": [
+        "Pruebas de carga exhaustivas.",
+        "Contratos OpenAPI completos si el proyecto aun no expone schema.",
+        "Cambios de implementacion de la API."
+      ]
+    },
+    "assumptions": [
+      "La URL base o app de test se inyecta por fixture, no se hardcodea.",
+      "Las respuestas de error usan JSON con un campo estable como error, message o detail.",
+      "El caso 500 se provoca con monkeypatch, dependency injection o fixture de repositorio fallido, evitando depender de un crash real no determinista.",
+      "Si la API requiere autenticacion, el token valido e invalido se modela como fixture separada."
+    ],
+    "test_matrix": [
+      {
+        "case_id": "REST-200-OK",
+        "status_code": 200,
+        "scenario": "Solicitud valida sobre recurso o coleccion existente.",
+        "example_request": {
+          "method": "GET",
+          "path": "/api/resources",
+          "payload": null
+        },
+        "expected_assertions": [
+          "response.status_code == 200",
+          "Content-Type contiene application/json",
+          "El body es JSON valido.",
+          "La respuesta incluye la entidad, lista o metadata esperada.",
+          "No aparece campo de error en una respuesta exitosa."
+        ],
+        "fixtures": [
+          "api_client",
+          "seed_resource"
+        ],
+        "risk_covered": "Regresiones en ruta feliz, serializacion y contrato basico."
+      },
+      {
+        "case_id": "REST-400-BAD-REQUEST",
+        "status_code": 400,
+        "scenario": "Payload invalido, query parameter mal formado o campo requerido ausente.",
+        "example_request": {
+          "method": "POST",
+          "path": "/api/resources",
+          "payload": {
+            "name": ""
+          }
+        },
+        "expected_assertions": [
+          "response.status_code == 400",
+          "El body JSON explica el error de validacion.",
+          "La respuesta no crea ni modifica registros.",
+          "El error no filtra stack traces ni datos internos."
+        ],
+        "fixtures": [
+          "api_client",
+          "invalid_payload",
+          "repository_snapshot"
+        ],
+        "risk_covered": "Validacion de entrada, seguridad basica y ausencia de efectos secundarios ante datos invalidos."
+      },
+      {
+        "case_id": "REST-404-NOT-FOUND",
+        "status_code": 404,
+        "scenario": "Consulta, actualizacion o eliminacion de un recurso inexistente.",
+        "example_request": {
+          "method": "GET",
+          "path": "/api/resources/nonexistent-id",
+          "payload": null
+        },
+        "expected_assertions": [
+          "response.status_code == 404",
+          "El body JSON comunica que el recurso no existe.",
+          "La respuesta no crea recursos sustitutos.",
+          "La ruta inexistente y el recurso inexistente se distinguen si el framework lo permite."
+        ],
+        "fixtures": [
+          "api_client",
+          "missing_resource_id"
+        ],
+        "risk_covered": "Manejo correcto de IDs ausentes y rutas invalidas sin falsos positivos."
+      },
+      {
+        "case_id": "REST-500-INTERNAL-ERROR",
+        "status_code": 500,
+        "scenario": "Fallo interno controlado en servicio, repositorio o dependencia externa.",
+        "example_request": {
+          "method": "GET",
+          "path": "/api/resources",
+          "payload": null
+        },
+        "expected_assertions": [
+          "response.status_code == 500",
+          "El body JSON devuelve un mensaje generico seguro.",
+          "El log o hook de errores registra la excepcion con correlacion.",
+          "La respuesta no expone traceback, secretos, connection strings ni rutas locales."
+        ],
+        "fixtures": [
+          "api_client",
+          "monkeypatched_repository_failure",
+          "caplog"
+        ],
+        "risk_covered": "Robustez ante excepciones y comportamiento seguro de errores internos."
+      }
+    ],
+    "pytest_blueprint": {
+      "suggested_test_file": "tests/test_rest_api_contract.py",
+      "core_fixtures": [
+        "api_client",
+        "base_url",
+        "valid_payload",
+        "invalid_payload",
+        "seed_resource",
+        "missing_resource_id",
+        "monkeypatched_repository_failure"
+      ],
+      "test_names": [
+        "test_get_resource_returns_200_json",
+        "test_create_resource_rejects_invalid_payload_with_400",
+        "test_get_missing_resource_returns_404",
+        "test_repository_failure_returns_safe_500"
+      ],
+      "recommended_pattern": "Arrange fixture state, act through the public HTTP boundary, assert status/body/side effects, and keep each status code in an independent test."
+    },
+    "validation_commands": [
+      "pytest -q tests/test_rest_api_contract.py",
+      "python3 -B -m py_compile app.py"
+    ],
+    "acceptance_criteria": [
+      "Existe al menos un test automatizado por codigo 200, 400, 404 y 500.",
+      "Cada test tiene aserciones de status code y cuerpo JSON.",
+      "Los casos 400 y 500 verifican que no se filtra informacion interna.",
+      "El caso 500 usa una falla simulada y reproducible.",
+      "La suite puede ejecutarse varias veces sin depender de orden ni estado externo."
+    ],
+    "implementation_order": [
+      "Identificar framework y cliente de pruebas disponible.",
+      "Crear fixtures reutilizables para cliente, datos validos e invalidos.",
+      "Implementar pruebas 200 y 404 para fijar contrato de lectura.",
+      "Implementar prueba 400 con payload invalido y verificacion de no mutacion.",
+      "Implementar prueba 500 con dependencia fallida simulada y respuesta segura.",
+      "Ejecutar pytest y registrar evidencia de salida."
+    ]
+  },
+  "task_result_summary": {
+    "expected_files": [
+      "runtime/complexity_estimate.json"
+    ],
+    "worker_scope": "Solo estrategia y evidencia de complejidad; no implementa tests ni modifica la API.",
+    "blockers": [],
+    "next_recommendation": "La tarea dependiente puede crear tests/test_rest_api_contract.py siguiendo la matriz REST-200, REST-400, REST-404 y REST-500."
+  }
+}

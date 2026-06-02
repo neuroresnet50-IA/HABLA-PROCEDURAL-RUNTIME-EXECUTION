@@ -27,13 +27,16 @@ if str(REPO_ROOT) not in sys.path:
 try:
     from orchestrator.complexity_estimator import estimate_complexity
     from orchestrator.contracts import ContractError as RuntimeContractError
+    from orchestrator.control_plane_artifact_executor import should_use_control_plane_artifact_executor
     from orchestrator.directive_context import build_directive_context
     from orchestrator.directive_generator import generate_directive, persist_directive
     from orchestrator.executor import execute_task_with_details
     from orchestrator.habla_adapter import build_habla_guide
+    from orchestrator.host_write_executor import should_use_host_write_executor
     from orchestrator.live_reviewer import LiveReviewer
     from orchestrator.planner import DEFAULT_TIMEOUT_SECONDS, plan_project
     from orchestrator.recovery import recover_task
+    from orchestrator.runtime_task_cleaner import sweep_with_broom
     from orchestrator.state_store import StateStore
     from orchestrator.task_queue import TaskQueue
     from orchestrator.tool_invocation_policy import ToolInvocationPolicy
@@ -52,15 +55,18 @@ try:
 except Exception as error:  # pragma: no cover - surfaced clearly when control plane is used.
     estimate_complexity = None  # type: ignore[assignment]
     RuntimeContractError = ValueError  # type: ignore[assignment]
+    should_use_control_plane_artifact_executor = None  # type: ignore[assignment]
     build_directive_context = None  # type: ignore[assignment]
     generate_directive = None  # type: ignore[assignment]
     persist_directive = None  # type: ignore[assignment]
     execute_task_with_details = None  # type: ignore[assignment]
     build_habla_guide = None  # type: ignore[assignment]
+    should_use_host_write_executor = None  # type: ignore[assignment]
     LiveReviewer = None  # type: ignore[assignment]
     DEFAULT_TIMEOUT_SECONDS = {"smoke": 300, "build": 900, "medium": 1800, "long-run": 3600}
     plan_project = None  # type: ignore[assignment]
     recover_task = None  # type: ignore[assignment]
+    sweep_with_broom = None  # type: ignore[assignment]
     StateStore = None  # type: ignore[assignment]
     TaskQueue = None  # type: ignore[assignment]
     ToolInvocationPolicy = None  # type: ignore[assignment]
@@ -129,7 +135,7 @@ HEARTBEAT_INTERVAL_SECONDS = float(os.environ.get("AGENT_HEARTBEAT_INTERVAL_SECO
 SESSION_IDLE_TIMEOUT_SECONDS = float(os.environ.get("AGENT_SESSION_IDLE_TIMEOUT_SECONDS", "120"))
 FIRST_AGENT_SIGNAL_TIMEOUT_SECONDS = float(os.environ.get("AGENT_FIRST_AGENT_SIGNAL_TIMEOUT_SECONDS", "90"))
 SESSION_IDLE_RETRY_LIMIT = int(os.environ.get("AGENT_SESSION_IDLE_RETRY_LIMIT", "5"))
-VISUAL_EVENT_OPS = {"upsert_node", "upsert_edge", "upsert_flow_step", "upsert_flow_edge", "sync_file"}
+VISUAL_EVENT_OPS = {"upsert_node", "upsert_edge", "upsert_flow_step", "upsert_flow_edge", "sync_file", "broom_sweep"}
 HABLA_DEBUG_LINES_LIMIT = 12
 HABLA_TEXT_LIMIT = 2_400
 LACE_VISUAL_DIR = Path("docs") / "lace_cycles"
@@ -217,6 +223,7 @@ CODE_TARGET_PATTERN = re.compile(
 SNAP_CODEX_PATH_MARKERS = ("/snap/codex/",)
 DEFAULT_INNER_CODEX_SANDBOX_MODE = "workspace-write"
 DEFAULT_INNER_CODEX_APPROVAL_POLICY = "never"
+CODEX_DANGER_BYPASS_ARG = "--dangerously-bypass-approvals-and-sandbox"
 ALLOWED_AGENT_RUNTIME_MODES = frozenset({"smoke", "build", "medium", "long-run"})
 ACTIVE_AGENT_SESSION_STATUSES = {"queued", "preparing", "starting", "running"}
 
@@ -300,6 +307,79 @@ def env_flag_enabled(value: str | None, default: bool = False) -> bool:
     if value is None:
         return default
     return str(value).strip().lower() not in {"0", "false", "no", "off", ""}
+
+
+def normalize_codex_exec_policy(
+    sandbox_mode: str | None,
+    approval_policy: str | None,
+    allow_danger: str | None,
+) -> tuple[str, str, bool]:
+    sandbox = str(sandbox_mode or "").strip() or DEFAULT_INNER_CODEX_SANDBOX_MODE
+    approval = str(approval_policy or "").strip() or DEFAULT_INNER_CODEX_APPROVAL_POLICY
+    use_danger_bypass = (
+        sandbox == "danger-full-access"
+        and approval == "never"
+        and env_flag_enabled(allow_danger, default=False)
+    )
+    if sandbox == "danger-full-access" and not use_danger_bypass:
+        sandbox = DEFAULT_INNER_CODEX_SANDBOX_MODE
+    return sandbox, approval, use_danger_bypass
+
+
+def build_codex_command_config(env: dict[str, str] | None = None) -> dict[str, Any]:
+    """Return the effective inner Codex exec policy without launching Codex."""
+
+    source = os.environ if env is None else env
+    requested_sandbox = str(source.get("VISTA_CODEX_EXEC_SANDBOX_MODE") or "").strip() or DEFAULT_INNER_CODEX_SANDBOX_MODE
+    requested_approval = str(source.get("VISTA_CODEX_EXEC_APPROVAL_POLICY") or "").strip() or DEFAULT_INNER_CODEX_APPROVAL_POLICY
+    allow_value = source.get("VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX")
+    effective_sandbox, effective_approval, uses_bypass = normalize_codex_exec_policy(
+        requested_sandbox,
+        requested_approval,
+        allow_value,
+    )
+    uses_workspace_write = not uses_bypass and effective_sandbox == DEFAULT_INNER_CODEX_SANDBOX_MODE
+    degraded_for_safety = requested_sandbox == "danger-full-access" and not uses_bypass
+    return {
+        "requestedSandboxMode": requested_sandbox,
+        "effectiveSandboxMode": effective_sandbox,
+        "requestedApprovalPolicy": requested_approval,
+        "effectiveApprovalPolicy": effective_approval,
+        "allowDangerFullAccess": env_flag_enabled(allow_value, default=False),
+        "usesDangerBypass": uses_bypass,
+        "usesWorkspaceWrite": uses_workspace_write,
+        "degradedForSafety": degraded_for_safety,
+        "safeCommandSummary": (
+            f"codex {CODEX_DANGER_BYPASS_ARG}"
+            if uses_bypass
+            else f"codex -a {effective_approval} -s {effective_sandbox}"
+        ),
+    }
+
+
+def get_codex_runtime_diagnostics(env: dict[str, str] | None = None) -> dict[str, Any]:
+    config = build_codex_command_config(env)
+    blockers: list[str] = []
+    if not config["usesDangerBypass"]:
+        blockers.append("codex_inner_exec_not_using_danger_bypass")
+    if config["usesWorkspaceWrite"]:
+        blockers.append("codex_inner_exec_uses_workspace_write")
+    if not config["allowDangerFullAccess"]:
+        blockers.append("danger_full_access_not_allowed")
+    return {
+        **config,
+        "promptFlightWorkerReady": not blockers,
+        "blockers": blockers,
+        "requiredAction": "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+    }
+
+
+def get_effective_sandbox_mode(env: dict[str, str] | None = None) -> str:
+    return str(build_codex_command_config(env)["effectiveSandboxMode"])
+
+
+def get_effective_approval_policy(env: dict[str, str] | None = None) -> str:
+    return str(build_codex_command_config(env)["effectiveApprovalPolicy"])
 
 
 def normalize_agent_runtime_mode(value: str | None = None, *, default: str = "build") -> str:
@@ -410,6 +490,7 @@ def is_control_plane_state_path(relative_path: str | Path) -> bool:
             "runtime/checkpoints/",
             "runtime/directives/",
             "runtime/logs/",
+            "runtime/artifacts/broom/",
             "runtime/artifacts/tool_invocations/",
         )
     )
@@ -873,11 +954,9 @@ def build_lace_cycle_visual_markdown(cycle_number: int, cycle_summary: Dict[str,
     ]
     for section_name in ("PROBLEMAS", "MEJORA", "COMPLETADO"):
         bodies = effective_sections.get(section_name, [])
-        lines.extend(["", f"## {section_name}"])
+        lines.extend(["", f"[CICLO-{cycle_number} {section_name}]"])
         if bodies:
-            lines.append("```text")
             lines.append(str(bodies[-1]).strip())
-            lines.append("```")
         else:
             lines.append("Pendiente.")
     return "\n".join(lines).strip() + "\n"
@@ -903,6 +982,34 @@ def clamp_lace_required_cycles(value: int) -> int:
     if cycles <= 0:
         return 0
     return min(LACE_MAX_REQUIRED_CYCLES, max(LACE_MIN_REQUIRED_CYCLES, cycles))
+
+
+def get_lace_required_cycles(
+    project_runtime: str | Path,
+    *,
+    runtime_mode: str | None = None,
+    explicit_required_cycles: int | None = None,
+) -> int:
+    normalized_mode = normalize_agent_runtime_mode(runtime_mode)
+    if normalized_mode == "smoke":
+        return 0
+
+    required = clamp_lace_required_cycles(explicit_required_cycles or 0)
+    runtime_path = Path(project_runtime)
+    candidates = [runtime_path / "complexity_estimate.json"]
+    if runtime_path.name != "runtime":
+        candidates.append(runtime_path / "runtime" / "complexity_estimate.json")
+
+    for candidate in candidates:
+        try:
+            payload = json.loads(candidate.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(payload, dict):
+            continue
+        for key in ("lace_required_cycles", "recommended_lace_cycles"):
+            required = max(required, clamp_lace_required_cycles(payload.get(key) or 0))
+    return required
 
 
 def detect_lace_required_cycles(text: str) -> int:
@@ -1406,6 +1513,15 @@ def validate_lace_log(log_path: Path | None, required_cycles: int) -> tuple[int,
     return completed_cycles, issues
 
 
+def is_canonical_lace_cycle_doc(text: str, cycle_number: int) -> bool:
+    if not _has_canonical_lace_closure_marker(text):
+        return False
+    for report in inspect_lace_cycle_reports(text, max(1, int(cycle_number))):
+        if int(report.get("cycle") or 0) == int(cycle_number):
+            return bool(report.get("valid"))
+    return False
+
+
 def lace_closure_status(log_path: Path | None, required_cycles: int) -> tuple[bool, str]:
     completed_cycles, issues = validate_lace_log(log_path, required_cycles)
     if completed_cycles < required_cycles:
@@ -1521,7 +1637,9 @@ class AgentSession:
     last_retry_checkpoint: str | None = None
 
     def to_dict(self) -> Dict[str, Any]:
-        lace_completed_cycles = count_completed_lace_cycles(self.lace_log_path) if self.lace_required_cycles else 0
+        lace_required_cycles = int(self.lace_required_cycles or 0)
+        lace_completed_cycles = count_completed_lace_cycles(self.lace_log_path) if lace_required_cycles else 0
+        lace_active = bool(not self.smoke_mode and lace_required_cycles > 0)
         effective_status = self.status
         if effective_status == "running" and self.pid is None and self.process is None:
             effective_status = "preparing"
@@ -1554,9 +1672,21 @@ class AgentSession:
             "lacePolicyPath": str(self.lace_policy_path) if self.lace_policy_path is not None else None,
             "laceLogPath": str(self.lace_log_path) if self.lace_log_path is not None else None,
             "hablaPreflightPath": str(self.habla_preflight_path) if self.habla_preflight_path is not None else None,
-            "laceRequiredCycles": self.lace_required_cycles or None,
+            "laceRequiredCycles": lace_required_cycles or None,
             "complexityEstimate": self.complexity_estimate or None,
             "laceCompletedCycles": lace_completed_cycles,
+            "laceStatus": {
+                "laceActive": lace_active,
+                "runtimeMode": self.runtime_mode,
+                "requiredCycles": lace_required_cycles,
+                "validCycles": lace_completed_cycles,
+                "missingCycles": max(0, lace_required_cycles - lace_completed_cycles),
+                "currentCycle": min(lace_required_cycles, lace_completed_cycles + 1) if lace_active else 0,
+                "closureGateStatus": "pending" if lace_active and lace_completed_cycles < lace_required_cycles else "ok" if lace_active else "not_applicable",
+                "closureGateReason": "lace_cycles_missing" if lace_active and lace_completed_cycles < lace_required_cycles else "lace_ready" if lace_active else "smoke_or_not_required",
+                "earlyExitAllowed": False,
+                "earlyExitReason": "quality_gates_required",
+            },
             "smokeMode": self.smoke_mode,
             "runtimeMode": self.runtime_mode,
             "laceCycles": self.lace_cycle_states,
@@ -1614,17 +1744,18 @@ class AgentRuntime:
         self.codex_cmd = codex_cmd
         self.codex_launch_path = build_preferred_shell_path(os.environ.get("PATH"))
         self.codex_command_tokens = resolve_codex_command_tokens(codex_cmd, path_value=self.codex_launch_path)
-        self.codex_exec_sandbox_mode = str(
-            os.environ.get("VISTA_CODEX_EXEC_SANDBOX_MODE") or DEFAULT_INNER_CODEX_SANDBOX_MODE
-        ).strip() or DEFAULT_INNER_CODEX_SANDBOX_MODE
-        self.codex_exec_approval_policy = str(
-            os.environ.get("VISTA_CODEX_EXEC_APPROVAL_POLICY") or DEFAULT_INNER_CODEX_APPROVAL_POLICY
-        ).strip() or DEFAULT_INNER_CODEX_APPROVAL_POLICY
-        if self.codex_exec_sandbox_mode == "danger-full-access" and not env_flag_enabled(
-            os.environ.get("VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX"),
-            default=False,
-        ):
-            self.codex_exec_sandbox_mode = DEFAULT_INNER_CODEX_SANDBOX_MODE
+        self.codex_exec_requested_sandbox_mode = os.environ.get("VISTA_CODEX_EXEC_SANDBOX_MODE")
+        self.codex_exec_requested_approval_policy = os.environ.get("VISTA_CODEX_EXEC_APPROVAL_POLICY")
+        self.codex_exec_allow_danger_full_access = os.environ.get("VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX")
+        (
+            self.codex_exec_sandbox_mode,
+            self.codex_exec_approval_policy,
+            self.codex_exec_use_danger_bypass,
+        ) = normalize_codex_exec_policy(
+            self.codex_exec_requested_sandbox_mode,
+            self.codex_exec_requested_approval_policy,
+            self.codex_exec_allow_danger_full_access,
+        )
         self.codex_exec_extra_args = shlex.split(str(os.environ.get("VISTA_CODEX_EXEC_EXTRA_ARGS") or "").strip())
         self.codex_exec_use_full_auto = env_flag_enabled(os.environ.get("VISTA_CODEX_EXEC_USE_FULL_AUTO"), default=False)
         if self.codex_exec_use_full_auto and not env_flag_enabled(
@@ -2389,15 +2520,53 @@ class AgentRuntime:
         worker.start()
         return session.to_dict()
 
+    def codex_runtime_diagnostics(self) -> dict[str, Any]:
+        config = build_codex_command_config(
+            {
+                "VISTA_CODEX_EXEC_SANDBOX_MODE": str(self.codex_exec_requested_sandbox_mode or ""),
+                "VISTA_CODEX_EXEC_APPROVAL_POLICY": str(self.codex_exec_requested_approval_policy or ""),
+                "VISTA_ALLOW_DANGER_FULL_ACCESS_CODEX": str(self.codex_exec_allow_danger_full_access or ""),
+            }
+        )
+        config.update(
+            {
+                "effectiveSandboxMode": self.codex_exec_sandbox_mode,
+                "effectiveApprovalPolicy": self.codex_exec_approval_policy,
+                "usesDangerBypass": self.codex_exec_use_danger_bypass,
+                "usesWorkspaceWrite": (
+                    not self.codex_exec_use_danger_bypass
+                    and self.codex_exec_sandbox_mode == DEFAULT_INNER_CODEX_SANDBOX_MODE
+                ),
+                "safeCommandSummary": (
+                    f"codex {CODEX_DANGER_BYPASS_ARG}"
+                    if self.codex_exec_use_danger_bypass
+                    else f"codex -a {self.codex_exec_approval_policy} -s {self.codex_exec_sandbox_mode}"
+                ),
+            }
+        )
+        blockers: list[str] = []
+        if not config["usesDangerBypass"]:
+            blockers.append("codex_inner_exec_not_using_danger_bypass")
+        if config["usesWorkspaceWrite"]:
+            blockers.append("codex_inner_exec_uses_workspace_write")
+        if not config["allowDangerFullAccess"]:
+            blockers.append("danger_full_access_not_allowed")
+        config.update(
+            {
+                "promptFlightWorkerReady": not blockers,
+                "blockers": blockers,
+                "requiredAction": "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+            }
+        )
+        return config
+
+
     def _build_codex_command(self, project_dir: Path, prompt: str) -> List[str]:
         command = [*self.codex_command_tokens]
         if self.codex_exec_use_full_auto:
             command.append("--full-auto")
-        elif (
-            self.codex_exec_approval_policy == "never"
-            and self.codex_exec_sandbox_mode == "danger-full-access"
-        ):
-            command.append("--dangerously-bypass-approvals-and-sandbox")
+        elif self.codex_exec_use_danger_bypass:
+            command.append(CODEX_DANGER_BYPASS_ARG)
         else:
             command.extend(["-a", self.codex_exec_approval_policy, "-s", self.codex_exec_sandbox_mode])
         command.extend(["-C", str(project_dir), "exec", "--skip-git-repo-check"])
@@ -2451,6 +2620,8 @@ class AgentRuntime:
             "generate_directive": generate_directive,
             "persist_directive": persist_directive,
             "execute_task_with_details": execute_task_with_details,
+            "should_use_control_plane_artifact_executor": should_use_control_plane_artifact_executor,
+            "should_use_host_write_executor": should_use_host_write_executor,
             "validate_task_execution": validate_task_execution,
             "recover_task": recover_task,
             "LiveReviewer": LiveReviewer,
@@ -3330,8 +3501,9 @@ class AgentRuntime:
         session_id: str | None,
         allow_enqueue: bool,
     ) -> Dict[str, Any]:
-        if normalize_agent_runtime_mode(runtime_mode) != "long-run":
-            return {"status": "not_applicable", "reason": "runtime_mode_not_long_run"}
+        normalized_runtime_mode = normalize_agent_runtime_mode(runtime_mode)
+        if normalized_runtime_mode == "smoke":
+            return {"status": "not_applicable", "reason": "smoke_mode", "required_cycles": 0}
 
         workspace_path = Path(workspace).resolve()
         store = StateStore(runtime_dir)  # type: ignore[operator]
@@ -3343,9 +3515,14 @@ class AgentRuntime:
         if session_id:
             self._sync_lace_runtime(session_id)
 
-        configured_required_cycles = self._resolve_lace_required_cycles(session_id=session_id, workspace=workspace_path)
+        configured_required_cycles = self._resolve_lace_required_cycles(
+            session_id=session_id,
+            workspace=workspace_path,
+            runtime_dir=runtime_dir,
+            runtime_mode=normalized_runtime_mode,
+        )
         if configured_required_cycles <= 0:
-            return {"status": "clear", "reason": "lace_not_active", "required_cycles": 0}
+            return {"status": "not_required", "reason": "lace_not_active", "required_cycles": 0}
 
         preliminary_evidence = self._inspect_lace_closure_evidence(
             workspace_path,
@@ -3375,9 +3552,19 @@ class AgentRuntime:
             return self._complete_lace_closure(store, evidence)
 
         if allow_enqueue:
-            pending_tasks = self._build_lace_cycle_tasks(queue_tasks, evidence["missing_cycles"], runtime_mode)
+            pending_tasks = self._build_lace_cycle_tasks(queue_tasks, evidence["missing_cycles"], normalized_runtime_mode)
             existing_ids = {task["id"] for task in queue_tasks}
-            new_tasks = [task for task in pending_tasks if task["id"] not in existing_ids]
+            existing_lace_cycles = {
+                cycle
+                for cycle in (self._lace_cycle_from_task_id(str(task.get("id") or "")) for task in queue_tasks)
+                if cycle is not None
+            }
+            new_tasks = [
+                task
+                for task in pending_tasks
+                if task["id"] not in existing_ids
+                and self._lace_cycle_from_task_id(str(task.get("id") or "")) not in existing_lace_cycles
+            ]
             if new_tasks:
                 queue.enqueue_many(new_tasks)
                 checkpoint_key = "lace-closure-gate-pending"
@@ -3401,8 +3588,17 @@ class AgentRuntime:
                 state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
                 state["updated_at"] = utc_now()
                 store.save_project_state(state)
+                missing_cycles = evidence.get("missing_cycles") or []
+                message = (
+                    f"Cierre bloqueado por LACE: {evidence.get('completed_cycles')}/"
+                    f"{required_cycles} ciclos canonicos validos; faltan {missing_cycles}."
+                )
                 return {
                     "status": "enqueued",
+                    "closure_status": "blocked",
+                    "completed": False,
+                    "reason": "lace_cycles_missing",
+                    "lace_closure_message": message,
                     **evidence,
                     "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
                     "enqueued_task_ids": [task["id"] for task in new_tasks],
@@ -3410,11 +3606,23 @@ class AgentRuntime:
 
         return self._block_lace_closure(store, evidence, reason="lace_cycles_pending")
 
-    def _resolve_lace_required_cycles(self, *, session_id: str | None, workspace: Path) -> int:
+    def _resolve_lace_required_cycles(
+        self,
+        *,
+        session_id: str | None,
+        workspace: Path,
+        runtime_dir: str | Path | None = None,
+        runtime_mode: str | None = None,
+    ) -> int:
+        normalized_mode = normalize_agent_runtime_mode(runtime_mode)
+        if normalized_mode == "smoke":
+            return 0
+
+        required = get_lace_required_cycles(runtime_dir or (workspace / "runtime"), runtime_mode=normalized_mode)
         with self.lock:
             session = self.sessions.get(session_id or "") if session_id else None
             if session is not None and session.lace_required_cycles:
-                return clamp_lace_required_cycles(int(session.lace_required_cycles))
+                required = max(required, clamp_lace_required_cycles(int(session.lace_required_cycles)))
 
         candidates = [workspace / "LACE_LOG.md", workspace / "LACE.md"]
         docs_dir = workspace / LACE_VISUAL_DIR
@@ -3430,15 +3638,15 @@ class AgentRuntime:
                 continue
             explicit = re.search(r"ciclos\s+requeridos\s*:\s*(\d+)", text, flags=re.IGNORECASE)
             if explicit:
-                return clamp_lace_required_cycles(int(explicit.group(1)))
+                required = max(required, clamp_lace_required_cycles(int(explicit.group(1))))
             active = re.search(r"Regla activa:\s*(\d+)\s+ciclos", text, flags=re.IGNORECASE)
             if active:
-                return clamp_lace_required_cycles(int(active.group(1)))
+                required = max(required, clamp_lace_required_cycles(int(active.group(1))))
             if candidate.name == "LACE.md":
                 detected = detect_lace_required_cycles(text)
                 if detected:
-                    return clamp_lace_required_cycles(detected)
-        return 0
+                    required = max(required, clamp_lace_required_cycles(detected))
+        return required
 
     def _read_runtime_json_dict(self, path: Path) -> tuple[Dict[str, Any], str | None]:
         if not path.exists():
@@ -3679,7 +3887,7 @@ class AgentRuntime:
                 text = doc_path.read_text(encoding="utf-8")
             except OSError:
                 continue
-            valid_doc = _has_canonical_lace_closure_marker(text)
+            valid_doc = is_canonical_lace_cycle_doc(text, cycle_number)
             if valid_doc:
                 doc_valid_cycles.add(cycle_number)
             relative_doc = doc_path.relative_to(workspace).as_posix()
@@ -3694,7 +3902,7 @@ class AgentRuntime:
             has_checkpoint = cycle_number in checkpoint_cycles
             has_valid_doc = cycle_number in doc_valid_cycles
             has_valid_lace_log = cycle_number in log_valid_cycles
-            has_valid_lace_evidence = has_valid_doc or has_valid_lace_log
+            has_valid_lace_evidence = has_valid_doc
             if has_completed_task and has_validation and has_checkpoint and has_valid_lace_evidence:
                 canonical_completed_cycles.add(cycle_number)
             cycle_evidence[str(cycle_number)] = {
@@ -3709,7 +3917,8 @@ class AgentRuntime:
                 "cycle_doc_valid": has_valid_doc,
                 "lace_log_cycle_valid": has_valid_lace_log,
                 "lace_evidence_valid": has_valid_lace_evidence,
-                "lace_evidence_source": "canonical_header" if has_valid_doc else "lace_log" if has_valid_lace_log else "none",
+                "lace_evidence_source": "cycle_doc" if has_valid_doc else "none",
+                "lace_log_only_valid": has_valid_lace_log and not has_valid_doc,
                 "canonical_complete": cycle_number in canonical_completed_cycles,
             }
 
@@ -3787,6 +3996,8 @@ class AgentRuntime:
         store.save_project_state(state)
         return {
             "status": "clear",
+            "closure_status": "ok",
+            "reason": "lace_cycles_completed",
             **evidence,
             "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
         }
@@ -3822,9 +4033,12 @@ class AgentRuntime:
                         f"doc=Path('{cycle_doc}'); log=Path('LACE_LOG.md'); "
                         "assert log.exists(), 'missing LACE_LOG.md'; "
                         "assert doc.exists(), 'missing cycle doc'; "
-                        "text=doc.read_text(encoding='utf-8').lower(); "
-                        "assert 'valido para cierre lace: si' in text or 'válido para cierre lace: si' in text, "
-                        "'cycle is not valid for LACE closure'\""
+                        "text=doc.read_text(encoding='utf-8'); lower=text.lower(); "
+                        "assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, "
+                        "'cycle is not valid for LACE closure'; "
+                        f"assert '[CICLO-{cycle_number} PROBLEMAS]' in text, 'missing problemas marker'; "
+                        f"assert '[CICLO-{cycle_number} MEJORA]' in text, 'missing mejora marker'; "
+                        f"assert '[CICLO-{cycle_number} COMPLETADO]' in text, 'missing completado marker'\""
                     )
                 ],
                 "timeout_seconds": mode_timeout_seconds(runtime_mode),
@@ -3862,9 +4076,18 @@ class AgentRuntime:
         state["checkpoints"] = _append_unique(state.get("checkpoints", []), checkpoint_key)
         state["updated_at"] = utc_now()
         store.save_project_state(state)
+        missing_cycles = evidence.get("missing_cycles") or []
+        required_cycles = evidence.get("required_cycles")
+        completed_cycles = evidence.get("completed_cycles")
+        message = (
+            f"Cierre bloqueado por LACE: {completed_cycles}/{required_cycles} ciclos canonicos validos; "
+            f"faltan {missing_cycles}."
+        )
         return {
             "status": "blocked",
+            "closure_status": "blocked",
             "reason": reason,
+            "lace_closure_message": message,
             **evidence,
             "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
             "failure_event": failure_event,
@@ -3928,6 +4151,45 @@ class AgentRuntime:
                 "warnings": warnings,
             }
 
+        should_check_lace_outcome = bool(
+            state_completed
+            or blocked_by_lace
+            or lace_closure_message
+            or sequence_status == "completed"
+        )
+        lace_gate_for_outcome: Dict[str, Any] | None = None
+        if should_check_lace_outcome:
+            try:
+                lace_gate_for_outcome = self._apply_lace_closure_gate(
+                    runtime_dir=runtime_dir,
+                    workspace=Path(runtime_dir).resolve().parent,
+                    runtime_mode=str(state.get("mode") or "build"),
+                    session_id=None,
+                    allow_enqueue=False,
+                )
+            except Exception as error:
+                warnings.append(f"lace_gate_unreadable={type(error).__name__}: {error}")
+                lace_gate_for_outcome = None
+            if isinstance(lace_gate_for_outcome, dict) and lace_gate_for_outcome.get("status") == "blocked":
+                message = (
+                    lace_gate_for_outcome.get("lace_closure_message")
+                    or lace_gate_message
+                    or lace_closure_message
+                    or "Cierre bloqueado por LACE: faltan ciclos canonicos."
+                )
+                return {
+                    "session_status": "blocked",
+                    "event_op": "session_blocked",
+                    "event_status": "blocked",
+                    "phase": "blocked",
+                    "outcome": "blocked_lace_closure",
+                    "error_code": "lace_cycles_pending",
+                    "message": message,
+                    "completed": False,
+                    "warnings": warnings,
+                    "lace_gate": lace_gate_for_outcome,
+                }
+
         if state_completed:
             if warnings:
                 return {
@@ -3972,6 +4234,7 @@ class AgentRuntime:
                 "event_op": "session_blocked",
                 "event_status": "blocked",
                 "phase": "blocked",
+                "outcome": "blocked_lace_closure" if blocked_by_lace else "blocked_control_plane",
                 "error_code": "lace_cycles_pending" if blocked_by_lace else "control_plane_blocked",
                 "message": (
                     lace_gate_message
@@ -4262,6 +4525,10 @@ class AgentRuntime:
             "warnings": report.get("warnings"),
             "blockers": report.get("blockers"),
             "artifactPath": report.get("artifactPath"),
+            "reportPath": report.get("reportPath"),
+            "tool": report.get("tool"),
+            "actions": report.get("actions"),
+            "ignoredResidue": report.get("ignoredResidue"),
             "invocations": invocations,
         }
         self._append_output(
@@ -4284,6 +4551,70 @@ class AgentRuntime:
         report = policy.run_project_completion_gate()
         self._append_control_plane_tool_summary(session_id, "project_completion_gate", report)
         return report
+
+    def _run_task_broom(
+        self,
+        *,
+        workspace: str | Path,
+        task: Dict[str, Any],
+        phase: str,
+        session_id: str | None,
+        reason: str,
+    ) -> Dict[str, Any]:
+        if sweep_with_broom is None:
+            report = {"ok": False, "tool": "to-sweep-with-a-broom", "phase": phase, "error": "broom_unavailable"}
+            self._emit_broom_visual_event(session_id, task, phase, report)
+            return report
+        try:
+            report = sweep_with_broom(  # type: ignore[misc]
+                workspace,
+                task_id=str(task.get("id") or ""),
+                phase=phase,
+                reason=reason,
+            )
+        except Exception as error:  # pragma: no cover - broom must not break task execution.
+            report = {"ok": False, "tool": "to-sweep-with-a-broom", "phase": phase, "error": str(error)}
+        self._append_control_plane_tool_summary(session_id, f"broom_{phase}", report)
+        self._emit_broom_visual_event(session_id, task, phase, report)
+        return report
+
+    def _emit_broom_visual_event(
+        self,
+        session_id: str | None,
+        task: Dict[str, Any],
+        phase: str,
+        report: Dict[str, Any],
+    ) -> None:
+        if not session_id:
+            return
+        try:
+            raw_actions = report.get("actions") if isinstance(report, dict) else []
+            actions = raw_actions if isinstance(raw_actions, list) else []
+            raw_residue = report.get("ignoredResidue") if isinstance(report, dict) else []
+            ignored_residue = raw_residue if isinstance(raw_residue, list) else []
+            task_id = str(task.get("id") or report.get("taskId") or "")
+            phase_label = "antes de la tarea" if phase == "before_task" else "despues de la tarea" if phase == "after_task" else phase
+            payload = {
+                "op": "broom_sweep",
+                "phase": phase,
+                "taskId": task_id,
+                "visualTool": "to-sweep-with-a-broom",
+                "message": f"Escoba runtime limpiando residuos transitorios {phase_label}.",
+                "status": "ok" if report.get("ok") else "warning",
+                "reportPath": report.get("reportPath"),
+                "latestPath": report.get("latestPath"),
+                "actions": actions[:8],
+                "ignoredResidue": ignored_residue[:8],
+                "warnings": (report.get("warnings") or [])[:8] if isinstance(report.get("warnings"), list) else [],
+            }
+            self._persist_runtime_trace(session_id, payload)
+            self._dispatch_runtime_payload(session_id, payload, count_visual=True, track_activity=True)
+        except Exception as error:  # pragma: no cover - visual broom must never block runtime execution.
+            self._append_output(
+                session_id,
+                "[control-plane] Evento visual broom_sweep ignorado por error no critico: "
+                f"{type(error).__name__}: {error}\n",
+            )
 
     def _emit_control_plane_sync_file_events(
         self,
@@ -4382,6 +4713,13 @@ class AgentRuntime:
         task = dict(prepared["task"])
         directive = dict(prepared["directive"])
         queue = TaskQueue(store)  # type: ignore[operator]
+        broom_before = self._run_task_broom(
+            workspace=workspace,
+            task=task,
+            phase="before_task",
+            session_id=session_id,
+            reason="control_plane_before_task",
+        )
         tool_policy = self._build_control_plane_tool_policy(
             runtime_dir=prepared["runtime_dir"],
             workspace=workspace,
@@ -4405,7 +4743,7 @@ class AgentRuntime:
             session_id=session_id,
         )
         if existing_evidence_result is not None:
-            existing_tools = {"preflight": preflight_tools}
+            existing_tools = {"broom_before": broom_before, "preflight": preflight_tools}
             if tool_policy is not None and isinstance(existing_evidence_result.get("task_result"), dict):
                 completion_tools = tool_policy.run_task_completion_gate(task, existing_evidence_result["task_result"])
                 self._append_control_plane_tool_summary(session_id, "task_completion_gate", completion_tools)
@@ -4413,16 +4751,50 @@ class AgentRuntime:
             existing_evidence_result["tool_invocations"] = existing_tools
             return existing_evidence_result
 
+        control_plane_artifact_selected = bool(
+            should_use_control_plane_artifact_executor is not None
+            and should_use_control_plane_artifact_executor(task)  # type: ignore[misc]
+        )
+        host_write_selected = bool(
+            not control_plane_artifact_selected
+            and should_use_host_write_executor is not None
+            and should_use_host_write_executor(task)  # type: ignore[misc]
+        )
+        if control_plane_artifact_selected:
+            execution_strategy = "control_plane_artifact"
+            tool_name = "control_plane_artifact_executor"
+            tool_command: Any = "control_plane_artifact"
+        elif host_write_selected:
+            execution_strategy = "host_write"
+            tool_name = "host_write_executor"
+            tool_command = "host_write"
+        else:
+            execution_strategy = "codex_worker"
+            tool_name = "codex_worker"
+            tool_command = command if isinstance(command, list) else str(command)
+
+        if session_id and control_plane_artifact_selected:
+            self._append_output(
+                session_id,
+                "[control-plane] Ejecutando tarea con ControlPlaneArtifactExecutor para artefacto runtime deterministico.\n",
+            )
+        elif session_id and host_write_selected:
+            self._append_output(
+                session_id,
+                "[control-plane] Ejecutando tarea con HostWriteExecutor por estrategia simple_file_write.\n",
+            )
+
         cyberlace_tool_decision = self._cyberlace_guard(
             "tool",
             agent_id="control-plane-worker",
             session_id=session_id,
-            tool_name="codex_worker",
+            tool_name=tool_name,
             tool_args={
-                "command": command if isinstance(command, list) else str(command),
+                "command": tool_command,
                 "workspace": str(Path(workspace).resolve()),
                 "directive_json_path": prepared.get("directive_json_path"),
                 "task_id": task.get("id"),
+                "execution_strategy": execution_strategy,
             },
             context={"task": task, "directive": {"source_hash": directive.get("traceability", {}).get("source_hash")}},
         )
@@ -4458,7 +4830,7 @@ class AgentRuntime:
                 "history_event": history_event,
                 "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
                 "recovery": None,
-                "tool_invocations": {"preflight": preflight_tools, "cyberlace_tool": cyberlace_tool_decision},
+                "tool_invocations": {"broom_before": broom_before, "preflight": preflight_tools, "cyberlace_tool": cyberlace_tool_decision},
                 "retry_count": self._next_retry_count_for_task(store, task["id"]),
                 "enqueued_split_tasks": [],
             }
@@ -4479,6 +4851,10 @@ class AgentRuntime:
             queue.mark_task_status(task["id"], "running")
             self._save_project_state_transition(store, task, "running")
             self._attach_control_plane_process(session_id, process)
+
+        if control_plane_artifact_selected or host_write_selected:
+            queue.mark_task_status(task["id"], "running")
+            self._save_project_state_transition(store, task, "running")
 
         try:
             execution = execute_task_with_details(  # type: ignore[misc]
@@ -4554,6 +4930,7 @@ class AgentRuntime:
                 recovery_preview_tools = tool_policy.run_recovery_preview(task, task_result)
                 self._append_control_plane_tool_summary(session_id, "recovery_preview", recovery_preview_tools)
         tool_invocations = {
+            "broom_before": broom_before,
             "preflight": preflight_tools,
             "postflight": postflight_tools,
             "task_completion_gate": completion_tools,
@@ -4579,6 +4956,13 @@ class AgentRuntime:
                 },
             )
             self._save_project_state_transition(store, task, "stopped", checkpoint_key=checkpoint_key)
+            tool_invocations["broom_after"] = self._run_task_broom(
+                workspace=workspace,
+                task=task,
+                phase="after_task",
+                session_id=session_id,
+                reason="control_plane_after_task_stopped",
+            )
             return {
                 "status": "stopped",
                 "task": task,
@@ -4614,6 +4998,13 @@ class AgentRuntime:
                 },
             )
             self._save_project_state_transition(store, task, "completed", checkpoint_key=checkpoint_key)
+            tool_invocations["broom_after"] = self._run_task_broom(
+                workspace=workspace,
+                task=task,
+                phase="after_task",
+                session_id=session_id,
+                reason="control_plane_after_task_completed",
+            )
             return {
                 "status": "completed",
                 "task": task,
@@ -4647,6 +5038,13 @@ class AgentRuntime:
             queue,
             task,
             recovery,
+        )
+        tool_invocations["broom_after"] = self._run_task_broom(
+            workspace=workspace,
+            task=task,
+            phase="after_task",
+            session_id=session_id,
+            reason=f"control_plane_after_task_{queue_status}",
         )
         blanqueo = self._maybe_apply_control_plane_blanqueo_protocol(
             store=store,
@@ -6086,6 +6484,8 @@ class AgentRuntime:
             return self._update_progress(session_id, 62, "Construyendo pasos del diagrama de flujo")
         if normalized_op == "upsert_flow_edge":
             return self._update_progress(session_id, 72, "Cableando rutas internas del algoritmo")
+        if normalized_op == "broom_sweep":
+            return self._update_progress(session_id, 31, "Barriendo residuos transitorios de la tarea")
         if normalized_op == "sync_file":
             relative_path = normalize_project_relative_path(payload.get("relativePath") or "")
             if is_runtime_control_path(relative_path):

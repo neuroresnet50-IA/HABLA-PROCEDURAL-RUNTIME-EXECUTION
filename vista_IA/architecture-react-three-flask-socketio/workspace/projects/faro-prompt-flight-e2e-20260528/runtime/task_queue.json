@@ -1,0 +1,20 @@
+[
+  {
+    "checkpoint_key": "runtime-20260528002346-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "docs/faro_prompt_flight_e2e_20260528.md"
+    ],
+    "goal": "FARO validation smoke for Prompt Flight after sandbox repair.; Create a file named docs/faro_prompt_flight_e2e_20260528.md inside this project.; The file must contain exactly: FARO_PROMPT_FLIGHT_E2E_OK.; Do not modify unrelated files.; After creating the file, stop.",
+    "id": "RUNTIME-20260528002346-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 600,
+    "title": "FARO validation smoke for Prompt Flight after sandbox",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/faro_prompt_flight_e2e_20260528.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  }
+]

@@ -1,0 +1,174 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "analysis_updated_at",
+        "bootstrap_tasks",
+        "confidence",
+        "control_plane_contract",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "expected_files",
+        "fast_path",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_goal",
+        "task_id",
+        "task_scope",
+        "task_title",
+        "timeout_seconds"
+      ],
+      "lineCount": 65,
+      "mtime": "2026-05-29T05:24:41Z",
+      "path": "workspace/projects/continuity-math-pf-005-2/runtime/complexity_estimate.json",
+      "sha256": "f8ce717f424e3ff0a45490983526caa926563f0ce10f12209157facbab8fafe4",
+      "size": 2041,
+      "tail": "ebas o validacion\",\n    \"control_plane_artifact_fast_path\",\n    \"codex worker skipped for deterministic runtime artifact\"\n  ],\n  \"confidence\": 88,\n  \"analysis_updated_at\": \"2026-05-29T05:24:41Z\",\n  \"task_id\": \"RUNTIME-20260529052340-001\",\n  \"task_title\": \"Resolver una ecuacion cuadratica y documentar discriminante, raices\",\n  \"task_goal\": \"Resolver una ecuacion cuadratica y documentar discriminante, raices y validacion.\",\n  \"task_scope\": \"complexity_estimate_only\",\n  \"expected_files\": [\n    \"runtime/complexity_estimate.json\"\n  ],\n  \"fast_path\": {\n    \"executor\": \"control_plane_artifact_executor\",\n    \"reason\": \"runtime_complexity_estimate\",\n    \"codex_skipped\": true,\n    \"validator_remains_authority\": true\n  },\n  \"control_plane_contract\": {\n    \"owner\": \"control_plane\",\n    \"closure\": \"validator confirms runtime/complexity_estimate.json exists in the workspace\",\n    \"worker_may_edit_control_plane_state\": false,\n    \"task_summary\": \"Resolver una ecuacion cuadratica y documentar discriminante, raices y validacion.\",\n    \"out_of_scope\": [\n      \"runtime/project_state.json\",\n      \"runtime/task_queue.json\",\n      \"runtime/task_history.jsonl\",\n      \"runtime/failures.jsonl\"\n    ]\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-math-pf-005-2/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 23,
+      "mtime": "2026-05-29T05:25:02Z",
+      "path": "workspace/projects/continuity-math-pf-005-2/runtime/project_state.json",
+      "sha256": "b2fb35256acb5b2bca3c7df6cde7b7a741d672122e69eb3c6ab942f4aac6d967",
+      "size": 672,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-f9290a4182\",\n    \"complexity-estimate\",\n    \"runtime-20260529052340-001-checkpoint\",\n    \"runtime-20260529052340-002-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260529052340-001\",\n    \"RUNTIME-20260529052340-002\"\n  ],\n  \"created_at\": \"2026-05-29T05:23:40.079121+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-29T05:23:40.079121+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-f9290a4182\",\n  \"project_id\": \"continuity-math-pf-005-2\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-29T05:25:02.548733+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-05-29T05:25:02Z",
+      "path": "workspace/projects/continuity-math-pf-005-2/runtime/task_history.jsonl",
+      "sha256": "d4889dde135889d84b8394bd6c8408d46d75a49756960b57e872f193f1e6f8cc",
+      "size": 958,
+      "tail": "{\"recorded_at\": \"2026-05-29T05:24:50Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529052340-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-29T05:25:02Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/mathematics_case_005.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529052340-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_005.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-29T05:25:02Z",
+      "path": "workspace/projects/continuity-math-pf-005-2/runtime/task_queue.json",
+      "sha256": "aec13c88fa72e11c311e72b7911080c5975d548f34d5163c8f76650509aff3fe",
+      "size": 1511,
+      "tail": "retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Resolver una ecuacion cuadratica y documentar discriminante, raices\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260529052340-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260529052340-001\"\n    ],\n    \"expected_files\": [\n      \"docs/mathematics_case_005.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/mathematics_case_005.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260529052340-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mathematics_case_005.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_005.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 495,
+    "mtime": "2026-05-29T05:25:02Z",
+    "path": "workspace/projects/continuity-math-pf-005-2/runtime/checkpoints/runtime-20260529052340-002-checkpoint.json",
+    "sha256": "eb87adf11f9a0424d2e4dd8fa36c0a2df80eab275d56d7533618f91cf97ff853",
+    "size": 18880,
+    "tail": ": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/docs/mathematics_case_005.md\",\n            \"size\": 442\n          }\n        ],\n        \"found\": [\n          \"docs/mathematics_case_005.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/mathematics_case_005.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/docs/mathematics_case_005.md\",\n            \"size\": 442\n          }\n        ],\n        \"reported_created\": [\n          \"docs/mathematics_case_005.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260529052340-002\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 270,
+    "mtime": "2026-05-29T05:24:53Z",
+    "path": "workspace/projects/continuity-math-pf-005-2/runtime/directives/RUNTIME-20260529052340-002-20260529T052453Z-68dcd8099deb.json",
+    "sha256": "136eb6a01b0e98e38174f418a3f63bcfc4af9fa5fc8c708e99aebb66a1c19ad6",
+    "size": 24340,
+    "tail": "0260529052340-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mathematics_case_005.md, manten\"\n  },\n  \"task_id\": \"RUNTIME-20260529052340-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260529052340-001-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/runtime/checkpoints/runtime-20260529052340-001-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"68dcd8099deb2dcb38128a92fdf87936388a819159ad66d2f4ed6c7dc86fae3c\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-29T05:25:02Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/mathematics_case_005.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260529052340-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_005.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-math-pf-005-2",
+  "runtimeDir": "workspace/projects/continuity-math-pf-005-2/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 406,
+    "mtime": "2026-05-29T05:25:09Z",
+    "path": "workspace/projects/continuity-math-pf-005-2/runtime/logs/agent-f9290a4182-terminal.log",
+    "sha256": "bed0cb4aade9468e4d01886725390218da3211f504bc5bec2d2625f5f7c022dd",
+    "size": 13880,
+    "tail": ",\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-005-2/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260529T052508Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

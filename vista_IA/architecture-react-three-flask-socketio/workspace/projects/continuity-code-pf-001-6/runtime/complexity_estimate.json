@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-05-28T20:35:46.723130Z",
+  "analysis_updated_at": "2026-05-28T20:38:30Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001-6",
+  "task_id": "RUNTIME-20260528203546-001",
+  "task_scope": "complexity_estimate_only",
+  "project_file_count": 0,
+  "prompt_word_count": 33,
+  "score": 34,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido"
+  ],
+  "fifo_queue_design": {
+    "objective": "Disenar una cola FIFO persistente para tareas pequenas, verificables y reanudables.",
+    "explicit_modes": [
+      "smoke",
+      "build",
+      "medium",
+      "long-run"
+    ],
+    "states": [
+      "pending",
+      "running",
+      "completed",
+      "failed"
+    ],
+    "ordering_rule": "Seleccionar siempre la tarea pending mas antigua por created_at y sequence; usar priority solo como orden previo si el control plane lo declara explicitamente.",
+    "task_record_minimum": [
+      "id",
+      "title",
+      "goal",
+      "status",
+      "priority",
+      "dependencies",
+      "expected_files",
+      "validation_commands",
+      "timeout_seconds",
+      "max_retries",
+      "mode",
+      "checkpoint_key",
+      "created_at",
+      "updated_at",
+      "attempts"
+    ],
+    "state_transitions": [
+      {
+        "operation": "enqueue",
+        "from": null,
+        "to": "pending",
+        "guard": "id unico, mode explicito, timeout_seconds > 0"
+      },
+      {
+        "operation": "lease_next",
+        "from": "pending",
+        "to": "running",
+        "guard": "dependencias completadas y lease atomico bajo lock"
+      },
+      {
+        "operation": "complete",
+        "from": "running",
+        "to": "completed",
+        "guard": "expected_files existen y validaciones declaradas retornan 0"
+      },
+      {
+        "operation": "fail",
+        "from": "running",
+        "to": "failed",
+        "guard": "timeout, validacion fallida o blocker real registrado"
+      },
+      {
+        "operation": "retry",
+        "from": "failed",
+        "to": "pending",
+        "guard": "attempts < max_retries y causa registrada"
+      }
+    ],
+    "persistence_contract": {
+      "store": "runtime/task_queue.json",
+      "owner": "control_plane",
+      "write_strategy": "archivo temporal + fsync + rename atomico",
+      "concurrency": "lock exclusivo alrededor de dequeue, transition y persistencia",
+      "audit": [
+        "runtime/task_history.jsonl",
+        "runtime/failures.jsonl",
+        "runtime/checkpoints/"
+      ]
+    },
+    "worker_contract": {
+      "one_task_per_worker": true,
+      "timeout_per_task": true,
+      "retry_scope": "task",
+      "worker_may_edit_control_plane_state": false,
+      "result_fields": [
+        "task_id",
+        "completed",
+        "files_created",
+        "files_modified",
+        "validation_ran",
+        "validation_passed",
+        "blockers",
+        "next_recommendation"
+      ]
+    },
+    "recovery_rules": [
+      "running con lease vencido debe pasar a failed o retry pending con causa registrada",
+      "no contar progreso sin expected_files o validacion en disco",
+      "todo retry debe incrementar attempts y conservar razon",
+      "long-run debe usar budgets y checkpoints distintos de smoke"
+    ],
+    "validation_strategy": [
+      "pruebas unitarias para enqueue FIFO, lease atomico y transiciones validas",
+      "prueba de reanudacion leyendo task_queue.json despues de reinicio",
+      "prueba de rechazo para mode ausente o inferido por texto",
+      "prueba de retry por tarea y no por sesion completa"
+    ],
+    "out_of_scope_for_this_task": [
+      "crear docs/advanced_programming_case_001.md",
+      "editar runtime/task_queue.json",
+      "marcar tareas como completed en archivos del control plane"
+    ]
+  },
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 33 palabras",
+    "toca runtime/estado persistido",
+    "requiere evidencia auditable",
+    "la cola requiere locks, transiciones explicitas y persistencia atomica"
+  ],
+  "confidence": 88
+}
