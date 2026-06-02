@@ -5,10 +5,10 @@ HABLA Procedural Runtime Execution is a harness for agentic software work. Its m
 ## Core Thesis
 
 ```text
-human intent -> HABLA/LACE -> project runtime -> task queue -> worker -> evidence -> verification -> closure
+human intent -> HABLA/LACE -> project runtime -> task queue -> worker -> real tools -> evidence -> verification -> closure
 ```
 
-The project is not primarily an editor and not only a chat interface. It is a procedural runtime that treats progress as verified state.
+The project is not primarily an editor and not only a chat interface. It is a procedural runtime that treats progress as verified state and tool execution as inspectable evidence.
 
 ## Planes
 
@@ -82,7 +82,28 @@ backend/agent_worker_adapters.py
 workers/
 ```
 
-## 4. Verification Plane
+## 4. Autonomous Operational Layer
+
+The visual layer is not meant to be only a pretty view. It is the surface where agent execution becomes operational: the system observes state, chooses tools, invokes actions, inspects results and persists evidence.
+
+Agent embodiment in HABLA can be described as runtime functions:
+
+| Body Function | Runtime Meaning | Evidence |
+| --- | --- | --- |
+| Eyes | Observer, scanner, sandbox, UI state, logs | snapshots, findings, screenshots, reports |
+| Hands | tool invocation and UI actions | command logs, action events, artifacts |
+| Head | active goal, task, policy and context | directives, state store, queue |
+| Brain | planning, ReAct, validation and recovery | task history, LACE log, decisions |
+| Memory | persistent project and episodic state | checkpoints, JSONL history, artifacts |
+| Voice | spoken human/system interface | planned speech transcripts and audio events |
+
+The full design is documented in:
+
+```text
+docs/AUTONOMOUS_OPERATIONAL_LAYER.md
+```
+
+## 5. Verification Plane
 
 Verification turns worker claims into inspected evidence.
 
@@ -104,7 +125,7 @@ backend/sandbox_service.py
 backend/integrity_service.py
 ```
 
-## 5. Observer Plane
+## 6. Observer Plane
 
 The Observer reads persisted runtime evidence and emits finite findings. It should not behave like an infinite scanner. A healthy Observer cycle has a trigger, a bounded incident, evidence and a terminal state.
 
@@ -122,7 +143,7 @@ backend/observer_runtime_service.py
 frontend/src/components/AppObserverPanel.jsx
 ```
 
-## 6. Memory And Evidence Plane
+## 7. Memory And Evidence Plane
 
 HABLA persists state so a project can be resumed, audited and defended after the chat session.
 
@@ -138,9 +159,27 @@ runtime/artifacts/
 runtime/logs/
 ```
 
-## 7. Security Layer
+## 8. Security Layer
 
 CyberLACE is the security-oriented layer around prompt, memory, tools, output, autonomy and external actions. In the current repository it should be treated as a prototype security engine that can evolve into a policy enforcement boundary.
+
+## 9. Voice Interface Direction
+
+The next major interface layer is voice. Voice should not bypass the runtime; it should become another input/output channel governed by HABLA policy.
+
+Recommended pipeline:
+
+```text
+microphone input -> speech-to-text -> intent classifier -> HABLA/LACE policy -> runtime directive -> tool/action execution -> evidence -> spoken response -> transcript memory
+```
+
+Voice integration should support:
+
+- spoken human commands;
+- spoken runtime status summaries;
+- confirmation for risky actions;
+- persisted transcripts as evidence;
+- clear separation between conversation and executable directives.
 
 ## Closure Rule
 
