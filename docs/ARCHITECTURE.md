@@ -5,7 +5,7 @@ HABLA Procedural Runtime Execution is a harness for agentic software work. Its m
 ## Core Thesis
 
 ```text
-human intent -> HABLA/LACE -> project runtime -> task queue -> worker -> real tools -> evidence -> verification -> closure
+human intent -> HABLA/LACE -> project runtime -> task queue -> worker -> real tools -> evidence -> verification -> CyberLACE security boundary -> closure
 ```
 
 The project is not primarily an editor and not only a chat interface. It is a procedural runtime that treats progress as verified state and tool execution as inspectable evidence.
@@ -159,18 +159,30 @@ runtime/artifacts/
 runtime/logs/
 ```
 
-## 8. Security Layer
+## 8. CyberLACE Security Layer
 
-CyberLACE is the security-oriented layer around prompt, memory, tools, output, autonomy and external actions. In the current repository it should be treated as a prototype security engine that can evolve into a policy enforcement boundary.
+CyberLACE is one of the strongest parts of the architecture. It is not a classic firewall and not only a prompt filter. It is a cognitive security boundary around the whole agent loop:
+
+```text
+prompt -> memory -> tool call -> external action -> model output -> evidence
+```
+
+CyberLACE can run as a Python SDK or REST API. It guards prompt injection, sensitive memory access, tool exfiltration, dangerous external actions and sensitive model output. It can monitor, redact, require human review, block or quarantine, while recording decisions into an evidence graph.
+
+Detailed analysis:
+
+```text
+docs/CYBERLACE_SECURITY_ANALYSIS.md
+```
 
 ## 9. Voice Interface Direction
 
-The next major interface layer is voice. Voice should not bypass the runtime; it should become another input/output channel governed by HABLA policy.
+The next major interface layer is voice. Voice should not bypass the runtime; it should become another input/output channel governed by HABLA and CyberLACE policy.
 
 Recommended pipeline:
 
 ```text
-microphone input -> speech-to-text -> intent classifier -> HABLA/LACE policy -> runtime directive -> tool/action execution -> evidence -> spoken response -> transcript memory
+microphone input -> speech-to-text -> intent classifier -> HABLA/LACE policy -> CyberLACE guards -> runtime directive -> tool/action execution -> evidence -> spoken response -> transcript memory
 ```
 
 Voice integration should support:
@@ -192,6 +204,7 @@ A project should not be marked complete only because a worker finished. Closure 
 - sandbox readiness when applicable;
 - integrity report;
 - Observer state without unresolved gates;
-- documented LACE cycle evidence.
+- documented LACE cycle evidence;
+- CyberLACE evidence for sensitive prompts, memory reads, tool calls, external actions and outputs.
 
 If any required evidence is missing, the runtime state should remain in a verification, blocked or human-review state.
