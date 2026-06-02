@@ -50,7 +50,24 @@ Exit criteria:
 - the harness can validate a task using a mock worker;
 - worker-specific failures do not corrupt control-plane state.
 
-## Phase 4: Verification And Security Gates
+## Phase 4: Operational Tool Control
+
+Goal: prove that the workbench is a real operational layer, not only a visualization.
+
+- Define a logged UI/tool action contract.
+- Route workbench actions through backend runtime services.
+- Record clicks, panel opens, scanner requests, sandbox actions and integrity checks as evidence events.
+- Add an agent-safe action allowlist.
+- Add one demo where the agent observes runtime state, chooses a tool, triggers it and records the result.
+
+Exit criteria:
+
+- UI/tool actions produce durable evidence;
+- the agent can execute a bounded tool-control loop;
+- risky actions are gated by policy;
+- Observer can explain what happened and why.
+
+## Phase 5: Verification And Security Gates
 
 Goal: make closure defensible.
 
@@ -66,7 +83,25 @@ Exit criteria:
 - missing evidence blocks completion;
 - external changes produce visible findings.
 
-## Phase 5: Productization
+## Phase 6: Voice Interface
+
+Goal: let humans communicate with HABLA through speech without bypassing policy or evidence.
+
+- Add speech-to-text input.
+- Add command versus conversation classification.
+- Convert spoken commands into normalized HABLA directives.
+- Add confirmation prompts for risky actions.
+- Add text-to-speech runtime summaries.
+- Persist voice transcripts as evidence.
+
+Exit criteria:
+
+- a human can ask for runtime status by voice;
+- a safe spoken command can become a task or action;
+- risky spoken commands require confirmation;
+- transcript memory records what was said, decided and executed.
+
+## Phase 7: Productization
 
 Goal: make HABLA easier to install, explain and demonstrate.
 
