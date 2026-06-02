@@ -8,6 +8,31 @@ La idea central es esta: un agente puede generar codigo, pero un proyecto serio 
 
 Esa es la diferencia entre HABLA y un asistente de programacion normal. HABLA no se presenta como una extension debil de un editor existente; se presenta como una categoria distinta: un harness autonomo capaz de sostener ejecucion, evidencia, recuperacion y cierre sobre proyectos completos.
 
+## Start Here
+
+HABLA Procedural Runtime Execution is an advanced research prototype for agentic project execution. It is a harness around AI workers: it plans tasks, persists runtime state, validates evidence, observes contradictions and blocks premature closure.
+
+Recommended first reading:
+
+- [Quickstart](docs/QUICKSTART.md): run the main backend/frontend pieces.
+- [Architecture](docs/ARCHITECTURE.md): understand the runtime planes.
+- [Project Status](docs/PROJECT_STATUS.md): see what is implemented, what is prototype and what remains.
+- [Roadmap](docs/ROADMAP.md): follow the path toward a reproducible public demo.
+
+Recommended environment:
+
+- Linux or WSL2
+- Python 3.11
+- Node.js 20 LTS
+
+The safest first demo is a small procedural cycle:
+
+```text
+human request -> task plan -> persistent queue -> worker/directive -> validation -> evidence -> Observer/status
+```
+
+This repository should currently be evaluated as a research and engineering prototype, not as a fully packaged end-user product.
+
 ## Demo Visual Del Sistema
 
 <p align="center">
