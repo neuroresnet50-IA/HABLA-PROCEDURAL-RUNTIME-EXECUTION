@@ -4,7 +4,7 @@ This document separates implemented evidence from intended direction.
 
 ## Current Classification
 
-HABLA Procedural Runtime Execution is an advanced research and engineering prototype for agentic project execution. It contains real runtime code, visual workbench code, orchestration modules, verification logic and evidence artifacts. It should not yet be presented as a fully packaged end-user product.
+HABLA Procedural Runtime Execution is an advanced research and engineering prototype for agentic project execution. It contains real runtime code, visual workbench code, orchestration modules, verification logic, CyberLACE security logic and evidence artifacts. It should not yet be presented as a fully packaged end-user product.
 
 ## Implemented Signals
 
@@ -18,6 +18,9 @@ The repository includes concrete implementations for:
 - restrictive validation command policy;
 - Observer state and finding generation;
 - integrity manifests, hashes and seal artifacts;
+- CyberLACE prompt, memory, tool and output guards;
+- CyberLACE REST API and Python SDK entry points;
+- CyberLACE evidence graph JSONL storage;
 - React/Vite/Three.js frontend workbench;
 - Flask/Socket.IO backend runtime;
 - example generated project evidence.
@@ -34,16 +37,22 @@ hands -> invoke tools and UI actions
 head -> hold active task and policy
 brain -> reason, plan, validate and recover
 memory -> persist state and history
+CyberLACE -> protects prompt, memory, tools, output and external actions
 voice -> planned spoken interface for human/system communication
 ```
 
-The detailed design is documented in `docs/AUTONOMOUS_OPERATIONAL_LAYER.md`.
+The detailed designs are documented in:
+
+```text
+docs/AUTONOMOUS_OPERATIONAL_LAYER.md
+docs/CYBERLACE_SECURITY_ANALYSIS.md
+```
 
 ## Strongest Technical Claim
 
 The strongest defensible claim is:
 
-> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state, and it is evolving toward real-time operational control through tools, UI actions and voice.
+> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state, while CyberLACE gives that autonomy a cognitive security boundary over prompts, memory, tools, external actions and output.
 
 This is stronger and safer than claiming it is a finished autonomous software engineer.
 
@@ -55,6 +64,7 @@ This is stronger and safer than claiming it is a finished autonomous software en
 - The README is broad and ambitious; reviewers will benefit from smaller focused docs.
 - The most credible demo should be small, repeatable and evidence-based.
 - Voice input/output is the next integration layer and should be implemented with transcripts, policy checks and confirmation gates.
+- CyberLACE is powerful already as a prototype, but should be wired directly into the main runtime execution path before public safety claims become stronger.
 
 ## Recommended Demo Boundary
 
@@ -67,7 +77,7 @@ prompt -> normalized task -> persistent queue -> worker directive -> validation 
 The next demo after that should prove a real operational control loop:
 
 ```text
-observe UI/runtime -> choose tool -> execute action -> inspect evidence -> update memory -> continue or ask human
+observe UI/runtime -> choose tool -> CyberLACE guard -> execute action -> inspect evidence -> update memory -> continue or ask human
 ```
 
 Avoid making the first demo depend on a long autonomous run. Long runs are impressive after the smaller path is reproducible.
@@ -86,5 +96,5 @@ Avoid making the first demo depend on a long autonomous run. Long runs are impre
 Use this public positioning:
 
 ```text
-Research prototype: procedural runtime and operational harness for AI software workers.
+Research prototype: procedural runtime and CyberLACE-governed operational harness for AI software workers.
 ```
