@@ -22,11 +22,28 @@ The repository includes concrete implementations for:
 - Flask/Socket.IO backend runtime;
 - example generated project evidence.
 
+## Operational Autonomy Position
+
+HABLA should be presented as an operational harness, not only as a visual dashboard. The workbench exists to expose real execution surfaces: runtime state, tool actions, scanner output, sandbox status, Observer findings, integrity reports and durable evidence.
+
+A useful way to explain the system is:
+
+```text
+eyes -> observe runtime evidence
+hands -> invoke tools and UI actions
+head -> hold active task and policy
+brain -> reason, plan, validate and recover
+memory -> persist state and history
+voice -> planned spoken interface for human/system communication
+```
+
+The detailed design is documented in `docs/AUTONOMOUS_OPERATIONAL_LAYER.md`.
+
 ## Strongest Technical Claim
 
 The strongest defensible claim is:
 
-> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state.
+> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state, and it is evolving toward real-time operational control through tools, UI actions and voice.
 
 This is stronger and safer than claiming it is a finished autonomous software engineer.
 
@@ -37,6 +54,7 @@ This is stronger and safer than claiming it is a finished autonomous software en
 - Some dependency declarations should be pinned for reproducibility.
 - The README is broad and ambitious; reviewers will benefit from smaller focused docs.
 - The most credible demo should be small, repeatable and evidence-based.
+- Voice input/output is the next integration layer and should be implemented with transcripts, policy checks and confirmation gates.
 
 ## Recommended Demo Boundary
 
@@ -44,6 +62,12 @@ The first public demo should prove this path:
 
 ```text
 prompt -> normalized task -> persistent queue -> worker directive -> validation -> artifact -> Observer status
+```
+
+The next demo after that should prove a real operational control loop:
+
+```text
+observe UI/runtime -> choose tool -> execute action -> inspect evidence -> update memory -> continue or ask human
 ```
 
 Avoid making the first demo depend on a long autonomous run. Long runs are impressive after the smaller path is reproducible.
@@ -62,5 +86,5 @@ Avoid making the first demo depend on a long autonomous run. Long runs are impre
 Use this public positioning:
 
 ```text
-Research prototype: procedural runtime and verification harness for AI software workers.
+Research prototype: procedural runtime and operational harness for AI software workers.
 ```
