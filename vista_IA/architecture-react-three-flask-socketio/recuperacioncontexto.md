@@ -9521,3 +9521,36 @@ Blockers o riesgos:
 
 Punto de reanudacion:
 - Hacer commit `Publish latest runtime action updates`, push a `codex/publish-complete-runtime-project`, verificar PR #1 y reportar commit/URL al usuario.
+
+
+## 2026-06-02T23:58:07+00:00 - PUBLICACION-GITHUB-VERIFICADA
+
+Solicitud recibida: confirmar repositorio publico y subir nuevamente los cambios grandes refinados.
+
+Acciones realizadas:
+- Commit principal creado y subido: `4c4f76ec` (`Publish latest runtime action updates`).
+- Push confirmado: `ce330428..4c4f76ec codex/publish-complete-runtime-project -> codex/publish-complete-runtime-project`.
+- PR verificado: #1 abierto, draft, base `main`, rama `codex/publish-complete-runtime-project`, URL `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1`.
+- Repositorio verificado como publico por GitHub CLI y API publica: `visibility=PUBLIC`, `private=false`, `pushed_at=2026-06-02T22:46:19Z`.
+
+Archivos creados o modificados:
+- Snapshot grande subido en el commit `4c4f76ec`: 8420 archivos, 1267104 inserciones, 20110 eliminaciones.
+- Memoria final actualizada en `recuperacioncontexto.md`, `ULTIMO_CONTEXTO_CODEX.md` y `runtime/task_history.jsonl`.
+
+Validacion corta ejecutada:
+- `gh pr view 1 --json ...`: OK, PR #1 contiene `4c4f76ec`.
+- `gh repo view ...`: OK, `visibility=PUBLIC`, `isPrivate=false`.
+- API publica GitHub con `curl` + `jq`: OK, `private=false`, `visibility=public`, `pushed_at=2026-06-02T22:46:19Z`.
+- Validaciones previas al commit principal: health OK `statusCode=200`, py_compile OK, pytest OK `174 passed`, frontend build OK, secret scan OK, large file scan OK.
+
+Resultado real de validacion:
+- El repositorio ya es publico y legible.
+- La rama del PR recibio el snapshot grande de cambios.
+- El PR #1 muestra el commit `4c4f76ec`.
+
+Blockers o riesgos:
+- Despues del push principal el runtime vivo genero nuevos deltas locales en workspace/projects/continuity-mixed-pf-002-2 y algunos logs runtime; esos quedan como siguiente corte porque aparecieron despues del commit 4c4f76ec.
+- El contenido aun esta en PR/rama de publicacion hasta que se fusione a `main`; el repo publico muestra `main` como rama por defecto.
+
+Punto de reanudacion:
+- Si el usuario quiere que `main` muestre todo directamente, fusionar PR #1 o cambiar la rama por defecto despues de revisar. Para continuar desarrollo, crear un siguiente corte con los deltas runtime posteriores al push.
