@@ -37,6 +37,7 @@ hands -> invoke tools and UI actions
 head -> hold active task and policy
 brain -> reason, plan, validate and recover
 memory -> persist state and history
+Snow Freeze -> shields human work and trusted baselines from destructive agent changes
 CyberLACE -> protects prompt, memory, tools, output and external actions
 voice -> planned spoken interface for human/system communication
 ```
@@ -46,13 +47,14 @@ The detailed designs are documented in:
 ```text
 docs/AUTONOMOUS_OPERATIONAL_LAYER.md
 docs/CYBERLACE_SECURITY_ANALYSIS.md
+docs/SNOW_FREEZE_CODE_SHIELD.md
 ```
 
 ## Strongest Technical Claim
 
 The strongest defensible claim is:
 
-> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state, while CyberLACE gives that autonomy a cognitive security boundary over prompts, memory, tools, external actions and output.
+> HABLA is a procedural harness around AI workers. It turns agent work into persistent, inspectable and verifiable project state. CyberLACE gives that autonomy a cognitive security boundary, while Snow Freeze protects trusted code, human deltas and project state from destructive agent changes.
 
 This is stronger and safer than claiming it is a finished autonomous software engineer.
 
@@ -65,6 +67,7 @@ This is stronger and safer than claiming it is a finished autonomous software en
 - The most credible demo should be small, repeatable and evidence-based.
 - Voice input/output is the next integration layer and should be implemented with transcripts, policy checks and confirmation gates.
 - CyberLACE is powerful already as a prototype, but should be wired directly into the main runtime execution path before public safety claims become stronger.
+- Snow Freeze is currently a design/protocol concept and should be implemented as baseline manifests, human delta vaults, agent overlays, merge gates and restore reports.
 
 ## Recommended Demo Boundary
 
@@ -78,6 +81,12 @@ The next demo after that should prove a real operational control loop:
 
 ```text
 observe UI/runtime -> choose tool -> CyberLACE guard -> execute action -> inspect evidence -> update memory -> continue or ask human
+```
+
+The strongest viral demo should prove the Snow Freeze shield:
+
+```text
+human edits protected -> agent attempts destructive delete -> Snow Freeze detects human delta -> CyberLACE blocks or requests review -> Observer explains -> closure certificate proves no data loss
 ```
 
 Avoid making the first demo depend on a long autonomous run. Long runs are impressive after the smaller path is reproducible.
@@ -96,5 +105,5 @@ Avoid making the first demo depend on a long autonomous run. Long runs are impre
 Use this public positioning:
 
 ```text
-Research prototype: procedural runtime and CyberLACE-governed operational harness for AI software workers.
+Research prototype: procedural runtime and Snow-Freeze/CyberLACE-governed operational harness for AI software workers.
 ```
