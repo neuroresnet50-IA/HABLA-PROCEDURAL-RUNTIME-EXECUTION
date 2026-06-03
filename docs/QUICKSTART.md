@@ -2,7 +2,7 @@
 
 This guide gives a minimal path to inspect and run the main parts of HABLA Procedural Runtime Execution.
 
-HABLA is best treated as a Linux/WSL-first prototype. Some runtime pieces use POSIX APIs such as `pwd` and `pty`, so native Windows execution may require adaptation.
+HABLA is best treated as a Linux/WSL-first prototype. Some runtime pieces use POSIX APIs such as `pwd` and `pty`, so native Windows execution may require adaptation. The root HABLA BASIC demo only requires Node.js and is the recommended first check.
 
 ## Recommended Environment
 
@@ -11,6 +11,42 @@ HABLA is best treated as a Linux/WSL-first prototype. Some runtime pieces use PO
 - Node.js: 20 LTS
 - npm: 10+
 - Git: 2.40+
+
+## 0. Run The HABLA BASIC Demo
+
+From the repository root:
+
+```bash
+npm run habla:demo
+npm run habla:verify
+```
+
+The demo generates local evidence artifacts:
+
+```text
+runtime/demo/project_state.json
+runtime/demo/task_queue.json
+runtime/demo/artifacts/cyberlace_decision.json
+runtime/demo/artifacts/observer_findings.json
+runtime/demo/artifacts/closure_certificate.json
+runtime/demo/artifacts/demo_summary.md
+```
+
+The expected cycle is:
+
+```text
+prompt -> plan -> task queue -> CyberLACE guard -> Observer -> closure certificate
+```
+
+The verification passes only if:
+
+```text
+closure_certificate.status = closed_with_evidence
+task_queue_completed = true
+cyberlace_critical_findings = 0
+observer_terminal = true
+validation_passed = true
+```
 
 ## Repository Areas
 
@@ -84,6 +120,7 @@ npm run build
 
 A successful first review should confirm:
 
+- the HABLA BASIC demo generates a closure certificate;
 - the backend starts without import errors;
 - the frontend Vite app builds;
 - the workbench can connect to the backend;
