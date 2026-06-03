@@ -10,6 +10,8 @@ HABLA - Buildable Autonomous Secure Implementation Core
 
 Este documento es un prompt maestro para materializar HABLA en codigo ejecutable. No es una descripcion de marketing. Es una directiva tecnica para programar, editar, validar y cerrar una version reproducible del sistema.
 
+Tambien es un ejemplo de la tesis central del proyecto: HABLA puede usar sus propias reglas, evidencia, memoria, validacion, Observer y CyberLACE para mejorarse a si mismo de forma gobernada.
+
 ## Mision
 
 Convertir HABLA en un sistema operativo de ejecucion autonoma segura para agentes de software.
@@ -25,6 +27,104 @@ El objetivo es que cualquier persona pueda ejecutar una demo en menos de cinco m
 ```text
 prompt -> plan -> task queue -> accion real -> CyberLACE guard -> validacion -> Observer -> closure certificate
 ```
+
+## HABLA BASIC Como Auto-Mejora Gobernada
+
+Este documento no debe leerse solo como instrucciones para un humano. Debe leerse como un caso de uso interno: HABLA puede tomar esta directiva, descomponerla en tareas, ejecutar cambios reales, validarlos y cerrarlos con evidencia.
+
+La logica de auto-mejora gobernada es:
+
+```text
+HABLA BASIC prompt
+  -> interpretacion HABLA/LACE
+  -> plan de implementacion
+  -> task queue persistente
+  -> directivas por tarea
+  -> CyberLACE antes de prompts, memoria, tools, outputs y acciones externas
+  -> ejecucion controlada
+  -> validacion por artefactos
+  -> Observer revisando contradicciones
+  -> memoria/checkpoints
+  -> closure certificate
+  -> siguiente ciclo de mejora
+```
+
+Esto demuestra que HABLA no solo ejecuta proyectos externos. HABLA puede aplicar su propio harness sobre su propio repositorio para evolucionar sin perder control.
+
+## Ejemplo De Auto-Mejora
+
+Entrada humana:
+
+```text
+Mejora HABLA para superar a Cursor/OpenCode como harness autonomo seguro.
+```
+
+HABLA BASIC debe convertir esa intencion en tareas verificables:
+
+```text
+1. Crear demo reproducible.
+2. Integrar CyberLACE en el runtime real.
+3. Crear Voice Console gobernada.
+4. Crear Closure Certificate.
+5. Convertir UI en workbench operacional.
+6. Empaquetar con Docker/comandos simples.
+7. Crear CI minimo.
+```
+
+Cada tarea debe producir evidencia:
+
+```text
+codigo editado
+prueba ejecutada
+artefacto generado
+riesgo CyberLACE evaluado
+Observer revisado
+estado persistido
+closure certificate actualizado
+```
+
+Si una tarea no produce evidencia, no cuenta como progreso real.
+
+## Bucle De Auto-Mejora
+
+El sistema debe operar bajo este ciclo:
+
+```text
+READ_RULES
+  leer HABLA_BASIC_IMPLEMENTATION_PROMPT.md
+  leer ARCHITECTURE.md
+  leer PROJECT_STATUS.md
+  leer CYBERLACE_SECURITY_ANALYSIS.md
+
+PLAN
+  convertir objetivos en tareas pequenas
+  asignar prioridad, dependencias y criterios de aceptacion
+
+ACT
+  editar codigo real
+  crear pruebas
+  registrar accion
+
+GUARD
+  pasar prompts, memoria, tools, output y acciones externas por CyberLACE
+
+VERIFY
+  ejecutar pruebas
+  validar archivos esperados
+  generar artefactos
+
+OBSERVE
+  Observer revisa estado, contradicciones y evidencia faltante
+
+REMEMBER
+  guardar checkpoint, historial, fallos y decisiones
+
+CLOSE_OR_CONTINUE
+  si falta evidencia, continuar o bloquear
+  si todo pasa, generar closure certificate
+```
+
+Este bucle es la diferencia entre un agente que solo escribe codigo y un sistema que puede mejorar su propio runtime de forma segura.
 
 ## Identidad Del Sistema
 
@@ -49,6 +149,7 @@ Ninguna accion autonoma debe ejecutarse sin dejar evidencia.
 Ningun cierre debe aceptarse sin validacion.
 Ninguna voz debe convertirse en accion sin pasar por HABLA/LACE y CyberLACE.
 Ninguna herramienta peligrosa debe correr sin politica, riesgo y decision registrada.
+Ninguna auto-mejora debe aceptarse si no pasa por task queue, validacion, Observer y closure certificate.
 
 ## Resultado Esperado
 
@@ -483,6 +584,7 @@ Cuando un agente implemente este prompt:
 8. No debe borrar evidencia anterior.
 9. No debe acoplar HABLA a un solo worker.
 10. No debe convertir HABLA en un clon de editor.
+11. Debe tratar este documento como una directiva que HABLA puede usar para auto-mejorarse de forma gobernada.
 
 ## Prompt Maestro Para El Agente Implementador
 
@@ -492,6 +594,8 @@ Usa este bloque como instruccion directa para un agente de codigo:
 Eres el implementador principal de HABLA BASIC.
 
 Tu mision es convertir este repositorio en un harness autonomo reproducible, seguro y verificable, superior conceptualmente a un editor asistido por IA.
+
+Tambien debes demostrar que HABLA puede mejorarse a si mismo: lee esta directiva, conviertela en tareas, ejecuta cambios reales, valida evidencia, deja memoria y no cierres sin certificado.
 
 No compitas construyendo otro editor. Construye el sistema operativo de ejecucion autonoma segura:
 
@@ -545,3 +649,22 @@ HABLA BASIC alcanza exito cuando una persona externa puede ver en menos de cinco
 ```
 
 Ese es el punto donde HABLA deja de ser promesa y se convierte en un runtime autonomo seguro.
+
+## Definicion De Auto-Mejora Exitosa
+
+HABLA demuestra auto-mejora real cuando puede usar este mismo documento para:
+
+```text
+leer su estado actual
+identificar brechas
+crear tareas
+editar su propio codigo
+pasar sus acciones por CyberLACE
+ejecutar pruebas
+observar resultados
+registrar memoria
+generar closure certificate
+definir el siguiente ciclo
+```
+
+La auto-mejora no significa cambiar sin control. Significa cambiar bajo reglas, evidencia, seguridad, memoria y cierre auditable.
