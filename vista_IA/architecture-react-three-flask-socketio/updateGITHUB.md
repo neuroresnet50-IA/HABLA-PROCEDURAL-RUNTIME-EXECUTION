@@ -239,3 +239,47 @@ La respuesta final debe decir:
 - repo publico confirmado o blocker real,
 - validaciones reales ejecutadas,
 - si quedo delta posterior generado por runtime.
+
+## Verificacion post-push 2026-06-05T13:31:10-07:00
+
+Estado verificado:
+
+- Commit de corte completo subido: `24d0081c` (`24d0081c4e39618b873917ac55225c0f42e76860`)
+- Mensaje: `Publish latest live harness follow-up`
+- Rama: `codex/publish-complete-runtime-project`
+- PR: `https://github.com/neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION/pull/1`
+- PR #1: `OPEN`, `isDraft=true`, base `main`, head `codex/publish-complete-runtime-project`
+- Repo GitHub: `neuroresnet50-IA/HABLA-PROCEDURAL-RUNTIME-EXECUTION`
+- Visibilidad GitHub: `PUBLIC`
+- `isPrivate=false`
+- `pushedAt=2026-06-05T20:30:52Z`
+
+Validaciones reales usadas para este corte:
+
+- `python3 orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`
+- Python py_compile backend/orchestrator/workers/tools: OK
+- Pytest enfocado backend/harness: OK, `123 passed in 5.71s`
+- `npm run build` en `frontend/`: OK, warning conocido de chunk grande
+- `npm test` en `frontend/`: OK, `agentClosureCertificate tests passed`
+- `git diff --cached --check`: OK antes del commit
+- Rutas excluidas staged: OK, sin coincidencias
+- Escaneo exacto de secretos reales: OK, sin coincidencias
+- Escaneo de archivos mayores a 95 MB: OK, sin salida
+
+Delta posterior al push:
+
+Despues de subir `24d0081c`, el runtime vivo genero cambios nuevos locales. No fueron revertidos. El siguiente agente debe decidir si hace otro corte o los deja como runtime en curso.
+
+Rutas principales observadas:
+
+- `backend/editor_state.json`
+- `workspace/projects/continuity-code-pf-002-2/` con artefactos, checkpoints, baseline vault y logs nuevos
+- `workspace/projects/continuity-code-pf-002/runtime/artifacts/observer_findings.json`
+- `../../conector MCP/` sigue fuera del subrepo y no debe agregarse desde aqui
+
+Punto exacto de reanudacion:
+
+1. Abrir este repo con `cd "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio"`.
+2. Leer `AGENTS.md`, `updateGITHUB.md`, `ULTIMO_CONTEXTO_CODEX.md` y `recuperacioncontexto.md`.
+3. Ejecutar `git status --short --branch`.
+4. Si se quiere subir el delta posterior, validar de nuevo y hacer un nuevo commit sobre `codex/publish-complete-runtime-project`.

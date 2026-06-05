@@ -11066,3 +11066,46 @@ Blockers o riesgos:
 
 Punto de reanudacion:
 - Reintentar `LACE-20260605-001` desde el runtime/control plane para que el agente corrija el ciclo y cambie el dictamen del documento a valido solo si la evidencia lo respalda. Luego validar que pase la frase canonica y el cierre LACE.
+
+## 2026-06-05T13:31:10-07:00 - Push verificado y relevo updateGITHUB final
+
+Solicitud recibida:
+- El usuario pidio un `.md` llamado como `updateGITHUB` con toda la metrica para que otro agente reinicie desde el punto actual.
+- Tambien pidio subir nuevamente el repositorio con los cambios nuevos.
+
+Acciones realizadas:
+- Se subio el segundo corte completo a GitHub en el commit `24d0081c`.
+- Se verifico que PR #1 contiene el commit `24d0081c4e39618b873917ac55225c0f42e76860`.
+- Se verifico que el repo GitHub sigue publico: `visibility=PUBLIC`, `isPrivate=false`.
+- Se actualizo `updateGITHUB.md` con metricas, comandos, ruta, rama, PR, validaciones, estado post-push y delta posterior generado por runtime.
+
+Archivos creados o modificados:
+- `updateGITHUB.md`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `runtime/task_history.jsonl`
+
+Validacion ejecutada:
+- Health interno: OK, `statusCode=200`, `ok=true`.
+- Python py_compile backend/orchestrator/workers/tools: OK.
+- Pytest enfocado backend/harness: OK, `123 passed in 5.71s`.
+- `npm run build`: OK, warning conocido de chunk grande.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+- `git diff --cached --check`: OK antes del commit `24d0081c`.
+- Escaneo exacto de secretos reales: OK, sin coincidencias.
+- Escaneo de archivos >95 MB: OK, sin salida.
+- `gh pr view 1`: OK, PR abierto draft contiene `24d0081c4e39618b873917ac55225c0f42e76860`.
+- `gh repo view`: OK, repo publico, `isPrivate=false`, `pushedAt=2026-06-05T20:30:52Z`.
+
+Resultado real:
+- El corte completo fue empujado a `origin/codex/publish-complete-runtime-project`.
+- PR #1 quedo actualizado.
+- `updateGITHUB.md` queda como documento canonico de relevo para otro agente.
+
+Blockers o riesgos:
+- El runtime vivo genero delta posterior despues del push: `backend/editor_state.json`, `workspace/projects/continuity-code-pf-002-2/...`, `workspace/projects/continuity-code-pf-002/runtime/artifacts/observer_findings.json`.
+- `../../conector MCP/` sigue fuera del subrepo y no fue subido.
+- El sandbox local puede fallar con `bwrap: loopback: Failed RTM_NEWADDR`; usar permisos escalados puntuales si se repite.
+
+Punto de reanudacion:
+- Si el usuario reinicia el PC, el siguiente agente debe abrir este repo, leer `updateGITHUB.md`, revisar `git status --short --branch` y decidir si sube el delta posterior generado por runtime con un nuevo corte validado.
