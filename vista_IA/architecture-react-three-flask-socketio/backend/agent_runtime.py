@@ -479,6 +479,8 @@ def is_runtime_control_path(relative_path: str | Path) -> bool:
         return True
     if normalized.startswith("docs/lace_cycles/"):
         return True
+    if normalized.startswith("docs/closure_repairs/"):
+        return True
     return False
 
 
@@ -2852,13 +2854,17 @@ class AgentRuntime:
         normalized_tasks: List[Dict[str, Any]] = []
         for task in tasks:
             updated = dict(task)
+            lace_cycle = self._lace_cycle_from_task_id(str(updated.get("id") or ""))
             original_validation_commands = [
                 str(command)
                 for command in updated.get("validation_commands", [])
                 if str(command).strip()
             ] if isinstance(updated.get("validation_commands"), list) else []
-            expected_files = self._sanitize_control_plane_expected_files(updated.get("expected_files", []))
-            if material_files and (
+            if lace_cycle is not None:
+                expected_files = ["LACE_LOG.md", lace_cycle_visual_relative_path(lace_cycle)]
+            else:
+                expected_files = self._sanitize_control_plane_expected_files(updated.get("expected_files", []))
+            if lace_cycle is None and material_files and (
                 not expected_files
                 or all(str(path).startswith("runtime/artifacts/") for path in expected_files)
             ):
@@ -4008,7 +4014,13 @@ class AgentRuntime:
         findings_path = artifacts_dir / "observer_findings.json"
         findings_report, findings_error = self._read_runtime_json_dict(findings_path)
         findings_summary = findings_report.get("summary") if isinstance(findings_report.get("summary"), dict) else {}
-        findings_passed = findings_error is None and int(findings_summary.get("activeFindings") or 0) == 0
+        findings_items = findings_report.get("findings") if isinstance(findings_report.get("findings"), list) else []
+        blocking_findings = [
+            finding
+            for finding in findings_items
+            if isinstance(finding, dict) and self._is_lace_blocking_observer_finding(finding)
+        ]
+        findings_passed = findings_error is None and not blocking_findings
 
         checks = {
             "queue_idle": queue_idle,
@@ -4054,9 +4066,24 @@ class AgentRuntime:
                     "path": str(findings_path),
                     "error": findings_error,
                     "activeFindings": findings_summary.get("activeFindings"),
+                    "blockingFindings": len(blocking_findings),
                 },
             },
         }
+
+    def _is_lace_blocking_observer_finding(self, finding: Dict[str, Any]) -> bool:
+        if str(finding.get("status") or "").lower() != "active":
+            return False
+        source = str(finding.get("source") or "").lower()
+        severity = str(finding.get("severity") or "").lower()
+        relative_path = normalize_project_relative_path(
+            finding.get("relativePath") or finding.get("focusPath") or finding.get("path") or ""
+        )
+        if source in {"integrity", "security", "sandbox", "scanner", "cyberlace"}:
+            return True
+        if source == "lint":
+            return severity == "error" and is_material_project_path(relative_path)
+        return severity == "error" and is_material_project_path(relative_path)
 
     def _resolve_adaptive_lace_target(
         self,
@@ -4780,9 +4807,44 @@ class AgentRuntime:
             return True
         kind = str(task.get("kind") or "")
         expected_files = [str(item or "") for item in task.get("expected_files") or []]
-        return kind == "closure_repair" and bool(expected_files) and all(
+        if kind == "closure_repair" and bool(expected_files) and all(
             item.startswith("docs/closure_repairs/") and item.endswith(".md") for item in expected_files
-        )
+        ):
+            return True
+        return self._is_reconcilable_controlled_runtime_closure_task(task, expected_files)
+
+    def _is_reconcilable_controlled_runtime_closure_task(
+        self,
+        task: Dict[str, Any],
+        expected_files: List[str],
+    ) -> bool:
+        """Allow a blocked closure-repair runtime task to clear only by validator evidence.
+
+        These tasks can otherwise deadlock LACE: the product evidence is already
+        valid, but the stale blocked RUNTIME task prevents the LACE gate from
+        recalculating and enqueueing the next cycle. This stays intentionally
+        narrow so arbitrary blocked product tasks are not completed by accident.
+        """
+
+        task_id = str(task.get("id") or "")
+        if not task_id.startswith("RUNTIME-"):
+            return False
+        goal_text = f"{task.get('title') or ''}\n{task.get('goal') or ''}".lower()
+        if "reparacion_controlada_de_cierre_runtime" not in goal_text:
+            return False
+        if not expected_files or not task.get("validation_commands"):
+            return False
+        for expected_file in expected_files:
+            normalized = str(expected_file or "").replace("\\", "/").lstrip("./")
+            parts = normalized.split("/")
+            if (
+                not normalized
+                or normalized.startswith("/")
+                or any(part in {"", ".", ".."} for part in parts)
+                or normalized.startswith("runtime/")
+            ):
+                return False
+        return True
 
     def _reconciled_task_checkpoint_key(self, task: Dict[str, Any]) -> str:
         task_id = str(task.get("id") or "")

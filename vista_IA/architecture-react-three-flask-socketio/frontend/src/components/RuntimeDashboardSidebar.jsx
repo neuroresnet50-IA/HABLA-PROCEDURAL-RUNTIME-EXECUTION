@@ -20,6 +20,17 @@ function normalizeProjectLabel(project) {
   return project?.name || project?.slug || "Proyecto";
 }
 
+function getProjectSearchText(project) {
+  return [
+    project?.name,
+    project?.slug,
+    project?.relativePath,
+    project?.path,
+    project?.demoLabel,
+    project?.status,
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
 function isDemoProject(project) {
   return Boolean(project?.systemDemo || project?.nativeExample || project?.demoLabel || PROTECTED_PROJECTS.has(project?.slug));
 }
@@ -46,12 +57,24 @@ export default function RuntimeDashboardSidebar({
 }) {
   const [openSections, setOpenSections] = useState(() => ({ demoProjects: true, realProjects: true, runtime: true }));
   const [deleteModal, setDeleteModal] = useState(null);
+  const [projectSearch, setProjectSearch] = useState("");
   const sortedProjects = useMemo(
     () => [...projects].sort((a, b) => normalizeProjectLabel(a).localeCompare(normalizeProjectLabel(b))),
     [projects]
   );
-  const demoProjects = useMemo(() => sortedProjects.filter(isDemoProject), [sortedProjects]);
-  const realProjects = useMemo(() => sortedProjects.filter((project) => !isDemoProject(project)), [sortedProjects]);
+  const latestGeneratedProject = useMemo(
+    () => [...projects]
+      .filter((project) => project?.slug && !project.systemDemo && !project.learningMode && !project.evaluatedProject)
+      .sort((a, b) => String(b.generatedAt || b.updatedAt || b.createdAt || "").localeCompare(String(a.generatedAt || a.updatedAt || a.createdAt || "")))[0] || null,
+    [projects]
+  );
+  const searchQuery = projectSearch.trim().toLowerCase();
+  const searchedProjects = useMemo(
+    () => searchQuery ? sortedProjects.filter((project) => getProjectSearchText(project).includes(searchQuery)) : sortedProjects,
+    [sortedProjects, searchQuery]
+  );
+  const demoProjects = useMemo(() => searchedProjects.filter(isDemoProject), [searchedProjects]);
+  const realProjects = useMemo(() => searchedProjects.filter((project) => !isDemoProject(project)), [searchedProjects]);
 
   function toggleSection(sectionId) {
     setOpenSections((current) => ({ ...current, [sectionId]: !current[sectionId] }));
@@ -134,6 +157,38 @@ export default function RuntimeDashboardSidebar({
       </div>
 
       <div className="runtime-dashboard-scroll" tabIndex="0">
+        <section className="runtime-dashboard-card runtime-project-search-card">
+          <label className="runtime-project-search">
+            <span>Buscar proyecto</span>
+            <input
+              value={projectSearch}
+              onChange={(event) => setProjectSearch(event.target.value)}
+              placeholder="sesion, continuity, drone, mario..."
+              autoComplete="off"
+            />
+          </label>
+          <div className="runtime-project-search-actions">
+            {latestGeneratedProject ? (
+              <button
+                type="button"
+                className="runtime-dashboard-action"
+                onClick={() => onSelectProject?.(latestGeneratedProject.slug)}
+                title={`Seleccionar ultimo generado: ${latestGeneratedProject.slug}`}
+              >
+                Ultimo generado
+              </button>
+            ) : null}
+            {projectSearch ? (
+              <button type="button" className="runtime-dashboard-action ghost" onClick={() => setProjectSearch("")}>
+                Limpiar
+              </button>
+            ) : null}
+          </div>
+          <small className="runtime-project-search-meta">
+            {searchQuery ? `${searchedProjects.length} coincidencia(s)` : `${projects.length} proyecto(s) cargado(s)`}
+          </small>
+        </section>
+
         <section className="runtime-dashboard-card is-main">
           <button type="button" className="runtime-dashboard-toggle" onClick={() => toggleSection("demoProjects")} aria-expanded={Boolean(openSections.demoProjects)}>
             <span>PROYECTOS DEMO</span>

@@ -1,102 +1,119 @@
 {
   "checkpoint_key": "lace-closure-gate-pending",
-  "created_at": "2026-06-04T17:02:33Z",
+  "created_at": "2026-06-04T21:43:35Z",
   "payload": {
     "adaptive_lace": {
       "budget_source": "complexity-audit-kernel-v1",
-      "completed_cycles_observed": 0,
-      "configured_required_cycles": 10,
+      "completed_cycles_observed": 5,
+      "configured_required_cycles": 7,
       "early_exit": false,
       "early_exit_allowed": true,
-      "effective_required_cycles": 5,
-      "max_required_cycles": 10,
-      "min_required_cycles": 5,
+      "effective_required_cycles": 6,
+      "max_required_cycles": 7,
+      "min_required_cycles": 3,
       "quality_gate_issues": [
-        "scanner_ok",
-        "sandbox_ok"
+        "integrity_ok",
+        "findings_ok"
       ],
       "quality_gates_passed": false,
       "quality_score": 0,
       "quality_threshold": 85,
-      "reason": "minimum_cycles_pending",
+      "reason": "quality_gates_not_clear_next_cycle",
       "requires_human_review": false,
-      "target_required_cycles": 8
+      "target_required_cycles": 5
     },
-    "completed_cycles": 0,
-    "configured_required_cycles": 10,
+    "completed_cycles": 5,
+    "configured_required_cycles": 7,
     "enqueued_task_ids": [
-      "LACE-20260604-001"
+      "LACE-20260604-006"
     ],
     "lace_budget": {
       "confidence": 84,
-      "difficulty": "extradificil",
+      "difficulty": "dificil",
       "early_exit_allowed": true,
-      "legacy_session_required_cycles": 10,
-      "max_cycles": 10,
-      "min_cycles": 5,
+      "legacy_session_required_cycles": 7,
+      "max_cycles": 7,
+      "min_cycles": 3,
       "policy_ceiling": 10,
       "policy_ceiling_applied": false,
       "quality_threshold": 85,
       "runtime_mode": "build",
       "source": "complexity-audit-kernel-v1",
-      "target_cycles": 8
+      "target_cycles": 5
     },
     "missing_cycles": [
-      1,
-      2,
-      3,
-      4,
-      5
+      6
     ],
     "quality_gates": {
       "details": {
         "findings": {
-          "activeFindings": 0,
+          "activeFindings": 168,
           "error": null,
           "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/artifacts/observer_findings.json"
         },
         "integrity": {
-          "blockers": [],
+          "blockers": [
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento insertado externamente.",
+            "Caracter o segmento insertado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento reemplazado externamente.",
+            "Caracter o segmento insertado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento eliminado externamente.",
+            "Caracter o segmento reemplazado externamente."
+          ],
           "error": null,
           "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/artifacts/file_integrity_report.json",
-          "totalFindings": 0,
-          "validation_passed": true
+          "totalFindings": 155,
+          "validation_passed": false
         },
         "non_lace_active_task_ids": [],
         "running_lace_task_ids": [],
         "sandbox": {
-          "error": "missing",
-          "healthcheck_ready": null,
+          "error": null,
+          "healthcheck_ready": true,
           "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/sandbox.json",
-          "ready": null,
-          "running": null,
-          "statusCode": null,
-          "url": null
+          "ready": true,
+          "running": true,
+          "statusCode": 200,
+          "url": "http://127.0.0.1:5618/"
         },
         "scanner": {
-          "blockers": null,
-          "error": "missing",
+          "blockers": [],
+          "error": null,
           "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/artifacts/final_code_scanner_report.json",
-          "scrolls_to_last_line": null,
-          "validation_passed": null,
-          "visual_playback": null
+          "scrolls_to_last_line": true,
+          "validation_passed": true,
+          "visual_playback": "magnifier_line_by_line_to_last_line"
         },
         "task_status_counts": {
-          "completed": 1
+          "completed": 10
         }
       },
-      "findings_ok": true,
-      "integrity_ok": true,
+      "findings_ok": false,
+      "integrity_ok": false,
       "issues": [
-        "scanner_ok",
-        "sandbox_ok"
+        "integrity_ok",
+        "findings_ok"
       ],
       "passed": false,
       "queue_idle": true,
-      "sandbox_ok": false,
-      "scanner_ok": false
+      "sandbox_ok": true,
+      "scanner_ok": true
     },
     "reason": "lace_cycles_pending",
-    "required_cycles": 5
+    "required_cycles": 6
   }
 }

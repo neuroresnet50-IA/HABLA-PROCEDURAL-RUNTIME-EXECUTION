@@ -18,6 +18,7 @@ BROOM_COMMAND_NAME = "to-sweep-with-a-broom"
 TRANSIENT_STATUSES = {"preparing", "running"}
 BLOCKED_STATUSES = {"blocked"}
 FAILED_STATUSES = {"failed"}
+LACE_SPLIT_TASK_PATTERN = re.compile(r"^(LACE-\d{8}-(\d{3}))-SPLIT-\d{3}$")
 
 
 def utc_now() -> str:
@@ -62,9 +63,16 @@ def sweep_with_broom(
     state = _read_json_object(state_path)
     queue = _read_json_list(queue_path)
     history_tail = _latest_jsonl(history_path)
+    history_events = _read_jsonl_objects(history_path)
     failure_tail = _latest_jsonl(failures_path)
     current_task_id = _choose_current_task_id(task_id, state, queue, history_tail)
     report["taskId"] = current_task_id or str(task_id or "")
+
+    defer_actions = _defer_invalid_lace_split_tasks(queue, project_path, history_events, current_task_id)
+    if defer_actions:
+        report["actions"].extend(defer_actions)
+        if not dry_run:
+            _atomic_write_json(queue_path, queue)
 
     queue_status = {str(item.get("id")): str(item.get("status") or "") for item in queue if isinstance(item, dict)}
     queue_ids = set(queue_status)
@@ -107,6 +115,63 @@ def sweep_with_broom(
         _atomic_write_json(latest_path, report)
     return report
 
+
+
+def _defer_invalid_lace_split_tasks(
+    queue: list[Any],
+    project_path: Path,
+    history_events: list[dict[str, Any]],
+    current_task_id: str | None,
+) -> list[dict[str, Any]]:
+    completed_ids = {
+        str(item.get("id") or "")
+        for item in queue
+        if isinstance(item, dict) and item.get("status") == "completed" and str(item.get("id") or "")
+    }
+    for event in history_events:
+        result = event.get("result") if isinstance(event, dict) else None
+        if not isinstance(result, dict):
+            continue
+        task_id = str(result.get("task_id") or "")
+        if task_id and result.get("completed") is True and result.get("validation_passed") is True:
+            completed_ids.add(task_id)
+
+    actions: list[dict[str, Any]] = []
+    for item in queue:
+        if not isinstance(item, dict):
+            continue
+        task_id = str(item.get("id") or "")
+        match = LACE_SPLIT_TASK_PATTERN.match(task_id)
+        if not match:
+            continue
+        if task_id == current_task_id and item.get("status") in TRANSIENT_STATUSES:
+            continue
+        if item.get("status") not in BLOCKED_STATUSES | FAILED_STATUSES:
+            continue
+
+        parent_task_id = match.group(1)
+        cycle_number = int(match.group(2))
+        if parent_task_id not in completed_ids:
+            continue
+        cycle_doc = project_path / "docs" / "lace_cycles" / f"ciclo-{cycle_number:02d}.md"
+        checkpoint_dir = project_path / "runtime" / "checkpoints"
+        checkpoint_paths = list(checkpoint_dir.glob(f"lace-cycle-{cycle_number:03d}-*.json"))
+        if not cycle_doc.is_file() or not checkpoint_paths:
+            continue
+
+        before = str(item.get("status") or "")
+        item["status"] = "deferred"
+        actions.append({
+            "action": "defer_invalid_lace_split_task",
+            "taskId": task_id,
+            "parentTaskId": parent_task_id,
+            "before": before,
+            "after": "deferred",
+            "reason": "parent_lace_cycle_validated_and_split_task_is_invalid_recovery_residue",
+            "cycleDoc": _relative_to_project(project_path, cycle_doc),
+            "checkpointCount": len(checkpoint_paths),
+        })
+    return actions
 
 def _reconcile_project_state(state: dict[str, Any], queue_status: dict[str, str], current_task_id: str | None) -> list[dict[str, Any]]:
     actions: list[dict[str, Any]] = []
@@ -190,6 +255,24 @@ def _read_json_list(path: Path) -> list[Any]:
         return value["tasks"]
     return []
 
+
+
+def _read_jsonl_objects(path: Path) -> list[dict[str, Any]]:
+    try:
+        lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return []
+    events: list[dict[str, Any]] = []
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            events.append(payload)
+    return events
 
 def _latest_jsonl(path: Path) -> dict[str, Any] | None:
     try:

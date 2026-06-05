@@ -350,3 +350,408 @@ Blockers o riesgos:
 
 Punto de reanudacion:
 - El control plane debe liberar el lock, resolver integrity de `docs/habla-session.md` con recovery controlado o decision humana, reintentar `sniper --dry-run`, reejecutar scanner final actual que incluya `docs/closure_repairs/closure-repair-20260604201914.md`, generar typewriter final si aplica, encolar ciclos LACE pendientes y reintentar el gate de cierre solo cuando validator, scanner, sandbox, integrity, findings, LACE y checkpoint final tengan evidencia real.
+
+## 2026-06-04T13:56:35-07:00 - LACE-20260604-002
+
+Solicitud recibida:
+- Completar el ciclo LACE 02 como micro-tarea acotada. Actualizar `LACE_LOG.md` con `PROBLEMAS`, `MEJORA` y `COMPLETADO` usando evidencia real, sin convertir LACE en tarea monolitica ni modificar producto salvo mejora verificable.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `LACE.md`, `LACE_LOG.md` y `PLANS.md` del system root permitido.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity` y `scanner`.
+- Se verifico sandbox por `runtime/sandbox.json` y HTTP directo contra `http://127.0.0.1:5618/`.
+- Se creo `docs/lace_cycles/ciclo-02.md` con los marcadores requeridos para cierre LACE 02.
+- Se actualizo `LACE_LOG.md` con `[CICLO-2 PROBLEMAS]`, `[CICLO-2 MEJORA]` y `[CICLO-2 COMPLETADO]`.
+- Se intento una mejora acotada en `frontend/app.js`, pero se revirtio al comprobar que integrity la marcaba como escritura no registrada; el frontend queda sin cambio neto.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/lace_cycles/ciclo-02.md`
+
+Archivos modificados:
+- `LACE_LOG.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Archivos tocados sin cambio neto:
+- `frontend/app.js`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- Registros automaticos de herramientas bajo `runtime/agent_tool_invocations.jsonl` o artefactos de politica.
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-02.md'); log=Path('LACE_LOG.md'); assert log.exists(); assert doc.exists(); ..."`: OK.
+- `node --check frontend/app.js`: OK.
+- `git diff -- frontend/app.js`: OK, sin salida.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `blockers=[]`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py`: OK, `6 passed`.
+- Sandbox local por `runtime/sandbox.json` + HTTP directo: OK, `running=true`, `ready=true`, `status=200`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py findings sesion-20260604162627`: OK como herramienta, `activeFindings=12`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 integrity sesion-20260604162627`: OK como herramienta, `totalFindings=12`, `modifiedFiles=1`, `registeredWrites=0`, archivo `docs/habla-session.md`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO, `statusCode=423`, `error=project_locked`.
+
+Resultado real de validacion:
+- Las validaciones declaradas para entregables y LACE 02 pasaron.
+- El producto frontend existente sigue pasando sintaxis y browser smoke.
+- Sandbox y pytest enfocado estan OK.
+- No quedo cambio neto en `frontend/app.js`.
+- Integrity/findings siguen con hallazgos heredados sobre `docs/habla-session.md`, no introducidos por esta tarea.
+
+Blockers o riesgos:
+- Scanner canonico no se puede ejecutar desde worker activo: `statusCode=423`, `error=project_locked`.
+- Integrity heredada: `totalFindings=12`, `modifiedFiles=1`, `registeredWrites=0`, archivo `docs/habla-session.md`.
+- Findings heredados: `activeFindings=12`, fuente `integrity`.
+- Faltan ciclos LACE posteriores; esta tarea solo cierra el ciclo 02.
+- El checkpoint y el TaskResult oficial deben ser persistidos por el control plane.
+
+Punto de reanudacion:
+- El control plane debe registrar `LACE-20260604-002`, encolar `LACE-20260604-003` como micro-tarea separada, liberar lock antes de reintentar scanner, y tratar `docs/habla-session.md` con recovery controlado o decision humana.
+
+## 2026-06-04T14:10:47-07:00 - LACE-20260604-003
+
+Solicitud recibida:
+- Completar el ciclo LACE 03 como micro-tarea acotada. Actualizar `LACE_LOG.md` con `PROBLEMAS`, `MEJORA` y `COMPLETADO` usando evidencia real, sin convertir LACE en tarea monolitica ni modificar producto salvo mejora verificable.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `LACE.md`, `LACE_LOG.md`, `docs/lace_cycles/ciclo-02.md`, el `PLANS.md` del system root permitido y la directiva persistida de `LACE-20260604-003`.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity` y `scanner`.
+- Se verifico sandbox por `runtime/sandbox.json` y HTTP directo contra `http://127.0.0.1:5618/`.
+- Se creo `docs/lace_cycles/ciclo-03.md` con los marcadores requeridos para cierre LACE 03.
+- Se actualizo `LACE_LOG.md` con `[CICLO-3 PROBLEMAS]`, `[CICLO-3 MEJORA]` y `[CICLO-3 COMPLETADO]`.
+- No se modifico producto frontend porque `frontend/*` no tenia hallazgos de integrity y las validaciones de UI ya pasaban.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/lace_cycles/ciclo-03.md`
+
+Archivos modificados:
+- `LACE_LOG.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Archivos verificados sin cambio de producto:
+- `frontend/app.js`
+- `frontend/index.html`
+- `frontend/styles.css`
+- `docs/closure_repairs/closure-repair-20260604172851.md`
+- `docs/closure_repairs/closure-repair-20260604182205.md`
+- `docs/closure_repairs/closure-repair-20260604201914.md`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- Registros automaticos de herramientas bajo `runtime/agent_tool_invocations.jsonl` o artefactos de politica.
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-03.md'); log=Path('LACE_LOG.md'); assert log.exists(); assert doc.exists(); ..."`: OK.
+- `node --check frontend/app.js`: OK.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `blockers=[]`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/test_code_scanner_service.py /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/test_integrity_service.py /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/test_runtime_sandbox.py`: fallo por imports al ejecutarse desde el workspace de tarea.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py` desde system root: OK, `6 passed`.
+- Sandbox local por `runtime/sandbox.json` + HTTP directo: OK, `running=true`, `ready=true`, `status=200`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py observer-status`: OK, Observer `waiting_worker`, `rootCause=active_worker_running`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py findings sesion-20260604162627`: OK como herramienta, `activeFindings=155`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 integrity sesion-20260604162627`: OK como herramienta, `totalFindings=155`, `modifiedFiles=3`, `registeredWrites=0`, rutas `ULTIMO_CONTEXTO_CODEX.md`, `docs/habla-session.md`, `recuperacioncontexto.md`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO, `statusCode=423`, `ok=false`, `error=project_locked`.
+
+Resultado real de validacion:
+- Las validaciones declaradas para entregables, LACE 03 y browser smoke pasaron.
+- El producto frontend existente sigue pasando sintaxis y browser smoke.
+- Sandbox y pytest enfocado estan OK.
+- No hubo cambios de producto en `frontend/*`.
+- Integrity/findings siguen con hallazgos activos de baseline sobre archivos de contexto/documentacion, no sobre `frontend/*`.
+
+Blockers o riesgos:
+- Scanner canonico no se puede ejecutar desde worker activo: `statusCode=423`, `error=project_locked`.
+- Integrity activa: `totalFindings=155`, `modifiedFiles=3`, `registeredWrites=0`, rutas `ULTIMO_CONTEXTO_CODEX.md`, `docs/habla-session.md`, `recuperacioncontexto.md`.
+- Findings activos: `activeFindings=155`, fuente `integrity`.
+- Faltan ciclos LACE posteriores; esta tarea solo cierra el ciclo 03.
+- El checkpoint y el TaskResult oficial deben ser persistidos por el control plane.
+
+Punto de reanudacion:
+- El control plane debe registrar `LACE-20260604-003`, encolar `LACE-20260604-004` como micro-tarea separada, liberar lock antes de reintentar scanner y tratar los hallazgos de integrity con recovery controlado o decision humana.
+
+## 2026-06-04T14:25:20-07:00 - LACE-20260604-004
+
+Solicitud recibida:
+- Completar el ciclo LACE 04 como micro-tarea acotada. Actualizar `LACE_LOG.md` con `PROBLEMAS`, `MEJORA` y `COMPLETADO` usando evidencia real, sin convertir LACE en tarea monolitica ni modificar producto salvo mejora verificable.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `LACE.md`, `LACE_LOG.md`, `docs/lace_cycles/ciclo-03.md`, el `PLANS.md` del system root permitido y la directiva persistida de `LACE-20260604-004`.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity` y `scanner`.
+- Se verifico sandbox por `runtime/sandbox.json` y HTTP directo contra `http://127.0.0.1:5618/`.
+- Se creo `docs/lace_cycles/ciclo-04.md` con los marcadores requeridos para cierre LACE 04.
+- Se actualizo `LACE_LOG.md` con `[CICLO-4 PROBLEMAS]`, `[CICLO-4 MEJORA]` y `[CICLO-4 COMPLETADO]`.
+- No se modifico producto frontend porque `frontend/*` conserva hashes y las validaciones de UI pasaron.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/lace_cycles/ciclo-04.md`
+
+Archivos modificados:
+- `LACE_LOG.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Archivos verificados sin cambio de producto:
+- `frontend/app.js`
+- `frontend/index.html`
+- `frontend/styles.css`
+- `docs/closure_repairs/closure-repair-20260604172851.md`
+- `docs/closure_repairs/closure-repair-20260604182205.md`
+- `docs/closure_repairs/closure-repair-20260604201914.md`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- Registros automaticos de herramientas bajo `runtime/agent_tool_invocations.jsonl` o artefactos de politica.
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-04.md'); log=Path('LACE_LOG.md'); assert log.exists(); assert doc.exists(); ..."`: OK; un intento previo fallo por `SyntaxError` en comillas del comando, corregido sin cambio de contenido.
+- `node --check frontend/app.js`: OK.
+- `git diff -- frontend/index.html frontend/styles.css frontend/app.js`: OK, sin salida.
+- `sha256sum frontend/index.html frontend/styles.css frontend/app.js`: OK, hashes `a1954734d8b94cb4acc79d9163c67d466afda4931199931be44784899e5295d1`, `78b542be71ef82d5d6c8842444bdb1432a94daf4d0fd2674284826a54c675f35`, `92e6f8c486d40bf298cdf0c5e4823337c243d642c59c25e1279c509b12f2d5e9`.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `blockers=[]`, `render_mode=fallback-2d`, `distance_text="2139 m"`, `speed_text="0 u/s"`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py` desde system root: OK, `6 passed`.
+- Sandbox local por `runtime/sandbox.json` + HTTP directo: OK, `running=true`, `ready=true`, `status=200`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py observer-status`: OK, Observer `waiting_worker`, `rootCause=active_worker_running`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py findings sesion-20260604162627`: OK como herramienta, `activeFindings=135`, fuente `integrity`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 integrity sesion-20260604162627`: OK como herramienta, `totalFindings=135`, `modifiedFiles=3`, `registeredWrites=0`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO, `statusCode=423`, `ok=false`, `error=project_locked`.
+
+Resultado real de validacion:
+- Las validaciones declaradas para entregables, LACE 04 y browser smoke pasaron.
+- El producto frontend existente sigue pasando sintaxis y browser smoke.
+- Sandbox y pytest enfocado estan OK.
+- No hubo cambios de producto en `frontend/*`.
+- Integrity/findings siguen con hallazgos activos de baseline sobre archivos de contexto/documentacion, no sobre `frontend/*`.
+
+Blockers o riesgos:
+- Scanner canonico no se puede ejecutar desde worker activo: `statusCode=423`, `error=project_locked`.
+- Integrity activa: `totalFindings=135`, `modifiedFiles=3`, `registeredWrites=0`.
+- Findings activos: `activeFindings=135`, fuente `integrity`.
+- Faltan ciclos LACE posteriores; esta tarea solo cierra el ciclo 04.
+- El checkpoint y el TaskResult oficial deben ser persistidos por el control plane.
+
+Punto de reanudacion:
+- El control plane debe registrar `LACE-20260604-004`, encolar `LACE-20260604-005` como micro-tarea separada, liberar lock antes de reintentar scanner y tratar los hallazgos de integrity con recovery controlado o decision humana.
+
+## 2026-06-04T14:38:06-07:00 - LACE-20260604-005
+
+Solicitud recibida:
+- Completar el ciclo LACE 05 como micro-tarea acotada. Actualizar `LACE_LOG.md` con `PROBLEMAS`, `MEJORA` y `COMPLETADO` usando evidencia real, sin convertir LACE en tarea monolitica ni modificar producto salvo mejora verificable.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `LACE.md`, `LACE_LOG.md`, `docs/lace_cycles/ciclo-04.md`, el `PLANS.md` del system root permitido y los entregables declarados.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity` y `scanner`.
+- Se verifico sandbox por `runtime/sandbox.json` y HTTP directo contra `http://127.0.0.1:5618/`.
+- Se creo `docs/lace_cycles/ciclo-05.md` con los marcadores requeridos para cierre LACE 05.
+- Se actualizo `LACE_LOG.md` con `[CICLO-5 PROBLEMAS]`, `[CICLO-5 MEJORA]` y `[CICLO-5 COMPLETADO]`.
+- No se modifico producto frontend porque `frontend/*` conserva hashes y las validaciones de UI pasaron.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/lace_cycles/ciclo-05.md`
+
+Archivos modificados:
+- `LACE_LOG.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Archivos verificados sin cambio de producto:
+- `frontend/app.js`
+- `frontend/index.html`
+- `frontend/styles.css`
+- `docs/closure_repairs/closure-repair-20260604172851.md`
+- `docs/closure_repairs/closure-repair-20260604182205.md`
+- `docs/closure_repairs/closure-repair-20260604201914.md`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- Registros automaticos de herramientas bajo `runtime/agent_tool_invocations.jsonl` o artefactos de politica.
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-05.md'); log=Path('LACE_LOG.md'); assert log.exists(); assert doc.exists(); ..."`: OK.
+- `node --check frontend/app.js`: OK.
+- `sha256sum frontend/index.html frontend/styles.css frontend/app.js`: OK, hashes `a1954734d8b94cb4acc79d9163c67d466afda4931199931be44784899e5295d1`, `78b542be71ef82d5d6c8842444bdb1432a94daf4d0fd2674284826a54c675f35`, `92e6f8c486d40bf298cdf0c5e4823337c243d642c59c25e1279c509b12f2d5e9`.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `blockers=[]`, `render_mode=fallback-2d`, `distance_text="2139 m"`, `speed_text="0 u/s"`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py` desde system root: OK, `6 passed`.
+- Sandbox local por `runtime/sandbox.json` + HTTP directo: OK, `running=true`, `ready=true`, `status=200`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py observer-status`: OK, Observer `waiting_worker`, `rootCause=active_worker_running`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py findings sesion-20260604162627`: OK como herramienta, `activeFindings=160`, fuente `integrity`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 integrity sesion-20260604162627`: OK como herramienta, `totalFindings=160`, `modifiedFiles=3`, `registeredWrites=0`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO, `statusCode=423`, `ok=false`, `error=project_locked`.
+
+Resultado real de validacion:
+- Las validaciones declaradas para entregables, LACE 05 y browser smoke pasaron.
+- El producto frontend existente sigue pasando sintaxis y browser smoke.
+- Sandbox y pytest enfocado estan OK.
+- No hubo cambios de producto en `frontend/*`.
+- Integrity/findings siguen con hallazgos activos de baseline sobre archivos de contexto/documentacion, no sobre `frontend/*`.
+
+Blockers o riesgos:
+- Scanner canonico no se puede ejecutar desde worker activo: `statusCode=423`, `error=project_locked`.
+- Integrity activa: `totalFindings=160`, `modifiedFiles=3`, `registeredWrites=0`.
+- Findings activos: `activeFindings=160`, fuente `integrity`.
+- Faltan ciclos LACE posteriores; esta tarea solo cierra el ciclo 05.
+- El checkpoint y el TaskResult oficial deben ser persistidos por el control plane.
+
+Punto de reanudacion:
+- El control plane debe registrar `LACE-20260604-005`, encolar `LACE-20260604-006` como micro-tarea separada, liberar lock antes de reintentar scanner y tratar los hallazgos de integrity con recovery controlado o decision humana.
+
+## 2026-06-04T14:56:53-07:00 - LACE-20260604-006
+
+Solicitud recibida:
+- Completar el ciclo LACE 06 como micro-tarea acotada. Actualizar `LACE_LOG.md` con `PROBLEMAS`, `MEJORA` y `COMPLETADO` usando evidencia real, sin convertir LACE en tarea monolitica ni modificar producto salvo mejora verificable.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `LACE.md`, `LACE_LOG.md`, el `PLANS.md` del system root permitido, `docs/lace_cycles/ciclo-05.md` por continuidad y los entregables declarados.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity` y `scanner`.
+- Se verifico sandbox por `runtime/sandbox.json` y HTTP directo contra `http://127.0.0.1:5618/`.
+- Se creo `docs/lace_cycles/ciclo-06.md` con los marcadores requeridos para cierre LACE 06.
+- Se actualizo `LACE_LOG.md` con `[CICLO-6 PROBLEMAS]`, `[CICLO-6 MEJORA]` y `[CICLO-6 COMPLETADO]`.
+- No se modifico producto frontend porque `frontend/*` conserva hashes y las validaciones de UI pasaron.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/lace_cycles/ciclo-06.md`
+
+Archivos modificados:
+- `LACE_LOG.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Archivos verificados sin cambio de producto:
+- `frontend/app.js`
+- `frontend/index.html`
+- `frontend/styles.css`
+- `docs/closure_repairs/closure-repair-20260604172851.md`
+- `docs/closure_repairs/closure-repair-20260604182205.md`
+- `docs/closure_repairs/closure-repair-20260604201914.md`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- Registros automaticos de herramientas bajo `runtime/agent_tool_invocations.jsonl` o artefactos de politica.
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-06.md'); log=Path('LACE_LOG.md'); assert log.exists(); assert doc.exists(); ..."`: OK.
+- `node --check frontend/app.js`: OK.
+- `sha256sum frontend/index.html frontend/styles.css frontend/app.js`: OK, hashes `a1954734d8b94cb4acc79d9163c67d466afda4931199931be44784899e5295d1`, `78b542be71ef82d5d6c8842444bdb1432a94daf4d0fd2674284826a54c675f35`, `92e6f8c486d40bf298cdf0c5e4823337c243d642c59c25e1279c509b12f2d5e9`.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `blockers=[]`, `render_mode=fallback-2d`, `distance_text="2139 m"`, `speed_text="0 u/s"`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py` desde system root: OK, `6 passed`.
+- Sandbox local por `runtime/sandbox.json` + HTTP directo: OK, `running=true`, `ready=true`, `status=200`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py observer-status`: OK, Observer `waiting_worker`, `rootCause=active_worker_running`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py findings sesion-20260604162627`: primer intento `ok=false`, `error=timeout`; reintento OK, `statusCode=200`, `activeFindings=155`, fuente `integrity`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 300 integrity sesion-20260604162627`: OK como herramienta ocupada, `statusCode=202`, `busy=true`, `totalFindings=155`, `modifiedFiles=3`, `registeredWrites=0`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO antes y despues de escritura, `statusCode=423`, `ok=false`, `error=project_locked`.
+
+Resultado real de validacion:
+- Las validaciones declaradas para entregables, LACE 06 y browser smoke pasaron.
+- El producto frontend existente sigue pasando sintaxis y browser smoke.
+- Sandbox y pytest enfocado estan OK.
+- No hubo cambios de producto en `frontend/*`.
+- Integrity/findings siguen con hallazgos activos de baseline sobre archivos de contexto/documentacion, no sobre `frontend/*`.
+
+Blockers o riesgos:
+- Scanner canonico no se puede ejecutar desde worker activo: `statusCode=423`, `error=project_locked`.
+- Integrity queda ocupada con reporte compacto: `totalFindings=155`, `modifiedFiles=3`, `registeredWrites=0`.
+- Findings activos: `activeFindings=155`, fuente `integrity`.
+- Faltan ciclos LACE posteriores; esta tarea solo cierra el ciclo 06.
+- El checkpoint y el TaskResult oficial deben ser persistidos por el control plane.
+
+Punto de reanudacion:
+- El control plane debe registrar `LACE-20260604-006`, encolar `LACE-20260604-007` como micro-tarea separada, liberar el lock antes de reintentar scanner y tratar los hallazgos de integrity con recovery controlado o decision humana.
+
+## 2026-06-05T07:11:10-07:00 - CLOSURE-REPAIR-20260604222904
+
+Solicitud recibida:
+- Reparar cierre bloqueado desde certificado runtime. Diagnosticar locks, scanner, integrity, sandbox, validator y LACE usando evidencia real. Crear `docs/closure_repairs/closure-repair-20260604222904.md`. No forzar `completed` si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido.
+
+Acciones realizadas:
+- Se leyeron `ULTIMO_CONTEXTO_CODEX.md`, entradas recientes de `recuperacioncontexto.md`, `PLANS.md` del system root permitido, `LACE.md`, `LACE_LOG.md`, `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, checkpoints y artifacts.
+- Se emitieron eventos reales del bridge visual: `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
+- Se ejecutaron herramientas internas reales: `health`, `observer-status`, `findings`, `integrity`, `scanner` y `sniper --dry-run`.
+- Se verifico sandbox por `runtime/sandbox.json`, HTTP directo contra `http://127.0.0.1:5618/` y browser smoke.
+- Se creo `docs/closure_repairs/closure-repair-20260604222904.md` con diagnostico auditable y tareas acotadas recomendadas.
+- Se actualizo `ULTIMO_CONTEXTO_CODEX.md` con el resumen corto actual.
+- Se ejecuto `to-sweep-with-a-broom` en fase `after_task`; no elimino archivos ni evidencia.
+- No se leyo ni expuso contenido de `docs/habla-session.md`; solo se registraron metadatos de integrity/finding por CyberLACE.
+- No se editaron manualmente `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+
+Archivos creados:
+- `docs/closure_repairs/closure-repair-20260604222904.md`
+
+Archivos modificados:
+- `ULTIMO_CONTEXTO_CODEX.md`
+- `recuperacioncontexto.md`
+
+Artefactos actualizados por herramientas/backend:
+- `runtime/artifacts/file_integrity_report.json`
+- `runtime/artifacts/observer_findings.json`
+- `runtime/artifacts/browser_render_smoke.json`
+- `runtime/artifacts/browser_render_smoke.png`
+- `runtime/artifacts/broom/20260605T141235.979199Z-CLOSURE-REPAIR-20260604222904-after_task.json`
+- `runtime/agent_tool_invocations.jsonl`
+
+Validacion corta ejecutada:
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604222904.md'] if not Path(p).is_file()]; assert not missing, missing"`: OK.
+- `python3 -B -c "... secciones requeridas del informe ..."`: OK, 208 lineas, 14514 caracteres.
+- `LC_ALL=C rg -n '[^\\x00-\\x7F]' docs/closure_repairs/closure-repair-20260604222904.md`: sin coincidencias, salida 1 por no encontrar no-ASCII.
+- `curl -fsS -o /tmp/sesion-20260604162627-sandbox-health.html -w '%{http_code} %{url_effective}\\n' http://127.0.0.1:5618/`: OK, `200 http://127.0.0.1:5618/`.
+- `node --check frontend/app.js`: OK.
+- `python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day`: OK, `ok=true`, `blockers=[]`, `render_mode=fallback-2d`, `distance_text="2139 m"`, `speed_text="0 u/s"`, `event_text="Inicio"`.
+- `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider backend/test_code_scanner_service.py backend/test_integrity_service.py backend/test_runtime_sandbox.py` desde system root: OK, `6 passed in 3.11s`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py observer-status`: OK, Observer `waiting_worker`, `rootCause=active_worker_running`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 findings sesion-20260604162627`: OK, `activeFindings=90`, `totalFindings=93` en salida compacta.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 integrity sesion-20260604162627`: OK como herramienta, `totalFindings=90`, `modifiedFiles=1`, `registeredWrites=0`, `validation.passed=false`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py --timeout-seconds 120 scanner sesion-20260604162627`: BLOQUEADO, `statusCode=423`, `ok=false`, `error=project_locked`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py sniper sesion-20260604162627 --dry-run`: BLOQUEADO, `statusCode=423`, `ok=false`, `error=project_locked`.
+- `python3 /home/neurodriver/.../orchestrator/agent_tools.py to-sweep-with-a-broom sesion-20260604162627 --task-id CLOSURE-REPAIR-20260604222904 --phase after_task`: OK, `statusCode=200`, `ok=true`, `actions=[]`, `warnings=[]`.
+
+Resultado real de validacion:
+- El entregable requerido existe y paso la validacion esperada.
+- Sandbox, browser smoke, `node --check` y pytest enfocado estan OK.
+- Scanner final persistido existe y declara `validation.passed=true`, pero la invocacion fresca de scanner quedo bloqueada por lock.
+- Typewriter final persistido existe y declara `validation.passed=true`.
+- Integrity no esta limpia: `runtime/artifacts/file_integrity_report.json` reporta `totalFindings=90`, `modifiedFiles=1`, `registeredWrites=0`, sobre `docs/habla-session.md`.
+- Observer findings no esta limpio: artifact actual reporta `activeFindings=93`, `bySource.integrity=90`, `bySource.lint=3`.
+- LACE no esta completo para cierre: existen ciclos 01-06 y faltan ciclos 07-10; ademas `LACE-20260604-006-SPLIT-001` sigue bloqueada por CyberLACE.
+
+Blockers o riesgos:
+- `LACE-20260604-006-SPLIT-001` bloqueada por CyberLACE: `runtimeAction=QUARANTINE`, `severity=CRITICAL`, patron `fragmented_secret_reassembly`, muestra redactada.
+- Integrity activa sobre `docs/habla-session.md`; no se debe restaurar ni aceptar baseline manualmente desde este worker.
+- Scanner y Sniper no pueden reejecutarse mientras exista `project_locked`.
+- El checkpoint de esta tarea debe ser persistido por el control plane.
+- La politica/directiva LACE exige 10 ciclos; faltan 07-10.
+
+Punto de reanudacion:
+- El control plane debe liberar el lock del worker, retasar `LACE-20260604-006-SPLIT-001` con payload redactado/sintetico o validacion de arquitectura segura, ejecutar `sniper --dry-run`, decidir recovery de `docs/habla-session.md`, reejecutar scanner fresco, completar LACE 07-10 y despues reintentar cierre canonico.

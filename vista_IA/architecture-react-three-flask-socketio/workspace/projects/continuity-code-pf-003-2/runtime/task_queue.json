@@ -1,0 +1,41 @@
+[
+  {
+    "checkpoint_key": "runtime-20260605200955-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "runtime/complexity_audit.json",
+      "runtime/complexity_estimate.json"
+    ],
+    "goal": "Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.",
+    "id": "RUNTIME-20260605200955-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 20,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Crear estrategia de pruebas para una API REST",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260605200955-002-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260605200955-001"
+    ],
+    "expected_files": [
+      "docs/advanced_programming_case_003.md"
+    ],
+    "goal": "Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+    "id": "RUNTIME-20260605200955-002",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "blocked",
+    "timeout_seconds": 900,
+    "title": "Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  }
+]

@@ -7543,23 +7543,30 @@ def _project_display_name(project_dir: Path, fallback_slug: str) -> str:
     return fallback_slug
 
 
-def _build_retry_requirement(project_slug: str, retryable_task: Dict[str, Any]) -> str:
+def _build_retry_requirement(project_slug: str, retryable_task: Dict[str, Any], *, include_original_order: bool = True) -> str:
     expected_files = retryable_task.get("expectedFiles") if isinstance(retryable_task.get("expectedFiles"), list) else []
     validation_commands = retryable_task.get("validationCommands") if isinstance(retryable_task.get("validationCommands"), list) else []
     expected_label = "\n".join(f"- {item}" for item in expected_files) or "- usar los archivos del proyecto existente"
     validation_label = "\n".join(f"- {item}" for item in validation_commands) or "- ejecutar validacion real disponible"
-    return "\n\n".join(
-        [
-            "MODO EJECUCION AGENTICA CONTROLADA.",
-            f"Proyecto existente: {project_slug}.",
-            "No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales.",
-            f"Retomar la orden recuperada de la tarea {retryable_task.get('id')}. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo.",
-            "Orden original:\n" + str(retryable_task.get("goal") or "").strip(),
-            RETRY_REAL_BROWSER_RULE,
-            "Entregables esperados:\n" + expected_label,
-            "Validacion obligatoria:\n" + validation_label,
-        ]
-    )
+    lines = [
+        "MODO EJECUCION AGENTICA CONTROLADA.",
+        f"Proyecto existente: {project_slug}.",
+        "No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales.",
+        f"Retomar la orden recuperada de la tarea {retryable_task.get('id')}. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo.",
+    ]
+    if include_original_order:
+        lines.append("Orden original:\n" + str(retryable_task.get("goal") or "").strip())
+    else:
+        lines.extend([
+            "Orden original: bloqueada por CyberLACE; no se inserta en esta continuacion P_safe.",
+            "Objetivo seguro: usar exclusivamente el P_safe autorizado para reinterpretar la tarea y reparar el cierre.",
+        ])
+    lines.extend([
+        RETRY_REAL_BROWSER_RULE,
+        "Entregables esperados:\n" + expected_label,
+        "Validacion obligatoria:\n" + validation_label,
+    ])
+    return "\n\n".join(lines)
 
 
 @app.get("/api/agent/projects/<project_id>/retryable-task")
@@ -7651,7 +7658,7 @@ def _build_cyberlace_safe_continuation_requirement(
     safe_prompt = str(safe_prompt or "").strip()
     recovered_requirement = ""
     if retryable_task is not None:
-        recovered_requirement = _build_retry_requirement(project_slug, retryable_task)
+        recovered_requirement = _build_retry_requirement(project_slug, retryable_task, include_original_order=False)
     else:
         recovered_requirement = "\n\n".join(
             [

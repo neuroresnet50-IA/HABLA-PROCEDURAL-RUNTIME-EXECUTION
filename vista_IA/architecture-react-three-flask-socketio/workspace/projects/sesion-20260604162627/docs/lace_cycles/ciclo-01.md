@@ -46,3 +46,7 @@ MEMORIA EPISODICA:
 - Que no funciono: intentar scanner canonico durante la sesion activa; el runtime protege el proyecto con lock.
 - Que evitar en el proximo ciclo: cerrar documentacion LACE sin artefacto por ciclo y sin revalidacion posterior al cambio.
 Proximo ciclo: el control plane debe reintentar scanner postflight cuando libere el lock y encolar el siguiente ciclo LACE si sigue aplicando la politica de 10 ciclos.
+
+[TASK LACE-20260604-002 / CICLO 02]
+Rol publico: S06 LACE Docs -> S04 QA Browser -> S05 Observer.
+Alcance real del worker: completar el ciclo LACE 02 como micro-tarea acotada, con cierre auditable y sin convertir LACE en una tarea monolitica.

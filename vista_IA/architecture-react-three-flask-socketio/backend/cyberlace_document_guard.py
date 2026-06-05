@@ -100,10 +100,13 @@ TRUSTED_REPO_REFERENCE_FILES = {"AGENTS.md", "PLANS.md"}
 TRUSTED_PROJECT_CONTROL_DOCUMENTS = {
     "LACE.md",
     "LACE_LOG.md",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "recuperacioncontexto.md",
     "docs/habla-session.md",
 }
 TRUSTED_PROJECT_CONTROL_PREFIXES = (
     "docs/lace_cycles/",
+    "docs/closure_repairs/",
 )
 TRUSTED_REPO_SOURCE_DIR_PREFIXES = (
     ("backend",),

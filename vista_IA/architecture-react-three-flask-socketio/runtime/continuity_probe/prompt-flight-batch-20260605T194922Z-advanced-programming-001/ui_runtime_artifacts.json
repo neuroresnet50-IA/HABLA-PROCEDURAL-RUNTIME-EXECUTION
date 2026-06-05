@@ -1,0 +1,200 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "audit_version",
+        "bootstrap_tasks",
+        "complexity_audit",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "early_exit_allowed",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "lace_max_cycles",
+        "lace_min_cycles",
+        "lace_target_cycles",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "quality_threshold",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_design",
+        "timeout_seconds"
+      ],
+      "lineCount": 291,
+      "mtime": "2026-06-05T19:55:26Z",
+      "path": "workspace/projects/continuity-code-pf-001-2/runtime/complexity_estimate.json",
+      "sha256": "964d1c76b4c0db70868b5182e73e635d6dbad135f3f9b1b33799b264dfad9499",
+      "size": 8216,
+      "tail": "core\": 34,\n      \"confidence\": 88,\n      \"recommended_agents\": 2,\n      \"max_agents\": 8,\n      \"max_tasks\": 8,\n      \"timeout_seconds\": 900,\n      \"max_retries\": 3\n    },\n    \"validation_plan\": [\n      \"assert required artifact files exist\",\n      \"json-parse runtime/complexity_estimate.json and runtime/complexity_audit.json\",\n      \"unit-test enqueue preserves sequence\",\n      \"unit-test dequeue skips non-pending tasks and respects FIFO among dependency-ready pending tasks\",\n      \"unit-test timeout/retry is per task and records cause\",\n      \"unit-test smoke mode comes only from explicit config\"\n    ],\n    \"tool_evidence\": {\n      \"findings\": {\n        \"statusCode\": 200,\n        \"ok\": true,\n        \"activeFindings\": 0,\n        \"reportPath\": \"runtime/artifacts/observer_findings.json\"\n      },\n      \"integrity\": {\n        \"statusCode\": 200,\n        \"ok\": true,\n        \"totalFindings\": 0,\n        \"reportPath\": \"runtime/artifacts/file_integrity_report.json\"\n      },\n      \"scanner\": {\n        \"statusCode\": 423,\n        \"ok\": false,\n        \"blocker\": \"project_locked while active_worker_running; scanner must be retried by the control plane after worker completion\"\n      }\n    }\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-05T20:06:23Z",
+      "path": "workspace/projects/continuity-code-pf-001-2/runtime/failures.jsonl",
+      "sha256": "680f3f533e73b714b49e93fdd177b6ab9b3d801b3611ebe3facc3e69287e6014",
+      "size": 498,
+      "tail": "{\"failure\": {\"blocked_task_ids\": [\"RUNTIME-20260605194922-001\", \"LACE-20260605-001\"], \"checkpoint_key\": \"manual-stop-agent-1cad84cabc\", \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/checkpoints/manual-stop-agent-1cad84cabc.json\", \"failure_type\": \"manual_stop\", \"session_id\": \"agent-1cad84cabc\", \"task_id\": \"RUNTIME-20260605194922-001\"}, \"recorded_at\": \"2026-06-05T20:06:23Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 28,
+      "mtime": "2026-06-05T20:06:23Z",
+      "path": "workspace/projects/continuity-code-pf-001-2/runtime/project_state.json",
+      "sha256": "13bbd07a096b2bbaf9ce7010aac7d9661a43443fb840cd5c06e2d9f7e16f3e7d",
+      "size": 800,
+      "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260605194922-001\",\n    \"LACE-20260605-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-1cad84cabc\",\n    \"complexity-estimate\",\n    \"runtime-20260605194922-001-checkpoint\",\n    \"runtime-20260605194922-002-checkpoint\",\n    \"lace-closure-gate-pending\",\n    \"manual-stop-agent-1cad84cabc\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260605194922-001\",\n    \"RUNTIME-20260605194922-002\"\n  ],\n  \"created_at\": \"2026-06-05T19:49:22.792506+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-05T19:49:22.792506+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-1cad84cabc\",\n  \"project_id\": \"continuity-code-pf-001-2\",\n  \"schema_version\": 1,\n  \"status\": \"stopped\",\n  \"updated_at\": \"2026-06-05T20:06:23.235340+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-06-05T19:59:27Z",
+      "path": "workspace/projects/continuity-code-pf-001-2/runtime/task_history.jsonl",
+      "sha256": "d9da2df0fec344b4df5c06fa0e7d60e378993938cb7213eb636eaae2dfb4137d",
+      "size": 1042,
+      "tail": "{\"recorded_at\": \"2026-06-05T19:59:20Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_audit.json\", \"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260605194922-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-06-05T19:59:27Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/advanced_programming_case_001.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260605194922-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 63,
+      "mtime": "2026-06-05T20:06:23Z",
+      "path": "workspace/projects/continuity-code-pf-001-2/runtime/task_queue.json",
+      "sha256": "0acededdf13c643b20b860d1d25ba6f57cc9dbb8066638f8b26eddb5a7f3b796",
+      "size": 3045,
+      "tail": "ACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260605-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 99,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 01\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['LACE_LOG.md', 'docs/lace_cycles/ciclo-01.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "files",
+      "generatedAt",
+      "projectId",
+      "report_type",
+      "schema_version",
+      "summary",
+      "trigger",
+      "typewriter",
+      "validation"
+    ],
+    "lineCount": 76,
+    "mtime": "2026-06-05T20:06:34Z",
+    "path": "workspace/projects/continuity-code-pf-001-2/runtime/checkpoints/final-typewriter-checkpoint.json",
+    "sha256": "41827c04e080be855dc221eaed763380212af7155168aa3ebf04d92fc4b90c27",
+    "size": 2247,
+    "tail": "     \"sha256\": \"42742dfe1c9dc7dcecb1a7f576701db948411d2be4524de7903c7393f369fbd6\"\n    },\n    {\n      \"path\": \"ULTIMO_CONTEXTO_CODEX.md\",\n      \"language\": \"markdown\",\n      \"lineCount\": 30,\n      \"characterCount\": 1129,\n      \"sha256\": \"82be249022256e8f396b3f82117fad7c26f7897954cdd8bbf7b64a4fe53cc23e\"\n    },\n    {\n      \"path\": \"recuperacioncontexto.md\",\n      \"language\": \"markdown\",\n      \"lineCount\": 43,\n      \"characterCount\": 2741,\n      \"sha256\": \"917805a9d04dee4a15f0665a822545fde2a201044d71afc06d39860be3c61f6b\"\n    },\n    {\n      \"path\": \"docs/advanced_programming_case_001.md\",\n      \"language\": \"markdown\",\n      \"lineCount\": 7,\n      \"characterCount\": 469,\n      \"sha256\": \"db0480c21f24ab111dde685cf369387e013a0e9c3f809fce8fcab391f22bd73a\"\n    },\n    {\n      \"path\": \"LACE_LOG.md\",\n      \"language\": \"markdown\",\n      \"lineCount\": 75,\n      \"characterCount\": 7060,\n      \"sha256\": \"cc9b9bc01863d53fa7f8e779d21f5d85e73d76227fa1cc8acfbe08cf87ea6216\"\n    },\n    {\n      \"path\": \"docs/lace_cycles/ciclo-01.md\",\n      \"language\": \"markdown\",\n      \"lineCount\": 54,\n      \"characterCount\": 4445,\n      \"sha256\": \"52911f9bc54676a8ce5ca0d76f578bdfc011ddec54f8d4bdbf1ce52ca3e03736\"\n    }\n  ]\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 511,
+    "mtime": "2026-06-05T19:59:33Z",
+    "path": "workspace/projects/continuity-code-pf-001-2/runtime/directives/LACE-20260605-001-20260605T195933Z-031e257137f7.json",
+    "sha256": "44ab630dbbdbff275d60e36ca8f43a05296045dd70b9d422f2a3a270ae164dcc",
+    "size": 35073,
+    "tail": "rea monolitica ni modificar producto salvo mejora verificable.\",\n    \"id\": \"LACE-20260605-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 01\"\n  },\n  \"task_id\": \"LACE-20260605-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"lace-closure-gate-pending\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/checkpoints/lace-closure-gate-pending.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"031e257137f7bece1629f2eaf33f08ce5d1466bcae08650dfaa8df6fc2c09662\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blocked_task_ids": [
+        "RUNTIME-20260605194922-001",
+        "LACE-20260605-001"
+      ],
+      "checkpoint_key": "manual-stop-agent-1cad84cabc",
+      "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/checkpoints/manual-stop-agent-1cad84cabc.json",
+      "failure_type": "manual_stop",
+      "session_id": "agent-1cad84cabc",
+      "task_id": "RUNTIME-20260605194922-001"
+    },
+    "recorded_at": "2026-06-05T20:06:23Z"
+  },
+  "latestFailureIgnoredReason": "stale_failure_for_different_task:RUNTIME-20260605194922-001",
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-06-05T19:59:27Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/advanced_programming_case_001.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260605194922-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-001-2",
+  "runtimeDir": "workspace/projects/continuity-code-pf-001-2/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 333,
+    "mtime": "2026-06-05T20:06:23Z",
+    "path": "workspace/projects/continuity-code-pf-001-2/runtime/logs/agent-1cad84cabc-terminal.log",
+    "sha256": "cf63df2fb5b8a6124008d35f4fe40459c4d5e61edbd8fae41f04944a1022bb3f",
+    "size": 11411,
+    "tail": "/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/artifacts/tool_invocations/LACE-20260605-001-preflight-20260605T195934Z.json\",\n  \"reportPath\": null,\n  \"tool\": null,\n  \"actions\": null,\n  \"ignoredResidue\": null,\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    },\n    {\n      \"tool\": \"integrity\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    },\n    {\n      \"tool\": \"findings\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/artifacts/observer_findings.json\"\n    }\n  ]\n}\n[control-plane] Ejecutando tarea LACE-20260605-001 con timeout 900s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-2/runtime/directives/LACE-20260605-001-20260605T195933Z-031e257137f7.json.\n\n[agent] Sesion detenida por el usuario.\n"
+  }
+}

@@ -16,16 +16,16 @@ Reglas:
 Evidencia resumida del certificado:
 Certificado del runtime
 Cierre no certificado
-El estado canonico mantiene bloqueos activos: blocked_tasks=['RUNTIME-20260604171608-001'], queue_blocked=['RUNTIME-20260604171608-001'].
+El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260604-006-SPLIT-001'], queue_blocked=['LACE-20260604-006-SPLIT-001'].
 
 Estado: Bloqueado
 Proyecto: sesion-20260604162627
 Project slug: sesion-20260604162627
-Tarea final: CLOSURE-REPAIR-20260604182205
+Tarea final: LACE-20260604-006-SPLIT-008
 Validacion: validacion pasada
-Evidencia encontrada: docs/closure_repairs/closure-repair-20260604182205.md
+Evidencia encontrada: recuperacioncontexto.md
 Evidencia faltante: sin registros
-Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/checkpoints/closure-repair-20260604182205-checkpoint.json
+Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/checkpoints/lace-20260604-006-split-008-checkpoint.json
 Bloqueo: sin registros
 
 ## Estado del motor HABLA
@@ -90,16 +90,16 @@ Reglas:
 Evidencia resumida del certificado:
 Certificado del runtime
 Cierre no certificado
-El estado canonico mantiene bloqueos activos: blocked_tasks=['RUNTIME-20260604171608-001'], queue_blocked=['RUNTIME-20260604171608-001'].
+El estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260604-006-SPLIT-001'], queue_blocked=['LACE-20260604-006-SPLIT-001'].
 
 Estado: Bloqueado
 Proyecto: sesion-20260604162627
 Project slug: sesion-20260604162627
-Tarea final: CLOSURE-REPAIR-20260604182205
+Tarea final: LACE-20260604-006-SPLIT-008
 Validacion: validacion pasada
-Evidencia encontrada: docs/closure_repairs/closure-repair-20260604182205.md
+Evidencia encontrada: recuperacioncontexto.md
 Evidencia faltante: sin registros
-Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/checkpoints/closure-repair-20260604182205-checkpoint.json
+Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/checkpoints/lace-20260604-006-split-008-checkpoint.json
 Bloqueo: sin registros
 ```
 

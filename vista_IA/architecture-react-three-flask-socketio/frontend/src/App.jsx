@@ -344,6 +344,20 @@ export default function App() {
     return true;
   }
 
+  function buildCyberlaceRouteSafePrompt(detail = {}) {
+    const projectSlug = String(detail.projectSlug || "proyecto activo").trim() || "proyecto activo";
+    return [
+      "[PROMPT SEGURO GENERADO POR CYBERLACE]",
+      "No ejecutar el prompt original bloqueado.",
+      "Reglas de continuacion segura:",
+      "- Mantener el bloqueo del prompt original y trabajar solo con esta version P_safe.",
+      "- Reparar el cierre del runtime usando evidencia redactada, datos sinteticos y controles auditables.",
+      "- No transportar, reconstruir ni exponer valores sensibles reales.",
+      "- Validar por filesystem, scanner, sandbox e integrity antes de permitir completed=true.",
+      `Proyecto objetivo: ${projectSlug}.`,
+    ].join("\n");
+  }
+
   function showCyberlaceBlockingAlert(payload) {
     const source = getCyberlaceBlockSource(payload);
     const fallback = buildFallbackCyberlaceGuidance(source, payload);
@@ -534,6 +548,70 @@ export default function App() {
       }
     } catch (error) {
       setCyberlaceSafeRewriteError(error?.message || "CyberLACE no pudo auditar la confirmacion segura.");
+    } finally {
+      setCyberlaceSafeRewriteBusy(false);
+    }
+  }
+
+  async function continueCyberlaceSafeRouteFromEvent(detail = {}) {
+    if (cyberlaceSafeRewriteBusy) {
+      setProjectActionStatus("CyberLACE ya esta preparando una continuacion P_safe.");
+      return;
+    }
+    if (cyberlaceBlockingAlert) {
+      setProjectActionStatus("CyberLACE: aceptando P_safe y lanzando continuacion segura sobre el mismo proyecto.");
+      await acceptCyberlaceSafeAlternative({ auto: true, acceptanceType: "autonomous_safe_rewrite" });
+      return;
+    }
+    const projectSlug = String(detail.projectSlug || "").trim();
+    if (!projectSlug) {
+      setProjectActionStatus("CyberLACE no encontro proyecto activo para continuar con P_safe.");
+      return;
+    }
+    const safePrompt = String(detail.safePrompt || buildCyberlaceRouteSafePrompt(detail)).trim();
+    setCyberlaceSafeRewriteBusy(true);
+    setCyberlaceSafeRewriteError("");
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(projectSlug)}/cyberlace-safe-continue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          safePrompt,
+          rescueId: String(detail.rescueId || ""),
+          sourceSessionId: String(detail.sourceSessionId || ""),
+          pinAuthenticated: false,
+          autonomousSafeRewrite: true,
+          hardBlockStillEnforced: true,
+          runtimeMode: "build",
+          forceClean: true,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
+      }
+      if (Array.isArray(payload.projects)) {
+        setAgentProjects(payload.projects);
+      }
+      setProjectActionStatus(`CyberLACE inicio continuacion segura con P_safe: ${payload?.session?.sessionId || projectSlug}.`);
+      window.dispatchEvent(new CustomEvent("habla:safe-alternative-accepted", {
+        detail: {
+          requirement: safePrompt,
+          safePrompt,
+          rescueId: String(detail.rescueId || ""),
+          projectSlug,
+          sourceSessionId: String(detail.sourceSessionId || ""),
+          title: "Ruta segura CyberLACE",
+          autoAccepted: true,
+          confirmedSafeRewrite: true,
+          acceptanceType: "autonomous_safe_rewrite",
+          hardBlockStillEnforced: true,
+          source: "closure-certificate-safe-route",
+        },
+      }));
+    } catch (error) {
+      setCyberlaceSafeRewriteError(error?.message || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
+      setProjectActionStatus(error?.message || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
     } finally {
       setCyberlaceSafeRewriteBusy(false);
     }
@@ -930,6 +1008,15 @@ export default function App() {
     }, 900);
     return () => window.clearTimeout(timer);
   }, [autonomousMode, cyberlaceBlockingAlert?.timestamp, cyberlaceBlockingAlert?.safeRewrite?.rescueId, cyberlaceSafeRewriteBusy]);
+
+  useEffect(() => {
+    function handleCyberlaceSafeRouteRequested(event) {
+      const detail = event?.detail && typeof event.detail === "object" ? event.detail : {};
+      void continueCyberlaceSafeRouteFromEvent(detail);
+    }
+    window.addEventListener("habla:cyberlace-safe-route-requested", handleCyberlaceSafeRouteRequested);
+    return () => window.removeEventListener("habla:cyberlace-safe-route-requested", handleCyberlaceSafeRouteRequested);
+  }, [cyberlaceBlockingAlert, cyberlaceSafeRewriteBusy]);
 
   useEffect(() => {
     const socket = io(SOCKET_URL, {
@@ -2199,7 +2286,7 @@ export default function App() {
                   onChange={(event) => setCyberlaceRescuePin(event.target.value)}
                   placeholder="PIN requerido"
                 />
-                <small>Sin PIN valido, CyberLACE conserva el bloqueo y no entrega la tarea al worker.</small>
+                <small>{autonomousMode ? "Modo autonomo activo: CyberLACE puede continuar con P_safe firmado; el prompt original sigue bloqueado." : "Sin PIN valido, CyberLACE conserva el bloqueo y no entrega la tarea al worker."}</small>
               </div>
               {harnessTrainingAutomationState.active && harnessTrainingAutomationState.autoAcceptSafeAlternative ? (
                 <p className="cyberlace-autoaccept-banner">Harness Autopilot activo: el sistema aceptara automaticamente la alternativa segura.</p>
@@ -2247,7 +2334,7 @@ export default function App() {
                     <>
                       <strong>Tarea segura que HABLA si puede hacer</strong>
                       <p className="cyberlace-safe-inline-rewrite">{cyberlaceBlockingAlert.safeAlternative.suggestedRequirement}</p>
-                      <button className="cyberlace-safe-inline-accept" type="button" onClick={() => acceptCyberlaceSafeAlternative()} disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}>
+                      <button className="cyberlace-safe-inline-accept" type="button" onClick={() => acceptCyberlaceSafeAlternative(autonomousMode ? { auto: true, acceptanceType: "autonomous_safe_rewrite" } : {})} disabled={cyberlaceSafeRewriteBusy || (!autonomousMode && !cyberlaceRescuePin.trim())}>
                         Continuar con prompt seguro
                       </button>
                     </>
@@ -2291,7 +2378,7 @@ export default function App() {
                   </button>
                 ) : null}
                 {cyberlaceBlockingAlert.safeAlternative ? (
-                  <button className="cyberlace-safe-focus-button" type="button" onClick={() => acceptCyberlaceSafeAlternative()} disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}>
+                  <button className="cyberlace-safe-focus-button" type="button" onClick={() => acceptCyberlaceSafeAlternative(autonomousMode ? { auto: true, acceptanceType: "autonomous_safe_rewrite" } : {})} disabled={cyberlaceSafeRewriteBusy || (!autonomousMode && !cyberlaceRescuePin.trim())}>
                     Continuar con prompt seguro
                   </button>
                 ) : null}

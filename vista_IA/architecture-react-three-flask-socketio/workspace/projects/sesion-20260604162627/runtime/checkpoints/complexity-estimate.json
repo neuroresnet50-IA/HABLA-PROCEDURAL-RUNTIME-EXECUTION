@@ -1,6 +1,6 @@
 {
   "checkpoint_key": "complexity-estimate",
-  "created_at": "2026-06-04T20:19:14Z",
+  "created_at": "2026-06-04T22:29:04Z",
   "payload": {
     "estimate": {
       "audit_version": "complexity-audit-kernel-v1",
@@ -8,13 +8,13 @@
       "complexity_audit": {
         "audit_version": "complexity-audit-kernel-v1",
         "complexity_score": 62,
-        "confidence": 92,
+        "confidence": 84,
         "difficulty": "dificil",
         "difficulty_label": "Dificil",
         "early_exit_allowed": true,
         "early_exit_mode": "allowed",
         "estimated_minutes": 120,
-        "generated_at": "2026-06-04T20:19:14.604390Z",
+        "generated_at": "2026-06-04T22:29:04.597428Z",
         "lace_max_cycles": 7,
         "lace_min_cycles": 3,
         "lace_target_cycles": 5,
@@ -22,7 +22,7 @@
         "layer_scores": {
           "blast_radius": 24,
           "evidence": 38,
-          "history": 45,
+          "history": 54,
           "operational_risk": 40,
           "project": 18,
           "prompt": 74,
@@ -56,7 +56,7 @@
           },
           "history": {
             "reasons": [
-              "fallos historicos: bwrap, bubblewrap, project_locked, cyberlace, timeout"
+              "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout"
             ],
             "required_tools": [],
             "risk_flags": [
@@ -64,9 +64,10 @@
               "bwrap",
               "cyberlace",
               "project_locked",
+              "runtime_zombie_recovered",
               "timeout"
             ],
-            "score": 45
+            "score": 54
           },
           "operational_risk": {
             "reasons": [
@@ -85,10 +86,10 @@
             "score": 40
           },
           "project": {
-            "file_count": 19,
+            "file_count": 27,
             "observed": true,
             "reasons": [
-              "archivos materiales estimados=19",
+              "archivos materiales estimados=27",
               "frontend/package detectado",
               "LACE.md presente"
             ],
@@ -103,7 +104,7 @@
           },
           "prompt": {
             "reasons": [
-              "prompt palabras=169",
+              "prompt palabras=173",
               "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests"
             ],
             "required_tools": [
@@ -130,16 +131,16 @@
         "max_agents": 6,
         "project_slug": "sesion-20260604162627",
         "reasoning": [
-          "prompt palabras=169",
+          "prompt palabras=173",
           "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests",
-          "archivos materiales estimados=19",
+          "archivos materiales estimados=27",
           "frontend/package detectado",
           "LACE.md presente",
           "riesgo operativo: lace, runtime, task_queue, validator",
           "expected_files=0",
           "validation_commands=0",
           "evidencia requerida: integrity, sandbox, scanner",
-          "fallos historicos: bwrap, bubblewrap, project_locked, cyberlace, timeout",
+          "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout",
           "incertidumbre baja"
         ],
         "recommended_agents": 5,
@@ -159,6 +160,7 @@
           "lace_policy",
           "project_locked",
           "runtime",
+          "runtime_zombie_recovered",
           "task_queue",
           "three_d",
           "timeout",
@@ -173,7 +175,7 @@
       "early_exit_allowed": true,
       "estimate_type": "project_complexity_budget",
       "estimated_minutes": 120,
-      "generated_at": "2026-06-04T20:19:14.579691Z",
+      "generated_at": "2026-06-04T22:29:04.570783Z",
       "lace_max_cycles": 7,
       "lace_min_cycles": 3,
       "lace_target_cycles": 5,
@@ -183,14 +185,14 @@
       "max_retries": 3,
       "max_tasks": 22,
       "min_lace_cycles": 2,
-      "project_file_count": 19,
+      "project_file_count": 27,
       "project_slug": "sesion-20260604162627",
-      "prompt_word_count": 169,
+      "prompt_word_count": 173,
       "quality_threshold": 85,
       "reasons": [
         "modo runtime solicitado: build",
-        "prompt largo: 169 palabras",
-        "archivos estimados del proyecto: 19",
+        "prompt largo: 173 palabras",
+        "archivos estimados del proyecto: 27",
         "marcadores de trabajo puntual/minimo",
         "toca runtime/estado persistido",
         "requiere evidencia auditable",

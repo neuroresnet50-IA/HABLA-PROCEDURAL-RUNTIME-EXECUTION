@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "estimate_type": "project_complexity_budget",
-  "generated_at": "2026-06-04T20:19:14.579691Z",
+  "generated_at": "2026-06-04T22:29:04.570783Z",
   "runtime_mode": "build",
   "launch_mode": "existing",
   "project_slug": "sesion-20260604162627",
-  "project_file_count": 19,
-  "prompt_word_count": 169,
+  "project_file_count": 27,
+  "prompt_word_count": 173,
   "score": 62,
   "difficulty": "dificil",
   "difficulty_label": "Dificil",
@@ -33,8 +33,8 @@
   ],
   "reasons": [
     "modo runtime solicitado: build",
-    "prompt largo: 169 palabras",
-    "archivos estimados del proyecto: 19",
+    "prompt largo: 173 palabras",
+    "archivos estimados del proyecto: 27",
     "marcadores de trabajo puntual/minimo",
     "toca runtime/estado persistido",
     "requiere evidencia auditable",
@@ -47,14 +47,14 @@
   "complexity_audit": {
     "schema_version": 1,
     "audit_version": "complexity-audit-kernel-v1",
-    "generated_at": "2026-06-04T20:19:14.604390Z",
+    "generated_at": "2026-06-04T22:29:04.597428Z",
     "runtime_mode": "build",
     "launch_mode": "existing",
     "project_slug": "sesion-20260604162627",
     "difficulty": "dificil",
     "difficulty_label": "Dificil",
     "complexity_score": 62,
-    "confidence": 92,
+    "confidence": 84,
     "estimated_minutes": 120,
     "recommended_agents": 5,
     "max_agents": 6,
@@ -79,22 +79,23 @@
       "lace_policy",
       "project_locked",
       "runtime",
+      "runtime_zombie_recovered",
       "task_queue",
       "three_d",
       "timeout",
       "validator"
     ],
     "reasoning": [
-      "prompt palabras=169",
+      "prompt palabras=173",
       "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests",
-      "archivos materiales estimados=19",
+      "archivos materiales estimados=27",
       "frontend/package detectado",
       "LACE.md presente",
       "riesgo operativo: lace, runtime, task_queue, validator",
       "expected_files=0",
       "validation_commands=0",
       "evidencia requerida: integrity, sandbox, scanner",
-      "fallos historicos: bwrap, bubblewrap, project_locked, cyberlace, timeout",
+      "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout",
       "incertidumbre baja"
     ],
     "layer_scores": {
@@ -103,14 +104,14 @@
       "operational_risk": 40,
       "blast_radius": 24,
       "evidence": 38,
-      "history": 45,
+      "history": 54,
       "uncertainty": 0
     },
     "layers": {
       "prompt": {
         "score": 74,
         "reasons": [
-          "prompt palabras=169",
+          "prompt palabras=173",
           "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests"
         ],
         "required_tools": [
@@ -127,7 +128,7 @@
       "project": {
         "score": 18,
         "reasons": [
-          "archivos materiales estimados=19",
+          "archivos materiales estimados=27",
           "frontend/package detectado",
           "LACE.md presente"
         ],
@@ -139,7 +140,7 @@
           "lace_policy"
         ],
         "observed": true,
-        "file_count": 19
+        "file_count": 27
       },
       "operational_risk": {
         "score": 40,
@@ -183,9 +184,9 @@
         ]
       },
       "history": {
-        "score": 45,
+        "score": 54,
         "reasons": [
-          "fallos historicos: bwrap, bubblewrap, project_locked, cyberlace, timeout"
+          "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout"
         ],
         "required_tools": [],
         "risk_flags": [
@@ -193,6 +194,7 @@
           "bwrap",
           "cyberlace",
           "project_locked",
+          "runtime_zombie_recovered",
           "timeout"
         ]
       },

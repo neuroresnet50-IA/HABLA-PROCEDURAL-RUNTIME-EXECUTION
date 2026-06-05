@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { buildClosureCertificate, buildClosureEvidenceText, buildClosureRepairPrompt, buildRuntimeClosureCertificate, formatAgentStatus, getClosureCertificateAutoPolicy } from "./agentClosureCertificate.js";
+import { buildClosureCertificate, buildClosureEvidenceText, buildClosureRepairPrompt, buildRuntimeClosureCertificate, formatAgentStatus, getClosureCertificateAutoPolicy, isSecurityClosureCertificate } from "./agentClosureCertificate.js";
 import LiveReviewerPanel from "./LiveReviewerPanel.jsx";
 
 import {
@@ -32,7 +32,7 @@ import {
   slugify,
 } from "./agentStudioUtils.js";
 
-const REVIEWER_AUTO_MINIMIZE_MS = 120000;
+const REVIEWER_AUTO_MINIMIZE_MS = 30000;
 
 function getBlockingCyberlaceDecision(session) {
   if (!session || typeof session !== "object") return null;
@@ -194,6 +194,9 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const heartbeatBurstAtRef = useRef(0);
   const closureCertificateRef = useRef(null);
   const closureHumanActionRef = useRef(false);
+  const closureAutoActionKeysRef = useRef(new Set());
+  const closureRepairSentKeysRef = useRef(new Set());
+  const closureAutoFallbackTimerRef = useRef(null);
   const isSendingRef = useRef(false);
   const terminalRef = useRef(null);
 
@@ -247,6 +250,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const liveElapsedSeconds = getSessionElapsedSeconds(session, nowTick);
   const liveActive = isAgentActive(session);
   const closureCertificate = buildClosureCertificate(session) || buildRuntimeClosureCertificate(reviewerStatus, selectedProjectMeta || { projectSlug: reviewerProjectSlug });
+  const closureSecurityBlocked = isSecurityClosureCertificate(closureCertificate);
   const closureEvidenceText = buildClosureEvidenceText(closureCertificate);
   const closureRepairPrompt = buildClosureRepairPrompt(closureCertificate);
   const closureCertificateVisible = Boolean(closureCertificate && closureCertificate.key !== dismissedClosureKey);
@@ -295,6 +299,10 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
 
   useEffect(() => {
     closureHumanActionRef.current = false;
+    if (closureAutoFallbackTimerRef.current) {
+      window.clearTimeout(closureAutoFallbackTimerRef.current);
+      closureAutoFallbackTimerRef.current = null;
+    }
     setClosureEvidenceMessage("");
     setClosureModalMinimized(false);
     setClosureAutoPolicy(null);
@@ -314,34 +322,57 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
     setClosureAutoPolicy(policy);
     setClosureAutoDeadline(deadline);
 
+    const releaseAfterAutonomyClick = (action, reason, fallback) => {
+      if (!autonomousMode || !requestClosureAutonomyClick(action, reason)) {
+        fallback();
+        return;
+      }
+      if (closureAutoFallbackTimerRef.current) {
+        window.clearTimeout(closureAutoFallbackTimerRef.current);
+      }
+      closureAutoFallbackTimerRef.current = window.setTimeout(() => {
+        closureAutoFallbackTimerRef.current = null;
+        const currentCertificate = closureCertificateRef.current;
+        if (!currentCertificate || currentCertificate.key !== certificateKey) return;
+        if (currentCertificate.key === dismissedClosureKey || closureHumanActionRef.current || isSendingRef.current) return;
+        fallback();
+      }, 3500);
+    };
+
     const timer = window.setTimeout(() => {
       const currentCertificate = closureCertificateRef.current;
       if (!currentCertificate || currentCertificate.key !== certificateKey) return;
       if (currentCertificate.key === dismissedClosureKey) return;
 
+      const actionKey = `${certificateKey}:${policy.action}`;
+      if (closureAutoActionKeysRef.current.has(actionKey)) {
+        if (!closureHumanActionRef.current && policy.action !== "dismiss") setClosureModalMinimized(true);
+        return;
+      }
+      closureAutoActionKeysRef.current.add(actionKey);
+
       if (policy.action === "dismiss") {
-        if (autonomousMode && requestClosureAutonomyClick("close_certificate", "closure_auto_dismiss")) return;
-        setDismissedClosureKey(certificateKey);
+        releaseAfterAutonomyClick("close_certificate", "closure_auto_dismiss", () => setDismissedClosureKey(certificateKey));
         return;
       }
 
       if (policy.action === "minimize") {
         if (!closureHumanActionRef.current) {
-          if (autonomousMode && requestClosureAutonomyClick("minimize_certificate", "closure_auto_minimize")) return;
-          setClosureModalMinimized(true);
+          releaseAfterAutonomyClick("minimize_certificate", "closure_auto_minimize", () => setClosureModalMinimized(true));
         }
         return;
       }
 
       if (policy.action === "repair" && !closureHumanActionRef.current && !isSendingRef.current) {
         setClosureEvidenceMessage("Modo autonomo: enviando certificado al agente reparador.");
-        if (autonomousMode && requestClosureAutonomyClick("send_repair", "closure_auto_repair")) return;
-        void handleSendClosureRepairPrompt({ auto: true });
+        releaseAfterAutonomyClick("send_repair", "closure_auto_repair", () => {
+          void handleSendClosureRepairPrompt({ auto: true });
+        });
       }
     }, Math.max(0, Number(policy.delayMs || 0)));
 
     return () => window.clearTimeout(timer);
-  }, [closureCertificateVisible, closureCertificate?.key, closureAutoPolicyCandidate?.action, closureAutoPolicyCandidate?.delayMs, dismissedClosureKey]);
+  }, [closureCertificateVisible, closureCertificate?.key, closureAutoPolicyCandidate?.action, closureAutoPolicyCandidate?.delayMs, dismissedClosureKey, autonomousMode]);
 
   useEffect(() => {
     const projectSlug = String(selectedProject || "").trim();
@@ -895,7 +926,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
         agentId: "A06",
         agentName: "Live Reviewer",
         kind: "auto_minimize",
-        message: "Supervisor minimizado automaticamente despues de 2 minutos visible.",
+        message: "Supervisor minimizado automaticamente despues de 30 segundos visible.",
         tone: "middle",
         detail: reviewerProjectSlug || session?.sessionId || "supervisor",
       });
@@ -1079,6 +1110,53 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
     return true;
   }
 
+  function buildClosureCyberlaceSafePrompt(projectSlug) {
+    const projectLabel = String(projectSlug || closureCertificate?.project || selectedProject || "proyecto activo").trim();
+    return [
+      "[PROMPT SEGURO GENERADO POR CYBERLACE]",
+      "No ejecutar el prompt original bloqueado.",
+      "Reglas de continuacion segura:",
+      "- Mantener bloqueada cualquier accion insegura detectada por CyberLACE.",
+      "- Retomar el cierre del runtime solo con datos sinteticos, evidencia redactada y controles auditables.",
+      "- Diagnosticar el certificado, limpiar bloqueos operativos y reparar el cierre sin reinyectar la orden original.",
+      "- Validar por filesystem, scanner, sandbox e integrity antes de permitir completed=true.",
+      `Proyecto objetivo: ${projectLabel}.`,
+    ].join("\n");
+  }
+
+  function requestCyberlaceSafeRoute({ auto = false } = {}) {
+    if (typeof window === "undefined") return false;
+    const projectSlug = String(closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "").trim();
+    if (!projectSlug) {
+      setClosureEvidenceMessage("CyberLACE no encontro proyecto activo para iniciar P_safe.");
+      return false;
+    }
+    const detail = {
+      projectSlug,
+      sourceSessionId: activeSessionId || session?.sessionId || "",
+      certificateKey: closureCertificate?.key || "",
+      certificateTaskId: closureCertificate?.taskId || "",
+      requestedAt: new Date().toISOString(),
+      source: "closure_certificate_cyberlace_safe_route",
+      autoRequested: Boolean(auto),
+      acceptanceType: "autonomous_safe_rewrite",
+      hardBlockStillEnforced: true,
+      safePrompt: buildClosureCyberlaceSafePrompt(projectSlug),
+    };
+    window.dispatchEvent(new CustomEvent("habla:cyberlace-safe-route-requested", { detail }));
+    setClosureEvidenceMessage(auto ? "Modo autonomo solicito P_safe y continuacion segura CyberLACE." : "CyberLACE solicito P_safe y continuacion segura sobre el mismo proyecto.");
+    setClosureModalMinimized(true);
+    appendAgentRoomEvent({
+      agentId: "S01",
+      agentName: "CyberLACE",
+      kind: "ruta_segura",
+      message: "Certificado de seguridad enviado a la ruta P_safe; el prompt original sigue bloqueado.",
+      tone: "repair",
+      detail: projectSlug,
+    });
+    return true;
+  }
+
   async function handleCopyClosureEvidence() {
     markClosureHumanAction();
     try {
@@ -1091,14 +1169,33 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
 
   async function handleSendClosureRepairPrompt({ auto = false } = {}) {
     if (!auto) markClosureHumanAction();
+    const certificateKey = closureCertificate?.key || "";
+    if (isSecurityClosureCertificate(closureCertificate)) {
+      if (!requestCyberlaceSafeRoute({ auto })) {
+        setClosureModalMinimized(true);
+      }
+      return;
+    }
     const repairPrompt = String(closureRepairPrompt || "").trim();
     const projectSlug = String(closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "").trim();
     const projectName = String(closureCertificate?.project || selectedProjectMeta?.name || projectSlug || "").trim();
+    const repairSendKey = certificateKey ? `${certificateKey}:repair` : "";
+    if (auto && repairSendKey) {
+      if (closureRepairSentKeysRef.current.has(repairSendKey)) {
+        setClosureModalMinimized(true);
+        return;
+      }
+      closureRepairSentKeysRef.current.add(repairSendKey);
+    }
     if (!repairPrompt || !projectSlug || !projectName) {
       setClosureEvidenceMessage("No hay evidencia suficiente para lanzar reparacion controlada.");
+      if (auto) setClosureModalMinimized(true);
       return;
     }
-    if (isSending) return;
+    if (isSending) {
+      if (auto) setClosureModalMinimized(true);
+      return;
+    }
 
     setLaunchMode("existing");
     setSelectedProject(projectSlug);
@@ -1159,7 +1256,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
         }
       }
       setAssignedSubagentPlan(null);
-      setDismissedClosureKey(closureCertificate.key);
+      setDismissedClosureKey(certificateKey || closureCertificate.key);
       setClosureEvidenceMessage(auto ? "Modo autonomo lanzo el agente reparador con evidencia del certificado." : "Agente reparador lanzado con evidencia del certificado.");
       appendAgentRoomEvent({
         agentId: "R01",
@@ -1171,6 +1268,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
       });
     } catch (nextError) {
       setClosureEvidenceMessage(nextError?.message || "No fue posible lanzar el agente reparador.");
+      if (auto) setClosureModalMinimized(true);
       setError(`No fue posible lanzar reparacion de cierre: ${humanizeAgentError(nextError)}`);
     } finally {
       setIsSending(false);
@@ -2466,7 +2564,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
                   disabled={isSending}
                   onClick={(event) => handleSendClosureRepairPrompt({ auto: event.currentTarget?.dataset?.operationalAutoClick === "true" })}
                 >
-                  {isSending ? "Enviando reparacion" : "Enviar a agente reparador"}
+                  {closureSecurityBlocked ? "Usar ruta segura CyberLACE" : isSending ? "Enviando reparacion" : "Enviar a agente reparador"}
                 </button>
               ) : null}
               <button

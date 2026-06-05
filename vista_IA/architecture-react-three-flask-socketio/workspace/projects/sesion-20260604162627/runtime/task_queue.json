@@ -45,7 +45,7 @@
     "title": "Completar ciclo LACE 01",
     "validation_commands": [
       "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/browser_render_smoke.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/observer_findings.json'] if not Path(p).is_file()]; assert not missing, missing\"",
-      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\"",
       "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
     ]
   },
@@ -62,7 +62,7 @@
     "max_retries": 3,
     "mode": "build",
     "priority": 10,
-    "status": "blocked",
+    "status": "completed",
     "timeout_seconds": 1800,
     "title": "Build runnable static web app",
     "validation_commands": [
@@ -131,6 +131,335 @@
     "title": "Reparar cierre bloqueado desde certificado runtime",
     "validation_commands": [
       "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604201914.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-002-checkpoint",
+    "dependencies": [
+      "LACE-20260604-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/closure_repairs/closure-repair-20260604172851.md",
+      "docs/closure_repairs/closure-repair-20260604182205.md",
+      "docs/closure_repairs/closure-repair-20260604201914.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Completar el ciclo LACE 02 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 98,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 02",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-02.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-2 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-2 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-2 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-003-checkpoint",
+    "dependencies": [
+      "LACE-20260604-002"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/closure_repairs/closure-repair-20260604172851.md",
+      "docs/closure_repairs/closure-repair-20260604182205.md",
+      "docs/closure_repairs/closure-repair-20260604201914.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Completar el ciclo LACE 03 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 97,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 03",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-03.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-3 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-3 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-3 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-004-checkpoint",
+    "dependencies": [
+      "LACE-20260604-003"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/closure_repairs/closure-repair-20260604172851.md",
+      "docs/closure_repairs/closure-repair-20260604182205.md",
+      "docs/closure_repairs/closure-repair-20260604201914.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Completar el ciclo LACE 04 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-004",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 96,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 04",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-04.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-4 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-4 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-4 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-005-checkpoint",
+    "dependencies": [
+      "LACE-20260604-004"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/closure_repairs/closure-repair-20260604172851.md",
+      "docs/closure_repairs/closure-repair-20260604182205.md",
+      "docs/closure_repairs/closure-repair-20260604201914.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Completar el ciclo LACE 05 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-005",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 95,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 05",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-05.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-5 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-5 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-5 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-006-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/closure_repairs/closure-repair-20260604172851.md",
+      "docs/closure_repairs/closure-repair-20260604182205.md",
+      "docs/closure_repairs/closure-repair-20260604201914.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Completar el ciclo LACE 06 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-006",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 94,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/closure_repairs/closure-repair-20260604172851.md', 'docs/closure_repairs/closure-repair-20260604182205.md', 'docs/closure_repairs/closure-repair-20260604201914.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-06.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-6 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-6 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-6 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-001-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md"
+    ],
+    "goal": "Produce expected file ULTIMO_CONTEXTO_CODEX.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 93,
+    "status": "deferred",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 1",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-002-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "docs/closure_repairs/closure-repair-20260604172851.md"
+    ],
+    "goal": "Produce expected file docs/closure_repairs/closure-repair-20260604172851.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-002",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 92,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 2",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604172851.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-003-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "docs/closure_repairs/closure-repair-20260604182205.md"
+    ],
+    "goal": "Produce expected file docs/closure_repairs/closure-repair-20260604182205.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-003",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 91,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 3",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604182205.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-004-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "docs/closure_repairs/closure-repair-20260604201914.md"
+    ],
+    "goal": "Produce expected file docs/closure_repairs/closure-repair-20260604201914.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-004",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 90,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 4",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604201914.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-005-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "frontend/app.js"
+    ],
+    "goal": "Produce expected file frontend/app.js. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-005",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 89,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 5",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-006-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "frontend/index.html"
+    ],
+    "goal": "Produce expected file frontend/index.html. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-006",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 88,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 6",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-007-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "frontend/styles.css"
+    ],
+    "goal": "Produce expected file frontend/styles.css. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-007",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 87,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 7",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/styles.css'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-20260604-006-split-008-checkpoint",
+    "dependencies": [
+      "LACE-20260604-005"
+    ],
+    "expected_files": [
+      "recuperacioncontexto.md"
+    ],
+    "goal": "Produce expected file recuperacioncontexto.md. Reason: Failure suggests timeout or oversized task.",
+    "id": "LACE-20260604-006-SPLIT-008",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 86,
+    "status": "completed",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 06 split 8",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['recuperacioncontexto.md'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "closure-repair-20260604222904-checkpoint",
+    "dependencies": [],
+    "execution_strategy": "codex_worker",
+    "expected_files": [
+      "docs/closure_repairs/closure-repair-20260604222904.md"
+    ],
+    "goal": "Crear una reparacion controlada del cierre usando la evidencia del certificado runtime. Diagnosticar locks, scanner, integrity, sandbox, validator y LACE. Reparar solo cambios seguros; si no se puede cerrar, persistir diagnostico y siguiente accion sin forzar completed.\n\nEvidencia de entrada:\nREPARACION_CONTROLADA_DE_CIERRE_RUNTIME\n\nObjetivo:\nDiagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido.\n\nReglas:\n- Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts.\n- Repara solo bloqueos verificables y seguros.\n- Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas.\n- No borres evidencia historica ni fuerces cierre.\n- Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion.\n\nEvidencia resumida del certificado:\nCertificado del runtime\nCierre no certificado\nEl estado canonico mantiene bloqueos activos: blocked_tasks=['LACE-20260604-006-SPLIT-001'], queue_blocked=['LACE-20260604-006-SPLIT-001'].\n\nEstado: Bloqueado\nProyecto: sesion-20260604162627\nProject slug: sesion-20260604162627\nTarea final: LACE-20260604-006-SPLIT-008\nValidacion: validacion pasada\nEvidencia encontrada: recuperacioncontexto.md\nEvidencia faltante: sin registros\nCheckpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604162627/runtime/checkpoints/lace-20260604-006-split-008-checkpoint.json\nBloqueo: sin registros",
+    "id": "CLOSURE-REPAIR-20260604222904",
+    "kind": "closure_repair",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10000,
+    "selector_reason": "control_plane_repair_from_runtime_certificate",
+    "status": "completed",
+    "timeout_seconds": 1800,
+    "title": "Reparar cierre bloqueado desde certificado runtime",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/closure_repairs/closure-repair-20260604222904.md'] if not Path(p).is_file()]; assert not missing, missing\""
     ]
   }
 ]

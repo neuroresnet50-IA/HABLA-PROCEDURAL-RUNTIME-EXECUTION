@@ -1,9 +1,9 @@
 export const CLOSED_AGENT_STATUSES = new Set(["completed", "failed", "stopped", "blocked"]);
 
 export const CLOSURE_CERTIFICATE_TIMING_MS = Object.freeze({
-  successDismiss: 120000,
-  failureMinimize: 180000,
-  autonomousRepair: 240000,
+  successDismiss: 30000,
+  failureMinimize: 30000,
+  autonomousRepair: 30000,
 });
 
 
@@ -91,22 +91,52 @@ export function buildClosureRepairPrompt(certificate) {
   ].join("\n");
 }
 
+function getClosureCertificateHaystack(certificate) {
+  return [
+    certificate?.title,
+    certificate?.message,
+    certificate?.statusLabel,
+    certificate?.validationLabel,
+    certificate?.blockerLabel,
+    certificate?.taskId,
+    ...(Array.isArray(certificate?.blockers) ? certificate.blockers : []),
+  ].map((item) => String(item || "").toLowerCase()).join(" ");
+}
+
 export function isZombieClosureCertificate(certificate) {
   if (!certificate || certificate.completed) return false;
-  const haystack = [
-    certificate.title,
-    certificate.message,
-    certificate.statusLabel,
-    certificate.validationLabel,
-    certificate.blockerLabel,
-    ...(Array.isArray(certificate.blockers) ? certificate.blockers : []),
-  ].map((item) => String(item || "").toLowerCase()).join(" ");
+  const haystack = getClosureCertificateHaystack(certificate);
   return (
     haystack.includes("backend ya no tiene worker activo")
     || haystack.includes("pid=null")
     || haystack.includes("runtime session reported running")
     || haystack.includes("runtime_zombie")
     || haystack.includes("zombie")
+  );
+}
+
+export function isSecurityClosureCertificate(certificate) {
+  if (!certificate || certificate.completed) return false;
+  const haystack = getClosureCertificateHaystack(certificate);
+  return (
+    haystack.includes("cyberlace")
+    || haystack.includes("quarantine")
+    || haystack.includes("human_review")
+    || haystack.includes("p_safe")
+    || haystack.includes("safe_rewrite")
+    || haystack.includes("document_guard")
+    || haystack.includes("seguridad")
+    || haystack.includes("security")
+    || haystack.includes("peligro")
+    || haystack.includes("unsafe")
+    || haystack.includes("sensitive")
+    || haystack.includes("accion negada")
+    || haystack.includes("accion denegada")
+    || haystack.includes("accion financiera insegura")
+    || haystack.includes("accion insegura")
+    || haystack.includes("informacion sensible")
+    || haystack.includes("informacion insegura")
+    || haystack.includes("prompt original sigue bloqueado")
   );
 }
 
@@ -120,12 +150,20 @@ export function getClosureCertificateAutoPolicy(certificate, { autonomousMode = 
       message: "Cierre certificado: se cerrara automaticamente para liberar la pantalla.",
     };
   }
-  if (autonomousMode && isZombieClosureCertificate(certificate)) {
+  if (isSecurityClosureCertificate(certificate)) {
+    return {
+      action: "minimize",
+      delayMs: CLOSURE_CERTIFICATE_TIMING_MS.failureMinimize,
+      tone: "failure",
+      message: "CyberLACE ya bloqueo esta orden por seguridad: no se reenviara al reparador para evitar un bucle. Se minimizara y continuara por P_safe.",
+    };
+  }
+  if (autonomousMode) {
     return {
       action: "repair",
       delayMs: CLOSURE_CERTIFICATE_TIMING_MS.autonomousRepair,
       tone: "repair",
-      message: "Modo autonomo: si nadie interviene, el certificado enviara la evidencia al agente reparador.",
+      message: "Modo autonomo: si nadie interviene en 30 segundos, el certificado enviara la evidencia al agente reparador y liberara la pantalla.",
     };
   }
   return {
@@ -152,18 +190,22 @@ export function buildClosureCertificate(session) {
   const completed = session.status === "completed" && taskResult.completed !== false && validationPassed && !session.errorCode;
   const missing = evidence.missing || [];
   const found = evidence.found || [];
+  const taskId = taskResult.task_id || controlPlane.activeTaskId || "sin tarea final";
+  const blockerLabel = compactList(blockers);
   const message = completed
     ? "Cierre definitivo certificado: la cola termino, la evidencia existe en disco y la validacion asociada paso."
     : (session.errorMessage || blockers.join("; ") || getProgressLabel(session) || "La sesion cerro sin certificado de completitud.");
+  const stableSignal = certificateField(session.errorCode || message || blockerLabel || session.status, "closure");
 
   return {
     key: [
+      "session",
       session.sessionId,
       session.status,
-      session.endedAt || session.updatedAt,
-      taskResult.task_id || controlPlane.activeTaskId || "",
+      taskId,
       String(validationPassed),
       session.errorCode || "",
+      stableSignal,
     ].join("|"),
     completed,
     title: completed ? "Cierre definitivo certificado" : "Cierre no certificado",
@@ -171,7 +213,7 @@ export function buildClosureCertificate(session) {
     statusLabel: formatAgentStatus(session.status),
     project: session.projectName || session.projectSlug || "sin proyecto",
     projectSlug: session.projectSlug || session.projectName || "",
-    taskId: taskResult.task_id || controlPlane.activeTaskId || "sin tarea final",
+    taskId,
     validationLabel: validationPassed ? "validacion pasada" : "validacion pendiente o fallida",
     checkpointPath: checkpoint.path || checkpoint.checkpoint_key || "",
     foundEvidence: found,
@@ -179,7 +221,7 @@ export function buildClosureCertificate(session) {
     blockers,
     foundLabel: compactList(found),
     missingLabel: compactList(missing),
-    blockerLabel: compactList(blockers),
+    blockerLabel,
   };
 }
 
@@ -208,8 +250,12 @@ export function buildRuntimeClosureCertificate(status, project = {}) {
   ];
   const missing = Array.isArray(status.expected_files_missing) ? status.expected_files_missing : [];
 
+  const projectKey = status.project_id || project.projectSlug || project.slug || projectLabel;
+  const checkpointPath = status.latest_checkpoint || "";
+  const blockerLabel = compactList(blockers);
+
   return {
-    key: ["runtime", status.project_id || project.projectSlug || "project", taskId, latestHistory.recorded_at || "", "passed"].join("|"),
+    key: ["runtime", projectKey || "project", taskId, "passed", checkpointPath || validationRan.join(",")].join("|"),
     completed: true,
     title: "Cierre definitivo certificado",
     message: "Cierre definitivo certificado desde runtime persistido: la cola no tiene trabajo activo y la ultima validacion registrada paso.",
@@ -218,12 +264,12 @@ export function buildRuntimeClosureCertificate(status, project = {}) {
     projectSlug: status.project_id || project.projectSlug || project.slug || projectLabel,
     taskId,
     validationLabel: validationRan.length ? "validacion pasada" : "validacion pasada sin comandos listados",
-    checkpointPath: status.latest_checkpoint || "",
+    checkpointPath,
     foundEvidence: found.length ? found : status.expected_files_found,
     missingEvidence: missing,
     blockers,
     foundLabel: compactList(found.length ? found : status.expected_files_found),
     missingLabel: compactList(missing),
-    blockerLabel: compactList(blockers),
+    blockerLabel,
   };
 }

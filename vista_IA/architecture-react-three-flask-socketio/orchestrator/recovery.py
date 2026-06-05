@@ -412,6 +412,8 @@ def _split_goal(goal: str) -> list[str]:
 
 def _can_split_task(task: dict[str, Any]) -> bool:
     task_id = str(task.get("id") or "")
+    if task_id.startswith("LACE-"):
+        return False
     if "-SPLIT-" in task_id:
         return False
     expected_files = list(task.get("expected_files") or [])

@@ -1,0 +1,227 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "complexity_audit",
+        "confidence",
+        "deliverables",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "quality_threshold",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_id",
+        "timeout_seconds",
+        "tool_status",
+        "validation_commands"
+      ],
+      "lineCount": 111,
+      "mtime": "2026-06-05T20:18:46Z",
+      "path": "workspace/projects/continuity-code-pf-003-2/runtime/complexity_estimate.json",
+      "sha256": "ab3fce685f8caaaf56ded7526626cf5a7245aafa9672175bb899621028381963",
+      "size": 3110,
+      "tail": "cts/observer_findings.json\"\n    },\n    \"integrity\": {\n      \"statusCode\": 200,\n      \"ok\": true,\n      \"reportPath\": \"runtime/artifacts/file_integrity_report.json\",\n      \"summary\": {\n        \"deletedFiles\": 0,\n        \"modifiedFiles\": 0,\n        \"registeredWrites\": 0,\n        \"totalFindings\": 0,\n        \"untrackedFiles\": 0\n      },\n      \"note\": \"Primer intento antes de editar devolvio timeout; reintento posterior paso.\"\n    },\n    \"pytest\": {\n      \"ok\": true,\n      \"command\": \"python3 -m pytest -q\",\n      \"result\": \"2 passed in 0.02s\"\n    },\n    \"scanner\": {\n      \"statusCode\": 423,\n      \"ok\": false,\n      \"error\": \"project_locked\",\n      \"note\": \"Invocado despues de cambios; el Observer reporto rootCause=active_worker_running mientras este worker seguia activo.\"\n    }\n  },\n  \"complexity_audit\": {\n    \"schema_version\": 1,\n    \"audit_version\": \"runtime-task-complexity-audit-v1\",\n    \"generated_at\": \"2026-06-05T20:14:01Z\",\n    \"runtime_mode\": \"build\",\n    \"project_slug\": \"continuity-code-pf-003-2\",\n    \"complexity_score\": 31,\n    \"confidence\": 88,\n    \"lace_target_cycles\": 4,\n    \"required_tools\": [\n      \"findings\",\n      \"integrity\",\n      \"pytest\",\n      \"scanner\"\n    ]\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-05T20:23:20Z",
+      "path": "workspace/projects/continuity-code-pf-003-2/runtime/failures.jsonl",
+      "sha256": "692440355b774bff4033c85711abafaa41f100546ebade9fe3736e5055af3f52",
+      "size": 2090,
+      "tail": "owedActions\": [\"Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.\", \"Usar enlaces seguros o checkout hospedado por el procesador de pagos.\", \"Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.\", \"Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.\", \"Crear validaciones de arquitectura segura y pruebas con datos sinteticos.\"], \"suggestedRequirement\": \"Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.\", \"summary\": \"HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.\", \"title\": \"Alternativa segura permitida\"}, \"safeNextSteps\": [\"Reformular la tarea hacia tokenizacion y proveedor de pagos.\", \"Eliminar cualquier solicitud de copiar, almacenar o enviar PAN/CVV/PIN.\", \"Trabajar solo con datos sinteticos, ultimos 4 digitos y recibos.\"], \"severity\": \"CRITICAL\", \"task_id\": \"RUNTIME-20260605200955-002\"}, \"recorded_at\": \"2026-06-05T20:23:20Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_cyberlace_block_at",
+        "last_cyberlace_block_paths",
+        "last_cyberlace_block_reason",
+        "last_cyberlace_denied_action",
+        "last_cyberlace_safe_alternative",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 42,
+      "mtime": "2026-06-05T20:23:20Z",
+      "path": "workspace/projects/continuity-code-pf-003-2/runtime/project_state.json",
+      "sha256": "afcba4a638fcd8aa5f26dafeda6f4ec0d143c7d156429e588376e88b1ff9d78b",
+      "size": 2244,
+      "tail": "\": {\n    \"allowedActions\": [\n      \"Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.\",\n      \"Usar enlaces seguros o checkout hospedado por el procesador de pagos.\",\n      \"Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.\",\n      \"Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.\",\n      \"Crear validaciones de arquitectura segura y pruebas con datos sinteticos.\"\n    ],\n    \"suggestedRequirement\": \"Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.\",\n    \"summary\": \"HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.\",\n    \"title\": \"Alternativa segura permitida\"\n  },\n  \"last_preparing_at\": \"2026-06-05T20:09:47.206454+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-2dddf716ed\",\n  \"project_id\": \"continuity-code-pf-003-2\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-06-05T20:23:20.070388+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-05T20:23:18Z",
+      "path": "workspace/projects/continuity-code-pf-003-2/runtime/task_history.jsonl",
+      "sha256": "1dd4ce6a16d5e422eb93279c4d88069980b7bd950de50850788b8ac17a18d79e",
+      "size": 549,
+      "tail": "{\"recorded_at\": \"2026-06-05T20:23:18Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_audit.json\", \"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260605200955-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 41,
+      "mtime": "2026-06-05T20:23:20Z",
+      "path": "workspace/projects/continuity-code-pf-003-2/runtime/task_queue.json",
+      "sha256": "cc959b64d929c46694522a8bf7ef84aa944bebb1f27a898437105dc1c82ce620",
+      "size": 1590,
+      "tail": "ty\": 20,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260605200955-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260605200955-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_003.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260605200955-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 118,
+    "mtime": "2026-06-05T20:23:20Z",
+    "path": "workspace/projects/continuity-code-pf-003-2/runtime/checkpoints/runtime-20260605200955-002-cyberlace-document-blocked-20260605T202320Z.json",
+    "sha256": "1d7c8808f1a74cdfd4d0d9c8c1df7045ed3fd62020ed9bf600a947cece0b83ae",
+    "size": 6051,
+    "tail": "sin manejar PAN/CVV completo.\",\n            \"Crear validaciones de arquitectura segura y pruebas con datos sinteticos.\"\n          ],\n          \"suggestedRequirement\": \"Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.\",\n          \"summary\": \"HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.\",\n          \"title\": \"Alternativa segura permitida\"\n        },\n        \"safeNextSteps\": [\n          \"Reformular la tarea hacia tokenizacion y proveedor de pagos.\",\n          \"Eliminar cualquier solicitud de copiar, almacenar o enviar PAN/CVV/PIN.\",\n          \"Trabajar solo con datos sinteticos, ultimos 4 digitos y recibos.\"\n        ],\n        \"severity\": \"CRITICAL\",\n        \"task_id\": \"RUNTIME-20260605200955-002\"\n      },\n      \"recorded_at\": \"2026-06-05T20:23:20Z\"\n    },\n    \"project_id\": \"continuity-code-pf-003-2\",\n    \"reason\": \"cyberlace_sensitive_document_blocked\",\n    \"task_id\": \"RUNTIME-20260605200955-002\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 366,
+    "mtime": "2026-06-05T20:10:01Z",
+    "path": "workspace/projects/continuity-code-pf-003-2/runtime/directives/RUNTIME-20260605200955-001-20260605T201000Z-9bbfec642487.json",
+    "sha256": "904d253ef95fae3a171b05490dcb96698e667942349c4c6b91e2e2cdbee2fb54",
+    "size": 26523,
+    "tail": "EST con casos 200, 400, 404 y 500.\",\n    \"id\": \"RUNTIME-20260605200955-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\"\n  },\n  \"task_id\": \"RUNTIME-20260605200955-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-2/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-2/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"9bbfec642487fc98136bd26557441fa3d291fc9c6117e2574fac1d67b2c912c0\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blockedPaths": [
+        "workspace/projects/continuity-code-pf-003-2/docs/advanced_programming_case_003.md"
+      ],
+      "deniedAction": "Copiar, recolectar, almacenar o enviar PAN/CVV/PIN/tokens de pago por correo, archivos, APIs o canales inseguros.",
+      "evidence": [
+        {
+          "domain": "payment_security",
+          "line": 19,
+          "path": "workspace/projects/continuity-code-pf-003-2/docs/advanced_programming_case_003.md",
+          "pattern": "payment_data_copy_store_or_send",
+          "sample": "[REDACTED]",
+          "source": "referenced_document",
+          "type": "unsafe_payment_data_handling_intent"
+        }
+      ],
+      "kind": "cyberlace_sensitive_document_blocked",
+      "project_id": "continuity-code-pf-003-2",
+      "reason": "CyberLACE blocked unsafe payment-data handling intent: copying, collecting, storing or sending card/CVV/PIN/token data is denied. A safe tokenized payment architecture can be designed instead.",
+      "riskScore": 100.0,
+      "safeAlternative": {
+        "allowedActions": [
+          "Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.",
+          "Usar enlaces seguros o checkout hospedado por el procesador de pagos.",
+          "Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.",
+          "Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.",
+          "Crear validaciones de arquitectura segura y pruebas con datos sinteticos."
+        ],
+        "suggestedRequirement": "Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.",
+        "summary": "HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Reformular la tarea hacia tokenizacion y proveedor de pagos.",
+        "Eliminar cualquier solicitud de copiar, almacenar o enviar PAN/CVV/PIN.",
+        "Trabajar solo con datos sinteticos, ultimos 4 digitos y recibos."
+      ],
+      "severity": "CRITICAL",
+      "task_id": "RUNTIME-20260605200955-002"
+    },
+    "recorded_at": "2026-06-05T20:23:20Z"
+  },
+  "latestFailureIgnoredReason": "stale_failure_for_different_task:RUNTIME-20260605200955-002",
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-06-05T20:23:18Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "runtime/complexity_audit.json",
+        "runtime/complexity_estimate.json"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260605200955-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-003-2",
+  "runtimeDir": "workspace/projects/continuity-code-pf-003-2/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 124,
+    "mtime": "2026-06-05T20:23:20Z",
+    "path": "workspace/projects/continuity-code-pf-003-2/runtime/logs/agent-2dddf716ed-terminal.log",
+    "sha256": "f2457a1fa93db7f41aa61d37139fa5f35218264e2dfe8cdc51e516ae8e783c4d",
+    "size": 4314,
+    "tail": "vocations/RUNTIME-20260605200955-001-task_completion_gate-20260605T202311Z.json\",\n  \"reportPath\": null,\n  \"tool\": null,\n  \"actions\": null,\n  \"ignoredResidue\": null,\n  \"invocations\": [\n    {\n      \"tool\": \"scanner\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    },\n    {\n      \"tool\": \"findings\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003-2/runtime/artifacts/observer_findings.json\"\n    }\n  ]\n}\n[control-plane] Herramientas internas (broom_after_task):\n{\n  \"phase\": \"after_task\",\n  \"closureAllowed\": null,\n  \"activeFindings\": null,\n  \"warnings\": [],\n  \"blockers\": null,\n  \"artifactPath\": null,\n  \"reportPath\": \"runtime/artifacts/broom/20260605T202318.943306Z-RUNTIME-20260605200955-001-after_task.json\",\n  \"tool\": \"to-sweep-with-a-broom\",\n  \"actions\": [],\n  \"ignoredResidue\": [],\n  \"invocations\": []\n}\n[cyberlace] PELIGRO: accion financiera insegura negada. HABLA puede ayudar con una alternativa segura basada en tokenizacion, recibos y arquitectura PCI-style.\n"
+  }
+}
