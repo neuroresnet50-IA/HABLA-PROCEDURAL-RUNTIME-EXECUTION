@@ -1,0 +1,108 @@
+{
+  "changes": [
+    {
+      "change": "Added disk-only list_agent_projects_snapshot() and replaced UI-facing agent_runtime.list_projects() calls to avoid project picker freezes.",
+      "file": "backend/app.py"
+    },
+    {
+      "change": "Added HTTP project loading on mount/connect and HTTP fallback for project create/session start when Socket.IO is intermittent.",
+      "file": "frontend/src/components/AgentStudio.jsx"
+    }
+  ],
+  "diagnosis": {
+    "activeSessions": 0,
+    "after": "HTTP 200 in about 0.013s",
+    "before": "curl timed out after 5s with 0 bytes received",
+    "blockingEndpoint": "/api/agent/projects",
+    "projectLock": false,
+    "staleQueues": false
+  },
+  "nextStep": "Hard refresh browser at http://127.0.0.1:5001/ and retry new/existing project buttons.",
+  "residualRisks": [
+    "Browser may need hard refresh to load assets/index-X82sp1Vr.js.",
+    "Socket.IO polling can still reconnect, but AgentStudio buttons no longer depend only on Socket.IO when HABLA HTTP health is available.",
+    "CyberLACE enforce should remain controlled via script/test, not global startup mode, until rules are tuned."
+  ],
+  "runtime": {
+    "backendUrl": "http://127.0.0.1:5001/",
+    "bundle": "assets/index-X82sp1Vr.js",
+    "cyberlaceEnabled": true,
+    "cyberlaceMode": "monitor"
+  },
+  "status": "completed",
+  "task": "Unblock project creation/existing project buttons after CyberLACE integration",
+  "timestamp": "2026-05-24T20:56:58Z",
+  "validation": [
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/agent_runtime.py",
+      "ok": true
+    },
+    {
+      "command": "npm --prefix frontend run build",
+      "ok": true
+    },
+    {
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true,
+      "pid": 1220551
+    },
+    {
+      "command": "curl --max-time 5 http://127.0.0.1:5001/api/agent/projects",
+      "httpCode": 200,
+      "ok": true,
+      "projectCount": 1,
+      "timeSeconds": 0.013484
+    },
+    {
+      "command": "curl --max-time 5 http://127.0.0.1:5001/api/runtime/habla-status",
+      "httpCode": 200,
+      "ok": true,
+      "timeSeconds": 0.002939
+    },
+    {
+      "bytes": 474104,
+      "command": "curl http://127.0.0.1:5001/assets/index-X82sp1Vr.js",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/health",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/cyberlace/health",
+      "enabled": true,
+      "engineAvailable": true,
+      "mode": "monitor",
+      "ok": true
+    },
+    {
+      "activeSessions": 0,
+      "command": "curl http://127.0.0.1:5001/api/agent/sessions",
+      "ok": true
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/projects/sesion-20260518014728-jeego-en-3d/runtime-truth",
+      "locked": false,
+      "ok": true,
+      "queueCounts": {
+        "blocked": 0,
+        "completed": 116,
+        "pending": 0,
+        "running": 0
+      },
+      "verdict": "idle"
+    },
+    {
+      "artifact": "runtime/artifacts/agent_projects_unblocked_1440x1000.png",
+      "command": "google-chrome --headless --screenshot=runtime/artifacts/agent_projects_unblocked_1440x1000.png",
+      "ok": true
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health",
+      "ok": true,
+      "statusCode": 200
+    }
+  ]
+}

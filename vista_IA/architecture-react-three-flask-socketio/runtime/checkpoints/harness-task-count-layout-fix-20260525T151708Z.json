@@ -1,0 +1,25 @@
+{
+  "checkpoint": "harness-task-count-layout-fix-20260525T151708Z.json",
+  "createdAt": "2026-05-25T15:17:08.139490+00:00",
+  "scope": "Harness Engineering Studio UI",
+  "changes": [
+    "Prevented autopilot form/result overlap with internal scroll and explicit flex containment.",
+    "Added Tareas end-to-end del loop textbox governed by the Iniciar loop autonomo button.",
+    "Raised backend/autonomous training task cap from 10 to 1000 and defaulted UI/backend/script to 50 tasks.",
+    "Autopilot frontend now sends continuous=false and cycles=requestedTasks so the loop stops after the requested number."
+  ],
+  "validations": [
+    "npm --prefix frontend run build",
+    "python3 -B -m py_compile backend/app.py tools/cyberlace_training_loop.py",
+    "OPEN_BROWSER=0 ./start.sh restart",
+    "GET /api/health ok",
+    "GET /api/harness/training/summary ok",
+    "Socket.IO polling HTTP 200 upgrades=[]"
+  ],
+  "files": [
+    "frontend/src/components/HarnessEngineeringStudio.jsx",
+    "frontend/src/App.css",
+    "backend/app.py",
+    "tools/cyberlace_training_loop.py"
+  ]
+}

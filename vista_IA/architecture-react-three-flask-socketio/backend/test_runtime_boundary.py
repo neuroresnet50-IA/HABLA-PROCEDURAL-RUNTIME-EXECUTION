@@ -1,4 +1,5 @@
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -11,10 +12,11 @@ from backend.agent_worker_adapters import (
 from orchestrator.contracts import ContractError
 from orchestrator.directive_generator import DirectiveGenerationError, persist_directive
 from orchestrator.executor import execute_task_with_details
-from orchestrator.recovery import recover_task
+from orchestrator.recovery import decide_recovery, recover_task
 from orchestrator.state_store import StateStore
 from orchestrator.task_queue import TaskQueue, save_queue
 from orchestrator.worker_adapter import WorkerProcessExecution
+from workers.codex_worker import run_task
 
 
 def create_task() -> dict:
@@ -133,6 +135,117 @@ class RuntimeBoundaryTest(unittest.TestCase):
         self.assertTrue(result["task_result"]["completed"])
         self.assertEqual(result["execution"]["worker_adapter"], "fake_worker_adapter")
         self.assertEqual(result["execution"]["worker_adapter_command"], ["fake-worker"])
+
+    def test_recovery_blocks_bwrap_infrastructure_failure_without_split_or_retry(self) -> None:
+        task = create_task()
+        task["max_retries"] = 3
+        failure = {
+            "task_result": {
+                "task_id": task["id"],
+                "completed": False,
+                "files_created": [],
+                "files_modified": [],
+                "validation_ran": [],
+                "validation_passed": False,
+                "blockers": ["Missing expected evidence files: evidence.txt"],
+                "next_recommendation": "Retry with a smaller task or let recovery split the scope.",
+            },
+            "execution": {
+                "stdout": "No pude completar la tarea: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+                "stderr": "warning: Codex's Linux sandbox uses bubblewrap and needs access to create user namespaces.",
+                "timed_out": False,
+            },
+        }
+
+        decision = decide_recovery(task, failure, retry_count=0, allow_split=True)
+
+        self.assertEqual(decision["action"], "block")
+        self.assertTrue(decision["infrastructureFailure"])
+        self.assertTrue(decision["fatalInfrastructureFailure"])
+        self.assertIn("bwrap: loopback", decision["markers"])
+
+
+    def test_recovery_defers_scanner_project_lock_without_split(self) -> None:
+        task = create_task()
+        task["max_retries"] = 3
+        failure = {
+            "task_result": {
+                "task_id": task["id"],
+                "completed": False,
+                "files_created": [],
+                "files_modified": ["evidence.txt"],
+                "validation_ran": ["python3 -c 'print(1)'"] ,
+                "validation_passed": False,
+                "blockers": [
+                    "Worker reported blocker: Scanner canonico bloqueado: statusCode=423, error=project_locked, reason=agent_session_active, sessionId=agent-test"
+                ],
+                "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+            }
+        }
+
+        decision = decide_recovery(task, failure, retry_count=0, allow_split=True)
+
+        self.assertEqual(decision["action"], "block")
+        self.assertTrue(decision["scannerDeferred"])
+        self.assertTrue(decision["postflightLockContention"])
+        self.assertFalse(decision["retry"])
+        self.assertFalse(decision["split"])
+        self.assertFalse(decision["extendTimeout"])
+        self.assertEqual(decision["nextRecommendation"], "run_scanner_after_session_unlock")
+
+    def test_codex_worker_defers_reported_scanner_project_lock_blocker(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            task = create_task()
+            payload = {
+                "task_id": task["id"],
+                "completed": False,
+                "files_created": [],
+                "files_modified": ["evidence.txt"],
+                "validation_ran": ["python3 -c 'print(1)'"],
+                "validation_passed": False,
+                "blockers": [
+                    "Scanner canonico bloqueado: statusCode=423, error=project_locked, reason=agent_session_active, sessionId=agent-test"
+                ],
+                "next_recommendation": "Retry scanner after active session closes.",
+            }
+            script = (
+                "from pathlib import Path; import json; "
+                "Path('evidence.txt').write_text('ok', encoding='utf-8'); "
+                f"payload={payload!r}; "
+                "print('TaskResult:' + chr(10) + '```json' + chr(10) + json.dumps(payload) + chr(10) + '```')"
+            )
+
+            result = run_task(task, workspace=Path(temp_dir), command=[sys.executable, "-c", script])
+
+        self.assertTrue(result["task_result"]["completed"], result)
+        self.assertEqual(result["task_result"]["blockers"], [])
+        self.assertEqual(len(result["execution"].get("deferred_postflight_blockers") or []), 1)
+
+    def test_codex_worker_preserves_child_reported_infrastructure_blockers(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            task = create_task()
+            payload = {
+                "task_id": task["id"],
+                "completed": False,
+                "files_created": [],
+                "files_modified": [],
+                "validation_ran": [],
+                "validation_passed": False,
+                "blockers": ["bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted"],
+                "next_recommendation": "Fix worker sandbox before retrying.",
+            }
+            script = (
+                "import json; "
+                f"payload={payload!r}; "
+                "print('TaskResult:\\n```json\\n' + json.dumps(payload) + '\\n```')"
+            )
+
+            result = run_task(task, workspace=Path(temp_dir), command=[sys.executable, "-c", script])
+
+        blockers = result["task_result"]["blockers"]
+        self.assertFalse(result["task_result"]["completed"])
+        self.assertTrue(any("Worker reported blocker" in blocker for blocker in blockers))
+        self.assertTrue(any("Worker infrastructure failure detected" in blocker for blocker in blockers))
 
     def test_directive_persistence_uses_active_runtime_dir(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

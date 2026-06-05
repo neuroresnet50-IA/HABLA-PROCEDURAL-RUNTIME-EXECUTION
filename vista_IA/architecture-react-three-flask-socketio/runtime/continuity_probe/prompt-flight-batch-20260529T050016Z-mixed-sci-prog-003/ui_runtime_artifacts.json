@@ -1,0 +1,174 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "analysis_updated_at",
+        "bootstrap_tasks",
+        "confidence",
+        "control_plane_contract",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "expected_files",
+        "fast_path",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_goal",
+        "task_id",
+        "task_scope",
+        "task_title",
+        "timeout_seconds"
+      ],
+      "lineCount": 67,
+      "mtime": "2026-05-29T05:02:24Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/complexity_estimate.json",
+      "sha256": "e003dc3c372ff9617965a344970f758ae26ba808cc3134ac12047a0e0187ebd6",
+      "size": 2223,
+      "tail": "nfidence\": 88,\n  \"analysis_updated_at\": \"2026-05-29T05:02:24Z\",\n  \"task_id\": \"RUNTIME-20260529050154-001\",\n  \"task_title\": \"Disenar una cola FIFO persistente con estados pending\",\n  \"task_goal\": \"Disenar una cola FIFO persistente con estados pending, running, completed y failed, incluyendo invariantes de orden, retry por tarea y evidencia en disco.\",\n  \"task_scope\": \"complexity_estimate_only\",\n  \"expected_files\": [\n    \"runtime/complexity_estimate.json\"\n  ],\n  \"fast_path\": {\n    \"executor\": \"control_plane_artifact_executor\",\n    \"reason\": \"runtime_complexity_estimate\",\n    \"codex_skipped\": true,\n    \"validator_remains_authority\": true\n  },\n  \"control_plane_contract\": {\n    \"owner\": \"control_plane\",\n    \"closure\": \"validator confirms runtime/complexity_estimate.json exists in the workspace\",\n    \"worker_may_edit_control_plane_state\": false,\n    \"task_summary\": \"Disenar una cola FIFO persistente con estados pending, running, completed y failed, incluyendo invariantes de orden, retry por tarea y evidencia en disco.\",\n    \"out_of_scope\": [\n      \"runtime/project_state.json\",\n      \"runtime/task_queue.json\",\n      \"runtime/task_history.jsonl\",\n      \"runtime/failures.jsonl\"\n    ]\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 23,
+      "mtime": "2026-05-29T05:02:42Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/project_state.json",
+      "sha256": "8642318a062118a8dc6cd29d3b532b40f58cfa0db9b5d1f25702eca1dead5569",
+      "size": 671,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-6f662b340c\",\n    \"complexity-estimate\",\n    \"runtime-20260529050154-001-checkpoint\",\n    \"runtime-20260529050154-002-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260529050154-001\",\n    \"RUNTIME-20260529050154-002\"\n  ],\n  \"created_at\": \"2026-05-29T05:01:53.962227+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-29T05:01:53.962227+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-6f662b340c\",\n  \"project_id\": \"continuity-mixed-pf-003\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-29T05:02:42.136504+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-05-29T05:02:42Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/task_history.jsonl",
+      "sha256": "cbaf63a2e33293ea6db4f5cbe6168e5f3f97b05e66ef6e92d37259aceace1acc",
+      "size": 1010,
+      "tail": "{\"recorded_at\": \"2026-05-29T05:02:28Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529050154-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-29T05:02:42Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/mixed_science_programming_case_003_programming.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260529050154-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_003_programming.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-29T05:02:42Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/task_queue.json",
+      "sha256": "180b8935340820b80302287c0e945e4c57a24443c59252c5c342f4cee706d929",
+      "size": 1706,
+      "tail": "\"Disenar una cola FIFO persistente con estados pending\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260529050154-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260529050154-001\"\n    ],\n    \"expected_files\": [\n      \"docs/mixed_science_programming_case_003_programming.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_003_programming.md, manten el cambio pequeno, registra evidencia, usa contenido educativo seguro y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260529050154-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_003_programming.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_003_programming.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 495,
+    "mtime": "2026-05-29T05:02:42Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/checkpoints/runtime-20260529050154-002-checkpoint.json",
+    "sha256": "9acf35c83b166522b029dfb305669e3344b0fa0992eaa335906d049319b25188",
+    "size": 19241,
+    "tail": "y-mixed-pf-003/docs/mixed_science_programming_case_003_programming.md\",\n            \"size\": 552\n          }\n        ],\n        \"found\": [\n          \"docs/mixed_science_programming_case_003_programming.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/mixed_science_programming_case_003_programming.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/docs/mixed_science_programming_case_003_programming.md\",\n            \"size\": 552\n          }\n        ],\n        \"reported_created\": [\n          \"docs/mixed_science_programming_case_003_programming.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260529050154-002\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 272,
+    "mtime": "2026-05-29T05:02:29Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/directives/RUNTIME-20260529050154-002-20260529T050229Z-426badd21e79.json",
+    "sha256": "541e179db3d2b28e44a6dbc388ab24c126ef3a6a9c0e084270e10de60dfac741",
+    "size": 25358,
+    "tail": "\"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_003_programming.md, manten\"\n  },\n  \"task_id\": \"RUNTIME-20260529050154-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260529050154-001-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime/checkpoints/runtime-20260529050154-001-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"426badd21e7978cb3b36bd57bd3ec40d7cebbd2074169806d663d02a8460e7b3\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-29T05:02:42Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/mixed_science_programming_case_003_programming.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260529050154-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_003_programming.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-mixed-pf-003",
+  "runtimeDir": "workspace/projects/continuity-mixed-pf-003/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 406,
+    "mtime": "2026-05-29T05:02:46Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/logs/agent-6f662b340c-terminal.log",
+    "sha256": "4f1b4dd669254947ff77e66acf51b503a4a1cc2e22fcf0f62abf0671989b6e6a",
+    "size": 13858,
+    "tail": " 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260529T050246Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

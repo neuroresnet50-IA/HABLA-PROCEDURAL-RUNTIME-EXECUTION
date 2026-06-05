@@ -16,6 +16,7 @@ try:
         cyberlace_health,
         read_recent_cyberlace_evidence,
     )
+    from cyberlace_safe_rescue import build_cyberlace_rescue, record_cyberlace_rescue_acceptance
 except ImportError:  # pragma: no cover - package import path during unittest.
     from backend.cyberlace_integration import (
         cyberlace_after_model_output,
@@ -26,6 +27,7 @@ except ImportError:  # pragma: no cover - package import path during unittest.
         cyberlace_health,
         read_recent_cyberlace_evidence,
     )
+    from backend.cyberlace_safe_rescue import build_cyberlace_rescue, record_cyberlace_rescue_acceptance
 
 
 def _payload() -> Dict[str, Any]:
@@ -141,3 +143,33 @@ def register_cyberlace_routes(app: Any, socketio: Any = None) -> None:
         except (TypeError, ValueError):
             limit = 20
         return jsonify({"ok": True, **read_recent_cyberlace_evidence(limit=limit)})
+
+
+    @app.post("/api/cyberlace/rescue/rewrite")
+    def rewrite_cyberlace_blocked_prompt():
+        body = _payload()
+        decision = body.get("decision") if isinstance(body.get("decision"), dict) else _dict_field(body, "securityBlock", "security_block")
+        rescue = build_cyberlace_rescue(
+            decision=decision,
+            prompt=str(body.get("prompt") or body.get("originalPrompt") or ""),
+            project_slug=str(body.get("projectSlug") or body.get("project_slug") or ""),
+            source_session_id=str(body.get("sourceSessionId") or body.get("sessionId") or body.get("session_id") or ""),
+            user_id=str(body.get("userId") or body.get("user_id") or "local-human"),
+        )
+        return jsonify(rescue)
+
+    @app.post("/api/cyberlace/rescue/accept")
+    def accept_cyberlace_safe_rewrite():
+        body = _payload()
+        result = record_cyberlace_rescue_acceptance(
+            rescue_id=str(body.get("rescueId") or body.get("rescue_id") or ""),
+            safe_prompt=str(body.get("safePrompt") or body.get("safe_prompt") or body.get("requirement") or ""),
+            project_slug=str(body.get("projectSlug") or body.get("project_slug") or ""),
+            source_session_id=str(body.get("sourceSessionId") or body.get("sessionId") or body.get("session_id") or ""),
+            user_id=str(body.get("userId") or body.get("user_id") or "local-human"),
+            confirmation=str(body.get("confirmation") or ""),
+            acceptance_type=str(body.get("acceptanceType") or body.get("acceptance_type") or "continue_safe"),
+            rescue_pin=str(body.get("rescuePin") or body.get("rescue_pin") or body.get("pin") or ""),
+        )
+        status_code = 200 if result.get("ok") else (401 if result.get("reason") in {"context_pin_required", "context_pin_invalid"} else 400)
+        return jsonify(result), status_code

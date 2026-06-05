@@ -1,0 +1,657 @@
+{
+  "checkpoint_key": "runtime-20260604014622-001-retry-0-recovery",
+  "created_at": "2026-06-04T01:57:16Z",
+  "payload": {
+    "decision": {
+      "action": "split",
+      "reason": "Failure suggests timeout or oversized task; split into smaller tasks.",
+      "retry_count": 0,
+      "split_tasks": [
+        {
+          "checkpoint_key": "runtime-20260604014622-001-split-001-checkpoint",
+          "dependencies": [],
+          "expected_files": [
+            "runtime/complexity_audit.json"
+          ],
+          "goal": "Produce expected file runtime/complexity_audit.json. Reason: Failure suggests timeout or oversized task.",
+          "id": "RUNTIME-20260604014622-001-SPLIT-001",
+          "max_retries": 3,
+          "mode": "build",
+          "priority": 19,
+          "status": "pending",
+          "timeout_seconds": 900,
+          "title": "Disenar una cola FIFO persistente con estados pending split 1",
+          "validation_commands": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json'] if not Path(p).is_file()]; assert not missing, missing\""
+          ]
+        },
+        {
+          "checkpoint_key": "runtime-20260604014622-001-split-002-checkpoint",
+          "dependencies": [],
+          "expected_files": [
+            "runtime/complexity_estimate.json"
+          ],
+          "goal": "Produce expected file runtime/complexity_estimate.json. Reason: Failure suggests timeout or oversized task.",
+          "id": "RUNTIME-20260604014622-001-SPLIT-002",
+          "max_retries": 3,
+          "mode": "build",
+          "priority": 18,
+          "status": "pending",
+          "timeout_seconds": 900,
+          "title": "Disenar una cola FIFO persistente con estados pending split 2",
+          "validation_commands": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+          ]
+        }
+      ]
+    },
+    "failure": {
+      "execution": {
+        "approval_policy": "never",
+        "child_pid": 2000782,
+        "command": [
+          "/home/neurodriver/.npm-global/bin/codex",
+          "--dangerously-bypass-approvals-and-sandbox",
+          "-C",
+          "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001",
+          "exec",
+          "--skip-git-repo-check",
+          "Task: RUNTIME-20260604014622-001 - Disenar una cola FIFO persistente con estados pending\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: Disenar una cola FIFO persistente con estados pending, running, completed y failed.\nComplejidad operativa:\n- Dificultad: Medio\n- Score: 34 | confianza: 88\n- Agentes recomendados: 2 de max 8\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\n- Herramientas requeridas: findings, integrity, scanner\nExact deliverables:\n- runtime/complexity_audit.json\n- runtime/complexity_estimate.json\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- runtime/complexity_audit.json\n- runtime/complexity_estimate.json\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE_LOG.md\n- Ciclos LACE requeridos: 4\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- complexity-estimate\nKnown risks or blockers:\n- Blocked task RUNTIME-20260604014622-002 missing dependencies: RUNTIME-20260604014622-001\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history."
+        ],
+        "command_text": "/home/neurodriver/.npm-global/bin/codex --dangerously-bypass-approvals-and-sandbox -C /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001 exec --skip-git-repo-check Task: RUNTIME-20260604014622-001 - Disenar una cola FIFO persistente con estados pending\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: Disenar una cola FIFO persistente con estados pending, running, completed y failed.\nComplejidad operativa:\n- Dificultad: Medio\n- Score: 34 | confianza: 88\n- Agentes recomendados: 2 de max 8\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\n- Herramientas requeridas: findings, integrity, scanner\nExact deliverables:\n- runtime/complexity_audit.json\n- runtime/complexity_estimate.json\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- runtime/complexity_audit.json\n- runtime/complexity_estimate.json\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE_LOG.md\n- Ciclos LACE requeridos: 4\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- complexity-estimate\nKnown risks or blockers:\n- Blocked task RUNTIME-20260604014622-002 missing dependencies: RUNTIME-20260604014622-001\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history.",
+        "deferred_postflight_blockers": [],
+        "duration_seconds": 572.020696,
+        "execution_strategy": "codex_worker",
+        "expected_files": [
+          "runtime/complexity_audit.json",
+          "runtime/complexity_estimate.json"
+        ],
+        "fatal_infrastructure_markers": [],
+        "ignored_infrastructure_markers": [],
+        "infrastructure_failure": false,
+        "infrastructure_failure_type": null,
+        "infrastructure_ignored_reason": null,
+        "infrastructure_markers": [],
+        "returncode": 0,
+        "sandbox_mode": "danger-full-access",
+        "selector_reason": "host_write_not_applicable",
+        "shell": false,
+        "stderr": "[output truncated; omitted 1701592 chars]\ndiente de documentacion.\n+ACTION: actualizar runtime/complexity_audit.json y runtime/complexity_estimate.json con estados, orden FIFO, persistencia, transiciones, retry por tarea y compuertas de cierre.\n+OBSERVATION esperada: ambos entregables existen, son JSON validos y describen una cola FIFO persistente verificable.\n+\n+PASO D - VALIDAR\n+[CICLO-1 COMPLETADO]\n+OBSERVATION real: los dos artefactos fueron reescritos y sincronizados via bridge visual; JSON valido y validacion de existencia pasaron; findings e integrity respondieron ok=true; scanner respondio statusCode=423, error=project_locked, con Observer indicando rootCause=active_worker_running.\n+Coincide con OBSERVATION esperada: parcialmente; los entregables y validaciones locales pasaron, pero el scanner canonico quedo bloqueado por lock del proyecto activo.\n+Problemas resueltos: auditoria alineada; diseno FIFO persistente incorporado; limites del worker documentados.\n+Estado ahora vs antes: antes habia estimacion generica; ahora hay contrato de estados, transiciones, seleccion FIFO, retry y evidencia requerida.\n+Proyecto mejoro objetivamente: SI para el alcance de artefactos; cierre tecnico completo depende de scanner posterior cuando el control plane libere el lock.\n+\n+MEMORIA EPISODICA:\n+- Que funciono: limitar la edicion a los entregables declarados y no tocar la cola viva del control plane.\n+- Que no funciono: el CLI canonico orchestrator/agent_tools.py no esta presente en el workspace.\n+- Que evitar en el proximo ciclo: cerrar como completa una herramienta interna que no pudo invocarse realmente.\n+\n+Proximo ciclo: debe ejecutarlo el control plane o la tarea correspondiente; este worker no consume silenciosamente los ciclos restantes.\ndiff --git a/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md b/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md\nnew file mode 100644\nindex 0000000000000000000000000000000000000000..6e850b330c566ade629f8f0ad10fce3948a0f1ef\n--- /dev/null\n+++ b/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md\n@@ -0,0 +1,32 @@\n+# Ultimo contexto Codex\n+\n+Fecha/hora UTC: 2026-06-04T01:54:30Z\n+\n+Ultima solicitud del usuario:\n+- `RUNTIME-20260604014622-001`: Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`, entregando `runtime/complexity_audit.json` y `runtime/complexity_estimate.json`.\n+\n+Estado real:\n+- Entregables actualizados y validados como JSON.\n+- La validacion esperada de existencia paso.\n+- `findings` e `integrity` pasaron con `ok=true`.\n+- `scanner` fue invocado pero quedo bloqueado por `project_locked`; Observer confirmo `active_worker_running`.\n+\n+Archivos tocados:\n+- `runtime/complexity_audit.json`\n+- `runtime/complexity_estimate.json`\n+- `LACE_LOG.md`\n+- `runtime/agent_tool_invocations.jsonl`\n+- `runtime/artifacts/observer_findings.json`\n+- `runtime/artifacts/file_integrity_report.json`\n+- `recuperacioncontexto.md`\n+- `ULTIMO_CONTEXTO_CODEX.md`\n+\n+Validacion ejecutada:\n+- `python3 -m json.tool runtime/complexity_audit.json`\n+- `python3 -m json.tool runtime/complexity_estimate.json`\n+- `python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"`\n+- Validacion semantica local de estados `pending/running/completed/failed`.\n+- `agent_tools.py findings`, `integrity`, `scanner`, `observer-status`.\n+\n+Siguiente paso exacto:\n+- Reintentar scanner canonico cuando el control plane libere el lock del worker activo. El ultimo resultado fue `statusCode=423`, `ok=false`, `error=project_locked`.\ndiff --git a/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md b/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md\nnew file mode 100644\nindex 0000000000000000000000000000000000000000..ab082fc64e3ddc8f9176837d7473fccf87980b1d\n--- /dev/null\n+++ b/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md\n@@ -0,0 +1,53 @@\n+# Recuperacion de contexto\n+\n+## 2026-06-04T01:54:30Z - RUNTIME-20260604014622-001\n+\n+Solicitud recibida:\n+- Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`.\n+- Entregar evidencia en `runtime/complexity_audit.json` y `runtime/complexity_estimate.json`.\n+- Respetar ownership del control plane y no editar `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.\n+\n+Acciones realizadas:\n+- Se revisaron `runtime/project_state.json`, `runtime/task_queue.json`, `LACE.md`, `LACE_LOG.md` y los artefactos de complejidad existentes.\n+- Se actualizo `runtime/complexity_audit.json` con el contrato de cola FIFO persistente, estados permitidos, transiciones validas/invalidas, persistencia, reanudacion y compuertas de evidencia.\n+- Se actualizo `runtime/complexity_estimate.json` con presupuesto operativo, riesgo, alcance LACE y diseno de seleccion FIFO.\n+- Se actualizo `LACE_LOG.md` con un ciclo LACE acotado a esta tarea.\n+- Se invoco el bridge visual para phase, nodos, conexiones, focus, pasos y sync-file de archivos modificados.\n+- Se ejecutaron herramientas internas desde el system root con cwd del proyecto para auditar en `runtime/agent_tool_invocations.jsonl`.\n+\n+Archivos creados o modificados:\n+- `runtime/complexity_audit.json`\n+- `runtime/complexity_estimate.json`\n+- `LACE_LOG.md`\n+- `runtime/agent_tool_invocations.jsonl`\n+- `runtime/artifacts/observer_findings.json`\n+- `runtime/artifacts/file_integrity_report.json`\n+- `recuperacioncontexto.md`\n+- `ULTIMO_CONTEXTO_CODEX.md`\n+\n+Validacion corta ejecutada:\n+- `python3 -m json.tool runtime/complexity_audit.json`\n+- `python3 -m json.tool runtime/complexity_estimate.json`\n+- `python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"`\n+- Validacion semantica local de estados FIFO y herramientas requeridas.\n+- `agent_tools.py findings continuity-code-pf-001`\n+- `agent_tools.py integrity continuity-code-pf-001`\n+- `agent_tools.py scanner continuity-code-pf-001`\n+- `agent_tools.py observer-status`\n+\n+Resultado real de validacion:\n+- JSON valido: OK.\n+- Validacion esperada de existencia: OK.\n+- Validacion semantica local: OK.\n+- Findings: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/observer_findings.json`, `activeFindings=0`.\n+- Integrity: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/file_integrity_report.json`, `totalFindings=0`.\n+- Scanner canonico: `statusCode=423`, `ok=false`, `error=project_locked`, sin `reportPath`.\n+- Observer-status: `statusCode=200`, `ok=true`, estado `waiting_worker`, incidente con `rootCause=active_worker_running`.\n+\n+Blockers o riesgos:\n+- El scanner canonico no pudo completarse mientras el worker actual seguia activo; el backend bloqueo la ejecucion con `project_locked`.\n+- No se edito `runtime/task_queue.json`; el diseno queda en los entregables declarados y la implementacion/documentacion extensa pertenece a la tarea dependiente `RUNTIME-20260604014622-002`.\n+\n+Punto de reanudacion:\n+- Reintentar `python3 orchestrator/agent_tools.py scanner continuity-code-pf-001` cuando el control plane libere el lock del worker activo.\n+- Si el scanner responde `ok=true`, el control plane puede evaluar cierre tecnico de esta tarea con los dos entregables ya presentes.\ndiff --git a/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json b/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\nindex be4afb79325ece586b5eb0d511a0efe87b3822ac..6edb2443c2b88b69f353e27d1efb95d396c1b92b\n--- a/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\n+++ b/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\n@@ -1,110 +1,193 @@\n {\n   \"schema_version\": 1,\n-  \"audit_version\": \"complexity-audit-kernel-v1\",\n-  \"generated_at\": \"2026-06-04T01:46:22.877071Z\",\n+  \"audit_version\": \"fifo-persistent-queue-design-audit-v1\",\n+  \"generated_at\": \"2026-06-04T01:49:21Z\",\n+  \"task_id\": \"RUNTIME-20260604014622-001\",\n   \"runtime_mode\": \"build\",\n   \"launch_mode\": \"existing\",\n   \"project_slug\": \"continuity-code-pf-001\",\n+  \"goal\": \"Disenar una cola FIFO persistente con estados pending, running, completed y failed.\",\n   \"difficulty\": \"medio\",\n   \"difficulty_label\": \"Medio\",\n   \"complexity_score\": 34,\n-  \"confidence\": 92,\n+  \"confidence\": 88,\n   \"estimated_minutes\": 45,\n-  \"recommended_agents\": 3,\n-  \"max_agents\": 4,\n+  \"recommended_agents\": 2,\n+  \"max_agents\": 8,\n   \"lace_min_cycles\": 2,\n-  \"lace_target_cycles\": 3,\n-  \"lace_max_cycles\": 4,\n-  \"early_exit_allowed\": true,\n-  \"early_exit_mode\": \"allowed\",\n+  \"lace_target_cycles\": 4,\n+  \"lace_max_cycles\": 10,\n+  \"early_exit_allowed\": false,\n+  \"early_exit_mode\": \"blocked_until_declared_evidence_exists\",\n   \"required_tools\": [\n+    \"findings\",\n+    \"integrity\",\n     \"scanner\"\n   ],\n   \"risk_flags\": [\n-    \"runtime\"\n+    \"estado_persistido\",\n+    \"fifo_ordering\",\n+    \"task_retries\",\n+    \"worker_isolation\"\n   ],\n+  \"queue_design_audit\": {\n+    \"queue_contract\": \"La cola persistente debe ordenar tareas por insercion y exponer solo transiciones verificables de estado.\",\n+    \"allowed_states\": [\n+      \"pending\",\n+      \"running\",\n+      \"completed\",\n+      \"failed\"\n+    ],\n+    \"fifo_ordering\": {\n+      \"primary_key\": \"sequence\",\n+      \"fallback_key\": \"created_at\",\n+      \"selection_rule\": \"Seleccionar la tarea pending mas antigua con dependencias completadas; no saltar tareas listas salvo bloqueo declarado.\",\n+      \"stability_requirement\": \"El orden no cambia entre reinicios porque sequence y created_at viven en disco.\"\n+    },\n+    \"persistence_contract\": {\n+      \"storage_file\": \"runtime/task_queue.json\",\n+      \"writer_owner\": \"control_plane\",\n+      \"worker_permission\": \"read_only_for_context\",\n+      \"atomicity_requirement\": \"Las escrituras del control plane deben ser atomicas: escribir temporal, fsync cuando aplique y reemplazar.\",\n+      \"resume_requirement\": \"Al reiniciar, pending permanece pending; running debe reconciliarse por timeout, lease o recovery antes de relanzar worker.\"\n+    },\n+    \"state_transitions\": [\n+      {\n+        \"from\": \"pending\",\n+        \"to\": \"running\",\n+        \"allowed_by\": \"executor\",\n+        \"evidence\": \"worker_id, started_at, attempt_number, timeout_seconds\"\n+      },\n+      {\n+        \"from\": \"running\",\n+        \"to\": \"completed\",\n+        \"allowed_by\": \"validator\",\n+        \"evidence\": \"TaskResult.completed=true, expected_files existen, validation_commands return code 0\"\n+      },\n+      {\n+        \"from\": \"running\",\n+        \"to\": \"failed\",\n+        \"allowed_by\": \"executor_or_validator\",\n+        \"evidence\": \"blockers, failed command, timeout, retry cause\"\n+      },\n+      {\n+        \"from\": \"failed\",\n+        \"to\": \"pending\",\n+        \"allowed_by\": \"recovery\",\n+        \"evidence\": \"retry cause registrada y attempts < max_retries\"\n+      }\n+    ],\n+    \"invalid_transitions\": [\n+      \"pending->completed\",\n+      \"pending->failed without worker attempt\",\n+      \"completed->running\",\n+      \"completed->failed\",\n+      \"running->pending without recovery record\"\n+    ],\n+    \"verification_gates\": [\n+      \"Cada tarea declara expected_files.\",\n+      \"Cada tarea declara validation_commands.\",\n+      \"El retry se calcula por tarea, no por sesion completa.\",\n+      \"El progreso solo cuenta con evidencia real en disco.\",\n+      \"El worker devuelve TaskResult y no modifica archivos internos de estado del control plane.\"\n+    ]\n+  },\n   \"reasoning\": [\n-    \"prompt palabras=33\",\n-    \"capas detectadas en prompt: runtime, scanner\",\n-    \"archivos materiales estimados=1\",\n-    \"riesgo operativo bajo\",\n-    \"expected_files=0\",\n-    \"validation_commands=0\",\n-    \"sin fallos historicos relevantes\",\n-    \"incertidumbre baja\"\n+    \"La tarea toca runtime y estado persistido, por lo que el riesgo operativo es medio aunque los entregables sean dos JSON.\",\n+    \"La cola requiere estados explicitos y transiciones auditables para evitar progreso inventado.\",\n+    \"FIFO debe depender de claves persistidas, no del orden accidental de lectura en memoria.\",\n+    \"El worker actual no debe editar runtime/task_queue.json; solo entrega el diseno en los artefactos declarados.\",\n+    \"La tarea dependiente RUNTIME-20260604014622-002 queda bloqueada hasta que estos artefactos existan y validen.\"\n   ],\n   \"layer_scores\": {\n     \"prompt\": 30,\n     \"project\": 4,\n-    \"operational_risk\": 0,\n-    \"blast_radius\": 24,\n-    \"evidence\": 8,\n+    \"operational_risk\": 12,\n+    \"blast_radius\": 16,\n+    \"evidence\": 10,\n     \"history\": 0,\n-    \"uncertainty\": 0\n+    \"uncertainty\": 2\n   },\n   \"layers\": {\n     \"prompt\": {\n       \"score\": 30,\n       \"reasons\": [\n-        \"prompt palabras=33\",\n-        \"capas detectadas en prompt: runtime, scanner\"\n+        \"runtime solicitado en modo build\",\n+        \"cola persistente con estados explicitos\",\n+        \"herramientas requeridas: findings, integrity, scanner\"\n       ],\n       \"required_tools\": [\n+        \"findings\",\n+        \"integrity\",\n         \"scanner\"\n       ],\n       \"risk_flags\": [\n-        \"runtime\"\n+        \"estado_persistido\"\n       ]\n     },\n     \"project\": {\n       \"score\": 4,\n       \"reasons\": [\n-        \"archivos materiales estimados=1\"\n+        \"entregables declarados ya existen y requieren alineacion\",\n+        \"la implementacion de documentacion detallada pertenece a una tarea dependiente\"\n       ],\n       \"required_tools\": [],\n       \"risk_flags\": [],\n       \"observed\": true,\n-      \"file_count\": 1\n+      \"file_count\": 2\n     },\n     \"operational_risk\": {\n-      \"score\": 0,\n+      \"score\": 12,\n       \"reasons\": [\n-        \"riesgo operativo bajo\"\n+        \"task_queue.json pertenece al control plane y no debe modificarse desde el worker\",\n+        \"running requiere reconciliacion para reanudacion segura\"\n       ],\n-      \"required_tools\": [],\n-      \"risk_flags\": []\n+      \"required_tools\": [\n+        \"integrity\"\n+      ],\n+      \"risk_flags\": [\n+        \"control_plane_ownership\"\n+      ]\n     },\n     \"blast_radius\": {\n-      \"score\": 24,\n+      \"score\": 16,\n       \"reasons\": [\n-        \"expected_files=0\"\n+        \"la cola desbloquea tareas posteriores\",\n+        \"errores en orden FIFO afectan retries y dependencias\"\n       ],\n       \"required_tools\": [],\n-      \"risk_flags\": []\n+      \"risk_flags\": [\n+        \"dependency_order\"\n+      ]\n     },\n     \"evidence\": {\n-      \"score\": 8,\n+      \"score\": 10,\n       \"reasons\": [\n-        \"validation_commands=0\"\n+        \"dos archivos esperados bajo runtime deben existir\",\n+        \"la validacion declarada comprueba existencia de ambos entregables\"\n       ],\n-      \"required_tools\": [],\n+      \"required_tools\": [\n+        \"scanner\"\n+      ],\n       \"risk_flags\": []\n     },\n     \"history\": {\n       \"score\": 0,\n       \"reasons\": [\n-        \"sin fallos historicos relevantes\"\n+        \"sin fallos historicos activos en observer_findings\"\n       ],\n       \"required_tools\": [],\n       \"risk_flags\": []\n     },\n     \"uncertainty\": {\n-      \"score\": 0,\n+      \"score\": 2,\n       \"reasons\": [\n-        \"incertidumbre baja\"\n+        \"orchestrator/agent_tools.py no existe en el workspace; se debe registrar blocker de herramienta si el backend local no ofrece CLI canonico\"\n       ],\n       \"required_tools\": [],\n-      \"risk_flags\": []\n+      \"risk_flags\": [\n+        \"tooling_gap\"\n+      ]\n     }\n   }\n }\ndiff --git a/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json b/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\nindex a496a4958769bcca3f28383984f13cec7ce5e96b..388e0d5d2613191fa12e482ae5e32b92908a4d36\n--- a/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\n+++ b/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\n@@ -1,11 +1,12 @@\n {\n   \"schema_version\": 1,\n   \"estimate_type\": \"project_complexity_budget\",\n-  \"generated_at\": \"2026-06-04T01:46:22.861244Z\",\n+  \"generated_at\": \"2026-06-04T01:49:21Z\",\n+  \"task_id\": \"RUNTIME-20260604014622-001\",\n   \"runtime_mode\": \"build\",\n   \"launch_mode\": \"existing\",\n   \"project_slug\": \"continuity-code-pf-001\",\n-  \"project_file_count\": 0,\n+  \"project_file_count\": 2,\n   \"prompt_word_count\": 33,\n   \"score\": 34,\n   \"difficulty\": \"medio\",\n@@ -13,6 +14,8 @@\n   \"min_lace_cycles\": 2,\n   \"max_lace_cycles\": 10,\n   \"recommended_lace_cycles\": 3,\n+  \"session_required_lace_cycles\": 4,\n+  \"worker_lace_scope\": \"registrar solo el ciclo acotado de esta tarea; no consumir todos los ciclos de la sesion\",\n   \"recommended_agents\": 2,\n   \"max_agents\": 8,\n   \"bootstrap_tasks\": 4,\n@@ -26,130 +29,114 @@\n     \"scanner\"\n   ],\n   \"risk_flags\": [\n-    \"estado_persistido\"\n+    \"estado_persistido\",\n+    \"fifo_ordering\",\n+    \"worker_retries\",\n+    \"control_plane_ownership\"\n   ],\n   \"reasons\": [\n     \"modo runtime solicitado: build\",\n     \"prompt medio: 33 palabras\",\n     \"toca runtime/estado persistido\",\n-    \"requiere evidencia auditable\"\n+    \"requiere evidencia auditable\",\n+    \"la cola FIFO debe ser persistente y reanudable\",\n+    \"la tarea dependiente permanece pendiente hasta completar esta evidencia\"\n   ],\n   \"confidence\": 88,\n-  \"complexity_audit\": {\n-    \"schema_version\": 1,\n-    \"audit_version\": \"complexity-audit-kernel-v1\",\n-    \"generated_at\": \"2026-06-04T01:46:22.877071Z\",\n-    \"runtime_mode\": \"build\",\n-    \"launch_mode\": \"existing\",\n-    \"project_slug\": \"continuity-code-pf-001\",\n-    \"difficulty\": \"medio\",\n-    \"difficulty_label\": \"Medio\",\n+  \"quality_threshold\": 85,\n+  \"estimated_minutes\": 45,\n+  \"queue_design\": {\n+    \"name\": \"persistent_fifo_task_queue\",\n+    \"purpose\": \"Mantener una sesion con multiples tareas pequenas, verificables, persistentes y reanudables.\",\n+    \"storage\": {\n+      \"path\": \"runtime/task_queue.json\",\n+      \"format\": \"json_array_of_tasks\",\n+      \"owner\": \"control_plane\",\n+      \"worker_rule\": \"El worker puede leer contexto, pero no escribir la cola ni marcar completado.\"\n+    },\n+    \"task_identity\": {\n+      \"required_fields\": [\n+        \"id\",\n+        \"title\",\n+        \"goal\",\n+        \"status\",\n+        \"priority\",\n+        \"dependencies\",\n+        \"expected_files\",\n+        \"validation_commands\",\n+        \"timeout_seconds\",\n+        \"max_retries\",\n+        \"mode\",\n+        \"checkpoint_key\"\n+      ],\n+      \"recommended_persistent_fields\": [\n+        \"sequence\",\n+        \"created_at\",\n+        \"updated_at\",\n+        \"attempts\",\n+        \"last_error\",\n+        \"worker_id\",\n+        \"started_at\",\n+        \"completed_at\"\n+      ]\n+    },\n+    \"states\": {\n+      \"pending\": \"Lista para ser seleccionada cuando sus dependencias esten completed.\",\n+      \"running\": \"Asignada a un worker propio con timeout y attempt activos.\",\n+      \"completed\": \"Validada con evidencia real en disco y comandos declarados en verde.\",\n+      \"failed\": \"Bloqueada o agotada con causa registrada y retry por tarea.\"\n+    },\n+    \"fifo_selection\": {\n+      \"eligible_filter\": \"status == pending y todas las dependencies estan completed\",\n+      \"sort_order\": [\n+        \"sequence ascending\",\n+        \"created_at ascending\",\n+        \"id ascending as deterministic fallback\"\n+      ],\n+      \"dispatch_rule\": \"Lanzar exactamente un worker para la primera tarea elegible.\",\n+      \"priority_note\": \"priority puede ordenar lotes de planificacion, pero dentro del mismo nivel la seleccion debe conservar FIFO.\"\n+    },\n+    \"retry_model\": {\n+      \"scope\": \"task\",\n+      \"rule\": \"Si running falla y attempts < max_retries, recovery registra causa y devuelve la tarea a pending conservando sequence original.\",\n+      \"terminal_failure\": \"Si attempts >= max_retries, estado failed y no se reordena automaticamente.\",\n+      \"process_shutdown\": \"Si terminate() no cierra el worker, ejecutar kill() y registrar evidencia.\"\n+    },\n+    \"completion_gate\": {\n+      \"required_evidence\": [\n+        \"expected_files existen bajo la raiz del repositorio\",\n+        \"validation_commands ejecutados con return code 0\",\n+        \"TaskResult.completed true\",\n+        \"TaskResult.blockers vacio\",\n+        \"files_created/files_modified declarados\",\n+        \"validation_ran y validation_passed declarados\"\n+      ],\n+      \"forbidden_shortcuts\": [\n+        \"inferir smoke por palabras sueltas\",\n+        \"contar progreso sin evidencia en disco\",\n+        \"cerrar una tarea escribiendo manualmente project_state o task_history desde el worker\"\n+      ]\n+    }\n+  },\n+  \"validation_plan\": {\n+    \"declared_command\": \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n+    \"additional_local_checks\": [\n+      \"python3 -m json.tool runtime/complexity_audit.json\",\n+      \"python3 -m json.tool runtime/complexity_estimate.json\"\n+    ],\n+    \"tooling_note\": \"orchestrator/agent_tools.py no existe en este workspace; no se simula salida de findings/integrity/scanner.\"\n+  },\n+  \"complexity_audit_summary\": {\n+    \"audit_version\": \"fifo-persistent-queue-design-audit-v1\",\n     \"complexity_score\": 34,\n-    \"confidence\": 92,\n-    \"estimated_minutes\": 45,\n-    \"recommended_agents\": 3,\n-    \"max_agents\": 4,\n-    \"lace_min_cycles\": 2,\n-    \"lace_target_cycles\": 3,\n-    \"lace_max_cycles\": 4,\n-    \"early_exit_allowed\": true,\n-    \"early_exit_mode\": \"allowed\",\n+    \"confidence\": 88,\n+    \"lace_target_cycles\": 4,\n+    \"early_exit_allowed\": false,\n     \"required_tools\": [\n+      \"findings\",\n+      \"integrity\",\n       \"scanner\"\n-    ],\n-    \"risk_flags\": [\n-      \"runtime\"\n-    ],\n-    \"reasoning\": [\n-      \"prompt palabras=33\",\n-      \"capas detectadas en prompt: runtime, scanner\",\n-      \"archivos materiales estimados=1\",\n-      \"riesgo operativo bajo\",\n-      \"expected_files=0\",\n-      \"validation_commands=0\",\n-      \"sin fallos historicos relevantes\",\n-      \"incertidumbre baja\"\n     ],\n-    \"layer_scores\": {\n-      \"prompt\": 30,\n-      \"project\": 4,\n-      \"operational_risk\": 0,\n-      \"blast_radius\": 24,\n-      \"evidence\": 8,\n-      \"history\": 0,\n-      \"uncertainty\": 0\n-    },\n-    \"layers\": {\n-      \"prompt\": {\n-        \"score\": 30,\n-        \"reasons\": [\n-          \"prompt palabras=33\",\n-          \"capas detectadas en prompt: runtime, scanner\"\n-        ],\n-        \"required_tools\": [\n-          \"scanner\"\n-        ],\n-        \"risk_flags\": [\n-          \"runtime\"\n-        ]\n-      },\n-      \"project\": {\n-        \"score\": 4,\n-        \"reasons\": [\n-          \"archivos materiales estimados=1\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": [],\n-        \"observed\": true,\n-        \"file_count\": 1\n-      },\n-      \"operational_risk\": {\n-        \"score\": 0,\n-        \"reasons\": [\n-          \"riesgo operativo bajo\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": []\n-      },\n-      \"blast_radius\": {\n-        \"score\": 24,\n-        \"reasons\": [\n-          \"expected_files=0\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": []\n-      },\n-      \"evidence\": {\n-        \"score\": 8,\n-        \"reasons\": [\n-          \"validation_commands=0\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": []\n-      },\n-      \"history\": {\n-        \"score\": 0,\n-        \"reasons\": [\n-          \"sin fallos historicos relevantes\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": []\n-      },\n-      \"uncertainty\": {\n-        \"score\": 0,\n-        \"reasons\": [\n-          \"incertidumbre baja\"\n-        ],\n-        \"required_tools\": [],\n-        \"risk_flags\": []\n-      }\n-    }\n-  },\n-  \"audit_version\": \"complexity-audit-kernel-v1\",\n-  \"lace_min_cycles\": 2,\n-  \"lace_target_cycles\": 3,\n-  \"lace_max_cycles\": 4,\n-  \"early_exit_allowed\": true,\n-  \"quality_threshold\": 85,\n-  \"estimated_minutes\": 45\n+    \"primary_risk\": \"estado_persistido\"\n+  }\n }\n\ntokens used\n136,773\n",
+        "stdout": "TaskResult:\n\n```json\n{\n  \"task_id\": \"RUNTIME-20260604014622-001\",\n  \"completed\": false,\n  \"files_created\": [\n    \"runtime/complexity_audit.json\",\n    \"recuperacioncontexto.md\",\n    \"ULTIMO_CONTEXTO_CODEX.md\"\n  ],\n  \"files_modified\": [\n    \"runtime/complexity_estimate.json\",\n    \"LACE_LOG.md\",\n    \"runtime/agent_tool_invocations.jsonl\",\n    \"runtime/artifacts/observer_findings.json\",\n    \"runtime/artifacts/file_integrity_report.json\"\n  ],\n  \"validation_ran\": [\n    \"python3 -m json.tool runtime/complexity_audit.json\",\n    \"python3 -m json.tool runtime/complexity_estimate.json\",\n    \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n    \"agent_tools.py findings continuity-code-pf-001\",\n    \"agent_tools.py integrity continuity-code-pf-001\",\n    \"agent_tools.py scanner continuity-code-pf-001\"\n  ],\n  \"validation_passed\": false,\n  \"blockers\": [\n    \"scanner canonico devolvio statusCode=423, ok=false, error=project_locked; observer-status confirmo rootCause=active_worker_running\"\n  ],\n  \"next_recommendation\": \"Reintentar scanner cuando el control plane libere el lock del worker activo.\"\n}\n```\n\nLos entregables principales quedaron actualizados: `runtime/complexity_audit.json` y `runtime/complexity_estimate.json` ahora describen la cola FIFO persistente, estados, transiciones, retry por tarea y compuertas de evidencia. La validaci\u00f3n esperada de existencia pas\u00f3, `findings` pas\u00f3 con cero hallazgos activos e `integrity` pas\u00f3 con cero hallazgos.\n\nNo marco la tarea como completada porque el scanner requerido fue invocado pero qued\u00f3 bloqueado por `project_locked`.\n",
+        "task_id": "RUNTIME-20260604014622-001",
+        "task_kind": null,
+        "timed_out": false,
+        "timeout_seconds": 900,
+        "worker_adapter": "codex_subprocess_worker",
+        "worker_adapter_command": [
+          "/home/neurodriver/ferrari_env/bin/python",
+          "-m",
+          "workers.codex_worker",
+          "--task-file",
+          "/tmp/task-executor-5hxrr7sl/task.json",
+          "--workspace",
+          "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001",
+          "--timeout-seconds",
+          "900",
+          "--command-json",
+          "[\"/home/neurodriver/.npm-global/bin/codex\", \"--dangerously-bypass-approvals-and-sandbox\", \"-C\", \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\", \"exec\", \"--skip-git-repo-check\", \"Task: RUNTIME-20260604014622-001 - Disenar una cola FIFO persistente con estados pending\\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nForbidden paths:\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nControl-plane ownership:\\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\\nSprint: None - \\nGoal: Disenar una cola FIFO persistente con estados pending, running, completed y failed.\\nComplejidad operativa:\\n- Dificultad: Medio\\n- Score: 34 | confianza: 88\\n- Agentes recomendados: 2 de max 8\\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\\n- Herramientas requeridas: findings, integrity, scanner\\nExact deliverables:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nActive restrictions:\\n- El modo smoke no puede inferirse por palabras sueltas.\\n- El modo smoke solo puede venir de una se\\u00f1al expl\\u00edcita de configuraci\\u00f3n.\\n- Deben existir modos expl\\u00edcitos:\\n- smoke\\n- build\\n- medium\\n- long-run\\n- Una sesi\\u00f3n debe contener m\\u00faltiples tareas.\\n- Cada tarea debe lanzar un worker propio.\\n- Cada tarea debe tener timeout propio.\\n- El retry debe ser por tarea, no por sesi\\u00f3n completa.\\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\\n- long-run no puede comportarse igual que smoke.\\n- El progreso solo vale si existe evidencia real.\\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\\n- El runtime debe cargar `AGENTS.md` como constituci\\u00f3n del repositorio.\\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\\n- El runtime debe combinar pol\\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\\n- Cada directiva generada para un worker debe persistirse en disco para auditor\\u00eda y reanudaci\\u00f3n.\\n- Respect the selected sprint deliverables and do not advance future deliverables.\\nRequired evidence:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nExpected validation:\\n- python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\\nBridge visual obligatorio:\\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\\n- Conecta nodos relacionados con `connect-nodes`.\\n- Enfoca el archivo activo con `focus-node`.\\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\\n- Ejemplos obligatorios:\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \\\"Preparando la tarea con evidencia visual\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \\\"Pantalla principal\\\" --x 220 --y 180`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \\\"usa esquema\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \\\"Renderizar estado\\\" --x 260 --y 220`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \\\"Logica sincronizada desde evidencia real\\\"`\\nHABLA BASIC y LACE:\\n- HABLA guide: habla_basic_procedure\\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE.md\\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE_LOG.md\\n- Ciclos LACE requeridos: 4\\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\\n- Mant\\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\\nStarting checkpoint:\\n- complexity-estimate\\nKnown risks or blockers:\\n- Blocked task RUNTIME-20260604014622-002 missing dependencies: RUNTIME-20260604014622-001\\nClosure criteria:\\n- TaskResult.completed can be true only with real disk evidence.\\n- TaskResult.blockers must be empty before closing the task.\\n- Every expected file must exist under the repository root.\\n- Every declared validation command must run and return code 0.\\n- Validation results must be represented in the task result history.\"]"
+        ],
+        "worker_duration_seconds": 572.396218,
+        "worker_pid": 2000771,
+        "worker_process_stderr": "",
+        "worker_process_stdout": "{\"execution\": {\"approval_policy\": \"never\", \"child_pid\": 2000782, \"command\": [\"/home/neurodriver/.npm-global/bin/codex\", \"--dangerously-bypass-approvals-and-sandbox\", \"-C\", \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\", \"exec\", \"--skip-git-repo-check\", \"Task: RUNTIME-20260604014622-001 - Disenar una cola FIFO persistente con estados pending\\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nForbidden paths:\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nControl-plane ownership:\\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\\nSprint: None - \\nGoal: Disenar una cola FIFO persistente con estados pending, running, completed y failed.\\nComplejidad operativa:\\n- Dificultad: Medio\\n- Score: 34 | confianza: 88\\n- Agentes recomendados: 2 de max 8\\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\\n- Herramientas requeridas: findings, integrity, scanner\\nExact deliverables:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nActive restrictions:\\n- El modo smoke no puede inferirse por palabras sueltas.\\n- El modo smoke solo puede venir de una se\\u00f1al expl\\u00edcita de configuraci\\u00f3n.\\n- Deben existir modos expl\\u00edcitos:\\n- smoke\\n- build\\n- medium\\n- long-run\\n- Una sesi\\u00f3n debe contener m\\u00faltiples tareas.\\n- Cada tarea debe lanzar un worker propio.\\n- Cada tarea debe tener timeout propio.\\n- El retry debe ser por tarea, no por sesi\\u00f3n completa.\\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\\n- long-run no puede comportarse igual que smoke.\\n- El progreso solo vale si existe evidencia real.\\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\\n- El runtime debe cargar `AGENTS.md` como constituci\\u00f3n del repositorio.\\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\\n- El runtime debe combinar pol\\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\\n- Cada directiva generada para un worker debe persistirse en disco para auditor\\u00eda y reanudaci\\u00f3n.\\n- Respect the selected sprint deliverables and do not advance future deliverables.\\nRequired evidence:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nExpected validation:\\n- python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\\nBridge visual obligatorio:\\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\\n- Conecta nodos relacionados con `connect-nodes`.\\n- Enfoca el archivo activo con `focus-node`.\\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\\n- Ejemplos obligatorios:\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \\\"Preparando la tarea con evidencia visual\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \\\"Pantalla principal\\\" --x 220 --y 180`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \\\"usa esquema\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \\\"Renderizar estado\\\" --x 260 --y 220`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \\\"Logica sincronizada desde evidencia real\\\"`\\nHABLA BASIC y LACE:\\n- HABLA guide: habla_basic_procedure\\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE.md\\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE_LOG.md\\n- Ciclos LACE requeridos: 4\\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\\n- Mant\\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\\nStarting checkpoint:\\n- complexity-estimate\\nKnown risks or blockers:\\n- Blocked task RUNTIME-20260604014622-002 missing dependencies: RUNTIME-20260604014622-001\\nClosure criteria:\\n- TaskResult.completed can be true only with real disk evidence.\\n- TaskResult.blockers must be empty before closing the task.\\n- Every expected file must exist under the repository root.\\n- Every declared validation command must run and return code 0.\\n- Validation results must be represented in the task result history.\"], \"command_text\": \"/home/neurodriver/.npm-global/bin/codex --dangerously-bypass-approvals-and-sandbox -C /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001 exec --skip-git-repo-check Task: RUNTIME-20260604014622-001 - Disenar una cola FIFO persistente con estados pending\\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nForbidden paths:\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\\nControl-plane ownership:\\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\\nSprint: None - \\nGoal: Disenar una cola FIFO persistente con estados pending, running, completed y failed.\\nComplejidad operativa:\\n- Dificultad: Medio\\n- Score: 34 | confianza: 88\\n- Agentes recomendados: 2 de max 8\\n- Ciclos LACE recomendados: 3 (min 2 / max 10)\\n- Presupuesto: 8 tareas, 900s timeout, 3 retries\\n- Herramientas requeridas: findings, integrity, scanner\\nExact deliverables:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nActive restrictions:\\n- El modo smoke no puede inferirse por palabras sueltas.\\n- El modo smoke solo puede venir de una se\\u00f1al expl\\u00edcita de configuraci\\u00f3n.\\n- Deben existir modos expl\\u00edcitos:\\n- smoke\\n- build\\n- medium\\n- long-run\\n- Una sesi\\u00f3n debe contener m\\u00faltiples tareas.\\n- Cada tarea debe lanzar un worker propio.\\n- Cada tarea debe tener timeout propio.\\n- El retry debe ser por tarea, no por sesi\\u00f3n completa.\\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\\n- long-run no puede comportarse igual que smoke.\\n- El progreso solo vale si existe evidencia real.\\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\\n- El runtime debe cargar `AGENTS.md` como constituci\\u00f3n del repositorio.\\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\\n- El runtime debe combinar pol\\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\\n- Cada directiva generada para un worker debe persistirse en disco para auditor\\u00eda y reanudaci\\u00f3n.\\n- Respect the selected sprint deliverables and do not advance future deliverables.\\nRequired evidence:\\n- runtime/complexity_audit.json\\n- runtime/complexity_estimate.json\\nExpected validation:\\n- python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\\nBridge visual obligatorio:\\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\\n- Conecta nodos relacionados con `connect-nodes`.\\n- Enfoca el archivo activo con `focus-node`.\\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\\n- Ejemplos obligatorios:\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \\\"Preparando la tarea con evidencia visual\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \\\"Pantalla principal\\\" --x 220 --y 180`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \\\"usa esquema\\\"`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \\\"Renderizar estado\\\" --x 260 --y 220`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \\\"Logica sincronizada desde evidencia real\\\"`\\nHABLA BASIC y LACE:\\n- HABLA guide: habla_basic_procedure\\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE.md\\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/LACE_LOG.md\\n- Ciclos LACE requeridos: 4\\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\\n- Mant\\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\\nStarting checkpoint:\\n- complexity-estimate\\nKnown risks or blockers:\\n- Blocked task RUNTIME-20260604014622-002 missing dependencies: RUNTIME-20260604014622-001\\nClosure criteria:\\n- TaskResult.completed can be true only with real disk evidence.\\n- TaskResult.blockers must be empty before closing the task.\\n- Every expected file must exist under the repository root.\\n- Every declared validation command must run and return code 0.\\n- Validation results must be represented in the task result history.\", \"deferred_postflight_blockers\": [], \"duration_seconds\": 572.020696, \"fatal_infrastructure_markers\": [], \"ignored_infrastructure_markers\": [], \"infrastructure_failure\": false, \"infrastructure_failure_type\": null, \"infrastructure_ignored_reason\": null, \"infrastructure_markers\": [], \"returncode\": 0, \"sandbox_mode\": \"danger-full-access\", \"shell\": false, \"stderr\": \"[output truncated; omitted 1701592 chars]\\ndiente de documentacion.\\n+ACTION: actualizar runtime/complexity_audit.json y runtime/complexity_estimate.json con estados, orden FIFO, persistencia, transiciones, retry por tarea y compuertas de cierre.\\n+OBSERVATION esperada: ambos entregables existen, son JSON validos y describen una cola FIFO persistente verificable.\\n+\\n+PASO D - VALIDAR\\n+[CICLO-1 COMPLETADO]\\n+OBSERVATION real: los dos artefactos fueron reescritos y sincronizados via bridge visual; JSON valido y validacion de existencia pasaron; findings e integrity respondieron ok=true; scanner respondio statusCode=423, error=project_locked, con Observer indicando rootCause=active_worker_running.\\n+Coincide con OBSERVATION esperada: parcialmente; los entregables y validaciones locales pasaron, pero el scanner canonico quedo bloqueado por lock del proyecto activo.\\n+Problemas resueltos: auditoria alineada; diseno FIFO persistente incorporado; limites del worker documentados.\\n+Estado ahora vs antes: antes habia estimacion generica; ahora hay contrato de estados, transiciones, seleccion FIFO, retry y evidencia requerida.\\n+Proyecto mejoro objetivamente: SI para el alcance de artefactos; cierre tecnico completo depende de scanner posterior cuando el control plane libere el lock.\\n+\\n+MEMORIA EPISODICA:\\n+- Que funciono: limitar la edicion a los entregables declarados y no tocar la cola viva del control plane.\\n+- Que no funciono: el CLI canonico orchestrator/agent_tools.py no esta presente en el workspace.\\n+- Que evitar en el proximo ciclo: cerrar como completa una herramienta interna que no pudo invocarse realmente.\\n+\\n+Proximo ciclo: debe ejecutarlo el control plane o la tarea correspondiente; este worker no consume silenciosamente los ciclos restantes.\\ndiff --git a/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md b/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md\\nnew file mode 100644\\nindex 0000000000000000000000000000000000000000..6e850b330c566ade629f8f0ad10fce3948a0f1ef\\n--- /dev/null\\n+++ b/workspace/projects/continuity-code-pf-001/ULTIMO_CONTEXTO_CODEX.md\\n@@ -0,0 +1,32 @@\\n+# Ultimo contexto Codex\\n+\\n+Fecha/hora UTC: 2026-06-04T01:54:30Z\\n+\\n+Ultima solicitud del usuario:\\n+- `RUNTIME-20260604014622-001`: Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`, entregando `runtime/complexity_audit.json` y `runtime/complexity_estimate.json`.\\n+\\n+Estado real:\\n+- Entregables actualizados y validados como JSON.\\n+- La validacion esperada de existencia paso.\\n+- `findings` e `integrity` pasaron con `ok=true`.\\n+- `scanner` fue invocado pero quedo bloqueado por `project_locked`; Observer confirmo `active_worker_running`.\\n+\\n+Archivos tocados:\\n+- `runtime/complexity_audit.json`\\n+- `runtime/complexity_estimate.json`\\n+- `LACE_LOG.md`\\n+- `runtime/agent_tool_invocations.jsonl`\\n+- `runtime/artifacts/observer_findings.json`\\n+- `runtime/artifacts/file_integrity_report.json`\\n+- `recuperacioncontexto.md`\\n+- `ULTIMO_CONTEXTO_CODEX.md`\\n+\\n+Validacion ejecutada:\\n+- `python3 -m json.tool runtime/complexity_audit.json`\\n+- `python3 -m json.tool runtime/complexity_estimate.json`\\n+- `python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"`\\n+- Validacion semantica local de estados `pending/running/completed/failed`.\\n+- `agent_tools.py findings`, `integrity`, `scanner`, `observer-status`.\\n+\\n+Siguiente paso exacto:\\n+- Reintentar scanner canonico cuando el control plane libere el lock del worker activo. El ultimo resultado fue `statusCode=423`, `ok=false`, `error=project_locked`.\\ndiff --git a/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md b/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md\\nnew file mode 100644\\nindex 0000000000000000000000000000000000000000..ab082fc64e3ddc8f9176837d7473fccf87980b1d\\n--- /dev/null\\n+++ b/workspace/projects/continuity-code-pf-001/recuperacioncontexto.md\\n@@ -0,0 +1,53 @@\\n+# Recuperacion de contexto\\n+\\n+## 2026-06-04T01:54:30Z - RUNTIME-20260604014622-001\\n+\\n+Solicitud recibida:\\n+- Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`.\\n+- Entregar evidencia en `runtime/complexity_audit.json` y `runtime/complexity_estimate.json`.\\n+- Respetar ownership del control plane y no editar `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.\\n+\\n+Acciones realizadas:\\n+- Se revisaron `runtime/project_state.json`, `runtime/task_queue.json`, `LACE.md`, `LACE_LOG.md` y los artefactos de complejidad existentes.\\n+- Se actualizo `runtime/complexity_audit.json` con el contrato de cola FIFO persistente, estados permitidos, transiciones validas/invalidas, persistencia, reanudacion y compuertas de evidencia.\\n+- Se actualizo `runtime/complexity_estimate.json` con presupuesto operativo, riesgo, alcance LACE y diseno de seleccion FIFO.\\n+- Se actualizo `LACE_LOG.md` con un ciclo LACE acotado a esta tarea.\\n+- Se invoco el bridge visual para phase, nodos, conexiones, focus, pasos y sync-file de archivos modificados.\\n+- Se ejecutaron herramientas internas desde el system root con cwd del proyecto para auditar en `runtime/agent_tool_invocations.jsonl`.\\n+\\n+Archivos creados o modificados:\\n+- `runtime/complexity_audit.json`\\n+- `runtime/complexity_estimate.json`\\n+- `LACE_LOG.md`\\n+- `runtime/agent_tool_invocations.jsonl`\\n+- `runtime/artifacts/observer_findings.json`\\n+- `runtime/artifacts/file_integrity_report.json`\\n+- `recuperacioncontexto.md`\\n+- `ULTIMO_CONTEXTO_CODEX.md`\\n+\\n+Validacion corta ejecutada:\\n+- `python3 -m json.tool runtime/complexity_audit.json`\\n+- `python3 -m json.tool runtime/complexity_estimate.json`\\n+- `python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"`\\n+- Validacion semantica local de estados FIFO y herramientas requeridas.\\n+- `agent_tools.py findings continuity-code-pf-001`\\n+- `agent_tools.py integrity continuity-code-pf-001`\\n+- `agent_tools.py scanner continuity-code-pf-001`\\n+- `agent_tools.py observer-status`\\n+\\n+Resultado real de validacion:\\n+- JSON valido: OK.\\n+- Validacion esperada de existencia: OK.\\n+- Validacion semantica local: OK.\\n+- Findings: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/observer_findings.json`, `activeFindings=0`.\\n+- Integrity: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/file_integrity_report.json`, `totalFindings=0`.\\n+- Scanner canonico: `statusCode=423`, `ok=false`, `error=project_locked`, sin `reportPath`.\\n+- Observer-status: `statusCode=200`, `ok=true`, estado `waiting_worker`, incidente con `rootCause=active_worker_running`.\\n+\\n+Blockers o riesgos:\\n+- El scanner canonico no pudo completarse mientras el worker actual seguia activo; el backend bloqueo la ejecucion con `project_locked`.\\n+- No se edito `runtime/task_queue.json`; el diseno queda en los entregables declarados y la implementacion/documentacion extensa pertenece a la tarea dependiente `RUNTIME-20260604014622-002`.\\n+\\n+Punto de reanudacion:\\n+- Reintentar `python3 orchestrator/agent_tools.py scanner continuity-code-pf-001` cuando el control plane libere el lock del worker activo.\\n+- Si el scanner responde `ok=true`, el control plane puede evaluar cierre tecnico de esta tarea con los dos entregables ya presentes.\\ndiff --git a/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json b/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\\nindex be4afb79325ece586b5eb0d511a0efe87b3822ac..6edb2443c2b88b69f353e27d1efb95d396c1b92b\\n--- a/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\\n+++ b/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json\\n@@ -1,110 +1,193 @@\\n {\\n   \\\"schema_version\\\": 1,\\n-  \\\"audit_version\\\": \\\"complexity-audit-kernel-v1\\\",\\n-  \\\"generated_at\\\": \\\"2026-06-04T01:46:22.877071Z\\\",\\n+  \\\"audit_version\\\": \\\"fifo-persistent-queue-design-audit-v1\\\",\\n+  \\\"generated_at\\\": \\\"2026-06-04T01:49:21Z\\\",\\n+  \\\"task_id\\\": \\\"RUNTIME-20260604014622-001\\\",\\n   \\\"runtime_mode\\\": \\\"build\\\",\\n   \\\"launch_mode\\\": \\\"existing\\\",\\n   \\\"project_slug\\\": \\\"continuity-code-pf-001\\\",\\n+  \\\"goal\\\": \\\"Disenar una cola FIFO persistente con estados pending, running, completed y failed.\\\",\\n   \\\"difficulty\\\": \\\"medio\\\",\\n   \\\"difficulty_label\\\": \\\"Medio\\\",\\n   \\\"complexity_score\\\": 34,\\n-  \\\"confidence\\\": 92,\\n+  \\\"confidence\\\": 88,\\n   \\\"estimated_minutes\\\": 45,\\n-  \\\"recommended_agents\\\": 3,\\n-  \\\"max_agents\\\": 4,\\n+  \\\"recommended_agents\\\": 2,\\n+  \\\"max_agents\\\": 8,\\n   \\\"lace_min_cycles\\\": 2,\\n-  \\\"lace_target_cycles\\\": 3,\\n-  \\\"lace_max_cycles\\\": 4,\\n-  \\\"early_exit_allowed\\\": true,\\n-  \\\"early_exit_mode\\\": \\\"allowed\\\",\\n+  \\\"lace_target_cycles\\\": 4,\\n+  \\\"lace_max_cycles\\\": 10,\\n+  \\\"early_exit_allowed\\\": false,\\n+  \\\"early_exit_mode\\\": \\\"blocked_until_declared_evidence_exists\\\",\\n   \\\"required_tools\\\": [\\n+    \\\"findings\\\",\\n+    \\\"integrity\\\",\\n     \\\"scanner\\\"\\n   ],\\n   \\\"risk_flags\\\": [\\n-    \\\"runtime\\\"\\n+    \\\"estado_persistido\\\",\\n+    \\\"fifo_ordering\\\",\\n+    \\\"task_retries\\\",\\n+    \\\"worker_isolation\\\"\\n   ],\\n+  \\\"queue_design_audit\\\": {\\n+    \\\"queue_contract\\\": \\\"La cola persistente debe ordenar tareas por insercion y exponer solo transiciones verificables de estado.\\\",\\n+    \\\"allowed_states\\\": [\\n+      \\\"pending\\\",\\n+      \\\"running\\\",\\n+      \\\"completed\\\",\\n+      \\\"failed\\\"\\n+    ],\\n+    \\\"fifo_ordering\\\": {\\n+      \\\"primary_key\\\": \\\"sequence\\\",\\n+      \\\"fallback_key\\\": \\\"created_at\\\",\\n+      \\\"selection_rule\\\": \\\"Seleccionar la tarea pending mas antigua con dependencias completadas; no saltar tareas listas salvo bloqueo declarado.\\\",\\n+      \\\"stability_requirement\\\": \\\"El orden no cambia entre reinicios porque sequence y created_at viven en disco.\\\"\\n+    },\\n+    \\\"persistence_contract\\\": {\\n+      \\\"storage_file\\\": \\\"runtime/task_queue.json\\\",\\n+      \\\"writer_owner\\\": \\\"control_plane\\\",\\n+      \\\"worker_permission\\\": \\\"read_only_for_context\\\",\\n+      \\\"atomicity_requirement\\\": \\\"Las escrituras del control plane deben ser atomicas: escribir temporal, fsync cuando aplique y reemplazar.\\\",\\n+      \\\"resume_requirement\\\": \\\"Al reiniciar, pending permanece pending; running debe reconciliarse por timeout, lease o recovery antes de relanzar worker.\\\"\\n+    },\\n+    \\\"state_transitions\\\": [\\n+      {\\n+        \\\"from\\\": \\\"pending\\\",\\n+        \\\"to\\\": \\\"running\\\",\\n+        \\\"allowed_by\\\": \\\"executor\\\",\\n+        \\\"evidence\\\": \\\"worker_id, started_at, attempt_number, timeout_seconds\\\"\\n+      },\\n+      {\\n+        \\\"from\\\": \\\"running\\\",\\n+        \\\"to\\\": \\\"completed\\\",\\n+        \\\"allowed_by\\\": \\\"validator\\\",\\n+        \\\"evidence\\\": \\\"TaskResult.completed=true, expected_files existen, validation_commands return code 0\\\"\\n+      },\\n+      {\\n+        \\\"from\\\": \\\"running\\\",\\n+        \\\"to\\\": \\\"failed\\\",\\n+        \\\"allowed_by\\\": \\\"executor_or_validator\\\",\\n+        \\\"evidence\\\": \\\"blockers, failed command, timeout, retry cause\\\"\\n+      },\\n+      {\\n+        \\\"from\\\": \\\"failed\\\",\\n+        \\\"to\\\": \\\"pending\\\",\\n+        \\\"allowed_by\\\": \\\"recovery\\\",\\n+        \\\"evidence\\\": \\\"retry cause registrada y attempts < max_retries\\\"\\n+      }\\n+    ],\\n+    \\\"invalid_transitions\\\": [\\n+      \\\"pending->completed\\\",\\n+      \\\"pending->failed without worker attempt\\\",\\n+      \\\"completed->running\\\",\\n+      \\\"completed->failed\\\",\\n+      \\\"running->pending without recovery record\\\"\\n+    ],\\n+    \\\"verification_gates\\\": [\\n+      \\\"Cada tarea declara expected_files.\\\",\\n+      \\\"Cada tarea declara validation_commands.\\\",\\n+      \\\"El retry se calcula por tarea, no por sesion completa.\\\",\\n+      \\\"El progreso solo cuenta con evidencia real en disco.\\\",\\n+      \\\"El worker devuelve TaskResult y no modifica archivos internos de estado del control plane.\\\"\\n+    ]\\n+  },\\n   \\\"reasoning\\\": [\\n-    \\\"prompt palabras=33\\\",\\n-    \\\"capas detectadas en prompt: runtime, scanner\\\",\\n-    \\\"archivos materiales estimados=1\\\",\\n-    \\\"riesgo operativo bajo\\\",\\n-    \\\"expected_files=0\\\",\\n-    \\\"validation_commands=0\\\",\\n-    \\\"sin fallos historicos relevantes\\\",\\n-    \\\"incertidumbre baja\\\"\\n+    \\\"La tarea toca runtime y estado persistido, por lo que el riesgo operativo es medio aunque los entregables sean dos JSON.\\\",\\n+    \\\"La cola requiere estados explicitos y transiciones auditables para evitar progreso inventado.\\\",\\n+    \\\"FIFO debe depender de claves persistidas, no del orden accidental de lectura en memoria.\\\",\\n+    \\\"El worker actual no debe editar runtime/task_queue.json; solo entrega el diseno en los artefactos declarados.\\\",\\n+    \\\"La tarea dependiente RUNTIME-20260604014622-002 queda bloqueada hasta que estos artefactos existan y validen.\\\"\\n   ],\\n   \\\"layer_scores\\\": {\\n     \\\"prompt\\\": 30,\\n     \\\"project\\\": 4,\\n-    \\\"operational_risk\\\": 0,\\n-    \\\"blast_radius\\\": 24,\\n-    \\\"evidence\\\": 8,\\n+    \\\"operational_risk\\\": 12,\\n+    \\\"blast_radius\\\": 16,\\n+    \\\"evidence\\\": 10,\\n     \\\"history\\\": 0,\\n-    \\\"uncertainty\\\": 0\\n+    \\\"uncertainty\\\": 2\\n   },\\n   \\\"layers\\\": {\\n     \\\"prompt\\\": {\\n       \\\"score\\\": 30,\\n       \\\"reasons\\\": [\\n-        \\\"prompt palabras=33\\\",\\n-        \\\"capas detectadas en prompt: runtime, scanner\\\"\\n+        \\\"runtime solicitado en modo build\\\",\\n+        \\\"cola persistente con estados explicitos\\\",\\n+        \\\"herramientas requeridas: findings, integrity, scanner\\\"\\n       ],\\n       \\\"required_tools\\\": [\\n+        \\\"findings\\\",\\n+        \\\"integrity\\\",\\n         \\\"scanner\\\"\\n       ],\\n       \\\"risk_flags\\\": [\\n-        \\\"runtime\\\"\\n+        \\\"estado_persistido\\\"\\n       ]\\n     },\\n     \\\"project\\\": {\\n       \\\"score\\\": 4,\\n       \\\"reasons\\\": [\\n-        \\\"archivos materiales estimados=1\\\"\\n+        \\\"entregables declarados ya existen y requieren alineacion\\\",\\n+        \\\"la implementacion de documentacion detallada pertenece a una tarea dependiente\\\"\\n       ],\\n       \\\"required_tools\\\": [],\\n       \\\"risk_flags\\\": [],\\n       \\\"observed\\\": true,\\n-      \\\"file_count\\\": 1\\n+      \\\"file_count\\\": 2\\n     },\\n     \\\"operational_risk\\\": {\\n-      \\\"score\\\": 0,\\n+      \\\"score\\\": 12,\\n       \\\"reasons\\\": [\\n-        \\\"riesgo operativo bajo\\\"\\n+        \\\"task_queue.json pertenece al control plane y no debe modificarse desde el worker\\\",\\n+        \\\"running requiere reconciliacion para reanudacion segura\\\"\\n       ],\\n-      \\\"required_tools\\\": [],\\n-      \\\"risk_flags\\\": []\\n+      \\\"required_tools\\\": [\\n+        \\\"integrity\\\"\\n+      ],\\n+      \\\"risk_flags\\\": [\\n+        \\\"control_plane_ownership\\\"\\n+      ]\\n     },\\n     \\\"blast_radius\\\": {\\n-      \\\"score\\\": 24,\\n+      \\\"score\\\": 16,\\n       \\\"reasons\\\": [\\n-        \\\"expected_files=0\\\"\\n+        \\\"la cola desbloquea tareas posteriores\\\",\\n+        \\\"errores en orden FIFO afectan retries y dependencias\\\"\\n       ],\\n       \\\"required_tools\\\": [],\\n-      \\\"risk_flags\\\": []\\n+      \\\"risk_flags\\\": [\\n+        \\\"dependency_order\\\"\\n+      ]\\n     },\\n     \\\"evidence\\\": {\\n-      \\\"score\\\": 8,\\n+      \\\"score\\\": 10,\\n       \\\"reasons\\\": [\\n-        \\\"validation_commands=0\\\"\\n+        \\\"dos archivos esperados bajo runtime deben existir\\\",\\n+        \\\"la validacion declarada comprueba existencia de ambos entregables\\\"\\n       ],\\n-      \\\"required_tools\\\": [],\\n+      \\\"required_tools\\\": [\\n+        \\\"scanner\\\"\\n+      ],\\n       \\\"risk_flags\\\": []\\n     },\\n     \\\"history\\\": {\\n       \\\"score\\\": 0,\\n       \\\"reasons\\\": [\\n-        \\\"sin fallos historicos relevantes\\\"\\n+        \\\"sin fallos historicos activos en observer_findings\\\"\\n       ],\\n       \\\"required_tools\\\": [],\\n       \\\"risk_flags\\\": []\\n     },\\n     \\\"uncertainty\\\": {\\n-      \\\"score\\\": 0,\\n+      \\\"score\\\": 2,\\n       \\\"reasons\\\": [\\n-        \\\"incertidumbre baja\\\"\\n+        \\\"orchestrator/agent_tools.py no existe en el workspace; se debe registrar blocker de herramienta si el backend local no ofrece CLI canonico\\\"\\n       ],\\n       \\\"required_tools\\\": [],\\n-      \\\"risk_flags\\\": []\\n+      \\\"risk_flags\\\": [\\n+        \\\"tooling_gap\\\"\\n+      ]\\n     }\\n   }\\n }\\ndiff --git a/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json b/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\\nindex a496a4958769bcca3f28383984f13cec7ce5e96b..388e0d5d2613191fa12e482ae5e32b92908a4d36\\n--- a/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\\n+++ b/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json\\n@@ -1,11 +1,12 @@\\n {\\n   \\\"schema_version\\\": 1,\\n   \\\"estimate_type\\\": \\\"project_complexity_budget\\\",\\n-  \\\"generated_at\\\": \\\"2026-06-04T01:46:22.861244Z\\\",\\n+  \\\"generated_at\\\": \\\"2026-06-04T01:49:21Z\\\",\\n+  \\\"task_id\\\": \\\"RUNTIME-20260604014622-001\\\",\\n   \\\"runtime_mode\\\": \\\"build\\\",\\n   \\\"launch_mode\\\": \\\"existing\\\",\\n   \\\"project_slug\\\": \\\"continuity-code-pf-001\\\",\\n-  \\\"project_file_count\\\": 0,\\n+  \\\"project_file_count\\\": 2,\\n   \\\"prompt_word_count\\\": 33,\\n   \\\"score\\\": 34,\\n   \\\"difficulty\\\": \\\"medio\\\",\\n@@ -13,6 +14,8 @@\\n   \\\"min_lace_cycles\\\": 2,\\n   \\\"max_lace_cycles\\\": 10,\\n   \\\"recommended_lace_cycles\\\": 3,\\n+  \\\"session_required_lace_cycles\\\": 4,\\n+  \\\"worker_lace_scope\\\": \\\"registrar solo el ciclo acotado de esta tarea; no consumir todos los ciclos de la sesion\\\",\\n   \\\"recommended_agents\\\": 2,\\n   \\\"max_agents\\\": 8,\\n   \\\"bootstrap_tasks\\\": 4,\\n@@ -26,130 +29,114 @@\\n     \\\"scanner\\\"\\n   ],\\n   \\\"risk_flags\\\": [\\n-    \\\"estado_persistido\\\"\\n+    \\\"estado_persistido\\\",\\n+    \\\"fifo_ordering\\\",\\n+    \\\"worker_retries\\\",\\n+    \\\"control_plane_ownership\\\"\\n   ],\\n   \\\"reasons\\\": [\\n     \\\"modo runtime solicitado: build\\\",\\n     \\\"prompt medio: 33 palabras\\\",\\n     \\\"toca runtime/estado persistido\\\",\\n-    \\\"requiere evidencia auditable\\\"\\n+    \\\"requiere evidencia auditable\\\",\\n+    \\\"la cola FIFO debe ser persistente y reanudable\\\",\\n+    \\\"la tarea dependiente permanece pendiente hasta completar esta evidencia\\\"\\n   ],\\n   \\\"confidence\\\": 88,\\n-  \\\"complexity_audit\\\": {\\n-    \\\"schema_version\\\": 1,\\n-    \\\"audit_version\\\": \\\"complexity-audit-kernel-v1\\\",\\n-    \\\"generated_at\\\": \\\"2026-06-04T01:46:22.877071Z\\\",\\n-    \\\"runtime_mode\\\": \\\"build\\\",\\n-    \\\"launch_mode\\\": \\\"existing\\\",\\n-    \\\"project_slug\\\": \\\"continuity-code-pf-001\\\",\\n-    \\\"difficulty\\\": \\\"medio\\\",\\n-    \\\"difficulty_label\\\": \\\"Medio\\\",\\n+  \\\"quality_threshold\\\": 85,\\n+  \\\"estimated_minutes\\\": 45,\\n+  \\\"queue_design\\\": {\\n+    \\\"name\\\": \\\"persistent_fifo_task_queue\\\",\\n+    \\\"purpose\\\": \\\"Mantener una sesion con multiples tareas pequenas, verificables, persistentes y reanudables.\\\",\\n+    \\\"storage\\\": {\\n+      \\\"path\\\": \\\"runtime/task_queue.json\\\",\\n+      \\\"format\\\": \\\"json_array_of_tasks\\\",\\n+      \\\"owner\\\": \\\"control_plane\\\",\\n+      \\\"worker_rule\\\": \\\"El worker puede leer contexto, pero no escribir la cola ni marcar completado.\\\"\\n+    },\\n+    \\\"task_identity\\\": {\\n+      \\\"required_fields\\\": [\\n+        \\\"id\\\",\\n+        \\\"title\\\",\\n+        \\\"goal\\\",\\n+        \\\"status\\\",\\n+        \\\"priority\\\",\\n+        \\\"dependencies\\\",\\n+        \\\"expected_files\\\",\\n+        \\\"validation_commands\\\",\\n+        \\\"timeout_seconds\\\",\\n+        \\\"max_retries\\\",\\n+        \\\"mode\\\",\\n+        \\\"checkpoint_key\\\"\\n+      ],\\n+      \\\"recommended_persistent_fields\\\": [\\n+        \\\"sequence\\\",\\n+        \\\"created_at\\\",\\n+        \\\"updated_at\\\",\\n+        \\\"attempts\\\",\\n+        \\\"last_error\\\",\\n+        \\\"worker_id\\\",\\n+        \\\"started_at\\\",\\n+        \\\"completed_at\\\"\\n+      ]\\n+    },\\n+    \\\"states\\\": {\\n+      \\\"pending\\\": \\\"Lista para ser seleccionada cuando sus dependencias esten completed.\\\",\\n+      \\\"running\\\": \\\"Asignada a un worker propio con timeout y attempt activos.\\\",\\n+      \\\"completed\\\": \\\"Validada con evidencia real en disco y comandos declarados en verde.\\\",\\n+      \\\"failed\\\": \\\"Bloqueada o agotada con causa registrada y retry por tarea.\\\"\\n+    },\\n+    \\\"fifo_selection\\\": {\\n+      \\\"eligible_filter\\\": \\\"status == pending y todas las dependencies estan completed\\\",\\n+      \\\"sort_order\\\": [\\n+        \\\"sequence ascending\\\",\\n+        \\\"created_at ascending\\\",\\n+        \\\"id ascending as deterministic fallback\\\"\\n+      ],\\n+      \\\"dispatch_rule\\\": \\\"Lanzar exactamente un worker para la primera tarea elegible.\\\",\\n+      \\\"priority_note\\\": \\\"priority puede ordenar lotes de planificacion, pero dentro del mismo nivel la seleccion debe conservar FIFO.\\\"\\n+    },\\n+    \\\"retry_model\\\": {\\n+      \\\"scope\\\": \\\"task\\\",\\n+      \\\"rule\\\": \\\"Si running falla y attempts < max_retries, recovery registra causa y devuelve la tarea a pending conservando sequence original.\\\",\\n+      \\\"terminal_failure\\\": \\\"Si attempts >= max_retries, estado failed y no se reordena automaticamente.\\\",\\n+      \\\"process_shutdown\\\": \\\"Si terminate() no cierra el worker, ejecutar kill() y registrar evidencia.\\\"\\n+    },\\n+    \\\"completion_gate\\\": {\\n+      \\\"required_evidence\\\": [\\n+        \\\"expected_files existen bajo la raiz del repositorio\\\",\\n+        \\\"validation_commands ejecutados con return code 0\\\",\\n+        \\\"TaskResult.completed true\\\",\\n+        \\\"TaskResult.blockers vacio\\\",\\n+        \\\"files_created/files_modified declarados\\\",\\n+        \\\"validation_ran y validation_passed declarados\\\"\\n+      ],\\n+      \\\"forbidden_shortcuts\\\": [\\n+        \\\"inferir smoke por palabras sueltas\\\",\\n+        \\\"contar progreso sin evidencia en disco\\\",\\n+        \\\"cerrar una tarea escribiendo manualmente project_state o task_history desde el worker\\\"\\n+      ]\\n+    }\\n+  },\\n+  \\\"validation_plan\\\": {\\n+    \\\"declared_command\\\": \\\"python3 -B -c \\\\\\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\\\\\"\\\",\\n+    \\\"additional_local_checks\\\": [\\n+      \\\"python3 -m json.tool runtime/complexity_audit.json\\\",\\n+      \\\"python3 -m json.tool runtime/complexity_estimate.json\\\"\\n+    ],\\n+    \\\"tooling_note\\\": \\\"orchestrator/agent_tools.py no existe en este workspace; no se simula salida de findings/integrity/scanner.\\\"\\n+  },\\n+  \\\"complexity_audit_summary\\\": {\\n+    \\\"audit_version\\\": \\\"fifo-persistent-queue-design-audit-v1\\\",\\n     \\\"complexity_score\\\": 34,\\n-    \\\"confidence\\\": 92,\\n-    \\\"estimated_minutes\\\": 45,\\n-    \\\"recommended_agents\\\": 3,\\n-    \\\"max_agents\\\": 4,\\n-    \\\"lace_min_cycles\\\": 2,\\n-    \\\"lace_target_cycles\\\": 3,\\n-    \\\"lace_max_cycles\\\": 4,\\n-    \\\"early_exit_allowed\\\": true,\\n-    \\\"early_exit_mode\\\": \\\"allowed\\\",\\n+    \\\"confidence\\\": 88,\\n+    \\\"lace_target_cycles\\\": 4,\\n+    \\\"early_exit_allowed\\\": false,\\n     \\\"required_tools\\\": [\\n+      \\\"findings\\\",\\n+      \\\"integrity\\\",\\n       \\\"scanner\\\"\\n-    ],\\n-    \\\"risk_flags\\\": [\\n-      \\\"runtime\\\"\\n-    ],\\n-    \\\"reasoning\\\": [\\n-      \\\"prompt palabras=33\\\",\\n-      \\\"capas detectadas en prompt: runtime, scanner\\\",\\n-      \\\"archivos materiales estimados=1\\\",\\n-      \\\"riesgo operativo bajo\\\",\\n-      \\\"expected_files=0\\\",\\n-      \\\"validation_commands=0\\\",\\n-      \\\"sin fallos historicos relevantes\\\",\\n-      \\\"incertidumbre baja\\\"\\n     ],\\n-    \\\"layer_scores\\\": {\\n-      \\\"prompt\\\": 30,\\n-      \\\"project\\\": 4,\\n-      \\\"operational_risk\\\": 0,\\n-      \\\"blast_radius\\\": 24,\\n-      \\\"evidence\\\": 8,\\n-      \\\"history\\\": 0,\\n-      \\\"uncertainty\\\": 0\\n-    },\\n-    \\\"layers\\\": {\\n-      \\\"prompt\\\": {\\n-        \\\"score\\\": 30,\\n-        \\\"reasons\\\": [\\n-          \\\"prompt palabras=33\\\",\\n-          \\\"capas detectadas en prompt: runtime, scanner\\\"\\n-        ],\\n-        \\\"required_tools\\\": [\\n-          \\\"scanner\\\"\\n-        ],\\n-        \\\"risk_flags\\\": [\\n-          \\\"runtime\\\"\\n-        ]\\n-      },\\n-      \\\"project\\\": {\\n-        \\\"score\\\": 4,\\n-        \\\"reasons\\\": [\\n-          \\\"archivos materiales estimados=1\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": [],\\n-        \\\"observed\\\": true,\\n-        \\\"file_count\\\": 1\\n-      },\\n-      \\\"operational_risk\\\": {\\n-        \\\"score\\\": 0,\\n-        \\\"reasons\\\": [\\n-          \\\"riesgo operativo bajo\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": []\\n-      },\\n-      \\\"blast_radius\\\": {\\n-        \\\"score\\\": 24,\\n-        \\\"reasons\\\": [\\n-          \\\"expected_files=0\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": []\\n-      },\\n-      \\\"evidence\\\": {\\n-        \\\"score\\\": 8,\\n-        \\\"reasons\\\": [\\n-          \\\"validation_commands=0\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": []\\n-      },\\n-      \\\"history\\\": {\\n-        \\\"score\\\": 0,\\n-        \\\"reasons\\\": [\\n-          \\\"sin fallos historicos relevantes\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": []\\n-      },\\n-      \\\"uncertainty\\\": {\\n-        \\\"score\\\": 0,\\n-        \\\"reasons\\\": [\\n-          \\\"incertidumbre baja\\\"\\n-        ],\\n-        \\\"required_tools\\\": [],\\n-        \\\"risk_flags\\\": []\\n-      }\\n-    }\\n-  },\\n-  \\\"audit_version\\\": \\\"complexity-audit-kernel-v1\\\",\\n-  \\\"lace_min_cycles\\\": 2,\\n-  \\\"lace_target_cycles\\\": 3,\\n-  \\\"lace_max_cycles\\\": 4,\\n-  \\\"early_exit_allowed\\\": true,\\n-  \\\"quality_threshold\\\": 85,\\n-  \\\"estimated_minutes\\\": 45\\n+    \\\"primary_risk\\\": \\\"estado_persistido\\\"\\n+  }\\n }\\n\\ntokens used\\n136,773\\n\", \"stdout\": \"TaskResult:\\n\\n```json\\n{\\n  \\\"task_id\\\": \\\"RUNTIME-20260604014622-001\\\",\\n  \\\"completed\\\": false,\\n  \\\"files_created\\\": [\\n    \\\"runtime/complexity_audit.json\\\",\\n    \\\"recuperacioncontexto.md\\\",\\n    \\\"ULTIMO_CONTEXTO_CODEX.md\\\"\\n  ],\\n  \\\"files_modified\\\": [\\n    \\\"runtime/complexity_estimate.json\\\",\\n    \\\"LACE_LOG.md\\\",\\n    \\\"runtime/agent_tool_invocations.jsonl\\\",\\n    \\\"runtime/artifacts/observer_findings.json\\\",\\n    \\\"runtime/artifacts/file_integrity_report.json\\\"\\n  ],\\n  \\\"validation_ran\\\": [\\n    \\\"python3 -m json.tool runtime/complexity_audit.json\\\",\\n    \\\"python3 -m json.tool runtime/complexity_estimate.json\\\",\\n    \\\"python3 -B -c \\\\\\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\\\\\"\\\",\\n    \\\"agent_tools.py findings continuity-code-pf-001\\\",\\n    \\\"agent_tools.py integrity continuity-code-pf-001\\\",\\n    \\\"agent_tools.py scanner continuity-code-pf-001\\\"\\n  ],\\n  \\\"validation_passed\\\": false,\\n  \\\"blockers\\\": [\\n    \\\"scanner canonico devolvio statusCode=423, ok=false, error=project_locked; observer-status confirmo rootCause=active_worker_running\\\"\\n  ],\\n  \\\"next_recommendation\\\": \\\"Reintentar scanner cuando el control plane libere el lock del worker activo.\\\"\\n}\\n```\\n\\nLos entregables principales quedaron actualizados: `runtime/complexity_audit.json` y `runtime/complexity_estimate.json` ahora describen la cola FIFO persistente, estados, transiciones, retry por tarea y compuertas de evidencia. La validaci\\u00f3n esperada de existencia pas\\u00f3, `findings` pas\\u00f3 con cero hallazgos activos e `integrity` pas\\u00f3 con cero hallazgos.\\n\\nNo marco la tarea como completada porque el scanner requerido fue invocado pero qued\\u00f3 bloqueado por `project_locked`.\\n\", \"task_id\": \"RUNTIME-20260604014622-001\", \"timed_out\": false, \"timeout_seconds\": 900, \"worker_pid\": 2000771, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001\"}, \"task_result\": {\"blockers\": [\"Worker reported blocker: scanner canonico devolvio statusCode=423, ok=false, error=project_locked; observer-status confirmo rootCause=active_worker_running\"], \"completed\": false, \"files_created\": [], \"files_modified\": [\"runtime/complexity_audit.json\", \"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Run Sprint 4 validation before marking project progress as verified.\", \"task_id\": \"RUNTIME-20260604014622-001\", \"validation_passed\": false, \"validation_ran\": []}}\n",
+        "worker_returncode": 0,
+        "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001"
+      },
+      "task_result": {
+        "blockers": [
+          "Worker reported blocker: scanner canonico devolvio statusCode=423, ok=false, error=project_locked; observer-status confirmo rootCause=active_worker_running"
+        ],
+        "completed": false,
+        "files_created": [],
+        "files_modified": [
+          "runtime/complexity_audit.json",
+          "runtime/complexity_estimate.json"
+        ],
+        "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+        "task_id": "RUNTIME-20260604014622-001",
+        "validation_passed": false,
+        "validation_ran": [
+          "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+        ]
+      },
+      "tool_invocations": {
+        "broom_before": {
+          "actions": [
+            {
+              "action": "clear_stale_current_task_id",
+              "after": null,
+              "before": "RUNTIME-20260604014622-001"
+            }
+          ],
+          "createdAt": "2026-06-04T01:47:03.498480Z",
+          "dryRun": false,
+          "ignoredResidue": [],
+          "latestPath": "runtime/artifacts/broom/latest.json",
+          "ok": true,
+          "phase": "before_task",
+          "projectRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001",
+          "queueStatus": {
+            "RUNTIME-20260604014622-001": "pending",
+            "RUNTIME-20260604014622-002": "pending"
+          },
+          "reason": "control_plane_before_task",
+          "reportPath": "runtime/artifacts/broom/20260604T014703.558581Z-RUNTIME-20260604014622-001-before_task.json",
+          "runtimeDir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime",
+          "taskId": "RUNTIME-20260604014622-001",
+          "tool": "to-sweep-with-a-broom",
+          "warnings": []
+        },
+        "cyberlace_output": {
+          "action": "MONITOR",
+          "agentId": "control-plane-worker",
+          "allowed": true,
+          "blocksRuntime": false,
+          "enabled": true,
+          "error": null,
+          "eventId": "cyberlace_20b253d49b4d4d36a7f7b7c298281a17",
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 747,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 733,
+              "type": "sensitive_output"
+            }
+          ],
+          "mode": "monitor",
+          "modified_payload": null,
+          "ok": true,
+          "policyMatches": [],
+          "rawDecision": {
+            "action": "MONITOR",
+            "allowed": true,
+            "category": "semantic_firewall",
+            "confidence": 0.75,
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 51,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 37,
+                "type": "sensitive_output"
+              },
+              {
+                "domain": "financial",
+                "end": 747,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 733,
+                "type": "sensitive_output"
+              }
+            ],
+            "modified_payload": null,
+            "policy_matches": [],
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "risk_score": 50,
+            "severity": "MEDIUM"
+          },
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "recommendedAction": "MONITOR",
+          "recordType": "decision",
+          "redactsPayload": false,
+          "requiresHumanReview": false,
+          "riskScore": 50.0,
+          "runtimeAction": "ALLOW",
+          "sessionId": "agent-7301143e6e",
+          "severity": "MEDIUM",
+          "stage": "output",
+          "timestamp": "2026-06-04T01:56:44Z",
+          "toolName": null,
+          "transport": "import",
+          "userId": "local"
+        },
+        "cyberlace_tool": {
+          "action": "MONITOR",
+          "agentId": "control-plane-worker",
+          "allowed": true,
+          "blocksRuntime": false,
+          "enabled": true,
+          "error": null,
+          "eventId": "cyberlace_9fc16c9751894344b69afc7e054f8020",
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 311,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 297,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7765,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 7751,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 7814,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 7800,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8522,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 8508,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8598,
+              "pattern": "credit_card_like",
+              "sample": "20260604014622",
+              "start": 8584,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "mode": "monitor",
+          "modified_payload": null,
+          "ok": true,
+          "policyMatches": [],
+          "rawDecision": {
+            "action": "MONITOR",
+            "allowed": true,
+            "category": "semantic_firewall",
+            "confidence": 0.75,
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 311,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 297,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7765,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 7751,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7814,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 7800,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8522,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 8508,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8598,
+                "pattern": "credit_card_like",
+                "sample": "20260604014622",
+                "start": 8584,
+                "type": "sensitive_data_in_tool_args"
+              }
+            ],
+            "modified_payload": null,
+            "policy_matches": [],
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "risk_score": 50,
+            "severity": "MEDIUM"
+          },
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "recommendedAction": "MONITOR",
+          "recordType": "decision",
+          "redactsPayload": false,
+          "requiresHumanReview": false,
+          "riskScore": 50.0,
+          "runtimeAction": "ALLOW",
+          "sessionId": "agent-7301143e6e",
+          "severity": "MEDIUM",
+          "stage": "tool",
+          "timestamp": "2026-06-04T01:47:11Z",
+          "toolName": "codex_worker",
+          "transport": "import",
+          "userId": "local"
+        },
+        "postflight": {
+          "activeFindings": 0,
+          "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260604014622-001-postflight-20260604T015647Z.json",
+          "blockers": [],
+          "closureAllowed": true,
+          "invocations": [
+            {
+              "artifactPath": null,
+              "dryRun": false,
+              "error": "timeout",
+              "ok": false,
+              "phase": "postflight",
+              "projectSlug": "continuity-code-pf-001",
+              "required": false,
+              "schema_version": 1,
+              "statusCode": 0,
+              "summary": {
+                "error": "timeout",
+                "message": "timed out",
+                "ok": false,
+                "statusCode": 0
+              },
+              "taskId": "RUNTIME-20260604014622-001",
+              "timedOut": true,
+              "timestamp": "2026-06-04T01:56:45Z",
+              "tool": "integrity"
+            },
+            {
+              "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/observer_findings.json",
+              "dryRun": false,
+              "error": null,
+              "ok": true,
+              "phase": "postflight",
+              "projectSlug": "continuity-code-pf-001",
+              "required": false,
+              "schema_version": 1,
+              "statusCode": 200,
+              "summary": {
+                "ok": true,
+                "projectId": "continuity-code-pf-001",
+                "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/observer_findings.json",
+                "statusCode": 200,
+                "summary": {
+                  "activeFindings": 0,
+                  "bySeverity": {},
+                  "bySource": {},
+                  "observationScore": 0,
+                  "resolvedFindings": 3,
+                  "totalFindings": 3
+                }
+              },
+              "taskId": "RUNTIME-20260604014622-001",
+              "timedOut": false,
+              "timestamp": "2026-06-04T01:56:46Z",
+              "tool": "findings"
+            }
+          ],
+          "phase": "postflight",
+          "projectSlug": "continuity-code-pf-001",
+          "schema_version": 1,
+          "taskId": "RUNTIME-20260604014622-001",
+          "taskResult": {
+            "blocker_count": 1,
+            "completed": false,
+            "validation_passed": false
+          },
+          "timestamp": "2026-06-04T01:56:47Z",
+          "warnings": [
+            "postflight:integrity timed out; continuing"
+          ]
+        },
+        "preflight": {
+          "activeFindings": 0,
+          "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260604014622-001-preflight-20260604T014710Z.json",
+          "blockers": [],
+          "closureAllowed": true,
+          "invocations": [
+            {
+              "artifactPath": null,
+              "dryRun": false,
+              "error": null,
+              "ok": true,
+              "phase": "preflight",
+              "projectSlug": "continuity-code-pf-001",
+              "required": false,
+              "schema_version": 1,
+              "statusCode": 200,
+              "summary": {
+                "observer": {
+                  "activeProjectSlug": "",
+                  "enabled": true,
+                  "incident": {
+                    "counters": {
+                      "repeatedEvents": 0,
+                      "ticks": 2,
+                      "timeouts": 0
+                    },
+                    "deadlineAt": "2026-06-04T01:50:03.494468Z",
+                    "incidentId": "OBS-20260604-014703-9f76af4a",
+                    "phase": "inspecting",
+                    "projectSlug": "continuity-code-pf-001",
+                    "rootCause": "active_worker_running",
+                    "status": "open",
+                    "stopReason": "",
+                    "trigger": "upsert_edge"
+                  },
+                  "state": "waiting_worker"
+                },
+                "ok": true,
+                "statusCode": 200
+              },
+              "taskId": "RUNTIME-20260604014622-001",
+              "timedOut": false,
+              "timestamp": "2026-06-04T01:47:10Z",
+              "tool": "observer-status"
+            }
+          ],
+          "phase": "preflight",
+          "projectSlug": "continuity-code-pf-001",
+          "schema_version": 1,
+          "taskId": "RUNTIME-20260604014622-001",
+          "timestamp": "2026-06-04T01:47:10Z",
+          "warnings": []
+        },
+        "recovery_preview": {
+          "activeFindings": 0,
+          "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260604014622-001-recovery_preview-20260604T015650Z.json",
+          "blockers": [],
+          "closureAllowed": true,
+          "invocations": [
+            {
+              "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/observer_findings.json",
+              "dryRun": false,
+              "error": null,
+              "ok": true,
+              "phase": "recovery_preview",
+              "projectSlug": "continuity-code-pf-001",
+              "required": false,
+              "schema_version": 1,
+              "statusCode": 200,
+              "summary": {
+                "ok": true,
+                "projectId": "continuity-code-pf-001",
+                "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/artifacts/observer_findings.json",
+                "statusCode": 200,
+                "summary": {
+                  "activeFindings": 0,
+                  "bySeverity": {},
+                  "bySource": {},
+                  "observationScore": 0,
+                  "resolvedFindings": 3,
+                  "totalFindings": 3
+                }
+              },
+              "taskId": "RUNTIME-20260604014622-001",
+              "timedOut": false,
+              "timestamp": "2026-06-04T01:56:47Z",
+              "tool": "findings"
+            },
+            {
+              "artifactPath": null,
+              "dryRun": true,
+              "error": "timeout",
+              "ok": false,
+              "phase": "recovery_preview",
+              "projectSlug": "continuity-code-pf-001",
+              "required": false,
+              "schema_version": 1,
+              "statusCode": 0,
+              "summary": {
+                "error": "timeout",
+                "message": "timed out",
+                "ok": false,
+                "statusCode": 0
+              },
+              "taskId": "RUNTIME-20260604014622-001",
+              "timedOut": true,
+              "timestamp": "2026-06-04T01:56:48Z",
+              "tool": "sniper"
+            }
+          ],
+          "phase": "recovery_preview",
+          "projectSlug": "continuity-code-pf-001",
+          "schema_version": 1,
+          "taskId": "RUNTIME-20260604014622-001",
+          "taskResult": {
+            "blocker_count": 1,
+            "completed": false,
+            "validation_passed": false
+          },
+          "timestamp": "2026-06-04T01:56:50Z",
+          "warnings": [
+            "recovery_preview:sniper timed out; continuing"
+          ]
+        },
+        "task_completion_gate": null
+      },
+      "validation": {
+        "commands": [
+          {
+            "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+            "duration_seconds": 0.141217,
+            "normalized_command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "returncode": 0,
+            "security_blocked": false,
+            "security_decision": {
+              "category": "test_or_build",
+              "command": [
+                "python3",
+                "-B",
+                "-c",
+                "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+              ],
+              "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001",
+              "decision": "allow",
+              "reason": "Matched risk category: test_or_build",
+              "recorded_at": "2026-06-04T01:56:44Z",
+              "risk_level": "low",
+              "schema_version": 1,
+              "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001"
+            },
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "evidence": {
+          "blockers": [],
+          "expected_files": [
+            {
+              "exists": true,
+              "is_file": true,
+              "path": "runtime/complexity_audit.json",
+              "reported_created": false,
+              "reported_modified": true,
+              "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json",
+              "size": 6217
+            },
+            {
+              "exists": true,
+              "is_file": true,
+              "path": "runtime/complexity_estimate.json",
+              "reported_created": false,
+              "reported_modified": true,
+              "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json",
+              "size": 5020
+            }
+          ],
+          "found": [
+            "runtime/complexity_audit.json",
+            "runtime/complexity_estimate.json"
+          ],
+          "missing": [],
+          "records": [
+            {
+              "exists": true,
+              "is_file": true,
+              "path": "runtime/complexity_audit.json",
+              "reported_created": false,
+              "reported_modified": true,
+              "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/complexity_audit.json",
+              "size": 6217
+            },
+            {
+              "exists": true,
+              "is_file": true,
+              "path": "runtime/complexity_estimate.json",
+              "reported_created": false,
+              "reported_modified": true,
+              "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001/runtime/complexity_estimate.json",
+              "size": 5020
+            }
+          ],
+          "reported_created": [],
+          "reported_modified": [
+            "runtime/complexity_audit.json",
+            "runtime/complexity_estimate.json"
+          ],
+          "reported_outside_expected": []
+        },
+        "task_id": "RUNTIME-20260604014622-001",
+        "validation_passed": false,
+        "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001"
+      }
+    },
+    "retry_count": 0,
+    "task": {
+      "checkpoint_key": "runtime-20260604014622-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "runtime/complexity_audit.json",
+        "runtime/complexity_estimate.json"
+      ],
+      "goal": "Disenar una cola FIFO persistente con estados pending, running, completed y failed.",
+      "id": "RUNTIME-20260604014622-001",
+      "max_retries": 3,
+      "mode": "build",
+      "priority": 20,
+      "status": "pending",
+      "timeout_seconds": 900,
+      "title": "Disenar una cola FIFO persistente con estados pending",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  }
+}

@@ -1,0 +1,98 @@
+{
+  "completedAt": "2026-05-24T19:23:41Z",
+  "filesCreatedOrUpdated": [
+    "runtime/cyberlace/test_fixtures/fake_git_credentials.txt",
+    "runtime/cyberlace/test_fixtures/live_prompt_git_credentials.txt",
+    "scripts/test_cyberlace_live_credentials.sh"
+  ],
+  "filesModified": [
+    "backend/.env",
+    "backend/.env.example"
+  ],
+  "health": {
+    "backendUrl": "http://127.0.0.1:5001",
+    "cyberlaceEnabled": true,
+    "cyberlaceMode": "enforce",
+    "engineAvailable": true
+  },
+  "mode": "enforce",
+  "observedDecisions": [
+    {
+      "note": "Only points to the fixture; no secret content was in the prompt body.",
+      "runtimeAction": "ALLOW",
+      "stage": "prompt"
+    },
+    {
+      "riskScore": 100,
+      "runtimeAction": "QUARANTINE",
+      "stage": "memory"
+    },
+    {
+      "runtimeAction": "REDACT",
+      "stage": "tool"
+    },
+    {
+      "riskScore": 75,
+      "runtimeAction": "HUMAN_REVIEW",
+      "stage": "output"
+    }
+  ],
+  "residualRisks": [
+    "The live prompt with only a file path is not blocked at prompt stage; the block occurs when fixture contents enter memory/output or external tool payloads.",
+    "Do not use real GitHub passwords/tokens in the live test; use only the fake fixture."
+  ],
+  "result": "CyberLACE live enforce credential test prepared and validated",
+  "safety": "Only fake credentials are used. Do not paste real passwords or tokens into the live prompt.",
+  "task": "Enable CyberLACE enforce mode for live fake-credential test",
+  "timestamp": "20260524T191538Z",
+  "transport": "import",
+  "validationPlanned": [
+    "bash -n scripts/test_cyberlace_live_credentials.sh",
+    "scripts/test_cyberlace_live_credentials.sh",
+    "./start.sh restart with OPEN_BROWSER=0",
+    "GET /api/cyberlace/health"
+  ],
+  "validationResults": [
+    {
+      "command": "bash -n scripts/test_cyberlace_live_credentials.sh",
+      "ok": true
+    },
+    {
+      "command": "python3 -B -m py_compile backend/cyberlace_integration.py backend/agent_runtime.py backend/cyberlace/utils/yaml_loader.py backend/cyberlace/utils/config.py backend/cyberlace/core/policy.py backend/cyberlace/utils/patterns.py",
+      "ok": true
+    },
+    {
+      "blockingChecks": [
+        "memory_guard",
+        "output_guard"
+      ],
+      "command": "PYTHON_BIN=/home/neurodriver/ferrari_env/bin/python scripts/test_cyberlace_live_credentials.sh",
+      "ok": true,
+      "redactionChecks": [
+        "tool_guard"
+      ]
+    },
+    {
+      "backend": "active on 127.0.0.1:5001",
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true
+    },
+    {
+      "command": "curl -sS http://127.0.0.1:5001/api/cyberlace/health",
+      "enabled": true,
+      "engineAvailable": true,
+      "mode": "enforce",
+      "ok": true
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health",
+      "ok": true,
+      "statusCode": 200
+    },
+    {
+      "command": "python3 -m unittest backend.test_cyberlace_integration backend.test_cyberlace_routes backend.test_cyberlace_agent_runtime_hooks",
+      "ok": true,
+      "tests": 12
+    }
+  ]
+}

@@ -4,7 +4,12 @@ export default function CodeWorkbenchEditorOverlays({
   liveWriter,
   finalSequence,
   codeScanner,
+  broomSweep,
 }) {
+  const broomActions = Array.isArray(broomSweep?.actions) ? broomSweep.actions : [];
+  const broomIgnored = Array.isArray(broomSweep?.ignoredResidue) ? broomSweep.ignoredResidue : [];
+  const broomDetail = broomActions[0] || broomIgnored[0] || broomSweep?.reportPath || broomSweep?.taskId || "residuos transitorios";
+
   return (
     <>
       {visibleIntegrityMarkers.length ? (
@@ -32,6 +37,28 @@ export default function CodeWorkbenchEditorOverlays({
         <div className="code-workbench-writer-banner">
           <strong>{finalSequence.active ? "Typewriter final" : "IA escribiendo"}</strong>
           <span>{liveWriter.message || `IA escribiendo ${liveWriter.path}`}</span>
+        </div>
+      ) : null}
+      {broomSweep?.active ? (
+        <div className="code-workbench-broom-overlay" aria-live="polite">
+          <div className="code-workbench-broom-track" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="code-workbench-broom-tool" aria-hidden="true">
+            <span className="code-workbench-broom-handle" />
+            <span className="code-workbench-broom-head" />
+            <span className="code-workbench-broom-bristles" />
+          </div>
+          <div className="code-workbench-dustpan" aria-hidden="true">
+            <span />
+          </div>
+          <div className="code-workbench-broom-banner">
+            <strong>Escoba runtime</strong>
+            <span>{broomSweep.message || "Limpiando residuos transitorios de la tarea."}</span>
+            <small>{broomDetail}</small>
+          </div>
         </div>
       ) : null}
       {codeScanner.active ? (

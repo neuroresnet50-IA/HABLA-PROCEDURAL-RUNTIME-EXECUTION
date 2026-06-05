@@ -1,0 +1,108 @@
+{
+  "batch": {
+    "batchId": "prompt-flight-batch-20260527T194827Z",
+    "caseId": "ADVANCED-PROGRAMMING-001",
+    "projectSlug": "continuity-code-pf-001",
+    "statusObserved": "paused_cleanup_failed",
+    "suite": "advanced_programming",
+    "traceId": "prompt-flight-batch-20260527T194827Z-advanced-programming-001",
+    "visibleFailure": "Prompt Flight monitor timeout/cleanup pause"
+  },
+  "documentType": "prompt_flight_tester_evidence",
+  "endToEndChain": [
+    "Tkinter button Run Prompt Flight",
+    "Prompt suite case selection from JSON",
+    "POST /api/continuity-probe/prompt-flight",
+    "ui_session_rest payload to /api/agent/session",
+    "AgentRuntime control plane",
+    "task_queue/directive_generator",
+    "workers.codex_worker -> inner codex exec",
+    "validator expected_files check",
+    "task_history/failures/checkpoints",
+    "Prompt Flight batch state and UI monitor"
+  ],
+  "generatedAt": "2026-05-27T21:37:06Z",
+  "remainingRepairAgenda": [
+    "Precreate parent directories for expected_files before launching the worker.",
+    "Render worker directives as evidence-first: create expected files before bridge/LACE/tools.",
+    "Narrow split heuristics so textual timeout inside directives/stdout does not trigger split.",
+    "Expose failed/retry/validating state in UI session without hiding behind preparing.",
+    "Run one new end-to-end Prompt Flight case after backend/Tkinter restart."
+  ],
+  "repairsAlreadyApplied": [
+    "orchestrator/runtime_failure_classifier.py classifies bwrap/bubblewrap as infrastructure/fatal infrastructure failure.",
+    "orchestrator/recovery.py blocks infrastructure failures instead of retrying/splitting.",
+    "workers/codex_worker.py preserves child-reported blockers from Markdown TaskResult output.",
+    "orchestrator/prompt_flight_probe.py records runtimeInfrastructureFailure/fatalInfrastructureFailure evidence.",
+    "orchestrator/prompt_flight_batch.py pauses immediately on fatal runtime infrastructure failure."
+  ],
+  "rootCause": {
+    "primary": "Inner Codex execution sandbox failed with bubblewrap/user namespace errors, preventing command execution and file writes.",
+    "secondary": [
+      "Codex returned human Markdown failure with process returncode 0.",
+      "Control plane did not preserve those blockers strongly enough before the repair.",
+      "Recovery interpreted missing evidence/timeout wording as retry/split territory.",
+      "Prompt Flight outer monitor timed out while runtime was validating/retrying."
+    ],
+    "signature": "bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted"
+  },
+  "sourceEvidence": [
+    {
+      "path": "runtime/continuity_probe/batches/prompt-flight-batch-20260527T194827Z/batch_state.json",
+      "proves": "Batch identity, selected suite, case 1 status, paused cleanup state."
+    },
+    {
+      "path": "runtime/continuity_probe/prompt-flight-batch-20260527T194827Z-advanced-programming-001/prompt_flight_report.json",
+      "proves": "Prompt Flight stages, ui_agent_session_polled timeout, last progress label."
+    },
+    {
+      "path": "runtime/continuity_probe/prompt-flight-batch-20260527T194827Z-advanced-programming-001/ui_agent_session_polls.json",
+      "proves": "Poll timeline and Worker termino; validando salida label."
+    },
+    {
+      "path": "workspace/projects/continuity-code-pf-001/runtime/directives/RUNTIME-20260527184348-002-SPLIT-002-20260527T194830Z-3324db6f0f0e.md",
+      "proves": "Directive asked for docs/advanced_programming_case_001.md in the correct workspace."
+    },
+    {
+      "path": "workspace/projects/continuity-code-pf-001/runtime/task_history.jsonl",
+      "proves": "Validator failed because expected file was missing."
+    },
+    {
+      "path": "workspace/projects/continuity-code-pf-001/runtime/failures.jsonl",
+      "proves": "Inner Codex returned 0 but reported bwrap/apply_patch blockers and created no files."
+    },
+    {
+      "path": "workspace/projects/continuity-code-pf-001/runtime/logs/agent-997316f222-terminal.log",
+      "proves": "Control-plane execution/retry/postflight sequence."
+    },
+    {
+      "path": "runtime/artifacts/runtime_failure_investigation_20260527T211354Z.md",
+      "proves": "First persisted forensic report of root cause and fix applied."
+    }
+  ],
+  "testerName": "Tkinter Prompt Flight end-to-end tester",
+  "thesis": "The tester forced the system to execute the full internal chain and exposed that the runtime failure was not prompt difficulty or timeout, but a broken inner Codex sandbox plus weak worker/control-plane/recovery contracts.",
+  "truthsExposed": [
+    "The prompt was accepted and converted into runtime work.",
+    "The worker ran in the correct workspace.",
+    "The expected deliverable docs/advanced_programming_case_001.md was not created.",
+    "The inner Codex process returned code 0 while reporting a human/Markdown failure.",
+    "The real blocker was bwrap/user namespace sandbox failure.",
+    "The old recovery logic retried/split instead of surfacing infrastructure failure.",
+    "The visible timeout belonged to the outer Prompt Flight monitor, not to the 900s task timeout."
+  ],
+  "validation": [
+    {
+      "command": "python3 -m unittest backend.test_runtime_boundary backend.test_continuity_probe",
+      "result": "OK, 26 tests"
+    },
+    {
+      "command": "old failure replay through classifier/recovery",
+      "result": "fatalInfrastructureFailure=true, decision=block"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "result": "statusCode=200, ok=true"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "demo_real_project_sidebar_split_checkpoint",
+  "createdAt": "2026-05-25T10:03:33.947991+00:00",
+  "scope": "Project sidebar split into protected demo projects and real projects",
+  "filesChanged": [
+    "backend/app.py",
+    "backend/agent_runtime.py",
+    "frontend/src/App.css",
+    "frontend/src/components/RuntimeDashboardSidebar.jsx",
+    "workspace/projects/sesion-20260524210420/.agent-project.json",
+    "workspace/projects/sesion-20260524233805/.agent-project.json",
+    "workspace/projects/sesion-20260518014728-jeego-en-3d/.agent-project.json"
+  ],
+  "demoProjects": [
+    {
+      "slug": "sesion-20260524210420",
+      "name": "Demo interno de testeos - Evidencia runtime HABLA"
+    },
+    {
+      "slug": "sesion-20260524233805",
+      "name": "Demo interno de testeos - Seguridad CyberLACE"
+    },
+    {
+      "slug": "sesion-20260518014728-jeego-en-3d",
+      "name": "Demo interno de testeos - Juego Jeego 3D"
+    }
+  ],
+  "behavior": [
+    "Sidebar now has PROYECTOS DEMO for native protected evaluated examples",
+    "Sidebar now has PROYECTOS REALES for new user/system projects",
+    "Create project form moved to PROYECTOS REALES",
+    "Demo projects keep original slugs/folders but display learning/evidence names",
+    "Backend and UI protect all three demo projects from archive/delete",
+    "API exposes demoLabel/systemDemo/evaluatedProject/learningMode/protected metadata"
+  ],
+  "validation": [
+    "python3 -B -m py_compile backend/app.py backend/agent_runtime.py backend/auth_routes.py backend/project_graph.py: passed",
+    "npm --prefix frontend run build: passed",
+    "OPEN_BROWSER=0 ./start.sh restart: passed with backend PID 1000278",
+    "GET /api/agent/projects: total=3 demos=3 realCount=0",
+    "GET /: HTTP 200"
+  ]
+}

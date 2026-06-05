@@ -1,6 +1,6 @@
 from pathlib import Path
 from typing import Any, Dict, List
-import yaml
+from cyberlace.utils.yaml_loader import safe_load
 
 
 class PolicyEngine:
@@ -12,7 +12,7 @@ class PolicyEngine:
         if not self.policy_path.exists():
             return {"policies": {}}
         with self.policy_path.open("r", encoding="utf-8") as f:
-            return yaml.safe_load(f) or {"policies": {}}
+            return safe_load(f) or {"policies": {}}
 
     def evaluate(self, facts: Dict[str, Any]) -> List[Dict[str, Any]]:
         matches = []

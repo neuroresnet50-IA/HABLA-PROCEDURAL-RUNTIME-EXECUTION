@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-06-04T22:29:04.570783Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "sesion-20260604162627",
+  "project_file_count": 27,
+  "prompt_word_count": 173,
+  "score": 62,
+  "difficulty": "dificil",
+  "difficulty_label": "Dificil",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 6,
+  "recommended_agents": 5,
+  "max_agents": 8,
+  "bootstrap_tasks": 6,
+  "max_tasks": 22,
+  "timeout_seconds": 1800,
+  "recovery_budget": 8,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "sandbox",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido",
+    "visual_3d"
+  ],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt largo: 173 palabras",
+    "archivos estimados del proyecto: 27",
+    "marcadores de trabajo puntual/minimo",
+    "toca runtime/estado persistido",
+    "requiere evidencia auditable",
+    "declara pruebas o validacion",
+    "incluye backend/API",
+    "incluye 3D/WebGL",
+    "multiples capas tecnicas: 2"
+  ],
+  "confidence": 88,
+  "complexity_audit": {
+    "schema_version": 1,
+    "audit_version": "complexity-audit-kernel-v1",
+    "generated_at": "2026-06-04T22:29:04.597428Z",
+    "runtime_mode": "build",
+    "launch_mode": "existing",
+    "project_slug": "sesion-20260604162627",
+    "difficulty": "dificil",
+    "difficulty_label": "Dificil",
+    "complexity_score": 62,
+    "confidence": 84,
+    "estimated_minutes": 120,
+    "recommended_agents": 5,
+    "max_agents": 6,
+    "lace_min_cycles": 3,
+    "lace_target_cycles": 5,
+    "lace_max_cycles": 7,
+    "early_exit_allowed": true,
+    "early_exit_mode": "allowed",
+    "required_tools": [
+      "findings",
+      "integrity",
+      "pytest",
+      "sandbox",
+      "scanner"
+    ],
+    "risk_flags": [
+      "bubblewrap",
+      "bwrap",
+      "cyberlace",
+      "frontend",
+      "lace",
+      "lace_policy",
+      "project_locked",
+      "runtime",
+      "runtime_zombie_recovered",
+      "task_queue",
+      "three_d",
+      "timeout",
+      "validator"
+    ],
+    "reasoning": [
+      "prompt palabras=173",
+      "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests",
+      "archivos materiales estimados=27",
+      "frontend/package detectado",
+      "LACE.md presente",
+      "riesgo operativo: lace, runtime, task_queue, validator",
+      "expected_files=0",
+      "validation_commands=0",
+      "evidencia requerida: integrity, sandbox, scanner",
+      "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout",
+      "incertidumbre baja"
+    ],
+    "layer_scores": {
+      "prompt": 74,
+      "project": 18,
+      "operational_risk": 40,
+      "blast_radius": 24,
+      "evidence": 38,
+      "history": 54,
+      "uncertainty": 0
+    },
+    "layers": {
+      "prompt": {
+        "score": 74,
+        "reasons": [
+          "prompt palabras=173",
+          "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests"
+        ],
+        "required_tools": [
+          "pytest",
+          "sandbox",
+          "scanner"
+        ],
+        "risk_flags": [
+          "lace",
+          "runtime",
+          "three_d"
+        ]
+      },
+      "project": {
+        "score": 18,
+        "reasons": [
+          "archivos materiales estimados=27",
+          "frontend/package detectado",
+          "LACE.md presente"
+        ],
+        "required_tools": [
+          "sandbox"
+        ],
+        "risk_flags": [
+          "frontend",
+          "lace_policy"
+        ],
+        "observed": true,
+        "file_count": 27
+      },
+      "operational_risk": {
+        "score": 40,
+        "reasons": [
+          "riesgo operativo: lace, runtime, task_queue, validator"
+        ],
+        "required_tools": [
+          "findings",
+          "integrity"
+        ],
+        "risk_flags": [
+          "lace",
+          "runtime",
+          "task_queue",
+          "validator"
+        ]
+      },
+      "blast_radius": {
+        "score": 24,
+        "reasons": [
+          "expected_files=0"
+        ],
+        "required_tools": [],
+        "risk_flags": []
+      },
+      "evidence": {
+        "score": 38,
+        "reasons": [
+          "validation_commands=0",
+          "evidencia requerida: integrity, sandbox, scanner"
+        ],
+        "required_tools": [
+          "integrity",
+          "sandbox",
+          "scanner"
+        ],
+        "risk_flags": [
+          "requires_integrity",
+          "requires_sandbox",
+          "requires_scanner"
+        ]
+      },
+      "history": {
+        "score": 54,
+        "reasons": [
+          "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout"
+        ],
+        "required_tools": [],
+        "risk_flags": [
+          "bubblewrap",
+          "bwrap",
+          "cyberlace",
+          "project_locked",
+          "runtime_zombie_recovered",
+          "timeout"
+        ]
+      },
+      "uncertainty": {
+        "score": 0,
+        "reasons": [
+          "incertidumbre baja"
+        ],
+        "required_tools": [],
+        "risk_flags": []
+      }
+    }
+  },
+  "audit_version": "complexity-audit-kernel-v1",
+  "lace_min_cycles": 3,
+  "lace_target_cycles": 5,
+  "lace_max_cycles": 7,
+  "early_exit_allowed": true,
+  "quality_threshold": 85,
+  "estimated_minutes": 120
+}

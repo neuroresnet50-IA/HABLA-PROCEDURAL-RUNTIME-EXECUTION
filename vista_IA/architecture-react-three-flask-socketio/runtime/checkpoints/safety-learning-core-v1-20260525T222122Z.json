@@ -1,0 +1,47 @@
+{
+  "checkpoint": "safety-learning-core-v1-20260525T222122Z.json",
+  "createdAt": "2026-05-25T22:21:22.148751+00:00",
+  "scope": "HABLA Safety Learning Core V1",
+  "changes": [
+    "Created backend/safety_learning_core.py with explainable experience memory, evaluator, policy and repair queue.",
+    "Integrated Safety Learning into Harness manual runs and autonomous cycles.",
+    "Added API endpoints for status, human feedback and governed repair queue.",
+    "Added Harness UI panel for diagnosis, recommendation, feedback and repair queue.",
+    "Documented V1 architecture in docs/security/safety_learning_core_v1.md."
+  ],
+  "paths": {
+    "experiences": "runtime/safety_learning/experiences.jsonl",
+    "feedback": "runtime/safety_learning/human_feedback.jsonl",
+    "model": "runtime/safety_learning/policy_model.json",
+    "repairQueue": "runtime/safety_learning/repair_queue.jsonl",
+    "docs": "docs/security/safety_learning_core_v1.md"
+  },
+  "realSmokeTest": {
+    "scenario": "payment-data",
+    "status": "blocked",
+    "runtimeAction": "QUARANTINE",
+    "pid": null,
+    "diagnosis": "blocked_correctly",
+    "recommendation": "generate_next_case"
+  },
+  "validations": [
+    "python3 -B -m py_compile backend/app.py backend/safety_learning_core.py tools/cyberlace_training_loop.py",
+    "npm --prefix frontend run build",
+    "OPEN_BROWSER=0 ./start.sh restart",
+    "GET /api/health ok",
+    "GET /api/harness/safety-learning/status ok",
+    "GET /api/harness/training/summary includes safetyLearning",
+    "POST /api/harness/safety-learning/feedback ok",
+    "POST /api/harness/safety-learning/repair-request ok",
+    "manual Harness generate-run learned blocked_correctly",
+    "Socket.IO polling HTTP 200 upgrades=[]"
+  ],
+  "files": [
+    "backend/safety_learning_core.py",
+    "backend/app.py",
+    "frontend/src/components/HarnessEngineeringStudio.jsx",
+    "frontend/src/App.css",
+    "tools/cyberlace_training_loop.py",
+    "docs/security/safety_learning_core_v1.md"
+  ]
+}

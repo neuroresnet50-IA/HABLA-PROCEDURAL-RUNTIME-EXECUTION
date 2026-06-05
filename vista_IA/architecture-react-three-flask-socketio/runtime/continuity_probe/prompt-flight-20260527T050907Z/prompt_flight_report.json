@@ -1,0 +1,717 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-20260527T050907Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 0.381731,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-27T05:09:08Z",
+  "mode": "real_session_guarded",
+  "project": "continuity-probe-canary",
+  "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+  "reportPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 21.875,
+      "evidence": {
+        "durationMs": 21.875,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "checkpoint_written": {
+      "durationMs": 4.181,
+      "evidence": {
+        "durationMs": 4.181,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T050907Z.json",
+        "projectState": "workspace/projects/continuity-probe-canary/runtime/project_state.json",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "validationPassed": true
+      },
+      "message": "Checkpoint written and project state closed for guarded prompt task.",
+      "name": "checkpoint_written",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 2.408,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 2.408,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "directive_generated": {
+      "durationMs": 22.311,
+      "evidence": {
+        "contextPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/directive_context.json",
+        "durationMs": 22.311,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "hablaGuidePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/habla_guide.json",
+        "path": "workspace/projects/continuity-probe-canary/runtime/directives/PROMPT-REAL-20260527T050907Z-20260527T050907Z-76a7037d0724.json",
+        "sourceHash": "76a7037d0724a1e4dc14c281e57deec97211e806abc243bb2dcafe53515c8125",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Directive generated from policy, plan, state, task queue and HABLA guide.",
+      "name": "directive_generated",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 0.893,
+      "evidence": {
+        "durationMs": 0.893,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "outputHash": "73920e01e2375648ae775abfd3e5dd28d171cd4e13cb322e78b0aebce6cc6e76",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "harness_summary": {
+      "durationMs": 57.552,
+      "evidence": {
+        "durationMs": 57.552,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-27T05:09:07Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "history_written": {
+      "durationMs": 1.546,
+      "evidence": {
+        "durationMs": 1.546,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Task history event appended for guarded prompt task.",
+      "name": "history_written",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    "observer_status": {
+      "durationMs": 3.731,
+      "evidence": {
+        "durationMs": 3.731,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "plan_loaded": {
+      "durationMs": 7.94,
+      "evidence": {
+        "durationMs": 7.94,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "policy_loaded": {
+      "durationMs": 2.918,
+      "evidence": {
+        "durationMs": 2.918,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "prompt_classified": {
+      "durationMs": 0.485,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.485,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "intent": "build_or_modify",
+        "promptChars": 99,
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "prompt_received": {
+      "durationMs": 0.845,
+      "evidence": {
+        "durationMs": 0.845,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/input_prompt.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "promptChars": 99,
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "real_session_bootstrap": {
+      "durationMs": 6.074,
+      "evidence": {
+        "durationMs": 6.074,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "inputArtifact": "workspace/projects/continuity-probe-canary/runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+        "projectPath": "workspace/projects/continuity-probe-canary",
+        "runtimeDir": "workspace/projects/continuity-probe-canary/runtime",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Project runtime bootstrapped for guarded prompt execution.",
+      "name": "real_session_bootstrap",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "response_synthesized": {
+      "durationMs": 0.681,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 0.681,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "mode": "real_session_guarded",
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "recommendation": "Prompt processed through real guarded runtime loop.",
+        "responseHash": "5a75205d8c1193952faa4af2e9b0ff57ee66f6ed364226097c1b8d410c87b060",
+        "runtimeResponseHash": "6661868c940c09b53204b701547639c0dee9aa215b70b57b273bb623a7d07b2b",
+        "runtimeResponsePath": "workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z",
+        "traceId": "prompt-flight-20260527T050907Z",
+        "validationPassed": true
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is real_session_guarded; guarded runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "task_planned": {
+      "durationMs": 0.486,
+      "evidence": {
+        "durationMs": 0.486,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/planned_task.json",
+        "expectedFiles": [
+          "src/prompt_flight_response.json"
+        ],
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskHash": "465b925c073a1c5444ef90e35ddb39adf978b6b84271dd47dec924bba9f74b3f",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Real guarded Task model planned for runtime execution.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "task_queue_persisted": {
+      "durationMs": 2.056,
+      "evidence": {
+        "durationMs": 2.056,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskCount": 1,
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Prompt task persisted and reloaded from task_queue.json.",
+      "name": "task_queue_persisted",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    "validator_passed": {
+      "durationMs": 41.617,
+      "evidence": {
+        "blockers": [],
+        "commands": [
+          {
+            "command": "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050907Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'",
+            "duration_seconds": 0.040211,
+            "normalized_command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T050907Z'; assert d.get('promptHash') == 'd1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+            ],
+            "returncode": 0,
+            "security_blocked": false,
+            "security_decision": {
+              "category": "test_or_build",
+              "command": [
+                "python3",
+                "-B",
+                "-c",
+                "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T050907Z'; assert d.get('promptHash') == 'd1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+              ],
+              "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+              "decision": "allow",
+              "reason": "Matched risk category: test_or_build",
+              "recorded_at": "2026-05-27T05:09:08Z",
+              "risk_level": "low",
+              "schema_version": 1,
+              "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+            },
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "durationMs": 41.617,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/real_session_validation.json",
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "validationPassed": true,
+        "validationRan": [
+          "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050907Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+        ]
+      },
+      "message": "Validator confirmed prompt response evidence and validation command.",
+      "name": "validator_passed",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    "worker_executed": {
+      "durationMs": 169.273,
+      "evidence": {
+        "blockers": [],
+        "childDurationSeconds": 0.050654,
+        "childReturnCode": 0,
+        "cyberlaceDocumentDecision": null,
+        "durationMs": 169.273,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "responsePath": "src/prompt_flight_response.json",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "stdout": "{\"processed\": true, \"responsePath\": \"src/prompt_flight_response.json\", \"traceId\": \"prompt-flight-20260527T050907Z\"}\n",
+        "taskId": "PROMPT-REAL-20260527T050907Z",
+        "workerAdapter": "codex_subprocess_worker",
+        "workerDurationSeconds": 0.166603,
+        "workerProcessStderr": "",
+        "workerProcessStdout": "{\"execution\": {\"child_pid\": 105212, \"command\": [\"python3\", \"-B\", \"-c\", \"from pathlib import Path\\nimport json\\npayload=json.loads('{\\\"classification\\\": {\\\"complexity\\\": \\\"small\\\", \\\"intent\\\": \\\"build_or_modify\\\", \\\"promptChars\\\": 99, \\\"promptHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\"}, \\\"hablaBasic\\\": {\\\"guarded\\\": true, \\\"inputHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\", \\\"intent\\\": \\\"build_or_modify\\\", \\\"runtimeMode\\\": \\\"build\\\"}, \\\"processedAt\\\": \\\"2026-05-27T05:09:07Z\\\", \\\"processedBy\\\": \\\"guarded_runtime_worker\\\", \\\"project\\\": \\\"continuity-probe-canary\\\", \\\"prompt\\\": \\\"Crear una tarea canaria segura y medir como viaja por HABLA BASIC sin ejecutar acciones peligrosas.\\\", \\\"promptHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\", \\\"response\\\": {\\\"intent\\\": \\\"build_or_modify\\\", \\\"safety\\\": \\\"Prompt was not executed as arbitrary code; it was processed into auditable response evidence inside the worker sandbox.\\\", \\\"summary\\\": \\\"Prompt received, classified and processed through the real guarded runtime path.\\\", \\\"type\\\": \\\"guarded_prompt_response\\\"}, \\\"traceId\\\": \\\"prompt-flight-2026052...",
+        "workerReturnCode": 0
+      },
+      "message": "Worker processed the real prompt into response evidence.",
+      "name": "worker_executed",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 0.845,
+      "evidence": {
+        "durationMs": 0.845,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/input_prompt.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "promptChars": 99,
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 0.893,
+      "evidence": {
+        "durationMs": 0.893,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "outputHash": "73920e01e2375648ae775abfd3e5dd28d171cd4e13cb322e78b0aebce6cc6e76",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 2.408,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 2.408,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 2.918,
+      "evidence": {
+        "durationMs": 2.918,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 7.94,
+      "evidence": {
+        "durationMs": 7.94,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 0.485,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.485,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "intent": "build_or_modify",
+        "promptChars": 99,
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "startedAt": "2026-05-27T05:09:07Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 0.486,
+      "evidence": {
+        "durationMs": 0.486,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/planned_task.json",
+        "expectedFiles": [
+          "src/prompt_flight_response.json"
+        ],
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskHash": "465b925c073a1c5444ef90e35ddb39adf978b6b84271dd47dec924bba9f74b3f",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Real guarded Task model planned for runtime execution.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 21.875,
+      "evidence": {
+        "durationMs": 21.875,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 3.731,
+      "evidence": {
+        "durationMs": 3.731,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 57.552,
+      "evidence": {
+        "durationMs": 57.552,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-27T05:09:07Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is real_session_guarded; guarded runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 6.074,
+      "evidence": {
+        "durationMs": 6.074,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "inputArtifact": "workspace/projects/continuity-probe-canary/runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json",
+        "projectPath": "workspace/projects/continuity-probe-canary",
+        "runtimeDir": "workspace/projects/continuity-probe-canary/runtime",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Project runtime bootstrapped for guarded prompt execution.",
+      "name": "real_session_bootstrap",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 2.056,
+      "evidence": {
+        "durationMs": 2.056,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskCount": 1,
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Prompt task persisted and reloaded from task_queue.json.",
+      "name": "task_queue_persisted",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 22.311,
+      "evidence": {
+        "contextPath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/directive_context.json",
+        "durationMs": 22.311,
+        "finishedAt": "2026-05-27T05:09:07Z",
+        "hablaGuidePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/habla_guide.json",
+        "path": "workspace/projects/continuity-probe-canary/runtime/directives/PROMPT-REAL-20260527T050907Z-20260527T050907Z-76a7037d0724.json",
+        "sourceHash": "76a7037d0724a1e4dc14c281e57deec97211e806abc243bb2dcafe53515c8125",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Directive generated from policy, plan, state, task queue and HABLA guide.",
+      "name": "directive_generated",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:07Z"
+    },
+    {
+      "durationMs": 169.273,
+      "evidence": {
+        "blockers": [],
+        "childDurationSeconds": 0.050654,
+        "childReturnCode": 0,
+        "cyberlaceDocumentDecision": null,
+        "durationMs": 169.273,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "responsePath": "src/prompt_flight_response.json",
+        "startedAt": "2026-05-27T05:09:07Z",
+        "stdout": "{\"processed\": true, \"responsePath\": \"src/prompt_flight_response.json\", \"traceId\": \"prompt-flight-20260527T050907Z\"}\n",
+        "taskId": "PROMPT-REAL-20260527T050907Z",
+        "workerAdapter": "codex_subprocess_worker",
+        "workerDurationSeconds": 0.166603,
+        "workerProcessStderr": "",
+        "workerProcessStdout": "{\"execution\": {\"child_pid\": 105212, \"command\": [\"python3\", \"-B\", \"-c\", \"from pathlib import Path\\nimport json\\npayload=json.loads('{\\\"classification\\\": {\\\"complexity\\\": \\\"small\\\", \\\"intent\\\": \\\"build_or_modify\\\", \\\"promptChars\\\": 99, \\\"promptHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\"}, \\\"hablaBasic\\\": {\\\"guarded\\\": true, \\\"inputHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\", \\\"intent\\\": \\\"build_or_modify\\\", \\\"runtimeMode\\\": \\\"build\\\"}, \\\"processedAt\\\": \\\"2026-05-27T05:09:07Z\\\", \\\"processedBy\\\": \\\"guarded_runtime_worker\\\", \\\"project\\\": \\\"continuity-probe-canary\\\", \\\"prompt\\\": \\\"Crear una tarea canaria segura y medir como viaja por HABLA BASIC sin ejecutar acciones peligrosas.\\\", \\\"promptHash\\\": \\\"d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44\\\", \\\"response\\\": {\\\"intent\\\": \\\"build_or_modify\\\", \\\"safety\\\": \\\"Prompt was not executed as arbitrary code; it was processed into auditable response evidence inside the worker sandbox.\\\", \\\"summary\\\": \\\"Prompt received, classified and processed through the real guarded runtime path.\\\", \\\"type\\\": \\\"guarded_prompt_response\\\"}, \\\"traceId\\\": \\\"prompt-flight-2026052...",
+        "workerReturnCode": 0
+      },
+      "message": "Worker processed the real prompt into response evidence.",
+      "name": "worker_executed",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    {
+      "durationMs": 41.617,
+      "evidence": {
+        "blockers": [],
+        "commands": [
+          {
+            "command": "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050907Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'",
+            "duration_seconds": 0.040211,
+            "normalized_command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T050907Z'; assert d.get('promptHash') == 'd1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+            ],
+            "returncode": 0,
+            "security_blocked": false,
+            "security_decision": {
+              "category": "test_or_build",
+              "command": [
+                "python3",
+                "-B",
+                "-c",
+                "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T050907Z'; assert d.get('promptHash') == 'd1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+              ],
+              "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+              "decision": "allow",
+              "reason": "Matched risk category: test_or_build",
+              "recorded_at": "2026-05-27T05:09:08Z",
+              "risk_level": "low",
+              "schema_version": 1,
+              "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+            },
+            "stderr": "",
+            "stdout": "",
+            "timed_out": false
+          }
+        ],
+        "durationMs": 41.617,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/real_session_validation.json",
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "validationPassed": true,
+        "validationRan": [
+          "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050907Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+        ]
+      },
+      "message": "Validator confirmed prompt response evidence and validation command.",
+      "name": "validator_passed",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    {
+      "durationMs": 1.546,
+      "evidence": {
+        "durationMs": 1.546,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z"
+      },
+      "message": "Task history event appended for guarded prompt task.",
+      "name": "history_written",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    {
+      "durationMs": 4.181,
+      "evidence": {
+        "durationMs": 4.181,
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "path": "workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T050907Z.json",
+        "projectState": "workspace/projects/continuity-probe-canary/runtime/project_state.json",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "validationPassed": true
+      },
+      "message": "Checkpoint written and project state closed for guarded prompt task.",
+      "name": "checkpoint_written",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    },
+    {
+      "durationMs": 0.681,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 0.681,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T050907Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-27T05:09:08Z",
+        "mode": "real_session_guarded",
+        "promptHash": "d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44",
+        "recommendation": "Prompt processed through real guarded runtime loop.",
+        "responseHash": "5a75205d8c1193952faa4af2e9b0ff57ee66f6ed364226097c1b8d410c87b060",
+        "runtimeResponseHash": "6661868c940c09b53204b701547639c0dee9aa215b70b57b273bb623a7d07b2b",
+        "runtimeResponsePath": "workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+        "startedAt": "2026-05-27T05:09:08Z",
+        "taskId": "PROMPT-REAL-20260527T050907Z",
+        "traceId": "prompt-flight-20260527T050907Z",
+        "validationPassed": true
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T05:09:08Z"
+    }
+  ],
+  "startedAt": "2026-05-27T05:09:07Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 18,
+    "skipped": 1,
+    "total": 19
+  },
+  "traceId": "prompt-flight-20260527T050907Z"
+}

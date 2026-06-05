@@ -18,13 +18,24 @@ from typing import Any
 
 try:
     from orchestrator.contracts import ContractError, validate_task, validate_task_result
+    from orchestrator.runtime_failure_classifier import classify_runtime_failure
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
 except ImportError:  # pragma: no cover - direct path execution fallback.
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(REPO_ROOT))
     from orchestrator.contracts import ContractError, validate_task, validate_task_result
+    from orchestrator.runtime_failure_classifier import classify_runtime_failure
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
+    from orchestrator.safe_process_env import safe_child_process_env
+    from backend.cyberlace_document_guard import inspect_runtime_document_inputs
 
 
 Command = str | list[str]
 MAX_OUTPUT_CHARS = 24_000
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 
 def run_task(
@@ -57,6 +68,7 @@ def run_task(
         "child_pid": None,
         "workspace": str(workspace_path),
         "command": command,
+        "command_text": _command_to_text(command),
         "shell": shell,
         "timeout_seconds": timeout,
         "timed_out": False,
@@ -64,10 +76,46 @@ def run_task(
         "duration_seconds": 0.0,
         "stdout": "",
         "stderr": "",
+        "sandbox_mode": _command_sandbox_mode(command),
+        "approval_policy": _command_approval_policy(command),
+        "infrastructure_failure": False,
+        "infrastructure_failure_type": None,
+        "infrastructure_markers": [],
+        "fatal_infrastructure_markers": [],
+        "ignored_infrastructure_markers": [],
+        "infrastructure_ignored_reason": None,
+        "deferred_postflight_blockers": [],
     }
 
     if command is None:
         blockers.append("No execution command provided for this task")
+
+    if not blockers and command is not None:
+        document_decision = _worker_document_decision(validated_task, workspace_path, command)
+        if _decision_blocks(document_decision):
+            blocker = "CyberLACE document hard gate blocked worker before child process launch."
+            infrastructure = classify_runtime_failure(blocker, document_decision)
+            execution.update(
+                {
+                    "returncode": 126,
+                    "duration_seconds": _elapsed(started),
+                    "stderr": blocker,
+                    "cyberlace_document_decision": document_decision,
+                    "infrastructure_failure": bool(infrastructure.get("infrastructureFailure")),
+                    "infrastructure_failure_type": "runtime_infrastructure" if infrastructure.get("infrastructureFailure") else None,
+                    "infrastructure_markers": list(infrastructure.get("markers") or []),
+                    "fatal_infrastructure_markers": list(infrastructure.get("fatalMarkers") or []),
+                }
+            )
+            task_result = _task_result(
+                validated_task,
+                completed=False,
+                files_created=[],
+                files_modified=[],
+                blockers=[blocker],
+                next_recommendation="Remove secrets from the workspace or use a secure credential workflow before retrying.",
+            )
+            return {"task_result": task_result, "execution": execution}
 
     if blockers:
         task_result = _task_result(
@@ -89,6 +137,10 @@ def run_task(
         stderr=subprocess.PIPE,
         text=True,
         shell=shell,
+        env=safe_child_process_env(
+            os.environ,
+            extra={"VISTA_AGENT_PROJECT_DIR": str(workspace_path)},
+        ),
     )
     execution["child_pid"] = process.pid
 
@@ -109,6 +161,24 @@ def run_task(
     files_created, files_modified = _diff_expected_files(before_snapshot, after_snapshot)
     missing_expected_files = _missing_expected_files(after_snapshot)
 
+    infrastructure = classify_runtime_failure(stdout, stderr)
+    ignored_infrastructure_markers: list[str] = []
+    infrastructure_ignored_reason: str | None = None
+    if (
+        infrastructure.get("infrastructureFailure")
+        and process.returncode == 0
+        and not timed_out
+        and not after_blockers
+        and not missing_expected_files
+    ):
+        ignored_infrastructure_markers = list(infrastructure.get("markers") or [])
+        infrastructure_ignored_reason = "process_succeeded_expected_evidence_present"
+        infrastructure = {
+            "infrastructureFailure": False,
+            "fatalInfrastructureFailure": False,
+            "markers": [],
+            "fatalMarkers": [],
+        }
     execution.update(
         {
             "timed_out": timed_out,
@@ -116,10 +186,32 @@ def run_task(
             "duration_seconds": duration,
             "stdout": _tail_text(stdout),
             "stderr": _tail_text(stderr),
+            "infrastructure_failure": bool(infrastructure.get("infrastructureFailure")),
+            "infrastructure_failure_type": "runtime_infrastructure" if infrastructure.get("infrastructureFailure") else None,
+            "infrastructure_markers": list(infrastructure.get("markers") or []),
+            "fatal_infrastructure_markers": list(infrastructure.get("fatalMarkers") or []),
+            "ignored_infrastructure_markers": ignored_infrastructure_markers,
+            "infrastructure_ignored_reason": infrastructure_ignored_reason,
         }
     )
 
     blockers.extend(after_blockers)
+    reported_blockers = _extract_reported_task_result_blockers(stdout)
+    deferred_postflight_blockers: list[str] = []
+    for blocker in reported_blockers:
+        if _is_deferred_scanner_lock_blocker(blocker):
+            deferred_postflight_blockers.append(blocker)
+            continue
+        formatted = f"Worker reported blocker: {blocker}"
+        if formatted not in blockers:
+            blockers.append(formatted)
+    if deferred_postflight_blockers:
+        execution["deferred_postflight_blockers"] = deferred_postflight_blockers
+    if infrastructure["infrastructureFailure"]:
+        marker_text = ", ".join(str(item) for item in infrastructure.get("markers") or []) or "runtime infrastructure marker"
+        formatted = f"Worker infrastructure failure detected: {marker_text}"
+        if formatted not in blockers:
+            blockers.append(formatted)
     if missing_expected_files:
         blockers.append(
             "Missing expected evidence files: " + ", ".join(sorted(missing_expected_files))
@@ -146,6 +238,81 @@ def run_task(
         next_recommendation=next_recommendation,
     )
     return {"task_result": task_result, "execution": execution}
+
+
+def _command_to_text(command: Command) -> str:
+    if isinstance(command, list):
+        return " ".join(command)
+    return str(command or "")
+
+
+def _command_instruction_text(command: Command) -> str:
+    if isinstance(command, list) and command:
+        return str(command[-1] or "")
+    return str(command or "")
+
+
+def _command_sandbox_mode(command: Command | None) -> str | None:
+    parts = _command_parts(command)
+    if "--dangerously-bypass-approvals-and-sandbox" in parts:
+        return "danger-full-access"
+    if "-s" in parts:
+        index = parts.index("-s")
+        if index + 1 < len(parts):
+            return parts[index + 1]
+    if "--sandbox" in parts:
+        index = parts.index("--sandbox")
+        if index + 1 < len(parts):
+            return parts[index + 1]
+    return None
+
+
+def _command_approval_policy(command: Command | None) -> str | None:
+    parts = _command_parts(command)
+    if "--dangerously-bypass-approvals-and-sandbox" in parts:
+        return "never"
+    if "-a" in parts:
+        index = parts.index("-a")
+        if index + 1 < len(parts):
+            return parts[index + 1]
+    if "--approval-policy" in parts:
+        index = parts.index("--approval-policy")
+        if index + 1 < len(parts):
+            return parts[index + 1]
+    return None
+
+
+def _command_parts(command: Command | None) -> list[str]:
+    if command is None:
+        return []
+    if isinstance(command, list):
+        return [str(part) for part in command]
+    try:
+        return shlex.split(str(command))
+    except ValueError:
+        return str(command).split()
+
+
+def _worker_document_decision(task: dict[str, Any], workspace_path: Path, command: Command) -> dict[str, Any]:
+    task_requirement = str(task.get("goal") or task.get("title") or task.get("id") or "")
+    instruction_text = _command_instruction_text(command)
+    return inspect_runtime_document_inputs(
+        requirement=task_requirement,
+        project_dir=workspace_path,
+        repo_root=REPO_ROOT,
+        task=task,
+        directive={"rendered_instruction": instruction_text},
+        session_id=os.environ.get("VISTA_AGENT_SESSION_ID"),
+        project_slug=os.environ.get("VISTA_AGENT_PROJECT_SLUG") or workspace_path.name,
+        scan_workspace=True,
+    )
+
+
+def _decision_blocks(decision: dict[str, Any] | None) -> bool:
+    if not isinstance(decision, dict):
+        return True
+    action = str(decision.get("runtimeAction") or decision.get("action") or "").upper()
+    return bool(decision.get("blocked") is True or decision.get("blocksRuntime") is True or action in {"BLOCK", "QUARANTINE", "HUMAN_REVIEW"})
 
 
 def load_task(path: str | Path) -> dict[str, Any]:
@@ -241,6 +408,39 @@ def _missing_expected_files(
     after: dict[str, tuple[bool, int | None, int | None]]
 ) -> list[str]:
     return [path for path, after_state in after.items() if not after_state[0]]
+
+
+def _is_deferred_scanner_lock_blocker(blocker: str) -> bool:
+    text = str(blocker or "").lower()
+    has_project_lock = "project_locked" in text or "statuscode=423" in text or "statuscode 423" in text
+    has_scanner = "scanner" in text or "code-scanner" in text or "scanner canonico" in text
+    has_active_session = "agent_session_active" in text or "active agent session" in text or "sesion activa" in text
+    return bool(has_project_lock and has_scanner and has_active_session)
+
+
+def _extract_reported_task_result_blockers(stdout: str) -> list[str]:
+    text = str(stdout or "")
+    candidates: list[str] = []
+    marker = "```json"
+    if marker in text:
+        start = text.find(marker) + len(marker)
+        end = text.find("```", start)
+        if end != -1:
+            candidates.append(text[start:end].strip())
+    first_brace = text.find("{")
+    last_brace = text.rfind("}")
+    if first_brace != -1 and last_brace > first_brace:
+        candidates.append(text[first_brace:last_brace + 1])
+    for candidate in candidates:
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            continue
+        result = payload.get("task_result") if isinstance(payload.get("task_result"), dict) else payload
+        blockers = result.get("blockers") if isinstance(result, dict) else None
+        if isinstance(blockers, list):
+            return [str(item) for item in blockers if str(item).strip()]
+    return []
 
 
 def _resolve_under_workspace(workspace: Path, relative_path: str) -> Path:

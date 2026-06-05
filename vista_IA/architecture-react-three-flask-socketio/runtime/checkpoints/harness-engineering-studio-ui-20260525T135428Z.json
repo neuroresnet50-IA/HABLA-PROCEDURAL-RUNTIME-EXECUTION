@@ -1,0 +1,41 @@
+{
+  "checkpoint": "harness-engineering-studio-ui-20260525T135428Z",
+  "createdAt": "2026-05-25T13:54:28.282753+00:00",
+  "scope": "Integracion de CyberLACE Security Training Loop dentro del boton Harness Engineering Studio",
+  "filesChanged": [
+    "backend/app.py",
+    "frontend/src/App.jsx",
+    "frontend/src/App.css",
+    "frontend/src/components/HarnessEngineeringStudio.jsx",
+    "tools/cyberlace_training_loop.py",
+    "docs/security/cyberlace_training_loop.md"
+  ],
+  "uiEntryPoint": "Dashboard lateral -> Harness Engineering Studio",
+  "backendEndpoints": [
+    "GET /api/harness/training/summary",
+    "GET /api/harness/training/artifact?path=...",
+    "POST /api/harness/training/generate-run"
+  ],
+  "validation": {
+    "pyCompile": "passed",
+    "frontendBuild": "passed",
+    "restart": "passed",
+    "health": "passed",
+    "trainingSummary": "passed",
+    "trainingGenerateRun": {
+      "scenario": "external-login",
+      "caseId": "ui-harness-smoke-external-login",
+      "passed": true,
+      "status": "blocked",
+      "runtimeAction": "QUARANTINE",
+      "pid": null
+    },
+    "artifactPreview": "passed",
+    "backendLogErrors": "none found for Traceback/500/TypeError/ReferenceError/SyntaxError"
+  },
+  "artifactsGenerated": [
+    "runtime/cyberlace/training_cases/ui-harness-smoke-external-login.json",
+    "runtime/cyberlace/training_reports/ui-harness-smoke-external-login-20260525T135313Z.md",
+    "runtime/cyberlace/training_checkpoints/ui-harness-smoke-external-login-20260525T135313Z.json"
+  ]
+}

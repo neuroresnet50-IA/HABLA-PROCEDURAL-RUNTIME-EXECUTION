@@ -1,0 +1,212 @@
+{
+  "confirmPollLimit": 18,
+  "confirmPolls": [
+    {
+      "at": "2026-05-28T22:17:26Z",
+      "attempt": 1,
+      "elapsedMs": 28.476,
+      "errorCode": "manual_stop_no_worker",
+      "progressLabel": "Sesion detenida por el usuario.",
+      "progressPercent": 94,
+      "sessionStatus": "stopped",
+      "statusCode": 200
+    }
+  ],
+  "confirmTimeoutSeconds": 36.0,
+  "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T213109Z-mathematics-019/ui_agent_session_stop_after_timeout.json",
+  "finalSession": {
+    "command": [
+      "/home/neurodriver/.npm-global/bin/codex",
+      "--dangerously-bypass-approvals-and-sandbox",
+      "-C",
+      "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019",
+      "exec",
+      "--skip-git-repo-check",
+      "Task: RUNTIME-20260528220511-001 - Resolver un sistema por eliminacion gaussiana y registrar\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019\nControl-plane ownership:\n- No edites runtime/project_state.json, runtime/task_queue.json, runtime/task_history.jsonl ni runtime/failures.jsonl.\n- No edites runtime/checkpoints/, runtime/directives/ ni runtime/logs/.\n- El worker solo entrega archivos de producto o artefactos declarados; el control plane persiste estado, cola, historial, retries y checkpoints.\n- No marques una tarea como completada escribiendo archivos internos del runtime; devuelve TaskResult y deja que el control plane valide.\nSprint: None - \nGoal: Resolver un sistema por eliminacion gaussiana y registrar pasos.; Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\nComplejidad operativa:\n- Dificultad: Facil\n- Score: 18 | confianza: 88\n- Agentes recomendados: 1 de max 8\n- Ciclos LACE recomendados: 2 (min 2 / max 10)\n- Presupuesto: 3 tareas, 600s timeout, 2 retries\n- Herramientas requeridas: findings, integrity, scanner\nExact deliverables:\n- docs/mathematics_case_019.md\nActive restrictions:\n- El modo smoke no puede inferirse por palabras sueltas.\n- El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.\n- Deben existir modos expl\u00edcitos:\n- smoke\n- build\n- medium\n- long-run\n- Una sesi\u00f3n debe contener m\u00faltiples tareas.\n- Cada tarea debe lanzar un worker propio.\n- Cada tarea debe tener timeout propio.\n- El retry debe ser por tarea, no por sesi\u00f3n completa.\n- Si un proceso no cierra con terminate(), debe cerrarse con kill().\n- long-run no puede comportarse igual que smoke.\n- El progreso solo vale si existe evidencia real.\n- Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.\n- `PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.\n- El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.\n- El runtime debe cargar `PLANS.md` como roadmap ejecutable.\n- El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.\n- HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.\n- Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.\n- Respect the selected sprint deliverables and do not advance future deliverables.\nRequired evidence:\n- docs/mathematics_case_019.md\nExpected validation:\n- python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_019.md'] if not Path(p).is_file()]; assert not missing, missing\"\nBridge visual obligatorio:\n- Comando base: `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py'`\n- Si existe `VISTA_AGENT_BRIDGE`, usalo como comando base preferente.\n- Antes de editar, emite `phase` describiendo que vas a observar o construir.\n- Declara nodos del mapa conceptual con `upsert-node` para archivos importantes.\n- Conecta nodos relacionados con `connect-nodes`.\n- Enfoca el archivo activo con `focus-node`.\n- Declara pasos de flujo con `upsert-step` y enlazalos con `connect-steps`.\n- Despues de escribir o modificar cada archivo real, ejecuta `sync-file` inmediatamente.\n- No declares progreso visual si no hay evento real del bridge o evidencia real en disco.\n- Ejemplos obligatorios:\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' phase --label plan --message \"Preparando la tarea con evidencia visual\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-node --path frontend/index.html --layer frontend --layer-label Frontend --language html --description \"Pantalla principal\" --x 220 --y 180`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-nodes --from-path frontend/app.js --to-path shared/crm_schema.json --type uses --label \"usa esquema\"`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' focus-node --path frontend/app.js`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id start --type start --label Inicio --x 260 --y 80`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' upsert-step --node-path frontend/app.js --step-id render --type process --label \"Renderizar estado\" --x 260 --y 220`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' connect-steps --node-path frontend/app.js --from-step start --to-step render`\n  - `python3 '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/vista_agent_bridge.py' sync-file --path frontend/app.js --language javascript --description \"Logica sincronizada desde evidencia real\"`\nHABLA BASIC y LACE:\n- HABLA guide: habla_basic_procedure\n- LACE policy: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/LACE.md\n- LACE log: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/LACE_LOG.md\n- Ciclos LACE requeridos: 2\n- LACE es disciplina de sesion/control-plane, no una tarea monolitica.\n- No ejecutes todos los ciclos LACE dentro de una sola tarea de worker.\n- Este worker solo puede actualizar el ciclo LACE correspondiente a la tarea acotada que esta ejecutando.\n- Mant\u00e9n LACE_LOG.md alineado con evidencia real y sincronizalo con `sync-file` cuando cambie.\n- No marques progreso LACE sin cambios reales en LACE_LOG.md o archivos de producto.\n- Si faltan ciclos al cierre, no extiendas silenciosamente esta tarea: el control plane debe bloquear cierre o encolar tareas LACE pendientes.\n- No cierres una sesion long-run si la politica LACE aplicable exige ciclos pendientes.\nStarting checkpoint:\n- complexity-estimate\nKnown risks or blockers:\n- Missing required evidence before execution: docs/mathematics_case_019.md\n- Missing expected file: docs/mathematics_case_019.md\nClosure criteria:\n- TaskResult.completed can be true only with real disk evidence.\n- TaskResult.blockers must be empty before closing the task.\n- Every expected file must exist under the repository root.\n- Every declared validation command must run and return code 0.\n- Validation results must be represented in the task result history."
+    ],
+    "complexityEstimate": {
+      "bootstrap_tasks": 1,
+      "confidence": 88,
+      "difficulty": "facil",
+      "difficulty_label": "Facil",
+      "estimate_type": "project_complexity_budget",
+      "generated_at": "2026-05-28T22:05:10.490774Z",
+      "launch_mode": "existing",
+      "max_agents": 8,
+      "max_lace_cycles": 10,
+      "max_retries": 2,
+      "max_tasks": 3,
+      "min_lace_cycles": 2,
+      "project_file_count": 0,
+      "project_slug": "continuity-math-pf-019",
+      "prompt_word_count": 30,
+      "reasons": [
+        "modo runtime solicitado: build",
+        "prompt corto: 30 palabras",
+        "requiere evidencia auditable"
+      ],
+      "recommended_agents": 1,
+      "recommended_lace_cycles": 2,
+      "recovery_budget": 2,
+      "required_tools": [
+        "findings",
+        "integrity",
+        "scanner"
+      ],
+      "risk_flags": [],
+      "runtime_mode": "build",
+      "schema_version": 1,
+      "score": 18,
+      "timeout_seconds": 600
+    },
+    "controlPlane": {
+      "activeTask": {
+        "checkpoint_key": "runtime-20260528220511-001-checkpoint",
+        "dependencies": [],
+        "expected_files": [
+          "docs/mathematics_case_019.md"
+        ],
+        "goal": "Resolver un sistema por eliminacion gaussiana y registrar pasos.; Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+        "id": "RUNTIME-20260528220511-001",
+        "max_retries": 2,
+        "mode": "build",
+        "priority": 10,
+        "status": "pending",
+        "timeout_seconds": 600,
+        "title": "Resolver un sistema por eliminacion gaussiana y registrar",
+        "validation_commands": [
+          "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_019.md'] if not Path(p).is_file()]; assert not missing, missing\""
+        ]
+      },
+      "activeTaskId": "RUNTIME-20260528220511-001",
+      "checkpoint": null,
+      "directiveJsonPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/runtime/directives/RUNTIME-20260528220511-001-20260528T220512Z-3c42f49295d9.json",
+      "directiveMarkdownPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/runtime/directives/RUNTIME-20260528220511-001-20260528T220512Z-3c42f49295d9.md",
+      "directiveSourceHash": "3c42f49295d92be27d72d92e1e0122e0af3f38c907cf380da12a56d01b11114d",
+      "enabled": true,
+      "recovery": null,
+      "reviewerLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/runtime/logs/agent-781117ac72-reviewer.jsonl",
+      "runtimeDir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/runtime",
+      "taskResult": null,
+      "validation": null
+    },
+    "createdAt": "2026-05-28T22:05:09.062990+00:00",
+    "cyberlace": {
+      "decisions": [
+        {
+          "action": "MONITOR",
+          "eventId": "cyberlace_7fb435b94d2041de93c7dc63fec74068",
+          "mode": "monitor",
+          "ok": true,
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "riskScore": 10.0,
+          "runtimeAction": "ALLOW",
+          "severity": "LOW",
+          "stage": "prompt",
+          "timestamp": "2026-05-28T22:05:13Z"
+        }
+      ]
+    },
+    "endedAt": "2026-05-28T22:17:11.532174+00:00",
+    "errorCode": "manual_stop_no_worker",
+    "errorMessage": "Sesion detenida; no habia worker vivo asociado.",
+    "firstOutputAt": "2026-05-28T22:05:09.941181+00:00",
+    "firstVisualEventAt": null,
+    "habla": {
+      "available": true,
+      "prompt": "PROTOCOLO habla_reasoning_agent_v4:\n\nOBJETIVO:\nResolver la pregunta humana sin inventar informaci\u00f3n, usando clasificaci\u00f3n sem\u00e1ntica, ReAct, RAG, triangulaci\u00f3n, confianza por componente, verificaci\u00f3n constitucional y memoria epis\u00f3dica.\n\nENTRADA:\n-> DEFINE pregunta_usuario COMO \"Resolver un sistema por eliminacion gaussiana y registrar pasos. Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\"\n-> VERIFICA pregunta_usuario \u2260 \"\"\n\nFASE 0: SEMANTIC_CLASSIFIER\n-> ANALIZA pregunta_usuario por significado\n-> CLASIFICA como HECHO_TEMPORAL, CALCULO, HECHO_ESTABLE o INFERENCIA_OPINION\n\nFASE 1: THOUGHT\n-> DEFINE estrategia seg\u00fan clasificaci\u00f3n\n\nFASE 2: ACTION\n-> USA herramienta obligatoria si aplica\n\nFASE 3: OBSERVATION\n-> SI no hay evidencia, cambia estrategia y reintenta\n\nFASE 4: RAG_RECUPERATION\n-> RECUPERA fragmentos candidatos sin validarlos todav\u00eda\n\nFASE 5: TRIANGULATE\n-> COMPARA fuentes y detecta consistencia, contradicci\u00f3n o evidencia limitada\n\nFASE 6: CONFIDENCE_PER_COMPONENT\n-> ASIGNA confianza a dato, fecha, fuente, c\u00e1lculo e inferencia\n\nFASE 7: CONSTITUTIONAL_CHECK\n-> NO inventar\n-> NO ocultar incertidumbre\n-> SEPARAR hecho, c\u00e1lculo e inferencia\n-> BLOQUEAR si evidencia insuficiente\n\nFASE 8: ANSWER\n-> RESPONDE con dato, margen, confianza y l\u00edmites\n\nFASE 9: EPISODIC_MEMORY_UPDATE\n-> GUARDA tipo, herramienta, resultado y confianza\nFIN PROTOCOLO\n",
+      "state": {
+        "answerPreview": "No puedo responder con seguridad suficiente. Causa: No se obtuvo evidencia suficiente despu\u00e9s de los intentos.",
+        "blockReason": "No se obtuvo evidencia suficiente despu\u00e9s de los intentos.",
+        "blocked": true,
+        "compoundGoal": "",
+        "confidence": {
+          "calculo": 99,
+          "dato": 99,
+          "fecha": 100,
+          "fuente": 100,
+          "global": 99.5,
+          "inferencia": 0
+        },
+        "debug": [
+          "PLANNER => pregunta at\u00f3mica",
+          "MEMORY_TOOL_ORDER => ['calculator']",
+          "THOUGHT => intento=1, tool=calculator",
+          "OBSERVATION => vac\u00edo con calculator",
+          "THOUGHT => intento=2, tool=calculator",
+          "OBSERVATION => vac\u00edo con calculator",
+          "THOUGHT => intento=3, tool=calculator",
+          "OBSERVATION => vac\u00edo con calculator",
+          "THOUGHT => intento=4, tool=calculator",
+          "OBSERVATION => vac\u00edo con calculator",
+          "TRIANGULATE => sin valores",
+          "CONFIDENCE => dato=99, fuente=100"
+        ],
+        "directive": "LACE v2.0 ESTA ACTIVO Y FUE LEIDO ANTES DE ARRANCAR EL AGENTE.\nREGLA ABSOLUTA: no declares proyecto terminado hasta completar 10 ciclos documentados en LACE_LOG.md.\nCada ciclo debe usar HABLA por capas: interpretaci\u00f3n, clasificaci\u00f3n, planificaci\u00f3n, ReAct, evidencia, triangulaci\u00f3n, confianza, autocr\u00edtica, memoria y acci\u00f3n final.\nAntes de modificar c\u00f3digo, escribe THOUGHT/ACTION/OBSERVATION en LACE_LOG.md.\nAntes de cerrar, verifica la puerta de cierre LACE.\n\nPROTOCOLO DE RESPUESTA CONTROLADA POR HABLA V5.0 + LACE\n\nPREGUNTA HUMANA:\nResolver un sistema por eliminacion gaussiana y registrar pasos. Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\n\nTIPO DE CONOCIMIENTO:\nCALCULO\n\nEVIDENCIA:\n- Sin evidencia externa \u00fatil.\n\nSUBTAREAS COMPUESTAS:\n- No aplica.\n\nTRIANGULACION:\nNo hay valores num\u00e9ricos para triangular.\n\nCONFIANZA POR COMPONENTE:\n- dato: 99\n- fecha: 100\n- fuente: 100\n- calculo: 99\n- inferencia: 0\n- global: 99.5\n\nREGLAS OBLIGATORIAS:\n1. No inventes datos.\n2. No ocultes incertidumbre.\n3. Separa hecho, c\u00e1lculo e inferencia.\n4. Si es estimaci\u00f3n, dilo expl\u00edcitamente.\n5. Si la evidencia es insuficiente, declara el l\u00edmite.\n\nESTADO CONSTITUCIONAL:\n- safe_to_answer: False\n- blocked: True\n- block_reason: No se obtuvo evidencia suficiente despu\u00e9s de los intentos.\n\nINSTRUCCION:\nResponde al usuario en espa\u00f1ol, como chat natural, pero respetando todas las reglas anteriores.",
+        "engineRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/habla_agentic_engine_v5_1_lace_visual",
+        "engineVersion": "v5.1",
+        "isCompound": false,
+        "knowledgeType": "CALCULO",
+        "laceDirective": "LACE v2.0 ESTA ACTIVO Y FUE LEIDO ANTES DE ARRANCAR EL AGENTE.\nREGLA ABSOLUTA: no declares proyecto terminado hasta completar 10 ciclos documentados en LACE_LOG.md.\nCada ciclo debe usar HABLA por capas: interpretaci\u00f3n, clasificaci\u00f3n, planificaci\u00f3n, ReAct, evidencia, triangulaci\u00f3n, confianza, autocr\u00edtica, memoria y acci\u00f3n final.\nAntes de modificar c\u00f3digo, escribe THOUGHT/ACTION/OBSERVATION en LACE_LOG.md.\nAntes de cerrar, verifica la puerta de cierre LACE.",
+        "laceLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/.runtime/habla/preflight-79ca0f5e2207.md",
+        "lacePolicyLoaded": true,
+        "lacePolicyPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/habla_agentic_engine_v5_1_lace_visual/LACE.md",
+        "laceRuntime": "HablaEngineV5 preflight",
+        "memoryPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/habla_agentic_engine_v5_1_lace_visual/memory/episodic_memory.jsonl",
+        "protocolText": "PROTOCOLO habla_reasoning_agent_v4:\n\nOBJETIVO:\nResolver la pregunta humana sin inventar informaci\u00f3n, usando clasificaci\u00f3n sem\u00e1ntica, ReAct, RAG, triangulaci\u00f3n, confianza por componente, verificaci\u00f3n constitucional y memoria epis\u00f3dica.\n\nENTRADA:\n-> DEFINE pregunta_usuario COMO \"Resolver un sistema por eliminacion gaussiana y registrar pasos. Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\"\n-> VERIFICA pregunta_usuario \u2260 \"\"\n\nFASE 0: SEMANTIC_CLASSIFIER\n-> ANALIZA pregunta_usuario por significado\n-> CLASIFICA como HECHO_TEMPORAL, CALCULO, HECHO_ESTABLE o INFERENCIA_OPINION\n\nFASE 1: THOUGHT\n-> DEFINE estrategia seg\u00fan clasificaci\u00f3n\n\nFASE 2: ACTION\n-> USA herramienta obligatoria si aplica\n\nFASE 3: OBSERVATION\n-> SI no hay evidencia, cambia estrategia y reintenta\n\nFASE 4: RAG_RECUPERATION\n-> RECUPERA fragmentos candidatos sin validarlos todav\u00eda\n\nFASE 5: TRIANGULATE\n-> COMPARA fuentes y detecta consistencia, contradicci\u00f3n o evidencia limitada\n\nFASE 6: CONFIDENCE_PER_COMPONENT\n-> ASIGNA confianza a dato, fecha, fuente, c\u00e1lculo e inferencia\n\nFASE 7: CONSTITUTIONAL_CHECK\n-> NO inventar\n-> NO ocultar incertidumbre\n-> SEPARAR hecho, c\u00e1lculo e inferencia\n-> BLOQUEAR si evidencia insuficiente\n\nFASE 8: ANSWER\n-> RESPONDE con dato, margen, confianza y l\u00edmites\n\nFASE 9: EPISODIC_MEMORY_UPDATE\n-> GUARDA tipo, herramienta, resultado y confianza\nFIN PROTOCOLO\n",
+        "runtime": "HablaEngineV5",
+        "safeToAnswer": false,
+        "sources": [],
+        "strategy": "calcular_exactamente",
+        "subTasks": [],
+        "toolRequired": "calculator",
+        "triangulatedText": "No hay valores num\u00e9ricos para triangular."
+      }
+    },
+    "hablaPreflightPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/docs/habla-session.md",
+    "laceCompletedCycles": 0,
+    "laceCycles": [],
+    "laceLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/LACE_LOG.md",
+    "lacePolicyPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/LACE.md",
+    "laceRequiredCycles": 2,
+    "lastHeartbeatAt": null,
+    "lastRetryCheckpoint": null,
+    "lastRetryReason": null,
+    "lastVisualEventAt": null,
+    "output": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n",
+    "pid": null,
+    "progressLabel": "Sesion detenida por el usuario.",
+    "progressPercent": 94,
+    "projectDir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019",
+    "projectName": "continuity-math-pf-019",
+    "projectSlug": "continuity-math-pf-019",
+    "requirement": "Resolver un sistema por eliminacion gaussiana y registrar pasos. Escribe la solucion o plan en docs/mathematics_case_019.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
+    "retryCount": 0,
+    "retryLimit": 5,
+    "retryPending": false,
+    "returncode": -15,
+    "runtimeMode": "build",
+    "sessionId": "agent-781117ac72",
+    "smokeMode": false,
+    "startedAt": null,
+    "status": "stopped",
+    "stopRequested": true,
+    "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-019/runtime/logs/agent-781117ac72-terminal.log",
+    "updatedAt": "2026-05-28T22:17:11.532174+00:00",
+    "visualEventCount": 0
+  },
+  "finalStatus": "stopped",
+  "reason": "prompt_flight_poll_timeout",
+  "requestedAt": "2026-05-28T22:17:11Z",
+  "sessionId": "agent-781117ac72",
+  "stopConfirmed": true,
+  "stopError": "connection_failed",
+  "stopRequest": {
+    "elapsedMs": 15027.121,
+    "error": "connection_failed",
+    "ok": false,
+    "sessionStatus": null,
+    "statusCode": 0
+  },
+  "stopStatusCode": 0
+}

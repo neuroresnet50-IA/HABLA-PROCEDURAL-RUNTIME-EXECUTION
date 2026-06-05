@@ -1,0 +1,23 @@
+[
+  {
+    "checkpoint_key": "runtime-20260525014036-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "MODO EJECUCION AGENTICA CONTROLADA. Proyecto existente: sesion-20260524210420. No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales. Retomar la orden recuperada de la tarea RUNTIME-20260525010939-001. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo. Orden original: Validacion smoke de runtime HABLA/Codex: inspecciona LACE.md, LACE_LOG.md y docs/habla-session.md; no modifiques archivos, emite evidencia breve y termina. Regla de cierre obligatoria: No marcar completado solo porque existen archivos. Antes de cerrar debe pasar prueba real de navegador: - abrir el juego en navegador o sandbox - comprobar que existe canvas - comprobar WebGL activo o fallback funcional - consola JS sin excepciones - screenshot no negro - HUD o telemetria actualiza - si falla, dejar tarea blocked con evidencia, no completed Entregables esperados: - runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json - runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json - runtime/complexity_estimate.json Validacion obligatoria: - python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/backups/habla_runtime_repair/20260525T005750Z/project_state.before.json', 'runtime/backups/habla_runtime_repair/20260525T005750Z/task_queue.before.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\" PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: Dificultad Facil: 1 subagente(s), 2 ciclo(s) LACE y hasta 3 tarea(s). Dificultad: Facil | score: 8 | ciclos LACE: 2 | max tareas: 3 Herramientas requeridas: pytest Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260525014036-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 1800,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  }
+]

@@ -1,0 +1,136 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 37,
+      "mtime": "2026-05-27T18:50:27Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/complexity_estimate.json",
+      "sha256": "f1053ea578d1632c84eac6e51e1c9b5691f73ed25af423c27f7bebcd572765da",
+      "size": 868,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-27T18:50:27.831213Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-code-pf-003\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 36,\n  \"score\": 31,\n  \"difficulty\": \"medio\",\n  \"difficulty_label\": \"Medio\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 3,\n  \"recommended_agents\": 2,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 4,\n  \"max_tasks\": 8,\n  \"timeout_seconds\": 900,\n  \"recovery_budget\": 5,\n  \"max_retries\": 3,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"pytest\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt medio: 36 palabras\",\n    \"requiere evidencia auditable\",\n    \"incluye backend/API\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-003/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 18,
+      "mtime": "2026-05-27T18:51:22Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/project_state.json",
+      "sha256": "6cc1de6911f97cf948371e79f6fcc2a1b2d807a12dd57385adb937d530fdb7d2",
+      "size": 532,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-a20db45918\",\n    \"complexity-estimate\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-27T18:50:27.396263+00:00\",\n  \"current_task_id\": \"RUNTIME-20260527185027-001\",\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-27T18:50:27.396263+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-a20db45918\",\n  \"project_id\": \"continuity-code-pf-003\",\n  \"schema_version\": 1,\n  \"status\": \"running\",\n  \"updated_at\": \"2026-05-27T18:51:22.068572+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-003/runtime/task_history.jsonl"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 40,
+      "mtime": "2026-05-27T18:51:22Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/task_queue.json",
+      "sha256": "04ad7e7f3287b944cd1fd8a77dc9eac5c00f7dee74388663428ef1762cc22c5d",
+      "size": 1516,
+      "tail": "3,\n    \"mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"running\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260527185027-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260527185027-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_003.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260527185027-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 44,
+    "mtime": "2026-05-27T18:50:27Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/checkpoints/complexity-estimate.json",
+    "sha256": "29c24447bd40a9aa3dd8b5336f67e11e1bfb6cab52d7e90f9d41f839ca39d98f",
+    "size": 1179,
+    "tail": "{\n  \"checkpoint_key\": \"complexity-estimate\",\n  \"created_at\": \"2026-05-27T18:50:27Z\",\n  \"payload\": {\n    \"estimate\": {\n      \"bootstrap_tasks\": 4,\n      \"confidence\": 88,\n      \"difficulty\": \"medio\",\n      \"difficulty_label\": \"Medio\",\n      \"estimate_type\": \"project_complexity_budget\",\n      \"generated_at\": \"2026-05-27T18:50:27.831213Z\",\n      \"launch_mode\": \"existing\",\n      \"max_agents\": 8,\n      \"max_lace_cycles\": 10,\n      \"max_retries\": 3,\n      \"max_tasks\": 8,\n      \"min_lace_cycles\": 2,\n      \"project_file_count\": 0,\n      \"project_slug\": \"continuity-code-pf-003\",\n      \"prompt_word_count\": 36,\n      \"reasons\": [\n        \"modo runtime solicitado: build\",\n        \"prompt medio: 36 palabras\",\n        \"requiere evidencia auditable\",\n        \"incluye backend/API\"\n      ],\n      \"recommended_agents\": 2,\n      \"recommended_lace_cycles\": 3,\n      \"recovery_budget\": 5,\n      \"required_tools\": [\n        \"findings\",\n        \"integrity\",\n        \"pytest\",\n        \"scanner\"\n      ],\n      \"risk_flags\": [],\n      \"runtime_mode\": \"build\",\n      \"schema_version\": 1,\n      \"score\": 31,\n      \"timeout_seconds\": 900\n    },\n    \"reason\": \"complexity_estimate_created\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 241,
+    "mtime": "2026-05-27T18:50:28Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/directives/RUNTIME-20260527185027-001-20260527T185028Z-80c69b01debf.json",
+    "sha256": "0a585c54f432132d051a4f8f4beccfebf77aab234a631818032e63782a144a8c",
+    "size": 22545,
+    "tail": "PI REST con casos 200, 400, 404 y 500.\",\n    \"id\": \"RUNTIME-20260527185027-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear estrategia de pruebas para una API REST\"\n  },\n  \"task_id\": \"RUNTIME-20260527185027-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"80c69b01debf6a5cf80f2b13b58124c93cb4f311ce051992181e401bb161f339\"\n  }\n}\n"
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-003",
+  "runtimeDir": "workspace/projects/continuity-code-pf-003/runtime",
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 22,
+    "mtime": "2026-05-27T18:51:22Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/logs/agent-a20db45918-terminal.log",
+    "sha256": "929a7b8e26b520ff203cf2807e6f1d171ea46fa68f980d533997ce2cfe14d7b8",
+    "size": 1166,
+    "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260527185027-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/artifacts/tool_invocations/RUNTIME-20260527185027-001-preflight-20260527T185121Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260527185027-001 con timeout 900s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/directives/RUNTIME-20260527185027-001-20260527T185028Z-80c69b01debf.json.\n"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "checkpoint": "harness-green-modal-auto-click-20260525T145139Z",
+  "createdAt": "2026-05-25T14:51:39.573865+00:00",
+  "reason": "Corregir Harness Autopilot para mostrar modal rojo/verde y oprimir automaticamente el boton verde Aceptar alternativa segura durante autonomia.",
+  "changes": [
+    "App.jsx: showCyberlaceBlockingAlert ya no oculta el modal antes de pintarlo",
+    "App.jsx: agrega estado/ref de automatizacion Harness",
+    "App.jsx: cuando el modal verde esta visible durante Autopilot, espera 1.4s y ejecuta click() sobre data-cyberlace-safe-accept=primary",
+    "App.jsx: autoaceptacion se marca como source=harness-autonomous-training",
+    "App.css: banner visual de autoaceptacion segura activa"
+  ],
+  "validation": {
+    "frontendBuild": "passed",
+    "pyCompile": "passed",
+    "restart": "passed",
+    "health": "passed",
+    "socketPolling": "HTTP 200 upgrades=[]",
+    "bundleContainsAutoClickSelector": true
+  }
+}

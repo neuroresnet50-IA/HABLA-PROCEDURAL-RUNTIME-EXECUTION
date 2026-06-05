@@ -1,0 +1,49 @@
+{
+  "checkpoint": "cyberlace-autonomous-training-loop-20260525T141623Z",
+  "createdAt": "2026-05-25T14:16:23.656375+00:00",
+  "scope": "Harness Engineering Studio: loop autonomo que fabrica casos, ejecuta runtime, evalua, guarda memoria y continua ciclos.",
+  "filesChanged": [
+    "tools/cyberlace_training_loop.py",
+    "backend/app.py",
+    "frontend/src/components/HarnessEngineeringStudio.jsx",
+    "frontend/src/App.css",
+    "docs/security/cyberlace_training_loop.md"
+  ],
+  "backendEndpoints": [
+    "POST /api/harness/training/autopilot-run",
+    "GET /api/harness/training/summary",
+    "GET /api/harness/training/artifact?path=..."
+  ],
+  "validation": {
+    "pyCompile": "passed",
+    "frontendBuild": "passed",
+    "restart": "passed",
+    "health": "passed",
+    "socketPolling": "passed upgrades=[]",
+    "uiLoad": "passed",
+    "autopilotCampaign": {
+      "campaignId": "ui-autopilot-smoke-hard",
+      "cycles": 2,
+      "passed": true,
+      "results": [
+        {
+          "cycle": 1,
+          "scenario": "payment-data",
+          "status": "blocked",
+          "runtimeAction": "QUARANTINE"
+        },
+        {
+          "cycle": 2,
+          "scenario": "multi-provider-token",
+          "status": "blocked",
+          "runtimeAction": "QUARANTINE"
+        }
+      ],
+      "report": "runtime/cyberlace/training_campaigns/ui-autopilot-smoke-hard-20260525T141354Z.md",
+      "checkpoint": "runtime/cyberlace/training_campaigns/ui-autopilot-smoke-hard-20260525T141354Z.json",
+      "memory": "runtime/cyberlace/training_campaigns/memory.json"
+    },
+    "backendLogErrors": "none found for Traceback/500/training_autopilot_failed/SyntaxError/ReferenceError",
+    "liveWorkerAfterRun": "none found"
+  }
+}

@@ -1,0 +1,1013 @@
+{
+  "checkpoint_key": "runtime-20260604004238-001-checkpoint",
+  "created_at": "2026-06-04T00:51:56Z",
+  "payload": {
+    "directive": {
+      "json_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/directives/RUNTIME-20260604004238-001-20260604T004238Z-029f8f2215db.json",
+      "markdown_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/directives/RUNTIME-20260604004238-001-20260604T004238Z-029f8f2215db.md",
+      "source_hash": "029f8f2215db0ca892de0ff7df29e88ffe418bcdb59273159095c6bae255272f"
+    },
+    "task": {
+      "checkpoint_key": "runtime-20260604004238-001-checkpoint",
+      "dependencies": [],
+      "expected_files": [
+        "frontend/index.html",
+        "frontend/styles.css",
+        "frontend/app.js"
+      ],
+      "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/5 ciclos canonicos validos; faltan [1, 2, 3, 4, 5]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: LACE-20260604-001 Validacion: validacion pasada Evidencia encontrada: ULTIMO_CONTEXTO_CODEX.md, frontend/app.js, frontend/index.html, frontend/styles.css, recuperacioncontexto.md, runtime/artifacts/browser_render_smoke.json, runtime/artifacts/file_integrity_report.json, runtime/artifacts/observer_findings.json Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/lace-cycle-001-checkpoint.json Bloqueo: sin registros",
+      "id": "RUNTIME-20260604004238-001",
+      "max_retries": 4,
+      "mode": "long-run",
+      "priority": 10,
+      "status": "pending",
+      "timeout_seconds": 5400,
+      "title": "Build runnable static web app",
+      "validation_commands": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "task_result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260604004238-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+        "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+      ]
+    },
+    "tool_invocations": {
+      "broom_before": {
+        "actions": [
+          {
+            "action": "clear_stale_current_task_id",
+            "after": null,
+            "before": "RUNTIME-20260604004238-001"
+          }
+        ],
+        "createdAt": "2026-06-04T00:43:31.116352Z",
+        "dryRun": false,
+        "ignoredResidue": [
+          {
+            "kind": "failure_record",
+            "reason": "different_task:lace-closure-gate",
+            "taskId": "lace-closure-gate"
+          },
+          {
+            "kind": "history_record",
+            "reason": "different_task:LACE-20260604-001",
+            "taskId": "LACE-20260604-001"
+          }
+        ],
+        "latestPath": "runtime/artifacts/broom/latest.json",
+        "ok": true,
+        "phase": "before_task",
+        "projectRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030",
+        "queueStatus": {
+          "LACE-20260604-001": "completed",
+          "RUNTIME-20260604000404-001": "completed",
+          "RUNTIME-20260604004238-001": "pending"
+        },
+        "reason": "control_plane_before_task",
+        "reportPath": "runtime/artifacts/broom/20260604T004331.127508Z-RUNTIME-20260604004238-001-before_task.json",
+        "runtimeDir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime",
+        "taskId": "RUNTIME-20260604004238-001",
+        "tool": "to-sweep-with-a-broom",
+        "warnings": []
+      },
+      "cyberlace_output": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_38bed619d1d24f9ba19321677a8761fe",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 51,
+            "pattern": "credit_card_like",
+            "sample": "20260604004238",
+            "start": 37,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 696,
+            "pattern": "credit_card_like",
+            "sample": "20260604004238",
+            "start": 682,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 853,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 839,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 1074,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 1060,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 1386,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 1372,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 1694,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 1680,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 2016,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 2002,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 2328,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 2314,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 2636,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 2622,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 3837,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 3823,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 3990,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 3976,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 4816,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 4802,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 6602,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 6588,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 7341,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 7327,
+            "type": "sensitive_output"
+          },
+          {
+            "domain": "financial",
+            "end": 7494,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 7480,
+            "type": "sensitive_output"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.9,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 51,
+              "pattern": "credit_card_like",
+              "sample": "20260604004238",
+              "start": 37,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 696,
+              "pattern": "credit_card_like",
+              "sample": "20260604004238",
+              "start": 682,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 853,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 839,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 1074,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 1060,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 1386,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 1372,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 1694,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 1680,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 2016,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 2002,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 2328,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 2314,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 2636,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 2622,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 3837,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 3823,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 3990,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 3976,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 4816,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 4802,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 6602,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 6588,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 7341,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 7327,
+              "type": "sensitive_output"
+            },
+            {
+              "domain": "financial",
+              "end": 7494,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 7480,
+              "type": "sensitive_output"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear LACE detect\u00f3 1 se\u00f1ales cr\u00edticas.",
+          "risk_score": 100,
+          "severity": "CRITICAL"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear LACE detect\u00f3 1 se\u00f1ales cr\u00edticas.",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 100.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-4966963834",
+        "severity": "CRITICAL",
+        "stage": "output",
+        "timestamp": "2026-06-04T00:51:50Z",
+        "toolName": null,
+        "transport": "import",
+        "userId": "local"
+      },
+      "cyberlace_tool": {
+        "action": "MONITOR",
+        "agentId": "control-plane-worker",
+        "allowed": true,
+        "blocksRuntime": false,
+        "enabled": true,
+        "error": null,
+        "eventId": "cyberlace_d2048fab950c49e4a8b458912221757a",
+        "evidence": [
+          {
+            "domain": "financial",
+            "end": 245,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 231,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 310,
+            "pattern": "credit_card_like",
+            "sample": "20260604004238",
+            "start": 296,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 615,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 601,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 775,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 761,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 1187,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 1173,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 2648,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 2634,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 2684,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 2670,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 3192,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 3178,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8448,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 8434,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 8606,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 8592,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 9906,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 9892,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 10069,
+            "pattern": "credit_card_like",
+            "sample": "20260604000030",
+            "start": 10055,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 10111,
+            "pattern": "credit_card_like",
+            "sample": "20260604004238",
+            "start": 10097,
+            "type": "sensitive_data_in_tool_args"
+          },
+          {
+            "domain": "financial",
+            "end": 10187,
+            "pattern": "credit_card_like",
+            "sample": "20260604004238",
+            "start": 10173,
+            "type": "sensitive_data_in_tool_args"
+          }
+        ],
+        "mode": "monitor",
+        "modified_payload": null,
+        "ok": true,
+        "policyMatches": [],
+        "rawDecision": {
+          "action": "MONITOR",
+          "allowed": true,
+          "category": "semantic_firewall",
+          "confidence": 0.75,
+          "evidence": [
+            {
+              "domain": "financial",
+              "end": 245,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 231,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 310,
+              "pattern": "credit_card_like",
+              "sample": "20260604004238",
+              "start": 296,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 615,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 601,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 775,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 761,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 1187,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 1173,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 2648,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 2634,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 2684,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 2670,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 3192,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 3178,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8448,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 8434,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 8606,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 8592,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 9906,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 9892,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 10069,
+              "pattern": "credit_card_like",
+              "sample": "20260604000030",
+              "start": 10055,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 10111,
+              "pattern": "credit_card_like",
+              "sample": "20260604004238",
+              "start": 10097,
+              "type": "sensitive_data_in_tool_args"
+            },
+            {
+              "domain": "financial",
+              "end": 10187,
+              "pattern": "credit_card_like",
+              "sample": "20260604004238",
+              "start": 10173,
+              "type": "sensitive_data_in_tool_args"
+            }
+          ],
+          "modified_payload": null,
+          "policy_matches": [],
+          "reason": "Modo monitor: se registra riesgo sin bloquear",
+          "risk_score": 50,
+          "severity": "MEDIUM"
+        },
+        "reason": "Modo monitor: se registra riesgo sin bloquear",
+        "recommendedAction": "MONITOR",
+        "recordType": "decision",
+        "redactsPayload": false,
+        "requiresHumanReview": false,
+        "riskScore": 50.0,
+        "runtimeAction": "ALLOW",
+        "sessionId": "agent-4966963834",
+        "severity": "MEDIUM",
+        "stage": "tool",
+        "timestamp": "2026-06-04T00:43:37Z",
+        "toolName": "codex_worker",
+        "transport": "import",
+        "userId": "local"
+      },
+      "postflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/artifacts/tool_invocations/RUNTIME-20260604004238-001-postflight-20260604T005152Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:51:50Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "postflight",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:51:51Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "postflight",
+        "projectSlug": "sesion-20260604000030",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260604004238-001",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-06-04T00:51:52Z",
+        "warnings": [
+          "postflight:integrity timed out; continuing",
+          "postflight:findings timed out; continuing"
+        ]
+      },
+      "preflight": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/artifacts/tool_invocations/RUNTIME-20260604004238-001-preflight-20260604T004336Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": null,
+            "ok": true,
+            "phase": "preflight",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 200,
+            "summary": {
+              "observer": {
+                "activeProjectSlug": "",
+                "enabled": false,
+                "incident": {
+                  "counters": {
+                    "repeatedEvents": 0,
+                    "ticks": 5,
+                    "timeouts": 0
+                  },
+                  "deadlineAt": "2026-06-04T00:30:12.244213Z",
+                  "incidentId": "OBS-20260604-002712-dd194e8b",
+                  "phase": "inspecting",
+                  "projectSlug": "sesion-20260604000030",
+                  "rootCause": "visual_observation",
+                  "status": "open",
+                  "stopReason": "",
+                  "trigger": "sync_file"
+                },
+                "state": "observing_code"
+              },
+              "ok": true,
+              "statusCode": 200
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": false,
+            "timestamp": "2026-06-04T00:43:33Z",
+            "tool": "observer-status"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:43:34Z",
+            "tool": "integrity"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "preflight",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:43:35Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "preflight",
+        "projectSlug": "sesion-20260604000030",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260604004238-001",
+        "timestamp": "2026-06-04T00:43:36Z",
+        "warnings": [
+          "preflight:integrity timed out; continuing",
+          "preflight:findings timed out; continuing"
+        ]
+      },
+      "recovery_preview": null,
+      "task_completion_gate": {
+        "activeFindings": 0,
+        "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/artifacts/tool_invocations/RUNTIME-20260604004238-001-task_completion_gate-20260604T005155Z.json",
+        "blockers": [],
+        "closureAllowed": true,
+        "invocations": [
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "task_completion_gate",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:51:52Z",
+            "tool": "scanner"
+          },
+          {
+            "artifactPath": null,
+            "dryRun": false,
+            "error": "timeout",
+            "ok": false,
+            "phase": "task_completion_gate",
+            "projectSlug": "sesion-20260604000030",
+            "required": false,
+            "schema_version": 1,
+            "statusCode": 0,
+            "summary": {
+              "error": "timeout",
+              "message": "timed out",
+              "ok": false,
+              "statusCode": 0
+            },
+            "taskId": "RUNTIME-20260604004238-001",
+            "timedOut": true,
+            "timestamp": "2026-06-04T00:51:53Z",
+            "tool": "findings"
+          }
+        ],
+        "phase": "task_completion_gate",
+        "projectSlug": "sesion-20260604000030",
+        "schema_version": 1,
+        "taskId": "RUNTIME-20260604004238-001",
+        "taskResult": {
+          "blocker_count": 0,
+          "completed": true,
+          "validation_passed": true
+        },
+        "timestamp": "2026-06-04T00:51:55Z",
+        "warnings": [
+          "task_completion_gate:scanner timed out; continuing",
+          "task_completion_gate:findings timed out; continuing"
+        ]
+      }
+    },
+    "validation": {
+      "commands": [
+        {
+          "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+          "duration_seconds": 0.06991,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "-c",
+              "from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-06-04T00:51:47Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030"
+          },
+          "stderr": "",
+          "stdout": "",
+          "timed_out": false
+        },
+        {
+          "command": "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day",
+          "duration_seconds": 3.04452,
+          "normalized_command": [
+            "python3",
+            "-B",
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+            "--workspace",
+            ".",
+            "--frontend",
+            "frontend",
+            "--mode",
+            "smoke",
+            "--light",
+            "day"
+          ],
+          "returncode": 0,
+          "security_blocked": false,
+          "security_decision": {
+            "category": "test_or_build",
+            "command": [
+              "python3",
+              "-B",
+              "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py",
+              "--workspace",
+              ".",
+              "--frontend",
+              "frontend",
+              "--mode",
+              "smoke",
+              "--light",
+              "day"
+            ],
+            "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030",
+            "decision": "allow",
+            "reason": "Matched risk category: test_or_build",
+            "recorded_at": "2026-06-04T00:51:47Z",
+            "risk_level": "low",
+            "schema_version": 1,
+            "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030"
+          },
+          "stderr": "",
+          "stdout": "{\n  \"ok\": true,\n  \"blockers\": [],\n  \"dom\": {\n    \"render_mode\": \"webgl\",\n    \"distance_text\": \"0 m\",\n    \"speed_text\": \"48 m/s\",\n    \"event_text\": \"piloto neural listo\"\n  },\n  \"screenshot\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/artifacts/browser_render_smoke.png\",\n  \"metrics\": {\n    \"width\": 1280,\n    \"height\": 720,\n    \"mean_rgb\": [\n      82.09,\n      128.67,\n      142.65\n    ],\n    \"non_dark_ratio\": 0.987,\n    \"bright_ratio\": 0.7554,\n    \"central_non_dark_ratio\": 0.9956,\n    \"central_bright_ratio\": 0.6308\n  },\n  \"browser_stderr_tail\": [\n    \"[1796737:1796737:0603/175148.385060:ERROR:gpu/command_buffer/service/gles2_cmd_decoder_passthrough.cc:1076] [GroupMarkerNotSet(crbug.com/242999)!:37BC002B60A0]Automatic fallback to software WebGL has been deprecated. Please use the --enable-unsafe-swiftshader (about:flags#enable-unsafe-swiftshader) flag to opt in to lower security guarantees for trusted content.\",\n    \"[1796737:1796737:0603/175148.415114:ERROR:gpu/command_buffer/service/gl_utils.cc:430] [.WebGL-0x584000f0e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[1796737:1796737:0603/175148.513072:ERROR:gpu/command_buffer/service/gl_utils.cc:430] [.WebGL-0x584000f0e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[1796737:1796737:0603/175148.571363:ERROR:gpu/command_buffer/service/gl_utils.cc:430] [.WebGL-0x584000f0e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels\",\n    \"[1796737:1796737:0603/175148.651482:ERROR:gpu/command_buffer/service/gl_utils.cc:430] [.WebGL-0x584000f0e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)\",\n    \"67641 bytes written to file /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/artifacts/browser_render_smoke.png\"\n  ]\n}\n",
+          "timed_out": false
+        }
+      ],
+      "evidence": {
+        "blockers": [],
+        "expected_files": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/index.html",
+            "size": 2039
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/styles.css",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/styles.css",
+            "size": 4084
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/app.js",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/app.js",
+            "size": 17103
+          }
+        ],
+        "found": [
+          "frontend/index.html",
+          "frontend/styles.css",
+          "frontend/app.js"
+        ],
+        "missing": [],
+        "records": [
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/index.html",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/index.html",
+            "size": 2039
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/styles.css",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/styles.css",
+            "size": 4084
+          },
+          {
+            "exists": true,
+            "is_file": true,
+            "path": "frontend/app.js",
+            "reported_created": false,
+            "reported_modified": false,
+            "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/frontend/app.js",
+            "size": 17103
+          }
+        ],
+        "reported_created": [],
+        "reported_modified": [],
+        "reported_outside_expected": []
+      },
+      "task_id": "RUNTIME-20260604004238-001",
+      "validation_passed": true,
+      "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030"
+    }
+  }
+}

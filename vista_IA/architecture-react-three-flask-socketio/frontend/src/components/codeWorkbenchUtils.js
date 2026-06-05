@@ -17,7 +17,7 @@ export const PREFERRED_FILES = [
   "README.md",
 ];
 
-export const ACTIVE_RUNTIME_STATUSES = new Set(["queued", "starting", "running"]);
+export const ACTIVE_RUNTIME_STATUSES = new Set(["queued", "preparing", "starting", "running"]);
 export const LIVE_WRITER_INTERVAL_MS = 8;
 export const LIVE_WRITER_TARGET_FRAMES = 80;
 export const LIVE_WRITER_MIN_CHARS_PER_FRAME = 24;

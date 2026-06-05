@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-06-04T01:49:21Z",
+  "task_id": "RUNTIME-20260604014622-001",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001",
+  "project_file_count": 2,
+  "prompt_word_count": 33,
+  "score": 34,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 3,
+  "session_required_lace_cycles": 4,
+  "worker_lace_scope": "registrar solo el ciclo acotado de esta tarea; no consumir todos los ciclos de la sesion",
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido",
+    "fifo_ordering",
+    "worker_retries",
+    "control_plane_ownership"
+  ],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 33 palabras",
+    "toca runtime/estado persistido",
+    "requiere evidencia auditable",
+    "la cola FIFO debe ser persistente y reanudable",
+    "la tarea dependiente permanece pendiente hasta completar esta evidencia"
+  ],
+  "confidence": 88,
+  "quality_threshold": 85,
+  "estimated_minutes": 45,
+  "queue_design": {
+    "name": "persistent_fifo_task_queue",
+    "purpose": "Mantener una sesion con multiples tareas pequenas, verificables, persistentes y reanudables.",
+    "storage": {
+      "path": "runtime/task_queue.json",
+      "format": "json_array_of_tasks",
+      "owner": "control_plane",
+      "worker_rule": "El worker puede leer contexto, pero no escribir la cola ni marcar completado."
+    },
+    "task_identity": {
+      "required_fields": [
+        "id",
+        "title",
+        "goal",
+        "status",
+        "priority",
+        "dependencies",
+        "expected_files",
+        "validation_commands",
+        "timeout_seconds",
+        "max_retries",
+        "mode",
+        "checkpoint_key"
+      ],
+      "recommended_persistent_fields": [
+        "sequence",
+        "created_at",
+        "updated_at",
+        "attempts",
+        "last_error",
+        "worker_id",
+        "started_at",
+        "completed_at"
+      ]
+    },
+    "states": {
+      "pending": "Lista para ser seleccionada cuando sus dependencias esten completed.",
+      "running": "Asignada a un worker propio con timeout y attempt activos.",
+      "completed": "Validada con evidencia real en disco y comandos declarados en verde.",
+      "failed": "Bloqueada o agotada con causa registrada y retry por tarea."
+    },
+    "fifo_selection": {
+      "eligible_filter": "status == pending y todas las dependencies estan completed",
+      "sort_order": [
+        "sequence ascending",
+        "created_at ascending",
+        "id ascending as deterministic fallback"
+      ],
+      "dispatch_rule": "Lanzar exactamente un worker para la primera tarea elegible.",
+      "priority_note": "priority puede ordenar lotes de planificacion, pero dentro del mismo nivel la seleccion debe conservar FIFO."
+    },
+    "retry_model": {
+      "scope": "task",
+      "rule": "Si running falla y attempts < max_retries, recovery registra causa y devuelve la tarea a pending conservando sequence original.",
+      "terminal_failure": "Si attempts >= max_retries, estado failed y no se reordena automaticamente.",
+      "process_shutdown": "Si terminate() no cierra el worker, ejecutar kill() y registrar evidencia."
+    },
+    "completion_gate": {
+      "required_evidence": [
+        "expected_files existen bajo la raiz del repositorio",
+        "validation_commands ejecutados con return code 0",
+        "TaskResult.completed true",
+        "TaskResult.blockers vacio",
+        "files_created/files_modified declarados",
+        "validation_ran y validation_passed declarados"
+      ],
+      "forbidden_shortcuts": [
+        "inferir smoke por palabras sueltas",
+        "contar progreso sin evidencia en disco",
+        "cerrar una tarea escribiendo manualmente project_state o task_history desde el worker"
+      ]
+    }
+  },
+  "validation_plan": {
+    "declared_command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+    "additional_local_checks": [
+      "python3 -m json.tool runtime/complexity_audit.json",
+      "python3 -m json.tool runtime/complexity_estimate.json"
+    ],
+    "tooling_note": "orchestrator/agent_tools.py no existe en este workspace; no se simula salida de findings/integrity/scanner."
+  },
+  "complexity_audit_summary": {
+    "audit_version": "fifo-persistent-queue-design-audit-v1",
+    "complexity_score": 34,
+    "confidence": 88,
+    "lace_target_cycles": 4,
+    "early_exit_allowed": false,
+    "required_tools": [
+      "findings",
+      "integrity",
+      "scanner"
+    ],
+    "primary_risk": "estado_persistido"
+  }
+}

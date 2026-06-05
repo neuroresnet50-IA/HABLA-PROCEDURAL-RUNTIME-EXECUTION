@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-05-27T02:24:54Z",
+  "taskId": "HARNESS-AUTOPILOT-PERSISTENT-RUNS-20260527",
+  "status": "completed_validated",
+  "summary": "Se implemento memoria persistente/reanudable para runs de CyberLACE autopilot y se identifico el E2E gate principal del repo.",
+  "filesCreated": [
+    "backend/test_harness_autopilot_persistence.py",
+    "runtime/checkpoints/harness-autopilot-persistent-runs-20260527T022454Z.json"
+  ],
+  "filesModified": [
+    "backend/app.py",
+    "runtime/task_history.jsonl",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "features": [
+    "Persistencia de run en runtime/cyberlace/training_runs/<run_id>.json",
+    "Eventos append-only en runtime/cyberlace/training_runs/<run_id>.jsonl",
+    "Recuperacion de runs activos sin memoria como interrupted/resumable",
+    "Endpoint POST /api/harness/training/autopilot-resume/<run_id>",
+    "Gate HTTP 409 training_run_active para evitar campanas activas simultaneas"
+  ],
+  "validation": [
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/test_harness_autopilot_persistence.py",
+      "ok": true
+    },
+    {
+      "command": "python3 -m unittest backend.test_harness_autopilot_persistence",
+      "ok": true,
+      "tests": 2
+    },
+    {
+      "command": "env OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true,
+      "backendPid": 43538
+    },
+    {
+      "command": "GET http://127.0.0.1:5001/api/health",
+      "ok": true,
+      "statusCode": 200
+    },
+    {
+      "command": "GET http://127.0.0.1:5001/api/harness/training/summary",
+      "ok": true,
+      "statusCode": 200,
+      "hasRunsKey": true
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "ok": true,
+      "statusCode": 200
+    }
+  ],
+  "e2eIdentified": {
+    "primary": "orchestrator/e2e_gate_harness.py",
+    "latestReport": "runtime/e2e_gate_harness/latest.json",
+    "latestReportPath": "runtime/e2e_gate_harness/e2e-gate-harness-sesion-20260518014728-jeego-en-3d-20260525T032247Z.json",
+    "latestPassed": true,
+    "nodesPassed": 15,
+    "nodesFailed": 0
+  },
+  "blockers": [],
+  "resumePoint": "Para ejecutar el E2E gate: python3 orchestrator/e2e_gate_harness.py --workspace . --project sesion-20260518014728-jeego-en-3d --base-url http://127.0.0.1:5001 --cycles 1 --fail-fast --verbose"
+}

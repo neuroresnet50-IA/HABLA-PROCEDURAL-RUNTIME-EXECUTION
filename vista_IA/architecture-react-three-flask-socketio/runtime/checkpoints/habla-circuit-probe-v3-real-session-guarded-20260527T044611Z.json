@@ -1,0 +1,122 @@
+{
+  "checkpoint": "habla-circuit-probe-v3-real-session-guarded",
+  "createdAt": "2026-05-27T04:46:11Z",
+  "status": "completed",
+  "userRequest": "El usuario pidio que el prompt viaje realmente por el sistema operativo interno y que el testeador mida todo: modulos tocados, llamadas, estados, latencias, respuestas y evidencia.",
+  "implementation": {
+    "name": "Prompt Flight real_session_guarded",
+    "mode": "real_session_guarded",
+    "flow": [
+      "prompt_received",
+      "habla_basic_envelope",
+      "cyberlace_preflight",
+      "policy_loaded",
+      "plan_loaded",
+      "prompt_classified",
+      "task_planned",
+      "real_session_bootstrap",
+      "task_queue_persisted",
+      "directive_generated",
+      "worker_executed",
+      "validator_passed",
+      "history_written",
+      "checkpoint_written",
+      "response_synthesized"
+    ],
+    "guardrail": "Solo escribe en proyectos continuity-* o prompt-flight-*; procesa el prompt dentro de worker sandbox como respuesta auditable, no como codigo arbitrario.",
+    "backendEndpoint": "POST /api/continuity-probe/prompt-flight",
+    "cliCommand": "python3 orchestrator/agent_tools.py prompt-flight --mode real_session_guarded",
+    "guiCommand": "python3 tools/habla_circuit_probe_tk.py"
+  },
+  "liveRun": {
+    "traceId": "prompt-flight-20260527T044433Z",
+    "result": "prompt_flight_ok",
+    "summary": {
+      "blocked": 0,
+      "failed": 0,
+      "ok": 18,
+      "skipped": 1,
+      "total": 19
+    },
+    "reportPath": "runtime/continuity_probe/prompt-flight-20260527T044433Z/prompt_flight_report.json",
+    "runtimeResponsePath": "workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+    "latenciesMs": {
+      "prompt_received": 0.836,
+      "habla_basic_envelope": 0.881,
+      "cyberlace_preflight": 3.601,
+      "policy_loaded": 1.973,
+      "plan_loaded": 12.491,
+      "prompt_classified": 0.553,
+      "task_planned": 0.477,
+      "backend_health": 54.248,
+      "observer_status": 2.626,
+      "harness_summary": 109.931,
+      "safe_canary_continuity": 0.0,
+      "real_session_bootstrap": 4.956,
+      "task_queue_persisted": 2.076,
+      "directive_generated": 29.052,
+      "worker_executed": 165.938,
+      "validator_passed": 62.895,
+      "history_written": 1.993,
+      "checkpoint_written": 6.723,
+      "response_synthesized": 3.709
+    }
+  },
+  "filesCreated": [
+    "orchestrator/prompt_flight_probe.py",
+    "runtime/continuity_probe/prompt-flight-20260527T044433Z/prompt_flight_report.json",
+    "runtime/continuity_probe/prompt-flight-20260527T044433Z/real_session_validation.json",
+    "workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+    "workspace/projects/continuity-probe-canary/runtime/directives/PROMPT-REAL-20260527T044433Z-20260527T044433Z-ba8a8e3c78e0.json",
+    "workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T044433Z.json"
+  ],
+  "filesModified": [
+    "orchestrator/continuity_probe.py",
+    "orchestrator/agent_tools.py",
+    "tools/habla_circuit_probe_tk.py",
+    "backend/test_continuity_probe.py",
+    "workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+    "workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+    "workspace/projects/continuity-probe-canary/runtime/project_state.json",
+    "runtime/task_history.jsonl",
+    "recuperacioncontexto.md",
+    "ULTIMO_CONTEXTO_CODEX.md"
+  ],
+  "validations": [
+    {
+      "command": "python3 -B -m py_compile orchestrator/continuity_probe.py orchestrator/prompt_flight_probe.py backend/app.py orchestrator/agent_tools.py tools/habla_circuit_probe_tk.py backend/test_continuity_probe.py",
+      "ok": true,
+      "result": "Compilacion Python OK"
+    },
+    {
+      "command": "python3 -m unittest backend.test_continuity_probe",
+      "ok": true,
+      "result": "5 tests OK"
+    },
+    {
+      "command": "env OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true,
+      "result": "Backend reiniciado; PID 97758; URL http://127.0.0.1:5001/"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py health",
+      "ok": true,
+      "result": "statusCode=200; service=HABLA Observer IA"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --timeout-seconds 160 prompt-flight --mode real_session_guarded --project continuity-probe-canary --prompt \"Crear una respuesta canaria real desde este prompt HABLA BASIC y medir todo el viaje interno por task_queue, directive_generator, executor, worker, validator, history y checkpoint.\"",
+      "ok": true,
+      "result": "traceId=prompt-flight-20260527T044433Z; result=prompt_flight_ok; ok=18 skipped=1 failed=0 blocked=0 total=19"
+    },
+    {
+      "command": "./start.sh status",
+      "ok": true,
+      "result": "Backend activo; PID 97758"
+    }
+  ],
+  "knownLimits": [
+    "El modo real_session_guarded no ejecuta prompts arbitrarios como comandos libres; convierte el prompt en una tarea real guardada y produce respuesta/evidencia dentro del worker sandbox.",
+    "La ejecucion destructiva o modificacion abierta de proyectos reales sigue fuera de alcance hasta definir permisos humanos, rollback y allowlist mas amplia."
+  ],
+  "nextExactStep": "Usar real_session_guarded desde Tkinter o CLI para medir prompts reales dentro del runtime guardado."
+}

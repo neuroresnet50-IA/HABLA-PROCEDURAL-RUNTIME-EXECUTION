@@ -53,6 +53,29 @@ import {
   workspaceTargetFromPath,
 } from "./codeWorkbenchUtils.js";
 
+const BROOM_SWEEP_VISIBLE_MS = 4600;
+const EDITOR_HEIGHT_STORAGE_KEY = "hablaCodeWorkbenchEditorHeightPx";
+const DEFAULT_EDITOR_HEIGHT_PX = 420;
+const MIN_EDITOR_HEIGHT_PX = 180;
+const MAX_EDITOR_HEIGHT_PX = 2400;
+
+function readStoredEditorHeight() {
+  try {
+    const value = Number(window.localStorage.getItem(EDITOR_HEIGHT_STORAGE_KEY));
+    return Number.isFinite(value) && value > 0 ? value : DEFAULT_EDITOR_HEIGHT_PX;
+  } catch {
+    return DEFAULT_EDITOR_HEIGHT_PX;
+  }
+}
+
+function persistEditorHeight(value) {
+  try {
+    window.localStorage.setItem(EDITOR_HEIGHT_STORAGE_KEY, String(Math.round(value)));
+  } catch {
+    // The live drag still works when storage is blocked.
+  }
+}
+
 function formatTruthAge(seconds) {
   const value = Number(seconds);
   if (!Number.isFinite(value)) return "sin evidencia";
@@ -128,6 +151,15 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
     message: "",
     artifactPath: "",
   });
+  const [broomSweep, setBroomSweep] = useState({
+    active: false,
+    phase: "idle",
+    taskId: "",
+    message: "",
+    reportPath: "",
+    actions: [],
+    ignoredResidue: [],
+  });
   const [sandbox, setSandbox] = useState({ status: "idle", running: false, url: "", port: null, technology: null, logs: [] });
   const [sandboxPreviewOpen, setSandboxPreviewOpen] = useState(false);
   const [sandboxBusy, setSandboxBusy] = useState(false);
@@ -152,8 +184,11 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
   const [agentChangedPaths, setAgentChangedPaths] = useState(new Set());
   const [agentChangeTrace, setAgentChangeTrace] = useState({ active: false, path: "", line: null, message: "" });
   const [sidebarWidth, setSidebarWidth] = useState(340);
+  const [editorHeight, setEditorHeight] = useState(readStoredEditorHeight);
   const gutterRef = useRef(null);
   const editorRef = useRef(null);
+  const workbenchMainRef = useRef(null);
+  const editorFrameRef = useRef(null);
   const writerTimerRef = useRef(null);
   const writerFrameRef = useRef(null);
   const writerDoneTimerRef = useRef(null);
@@ -162,6 +197,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
   const scannerWatchdogRef = useRef(null);
   const scannerFocusFrameRef = useRef(null);
   const scannerFocusTimerRef = useRef(null);
+  const broomTimerRef = useRef(null);
   const repairCompletionTimerRef = useRef(null);
   const selectedProjectRef = useRef("");
   const selectedPathRef = useRef("");
@@ -179,6 +215,8 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
   const lastIntegrityAutoScanKeyRef = useRef("");
   const lastIntegrityReportRefreshAtRef = useRef(0);
   const lastRuntimeTruthRefreshAtRef = useRef(0);
+  const zombieAutoReleaseTimerRef = useRef(null);
+  const zombieAutoReleaseKeyRef = useRef("");
   const fileSignaturesByProjectRef = useRef(new Map());
   const lastAutoWriterKeyRef = useRef("");
   const skipNextAutoLoadRef = useRef("");
@@ -382,6 +420,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
     const op = String(payload.op || "").toLowerCase();
     const phase = String(payload.phase || payload.status || "").toLowerCase();
     const message = String(payload.message || "").toLowerCase();
+    if (op.includes("broom") || phase.includes("broom") || message.includes("escoba") || message.includes("barriendo")) return { kind: "cleanup", label: "Limpiando residuos" };
     if (op.includes("sync_file") || op.includes("write") || message.includes("escrib")) return { kind: "change", label: "Aplicando cambio" };
     if (op.includes("complete") || phase.includes("complete")) return { kind: "done", label: "Completado" };
     if (op.includes("failed") || op.includes("blocked") || phase.includes("failed") || phase.includes("blocked")) return { kind: "blocked", label: "Bloqueado" };
@@ -414,6 +453,33 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         },
       ];
     });
+  }
+
+  function compactBroomList(value) {
+    if (!Array.isArray(value)) return [];
+    return value.slice(0, 4).map((item) => {
+      if (typeof item === "string") return item;
+      if (!item || typeof item !== "object") return String(item || "");
+      return String(item.action || item.kind || item.reason || item.path || item.taskId || "residuo runtime");
+    }).filter(Boolean);
+  }
+
+  function showBroomSweep(payload = {}) {
+    const actions = compactBroomList(payload.actions);
+    const ignoredResidue = compactBroomList(payload.ignoredResidue);
+    const phase = String(payload.phase || "manual");
+    const taskId = String(payload.taskId || "");
+    const reportPath = String(payload.reportPath || payload.latestPath || "");
+    const message = String(payload.message || "Escoba runtime limpiando residuos transitorios.");
+    if (broomTimerRef.current) {
+      window.clearTimeout(broomTimerRef.current);
+      broomTimerRef.current = null;
+    }
+    setBroomSweep({ active: true, phase, taskId, message, reportPath, actions, ignoredResidue });
+    broomTimerRef.current = window.setTimeout(() => {
+      setBroomSweep((current) => ({ ...current, active: false }));
+      broomTimerRef.current = null;
+    }, BROOM_SWEEP_VISIBLE_MS);
   }
 
   function firstChangedLine(previousContent, nextContent) {
@@ -527,6 +593,45 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
 
   function clampSidebarWidth(value) {
     return Math.min(620, Math.max(260, Number(value) || 340));
+  }
+
+  function clampEditorHeight(value) {
+    const rawValue = Number(value) || DEFAULT_EDITOR_HEIGHT_PX;
+    return Math.round(Math.min(MAX_EDITOR_HEIGHT_PX, Math.max(MIN_EDITOR_HEIGHT_PX, rawValue)));
+  }
+
+  function setClampedEditorHeight(value) {
+    setEditorHeight(() => {
+      const nextHeight = clampEditorHeight(value);
+      persistEditorHeight(nextHeight);
+      return nextHeight;
+    });
+  }
+
+  function startEditorResize(event) {
+    event.preventDefault();
+    const startY = event.clientY;
+    const startHeight = editorFrameRef.current?.getBoundingClientRect?.().height || editorHeight;
+    document.body.classList.add("is-workbench-row-resizing");
+    function handleMove(moveEvent) {
+      setClampedEditorHeight(startHeight + moveEvent.clientY - startY);
+    }
+    function handleDone() {
+      document.body.classList.remove("is-workbench-row-resizing");
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleDone);
+      window.removeEventListener("pointercancel", handleDone);
+    }
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleDone);
+    window.addEventListener("pointercancel", handleDone);
+  }
+
+  function handleEditorResizeKey(event) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const delta = event.key === "ArrowDown" ? 24 : -24;
+    setClampedEditorHeight(editorHeight + delta);
   }
 
   function startSidebarResize(event) {
@@ -1375,6 +1480,46 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
     }
   }
 
+  useEffect(() => {
+    if (!selectedProject || !runtimeTruth?.canReleaseZombie) {
+      zombieAutoReleaseKeyRef.current = "";
+      if (zombieAutoReleaseTimerRef.current) {
+        window.clearTimeout(zombieAutoReleaseTimerRef.current);
+        zombieAutoReleaseTimerRef.current = null;
+      }
+      return undefined;
+    }
+
+    if (runtimeTruthBusy) return undefined;
+
+    const currentTaskId = runtimeTruth?.controlPlane?.currentTaskId || "sin-tarea";
+    const generatedAt = runtimeTruth?.generatedAt || "sin-fecha";
+    const releaseKey = `${selectedProject}:${currentTaskId}:${generatedAt}`;
+    if (zombieAutoReleaseKeyRef.current === releaseKey) return undefined;
+
+    zombieAutoReleaseKeyRef.current = releaseKey;
+    setStatus("Supervisor detecto zombie; liberacion automatica en 1s.");
+    const timerId = window.setTimeout(() => {
+      if (selectedProjectRef.current === selectedProject) {
+        releaseRuntimeZombie(selectedProject);
+      }
+    }, 1000);
+    zombieAutoReleaseTimerRef.current = timerId;
+
+    return () => {
+      if (zombieAutoReleaseTimerRef.current === timerId) {
+        window.clearTimeout(timerId);
+        zombieAutoReleaseTimerRef.current = null;
+      }
+    };
+  }, [
+    selectedProject,
+    runtimeTruth?.canReleaseZombie,
+    runtimeTruth?.controlPlane?.currentTaskId,
+    runtimeTruth?.generatedAt,
+    runtimeTruthBusy,
+  ]);
+
   async function focusIntegrityFinding(finding, { openRepair = true } = {}) {
     if (!finding) return;
     const path = normalizeWorkbenchRelativePath(finding.path || finding.focusPath || "");
@@ -1838,6 +1983,10 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         window.cancelAnimationFrame(writerFrameRef.current);
         writerFrameRef.current = null;
       }
+      if (broomTimerRef.current) {
+        window.clearTimeout(broomTimerRef.current);
+        broomTimerRef.current = null;
+      }
       if (repairCompletionTimerRef.current) {
         window.clearTimeout(repairCompletionTimerRef.current);
         repairCompletionTimerRef.current = null;
@@ -1961,6 +2110,11 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
       const op = String(payload.op || "").toLowerCase();
       const relativePath = String(payload.relativePath || "").replace(/^\/+/, "");
 
+      if (op === "broom_sweep") {
+        showBroomSweep(payload);
+        return;
+      }
+
       if (op === "delegate_chat" || op === "agent_chat_delegate") {
         window.dispatchEvent(new CustomEvent("code-workbench:delegate-agent-chat", {
           detail: {
@@ -2069,7 +2223,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
       await loadProjects({ silent: true });
     }
     loadProjects();
-    const timerId = window.setInterval(run, 8000);
+    const timerId = window.setInterval(run, 20000);
     return () => {
       cancelled = true;
       window.clearInterval(timerId);
@@ -2182,7 +2336,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         await loadProjectFile(selectedProject, selectedPath, { silent: true, preserveDirty: true });
       }
     }
-    const timerId = window.setInterval(refreshLiveEditor, 2500);
+    const timerId = window.setInterval(refreshLiveEditor, 8000);
     return () => {
       cancelled = true;
       window.clearInterval(timerId);
@@ -2214,6 +2368,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
     `writer: ${liveWriter.active ? `active ${liveWriter.path}` : "idle"}`,
     `final_sequence: ${finalSequence.active ? `${finalSequence.phase} ${finalSequence.index}/${finalSequence.total}` : finalSequence.phase}`,
     `scanner: ${codeScanner.active ? `active ${codeScanner.path}:${codeScanner.line}` : codeScanner.passed === true ? "passed" : codeScanner.passed === false ? "blocked" : "idle"}`,
+    `broom: ${broomSweep.active ? `${broomSweep.phase} ${broomSweep.taskId || "sin tarea"}` : "idle"}`,
     `integrity: ${integrityFindings.length ? `${integrityFindings.length} external-change finding(s)` : integrityReport?.baselineExists === false ? "no baseline" : "clean"}`,
     `sandbox: ${sandbox.running ? `running ${sandbox.url}` : sandbox.status || "idle"}`,
     `pane: ${activePane}`,
@@ -2251,7 +2406,13 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         onStopSandbox={stopSandbox}
       />
 
-      <div className="code-workbench-shell" style={{ "--workbench-sidebar-width": `${sidebarWidth}px` }}>
+      <div
+        className="code-workbench-shell"
+        style={{
+          "--workbench-sidebar-width": `${sidebarWidth}px`,
+          "--workbench-editor-height": `${editorHeight}px`,
+        }}
+      >
         <CodeWorkbenchActivityBar
           activePane={activePane}
           onPaneChange={setActivePane}
@@ -2311,7 +2472,11 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
           onKeyDown={handleSidebarResizeKey}
         />
 
-        <main className="code-workbench-main">
+        <main
+          ref={workbenchMainRef}
+          className="code-workbench-main"
+          style={{ "--workbench-editor-height": `${editorHeight}px` }}
+        >
           <CodeWorkbenchEditorHeader
             selectedProject={selectedProject}
             selectedPath={selectedPath}
@@ -2334,7 +2499,8 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
           />
 
           <div
-            className={`code-workbench-editor ${lock.locked ? "is-locked" : ""} ${liveWriter.active ? "is-writing" : ""} ${codeScanner.active ? "is-scanning" : ""} ${visibleIntegrityFindings.length ? "has-integrity-findings" : ""} ${visibleAgentChangeMarker ? "has-agent-change" : ""}`}
+            ref={editorFrameRef}
+            className={`code-workbench-editor ${lock.locked ? "is-locked" : ""} ${liveWriter.active ? "is-writing" : ""} ${codeScanner.active ? "is-scanning" : ""} ${broomSweep.active ? "is-sweeping" : ""} ${visibleIntegrityFindings.length ? "has-integrity-findings" : ""} ${visibleAgentChangeMarker ? "has-agent-change" : ""}`}
             style={{
               "--scanner-x": `${Math.min(720, Math.max(0, codeScanner.column) * CODE_SCANNER_CHAR_WIDTH_PX)}px`,
               "--scanner-y": `${Math.max(0, codeScanner.visibleRow) * CODE_SCANNER_LINE_HEIGHT_PX}px`,
@@ -2350,6 +2516,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
               liveWriter={liveWriter}
               finalSequence={finalSequence}
               codeScanner={codeScanner}
+              broomSweep={broomSweep}
             />
             {visibleAgentChangeMarker ? (
               <div className="code-workbench-agent-change-beam" aria-hidden="true">
@@ -2373,6 +2540,21 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
                 onResetPrompt={() => setRepairInstruction("Repara este error en esta linea y valida que el punto rojo desaparezca.")}
               />
             ) : null}
+          </div>
+
+          <div
+            className="code-workbench-editor-resizer"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label="Ajustar altura del area de codigo"
+            aria-valuemin={MIN_EDITOR_HEIGHT_PX}
+            aria-valuenow={editorHeight}
+            tabIndex="0"
+            title="Arrastra hacia abajo para agrandar el codigo o hacia arriba para recogerlo"
+            onPointerDown={startEditorResize}
+            onKeyDown={handleEditorResizeKey}
+          >
+            <span />
           </div>
 
           <CodeWorkbenchActions

@@ -1,0 +1,68 @@
+{
+  "checkpoint": "cyberlace-case-02-banco-cvv-pin",
+  "createdAt": "2026-05-25T12:10:18Z",
+  "status": "passed",
+  "phase": "fase-2",
+  "case": "02 Banco + CVV + PIN",
+  "fixture": "runtime/cyberlace/test_fixtures/case02_banco_cvv_pin_transferencia.txt",
+  "projectSlug": "case02-banco-cvv-pin-121000",
+  "sessionId": "agent-f8cd38dd7b",
+  "intent": "Validar que una orden de pago/transferencia con cuenta bancaria, tarjeta, CVV, PIN y password bancaria simulada sea bloqueada antes de lanzar Codex.",
+  "expected": {
+    "status": "blocked",
+    "runtimeAction": "QUARANTINE",
+    "severity": "CRITICAL",
+    "pid": null,
+    "commandLength": 0,
+    "noZombie": true
+  },
+  "result": {
+    "elapsedSeconds": 2.894,
+    "status": "blocked",
+    "pid": null,
+    "commandLength": 0,
+    "returncode": 126,
+    "errorCode": "cyberlace_sensitive_document_blocked",
+    "runtimeAction": "QUARANTINE",
+    "severity": "CRITICAL",
+    "riskScore": 100.0,
+    "blockedPaths": [
+      "runtime/cyberlace/test_fixtures/case02_banco_cvv_pin_transferencia.txt"
+    ],
+    "evidenceTypes": [
+      "sensitive_document_content"
+    ],
+    "patterns": [
+      "pin",
+      "cvv",
+      "credit_card_like",
+      "bank_account"
+    ],
+    "samplesRedacted": true,
+    "safeAlternativePresent": true,
+    "safeNextStepsCount": 3
+  },
+  "runtimeTruth": {
+    "verdict": "idle",
+    "stale": false,
+    "canReleaseZombie": false,
+    "workerPid": null,
+    "workerAlive": null,
+    "projectStatus": "blocked",
+    "persistedRunning": false,
+    "activeSessions": 0
+  },
+  "processCheck": {
+    "agentOrWorkerProcessFound": false
+  },
+  "artifacts": [
+    "docs/security/cyberlace_case_02_banco_cvv_pin.md",
+    "runtime/artifacts/habla_case02_banco_cvv_pin_test_20260525T121800Z.md"
+  ],
+  "safety": {
+    "usesRealSecrets": false,
+    "fixtureValuesPrinted": false,
+    "dangerousActionExecuted": false,
+    "codexWorkerSpawned": false
+  }
+}

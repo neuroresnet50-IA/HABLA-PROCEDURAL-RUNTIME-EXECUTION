@@ -1,0 +1,29 @@
+{
+  "createdAt": "2026-05-24T19:11:28Z",
+  "projectSlug": "sesion-20260518014728-jeego-en-3d",
+  "projectWorkspace": "workspace/projects/sesion-20260518014728-jeego-en-3d",
+  "markdownPath": "docs/real_validation/juego_3d_prompts_medio_dificil_extradificil.md",
+  "cases": [
+    {
+      "id": "CASE-MEDIO",
+      "difficulty": "medio",
+      "promptTitle": "MODO MEDIO - VALIDACION GITHUB JUEGO 3D DRONES"
+    },
+    {
+      "id": "CASE-DIFICIL",
+      "difficulty": "dificil",
+      "promptTitle": "MODO DIFICIL - VALIDACION GITHUB JUEGO 3D DRONES"
+    },
+    {
+      "id": "CASE-EXTRADIFICIL",
+      "difficulty": "extradificil",
+      "promptTitle": "MODO EXTRADIFICIL - VALIDACION GITHUB JUEGO 3D DRONES"
+    }
+  ],
+  "requiredEvidenceRoot": "workspace/projects/sesion-20260518014728-jeego-en-3d/runtime/artifacts/github_validation/",
+  "requiredValidationCommands": [
+    "node --check workspace/projects/sesion-20260518014728-jeego-en-3d/frontend/app.js",
+    "python3 -B backend/browser_render_smoke.py --workspace workspace/projects/sesion-20260518014728-jeego-en-3d --frontend frontend --mode smoke --light day",
+    "python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 8 health"
+  ]
+}

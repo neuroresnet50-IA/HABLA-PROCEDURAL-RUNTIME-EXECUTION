@@ -1,0 +1,96 @@
+{
+  "elapsedMs": 10.302,
+  "runtimeTruth": {
+    "canReleaseZombie": false,
+    "controlPlane": {
+      "currentTaskId": "RUNTIME-20260528151255-002",
+      "currentTaskStatus": "pending",
+      "currentTaskTitle": "Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten",
+      "persistedRunning": false,
+      "projectStatus": "blocked",
+      "queueCounts": {
+        "blocked": 1,
+        "completed": 3,
+        "failed": 0,
+        "pending": 1,
+        "running": 0
+      },
+      "tasksCompleted": 3,
+      "tasksTotal": 5
+    },
+    "disk": {
+      "lastActivityAgeSeconds": 1.3070456981658936,
+      "lastActivityAt": "2026-05-28T15:16:49.191915Z"
+    },
+    "generatedAt": "2026-05-28T15:16:50.499355+00:00",
+    "integrity": {
+      "baselineExists": true,
+      "findings": 0,
+      "hasReport": true,
+      "status": null
+    },
+    "lock": {
+      "currentTaskId": null,
+      "locked": false,
+      "message": "Proyecto sin agente activo: edicion humana habilitada.",
+      "projectStatus": "blocked",
+      "reason": "project_idle",
+      "sessionId": null
+    },
+    "ok": true,
+    "projectId": "continuity-code-pf-001",
+    "reasons": [
+      "no_active_agent_session",
+      "no_live_worker_pid"
+    ],
+    "reviewer": {
+      "latestCheckpoint": "runtime-20260528151255-001-retry-0-recovery",
+      "latestHistory": {
+        "recorded_at": "2026-05-28T15:16:49Z",
+        "result": {
+          "blockers": [
+            "Worker reported blocker: Every exec_command failed with: bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted",
+            "Worker reported blocker: Bridge visual phase failed with the same bwrap error.",
+            "Worker reported blocker: apply_patch could not write even a root-level probe file: Failed to write file .../RUNTIME-20260528151255-001.write_probe.tmp",
+            "Worker reported blocker: Could not create required deliverables, runtime artifacts, LACE_LOG.md update, recuperacioncontexto.md, or ULTIMO_CONTEXTO_CODEX.md.",
+            "Worker infrastructure failure detected: bwrap: loopback, failed rtm_newaddr, operation not permitted, codex's linux sandbox uses bubblewrap, bubblewrap, user namespaces, failed to write file"
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [
+            "runtime/artifacts/file_integrity_report.json",
+            "runtime/artifacts/observer_findings.json"
+          ],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "RUNTIME-20260528151255-001",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md', 'lessons_learned/blanqueo-2026-05-27.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/artifacts/observer_findings.json'] if not Path(p).is_file()]; assert not missing, missing\""
+          ]
+        }
+      },
+      "warningCount": 0,
+      "warnings": []
+    },
+    "sandbox": {
+      "ready": null,
+      "running": null,
+      "status": null,
+      "stopReason": null,
+      "url": null
+    },
+    "sessions": {
+      "active": [],
+      "activeCount": 0,
+      "totalRuntimeSessions": 1
+    },
+    "stale": false,
+    "staleThresholdSeconds": 300,
+    "verdict": "idle",
+    "worker": {
+      "alive": null,
+      "pid": null
+    }
+  },
+  "statusCode": 200
+}

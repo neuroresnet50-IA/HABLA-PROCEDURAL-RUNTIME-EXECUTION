@@ -18,8 +18,13 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote
 from urllib.request import Request, urlopen
 
+try:
+    from orchestrator.runtime_task_cleaner import sweep_with_broom
+except ImportError:  # pragma: no cover - direct script execution fallback.
+    from runtime_task_cleaner import sweep_with_broom  # type: ignore
 
-DEFAULT_BASE_URL = "http://127.0.0.1:5000"
+
+DEFAULT_BASE_URL = "http://127.0.0.1:5001"
 AUDIT_LOG = Path("runtime/agent_tool_invocations.jsonl")
 FROZEN_SNIPER_CONFIRMATION = "FROZEN_SNIPER"
 
@@ -59,6 +64,8 @@ def request_json(
         except json.JSONDecodeError:
             payload = {"ok": False, "error": "non_json_error", "message": raw}
         return int(error.code), payload
+    except TimeoutError as error:
+        return 0, {"ok": False, "error": "timeout", "message": str(error), "timedOut": True}
     except URLError as error:
         return 0, {"ok": False, "error": "connection_failed", "message": str(error.reason)}
 
@@ -168,6 +175,24 @@ def compact_payload(command: str, status_code: int, payload: dict[str, Any], ful
         compact["report"] = compact_report(payload.get("report"))
         compact["observerEvent"] = compact_event(payload.get("observerEvent"))
         compact["fullReportHint"] = "Use --full only when full evidence is required."
+    elif command in {"to-sweep-with-a-broom", "broom"}:
+        compact["phase"] = payload.get("phase")
+        compact["taskId"] = payload.get("taskId")
+        compact["reportPath"] = payload.get("reportPath")
+        compact["actions"] = payload.get("actions")
+        compact["ignoredResidue"] = payload.get("ignoredResidue")
+        compact["warnings"] = payload.get("warnings")
+        compact["fullReportHint"] = "Use --full for the full broom audit report."
+    elif command in {"continuity", "prompt-flight"}:
+        report = payload.get("report") if isinstance(payload.get("report"), dict) else {}
+        run = payload.get("run") if isinstance(payload.get("run"), dict) else {}
+        compact["traceId"] = payload.get("traceId") or run.get("traceId") or report.get("traceId")
+        compact["result"] = report.get("result") or run.get("result")
+        compact["summary"] = report.get("summary") or run.get("summary")
+        compact["reportPath"] = report.get("reportPath") or run.get("reportPath")
+        if command == "prompt-flight":
+            compact["stageCount"] = len(report.get("stages") or []) if isinstance(report, dict) else None
+        compact["fullReportHint"] = "Use --full only when full continuity evidence is required."
     elif command == "observe":
         compact["event"] = compact_event(payload.get("event") or payload.get("observerEvent"))
         compact["observer"] = compact_observer_status(payload)
@@ -181,6 +206,17 @@ def compact_payload(command: str, status_code: int, payload: dict[str, Any], ful
 def run_command(args: argparse.Namespace) -> tuple[int, dict[str, Any]]:
     base_url = args.base_url
     timeout_seconds = int(getattr(args, "timeout_seconds", 30))
+    if args.command in {"to-sweep-with-a-broom", "broom"}:
+        repo_root = Path(__file__).resolve().parents[1]
+        project_root = repo_root / "workspace" / "projects" / args.project
+        report = sweep_with_broom(
+            project_root,
+            task_id=args.task_id or None,
+            phase=args.phase,
+            dry_run=bool(args.dry_run),
+            reason=args.reason,
+        )
+        return (200 if report.get("ok") else 1), report
     if args.command == "health":
         return request_json(base_url, "GET", "/api/health", timeout_seconds=timeout_seconds)
     if args.command == "observer-status":
@@ -198,6 +234,31 @@ def run_command(args: argparse.Namespace) -> tuple[int, dict[str, Any]]:
         if args.confirm:
             payload["confirm"] = args.confirm
         return request_json(base_url, "POST", project_path(args.project, "/integrity/frozen-sniper"), payload, timeout_seconds=timeout_seconds)
+    if args.command == "continuity":
+        payload = {
+            "mode": args.mode,
+            "project": args.project,
+            "baseUrl": base_url,
+            "includeHarness": not bool(args.no_harness),
+            "sync": True,
+        }
+        return request_json(base_url, "POST", "/api/continuity-probe/start", payload, timeout_seconds=timeout_seconds)
+    if args.command == "prompt-flight":
+        prompt = args.prompt or ""
+        if args.prompt_file:
+            try:
+                prompt = Path(args.prompt_file).read_text(encoding="utf-8")
+            except OSError as error:
+                return 2, {"ok": False, "error": "prompt_file_read_failed", "message": str(error)}
+        payload = {
+            "prompt": prompt,
+            "mode": args.mode,
+            "project": args.project,
+            "baseUrl": base_url,
+            "includeHarness": not bool(args.no_harness),
+            "timeoutSeconds": timeout_seconds,
+        }
+        return request_json(base_url, "POST", "/api/continuity-probe/prompt-flight", payload, timeout_seconds=timeout_seconds)
     return 2, {"ok": False, "error": "unsupported_command", "command": args.command}
 
 
@@ -215,6 +276,20 @@ def build_parser() -> argparse.ArgumentParser:
     add_output_flag(subparsers.add_parser("observer-status", help="Read Observer state without starting a new mission."))
     add_output_flag(subparsers.add_parser("observe", help="Ask Observer for one explicit observation."))
 
+    broom = add_output_flag(subparsers.add_parser("to-sweep-with-a-broom", help="Sweep stale per-task runtime residue without deleting canonical evidence."))
+    broom.add_argument("project")
+    broom.add_argument("--task-id", default="", help="Task id that defines the current classification scope.")
+    broom.add_argument("--phase", default="manual", choices=["before_task", "after_task", "manual", "recovery"], help="When the broom is being used.")
+    broom.add_argument("--reason", default="agent_requested_broom", help="Audit reason for this broom invocation.")
+    broom.add_argument("--dry-run", action="store_true", help="Only report what would be swept.")
+
+    broom_alias = add_output_flag(subparsers.add_parser("broom", help="Alias for to-sweep-with-a-broom."))
+    broom_alias.add_argument("project")
+    broom_alias.add_argument("--task-id", default="", help="Task id that defines the current classification scope.")
+    broom_alias.add_argument("--phase", default="manual", choices=["before_task", "after_task", "manual", "recovery"], help="When the broom is being used.")
+    broom_alias.add_argument("--reason", default="agent_requested_broom", help="Audit reason for this broom invocation.")
+    broom_alias.add_argument("--dry-run", action="store_true", help="Only report what would be swept.")
+
     scanner = add_output_flag(subparsers.add_parser("scanner", help="Run final code scanner for a project."))
     scanner.add_argument("project")
 
@@ -228,6 +303,18 @@ def build_parser() -> argparse.ArgumentParser:
     sniper.add_argument("project")
     sniper.add_argument("--dry-run", action="store_true", help="Preview recovery without modifying project files.")
     sniper.add_argument("--confirm", default="", help=f"Required value for non-dry-run: {FROZEN_SNIPER_CONFIRMATION}")
+
+    continuity = add_output_flag(subparsers.add_parser("continuity", help="Run HABLA CircuitProbe continuity test."))
+    continuity.add_argument("--project", default="continuity-probe-canary", help="Continuity canary project slug.")
+    continuity.add_argument("--mode", default="active_canary", choices=["active_canary", "read_only", "harness_canary"])
+    continuity.add_argument("--no-harness", action="store_true", help="Skip Harness/Safety Learning checks.")
+
+    prompt_flight = add_output_flag(subparsers.add_parser("prompt-flight", help="Run Prompt Flight Recorder through CircuitProbe."))
+    prompt_flight.add_argument("--project", default="continuity-probe-canary", help="Continuity canary project slug.")
+    prompt_flight.add_argument("--mode", default="trace_only", choices=["trace_only", "safe_canary", "real_session_guarded", "ui_session_rest"])
+    prompt_flight.add_argument("--prompt", default="", help="Prompt text to send through HABLA BASIC envelope.")
+    prompt_flight.add_argument("--prompt-file", default="", help="Read prompt text from a UTF-8 file.")
+    prompt_flight.add_argument("--no-harness", action="store_true", help="Skip Harness/Safety Learning checks.")
     return parser
 
 

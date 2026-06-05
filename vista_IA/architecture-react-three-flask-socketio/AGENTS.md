@@ -107,6 +107,8 @@ python3 orchestrator/agent_tools.py observe
 python3 orchestrator/agent_tools.py scanner <projectSlug>
 python3 orchestrator/agent_tools.py integrity <projectSlug>
 python3 orchestrator/agent_tools.py findings <projectSlug>
+python3 orchestrator/agent_tools.py to-sweep-with-a-broom <projectSlug> --task-id <TASK_ID> --phase before_task
+python3 orchestrator/agent_tools.py to-sweep-with-a-broom <projectSlug> --task-id <TASK_ID> --phase after_task
 python3 orchestrator/agent_tools.py sniper <projectSlug> --dry-run
 python3 orchestrator/agent_tools.py sniper <projectSlug> --confirm FROZEN_SNIPER
 ```
@@ -119,10 +121,11 @@ Reglas de uso:
 5. `findings` debe leerse antes de reportar que no hay problemas forenses.
 6. `sniper --dry-run` es permitido para diagnostico y propuesta de recuperacion.
 7. `sniper --confirm FROZEN_SNIPER` solo puede ejecutarse con confirmacion humana o politica explicita de recovery; debe quedar registrado en historial.
-8. Ningun agente puede inventar que una herramienta paso: debe citar `statusCode`, `ok`, `reportPath`, `artifactPath` o el blocker real.
-9. La salida por defecto del CLI debe ser compacta (`outputMode=compact`) para no consumir tokens con evidencia masiva; `--full` solo se usa cuando una tarea acotada necesita el payload completo.
-10. Si el backend local no responde, el agente debe registrar el blocker y usar validaciones locales alternativas; no debe simular salida de Observer.
-11. Las salidas de herramientas quedan auditadas en `runtime/agent_tool_invocations.jsonl`.
+8. `to-sweep-with-a-broom` limpia solo residuos transitorios de estado por tarea y persiste reporte auditable; no borra `task_history.jsonl`, `failures.jsonl`, checkpoints, directives, logs ni archivos de producto. Debe usarse antes y despues de tareas cuando haya riesgo de mezclar basura historica con el cierre actual.
+9. Ningun agente puede inventar que una herramienta paso: debe citar `statusCode`, `ok`, `reportPath`, `artifactPath` o el blocker real.
+10. La salida por defecto del CLI debe ser compacta (`outputMode=compact`) para no consumir tokens con evidencia masiva; `--full` solo se usa cuando una tarea acotada necesita el payload completo.
+11. Si el backend local no responde, el agente debe registrar el blocker y usar validaciones locales alternativas; no debe simular salida de Observer.
+12. Las salidas de herramientas quedan auditadas en `runtime/agent_tool_invocations.jsonl`.
 
 Activacion correcta:
 - Al iniciar o continuar un proyecto, el runtime puede activar Observer en modo mision.

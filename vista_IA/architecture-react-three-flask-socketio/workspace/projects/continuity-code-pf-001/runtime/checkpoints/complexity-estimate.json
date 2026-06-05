@@ -1,0 +1,162 @@
+{
+  "checkpoint_key": "complexity-estimate",
+  "created_at": "2026-06-04T01:46:22Z",
+  "payload": {
+    "estimate": {
+      "audit_version": "complexity-audit-kernel-v1",
+      "bootstrap_tasks": 4,
+      "complexity_audit": {
+        "audit_version": "complexity-audit-kernel-v1",
+        "complexity_score": 34,
+        "confidence": 92,
+        "difficulty": "medio",
+        "difficulty_label": "Medio",
+        "early_exit_allowed": true,
+        "early_exit_mode": "allowed",
+        "estimated_minutes": 45,
+        "generated_at": "2026-06-04T01:46:22.877071Z",
+        "lace_max_cycles": 4,
+        "lace_min_cycles": 2,
+        "lace_target_cycles": 3,
+        "launch_mode": "existing",
+        "layer_scores": {
+          "blast_radius": 24,
+          "evidence": 8,
+          "history": 0,
+          "operational_risk": 0,
+          "project": 4,
+          "prompt": 30,
+          "uncertainty": 0
+        },
+        "layers": {
+          "blast_radius": {
+            "reasons": [
+              "expected_files=0"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 24
+          },
+          "evidence": {
+            "reasons": [
+              "validation_commands=0"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 8
+          },
+          "history": {
+            "reasons": [
+              "sin fallos historicos relevantes"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          },
+          "operational_risk": {
+            "reasons": [
+              "riesgo operativo bajo"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          },
+          "project": {
+            "file_count": 1,
+            "observed": true,
+            "reasons": [
+              "archivos materiales estimados=1"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 4
+          },
+          "prompt": {
+            "reasons": [
+              "prompt palabras=33",
+              "capas detectadas en prompt: runtime, scanner"
+            ],
+            "required_tools": [
+              "scanner"
+            ],
+            "risk_flags": [
+              "runtime"
+            ],
+            "score": 30
+          },
+          "uncertainty": {
+            "reasons": [
+              "incertidumbre baja"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          }
+        },
+        "max_agents": 4,
+        "project_slug": "continuity-code-pf-001",
+        "reasoning": [
+          "prompt palabras=33",
+          "capas detectadas en prompt: runtime, scanner",
+          "archivos materiales estimados=1",
+          "riesgo operativo bajo",
+          "expected_files=0",
+          "validation_commands=0",
+          "sin fallos historicos relevantes",
+          "incertidumbre baja"
+        ],
+        "recommended_agents": 3,
+        "required_tools": [
+          "scanner"
+        ],
+        "risk_flags": [
+          "runtime"
+        ],
+        "runtime_mode": "build",
+        "schema_version": 1
+      },
+      "confidence": 88,
+      "difficulty": "medio",
+      "difficulty_label": "Medio",
+      "early_exit_allowed": true,
+      "estimate_type": "project_complexity_budget",
+      "estimated_minutes": 45,
+      "generated_at": "2026-06-04T01:46:22.861244Z",
+      "lace_max_cycles": 4,
+      "lace_min_cycles": 2,
+      "lace_target_cycles": 3,
+      "launch_mode": "existing",
+      "max_agents": 8,
+      "max_lace_cycles": 10,
+      "max_retries": 3,
+      "max_tasks": 8,
+      "min_lace_cycles": 2,
+      "project_file_count": 0,
+      "project_slug": "continuity-code-pf-001",
+      "prompt_word_count": 33,
+      "quality_threshold": 85,
+      "reasons": [
+        "modo runtime solicitado: build",
+        "prompt medio: 33 palabras",
+        "toca runtime/estado persistido",
+        "requiere evidencia auditable"
+      ],
+      "recommended_agents": 2,
+      "recommended_lace_cycles": 3,
+      "recovery_budget": 5,
+      "required_tools": [
+        "findings",
+        "integrity",
+        "scanner"
+      ],
+      "risk_flags": [
+        "estado_persistido"
+      ],
+      "runtime_mode": "build",
+      "schema_version": 1,
+      "score": 34,
+      "timeout_seconds": 900
+    },
+    "reason": "complexity_estimate_created"
+  }
+}

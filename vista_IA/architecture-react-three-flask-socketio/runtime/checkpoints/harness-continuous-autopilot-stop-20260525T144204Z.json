@@ -1,0 +1,49 @@
+{
+  "checkpoint": "harness-continuous-autopilot-stop-20260525T144204Z",
+  "createdAt": "2026-05-25T14:42:04.718693+00:00",
+  "reason": "Modo autonomo continuo: iniciar una vez, ejecutar ciclos hasta que el humano oprima detener, autoaceptando solo alternativas seguras durante training.",
+  "changes": [
+    "backend: continuous=true en autopilot-start",
+    "backend: autopilot-stop/<run_id> con stopRequested",
+    "backend: cierre stopped con reporte/checkpoint/memory",
+    "frontend: boton unico iniciar/detener loop autonomo",
+    "frontend: autoaceptacion segura contextual durante campañas Harness"
+  ],
+  "validation": {
+    "pyCompile": "passed",
+    "frontendBuild": "passed",
+    "restart": "passed",
+    "continuousStart": {
+      "runId": "ui-continuous-stop-smoke-20260525T144036Z",
+      "continuous": true,
+      "cyclesLimit": 1000
+    },
+    "stop": {
+      "requested": true,
+      "finalStatus": "stopped",
+      "stoppedByUser": true,
+      "completedCycles": 3
+    },
+    "results": [
+      {
+        "cycle": 1,
+        "status": "blocked",
+        "runtimeAction": "QUARANTINE"
+      },
+      {
+        "cycle": 2,
+        "status": "blocked",
+        "runtimeAction": "QUARANTINE"
+      },
+      {
+        "cycle": 3,
+        "status": "blocked",
+        "runtimeAction": "QUARANTINE"
+      }
+    ],
+    "report": "runtime/cyberlace/training_campaigns/ui-continuous-stop-smoke-20260525T144044Z.md",
+    "socketPolling": "HTTP 200 upgrades=[]",
+    "backendErrors": "none found",
+    "liveWorkerAfterRun": "none found"
+  }
+}

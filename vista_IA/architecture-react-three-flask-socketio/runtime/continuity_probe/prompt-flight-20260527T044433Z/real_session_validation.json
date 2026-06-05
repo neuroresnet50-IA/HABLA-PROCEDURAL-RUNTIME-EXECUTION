@@ -1,0 +1,76 @@
+{
+  "task_result": {
+    "blockers": [],
+    "completed": true,
+    "files_created": [
+      "src/prompt_flight_response.json"
+    ],
+    "files_modified": [],
+    "next_recommendation": "Task evidence and validation commands passed.",
+    "task_id": "PROMPT-REAL-20260527T044433Z",
+    "validation_passed": true,
+    "validation_ran": [
+      "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T044433Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+    ]
+  },
+  "validation": {
+    "commands": [
+      {
+        "command": "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T044433Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'",
+        "duration_seconds": 0.059388,
+        "normalized_command": [
+          "python3",
+          "-B",
+          "-c",
+          "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T044433Z'; assert d.get('promptHash') == '8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+        ],
+        "returncode": 0,
+        "security_blocked": false,
+        "security_decision": {
+          "category": "test_or_build",
+          "command": [
+            "python3",
+            "-B",
+            "-c",
+            "from pathlib import Path; import json; d=json.loads(Path('src/prompt_flight_response.json').read_text(encoding='utf-8')); assert d.get('traceId') == 'prompt-flight-20260527T044433Z'; assert d.get('promptHash') == '8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4'; assert d.get('processedBy') == 'guarded_runtime_worker'; assert d.get('hablaBasic', {}).get('inputHash') == d.get('promptHash')"
+          ],
+          "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary",
+          "decision": "allow",
+          "reason": "Matched risk category: test_or_build",
+          "recorded_at": "2026-05-27T04:44:33Z",
+          "risk_level": "low",
+          "schema_version": 1,
+          "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+        },
+        "stderr": "",
+        "stdout": "",
+        "timed_out": false
+      }
+    ],
+    "evidence": {
+      "blockers": [],
+      "expected_files": [
+        {
+          "exists": true,
+          "is_file": true,
+          "path": "src/prompt_flight_response.json",
+          "reported_created": true,
+          "reported_modified": false,
+          "size": 1167
+        }
+      ],
+      "found": [
+        "src/prompt_flight_response.json"
+      ],
+      "missing": [],
+      "reported_created": [
+        "src/prompt_flight_response.json"
+      ],
+      "reported_modified": [],
+      "reported_outside_expected": []
+    },
+    "task_id": "PROMPT-REAL-20260527T044433Z",
+    "validation_passed": true,
+    "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary"
+  }
+}

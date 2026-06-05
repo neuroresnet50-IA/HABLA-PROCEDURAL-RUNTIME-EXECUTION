@@ -1,0 +1,301 @@
+{
+  "schema_version": 1,
+  "report_type": "observer_findings",
+  "projectId": "continuity-code-pf-003",
+  "generatedAt": "2026-06-04T14:32:23.328004Z",
+  "summary": {
+    "totalFindings": 9,
+    "activeFindings": 3,
+    "resolvedFindings": 6,
+    "observationScore": 84,
+    "bySeverity": {
+      "error": 1,
+      "warning": 2
+    },
+    "bySource": {
+      "lint": 3
+    }
+  },
+  "findings": [
+    {
+      "id": "observer-a2171ce0c7ce61b8",
+      "fingerprintSha256": "a2171ce0c7ce61b86c33caa1d396973d5e534e17ccdaa39e7b9f97e969f40b26",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "error",
+      "observationScore": 84,
+      "message": "Hay un bloque interno que nunca recibe flujo desde el inicio del algoritmo.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/lace_cycles/ciclo-01.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/docs/lace_cycles/ciclo-01.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "algorithm_unreachable_step",
+        "severity": "error",
+        "line": null,
+        "nodeId": "workspace__projects__continuity-code-pf-003__docs__lace_cycles__ciclo-01_md",
+        "stepId": "observar"
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-06-04T02:12:46.931803Z",
+      "lastSeenAt": "2026-06-04T14:32:23.328004Z",
+      "occurrenceCount": 26,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-22e1f8f20bb40756",
+      "fingerprintSha256": "22e1f8f20bb4075675d3ae39e31a64e22133dc11ea686665207e7dd42aee0b3c",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El bloque interno termina sin salida y puede haber un corte en el harness del algoritmo.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/lace_cycles/ciclo-01.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/docs/lace_cycles/ciclo-01.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "algorithm_dead_end",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "workspace__projects__continuity-code-pf-003__docs__lace_cycles__ciclo-01_md",
+        "stepId": "observar"
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-06-04T02:12:46.931803Z",
+      "lastSeenAt": "2026-06-04T14:32:23.328004Z",
+      "occurrenceCount": 26,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-98c69367e58cbdac",
+      "fingerprintSha256": "98c69367e58cbdac1b9fe7f88a5a729a3003df057a23d6f246fb4cdf72b2cd0e",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "recuperacioncontexto.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/recuperacioncontexto.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "active",
+      "firstSeenAt": "2026-06-04T14:32:10.213914Z",
+      "lastSeenAt": "2026-06-04T14:32:23.328004Z",
+      "occurrenceCount": 3,
+      "resolvedAt": null
+    },
+    {
+      "id": "observer-3ccf7b9866720352",
+      "fingerprintSha256": "3ccf7b9866720352729c77a06f388df5c052f5a43a626b0fa7367c413fe050e4",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "scanner",
+      "state": "verifying_scanner",
+      "behavior": "verify_scanner_evidence",
+      "severity": "error",
+      "observationScore": 88,
+      "message": "Scanner final no certificado para un proyecto marcado completed.",
+      "reason": "El proyecto figura completed, pero falta evidencia valida del scanner end-to-end.",
+      "relativePath": "runtime/artifacts/final_code_scanner_report.json",
+      "focusPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/artifacts/final_code_scanner_report.json",
+      "uiAction": {
+        "type": "code-scan",
+        "targetId": "code-workbench"
+      },
+      "evidence": {
+        "projectStatus": "completed",
+        "scannerReportExists": false,
+        "validationPassed": null,
+        "visualPlayback": null,
+        "scrollsToLastLine": null,
+        "blockers": []
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:07:31.740762Z",
+      "lastSeenAt": "2026-06-04T02:08:43.923478Z",
+      "occurrenceCount": 2,
+      "resolvedAt": "2026-06-04T02:09:11.926683Z"
+    },
+    {
+      "id": "observer-0757facd74307789",
+      "fingerprintSha256": "0757facd743077890f3d9fafdb2a5d3be7637146ed1e2c228d1a6b4c1e575ed0",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/habla-session.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/docs/habla-session.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:01:36.925419Z",
+      "lastSeenAt": "2026-06-04T02:02:12.353215Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-04T02:02:43.165143Z"
+    },
+    {
+      "id": "observer-56db86293993fb05",
+      "fingerprintSha256": "56db86293993fb05e6a9c486c7b67326465439990118adaa837b5e51f3800085",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/LACE_LOG.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:01:36.925419Z",
+      "lastSeenAt": "2026-06-04T02:02:12.353215Z",
+      "occurrenceCount": 3,
+      "resolvedAt": "2026-06-04T02:02:43.165143Z"
+    },
+    {
+      "id": "observer-0a347342c9a8044e",
+      "fingerprintSha256": "0a347342c9a8044edf83ec76aca6816f092ad5a3a52f6d7c467076bec0e219d8",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/LACE.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:01:36.925419Z",
+      "lastSeenAt": "2026-06-04T02:02:43.165143Z",
+      "occurrenceCount": 4,
+      "resolvedAt": "2026-06-04T02:03:33.211529Z"
+    },
+    {
+      "id": "observer-7e4e1dc9f88c2f36",
+      "fingerprintSha256": "7e4e1dc9f88c2f364953580f4c77776b3ea352abb08a0d081b96ee048399316d",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "El archivo existe en disco pero no aparece en el mapa conceptual.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "docs/advanced_programming_case_003.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/docs/advanced_programming_case_003.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "missing_conceptual_node",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:08:24.403894Z",
+      "lastSeenAt": "2026-06-04T02:11:27.157026Z",
+      "occurrenceCount": 8,
+      "resolvedAt": "2026-06-04T02:12:46.931803Z"
+    },
+    {
+      "id": "observer-f749a432caee6118",
+      "fingerprintSha256": "f749a432caee6118bf524c49fbfaf8dfa329801a9a0bbabc5da8b7d4983227a6",
+      "projectSlug": "continuity-code-pf-003",
+      "source": "lint",
+      "state": "detecting_issue",
+      "behavior": "inspect_visual_issue",
+      "severity": "warning",
+      "observationScore": 62,
+      "message": "La documentacion del proyecto no esta etiquetada como docs dentro del mapa.",
+      "reason": "La auditoria del mapa reporto hallazgos reales.",
+      "relativePath": "LACE_LOG.md",
+      "focusPath": "workspace/projects/continuity-code-pf-003/LACE_LOG.md",
+      "uiAction": {
+        "type": "map-click",
+        "targetId": "architecture-map-section"
+      },
+      "evidence": {
+        "code": "layer_docs_mismatch",
+        "severity": "warning",
+        "line": null,
+        "nodeId": "workspace__projects__continuity-code-pf-003__LACE_LOG_md",
+        "stepId": null
+      },
+      "proposedActions": [],
+      "status": "resolved",
+      "firstSeenAt": "2026-06-04T02:06:18.647617Z",
+      "lastSeenAt": "2026-06-04T02:11:27.157026Z",
+      "occurrenceCount": 7,
+      "resolvedAt": "2026-06-04T02:12:46.931803Z"
+    }
+  ]
+}

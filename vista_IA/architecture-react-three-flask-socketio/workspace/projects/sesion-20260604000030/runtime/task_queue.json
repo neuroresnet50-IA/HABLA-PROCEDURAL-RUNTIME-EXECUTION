@@ -1,0 +1,160 @@
+[
+  {
+    "checkpoint_key": "runtime-20260604000404-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "crear un juego de carros 3d con intrligencia artificial PROTOCOLO DE SUBAGENTES ASIGNADOS POR UI: Dictamen: Dificultad Extradificil: 6 subagente(s), 8 ciclo(s) LACE y hasta 32 tarea(s). Dificultad: Extradificil | score: 75 | ciclos LACE: 8 | max tareas: 32 Herramientas requeridas: findings, integrity, sandbox, scanner Politica de turnos: round_robin_serialized Regla: escribir solo razonamiento publico, acciones, observaciones, evidencia y siguiente paso; no exponer cadena de pensamiento privada. Subagentes disponibles: - S01 Planner (turno 1): Descompone el prompt en pasos, riesgos y entregables. - S02 Frontend (turno 2): Implementa interfaz, canvas, estilos y experiencia visual. - S03 Backend (turno 3): Ajusta endpoints, runtime, persistencia y contratos. - S04 QA Browser (turno 4): Valida navegador real, consola JS, screenshot, WebGL y HUD. - S05 Observer (turno 5): Vigila incidentes, integridad, bloqueos y evidencia del mapa. - S06 LACE Docs (turno 6): Documenta ciclos, memoria, decisiones y cierre auditable. El agente principal debe coordinar estos roles, evitar conflictos y reportar en consola eventos publicos por turno.",
+    "id": "RUNTIME-20260604000404-001",
+    "max_retries": 4,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 4500,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260604000404-001"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "frontend/app.js",
+      "frontend/index.html",
+      "frontend/styles.css",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/browser_render_smoke.json",
+      "runtime/artifacts/file_integrity_report.json",
+      "runtime/artifacts/observer_findings.json"
+    ],
+    "goal": "Completar el ciclo LACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-001",
+    "max_retries": 2,
+    "mode": "long-run",
+    "priority": 99,
+    "status": "completed",
+    "timeout_seconds": 3600,
+    "title": "Completar ciclo LACE 01",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'frontend/app.js', 'frontend/index.html', 'frontend/styles.css', 'recuperacioncontexto.md', 'runtime/artifacts/browser_render_smoke.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/observer_findings.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'válido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260604004238-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/5 ciclos canonicos validos; faltan [1, 2, 3, 4, 5]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: LACE-20260604-001 Validacion: validacion pasada Evidencia encontrada: ULTIMO_CONTEXTO_CODEX.md, frontend/app.js, frontend/index.html, frontend/styles.css, recuperacioncontexto.md, runtime/artifacts/browser_render_smoke.json, runtime/artifacts/file_integrity_report.json, runtime/artifacts/observer_findings.json Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/lace-cycle-001-checkpoint.json Bloqueo: sin registros",
+    "id": "RUNTIME-20260604004238-001",
+    "max_retries": 4,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 5400,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260604005308-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/5 ciclos canonicos validos; faltan [1, 2, 3, 4, 5]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: RUNTIME-20260604004238-001 Validacion: validacion pasada Evidencia encontrada: frontend/index.html, frontend/styles.css, frontend/app.js Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/runtime-20260604004238-001-checkpoint.json Bloqueo: sin registros",
+    "id": "RUNTIME-20260604005308-001",
+    "max_retries": 4,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 5400,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260604010900-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/5 ciclos canonicos validos; faltan [1, 2, 3, 4, 5]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: RUNTIME-20260604005308-001 Validacion: validacion pasada Evidencia encontrada: frontend/index.html, frontend/styles.css, frontend/app.js Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/runtime-20260604005308-001-checkpoint.json Bloqueo: sin registros",
+    "id": "RUNTIME-20260604010900-001",
+    "max_retries": 4,
+    "mode": "long-run",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 5400,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260604012348-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/5 ciclos canonicos validos; faltan [1, 2, 3, 4, 5]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: RUNTIME-20260604010900-001 Validacion: validacion pasada Evidencia encontrada: frontend/index.html, frontend/styles.css, frontend/app.js Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/runtime-20260604010900-001-checkpoint.json Bloqueo: sin registros",
+    "id": "RUNTIME-20260604012348-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "completed",
+    "timeout_seconds": 1800,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ]
+  },
+  {
+    "checkpoint_key": "runtime-20260604013626-001-checkpoint",
+    "dependencies": [],
+    "expected_files": [
+      "frontend/index.html",
+      "frontend/styles.css",
+      "frontend/app.js"
+    ],
+    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME Objetivo: Diagnosticar y reparar el cierre bloqueado usando solo evidencia real del runtime. No declares completed=true si falta validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido. Reglas: - Lee el estado persistido del proyecto, task_queue, task_history, failures, checkpoints y artifacts. - Repara solo bloqueos verificables y seguros. - Si el proyecto esta bloqueado por integrity/scanner/sandbox/LACE, deja el bloqueo claro y crea tareas de reparacion acotadas. - No borres evidencia historica ni fuerces cierre. - Al final reporta archivos modificados, validaciones ejecutadas, evidencia encontrada, evidencia faltante y siguiente recomendacion. Evidencia resumida del certificado: Certificado del runtime Cierre no certificado Cierre bloqueado por LACE: 0/3 ciclos canonicos validos; faltan [1, 2, 3]. Estado: Bloqueado Proyecto: sesion-20260604000030 Project slug: sesion-20260604000030 Tarea final: RUNTIME-20260604012348-001 Validacion: validacion pasada Evidencia encontrada: frontend/index.html, frontend/styles.css, frontend/app.js Evidencia faltante: sin registros Checkpoint: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/sesion-20260604000030/runtime/checkpoints/runtime-20260604012348-001-checkpoint.json Bloqueo: sin registros",
+    "id": "RUNTIME-20260604013626-001",
+    "max_retries": 3,
+    "mode": "build",
+    "priority": 10,
+    "status": "pending",
+    "timeout_seconds": 1800,
+    "title": "Build runnable static web app",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html', 'frontend/styles.css', 'frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B '/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backend/browser_render_smoke.py' --workspace . --frontend frontend --mode smoke --light day"
+    ],
+    "previous_status": "running",
+    "requeued_reason": "runtime_truth_zombie_release",
+    "released_at": "2026-06-04T01:45:42.759899+00:00"
+  }
+]

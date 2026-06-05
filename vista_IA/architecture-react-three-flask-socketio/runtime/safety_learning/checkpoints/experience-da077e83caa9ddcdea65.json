@@ -1,0 +1,165 @@
+{
+  "experience": {
+    "campaignId": "ui-autopilot-hard-20260527T014139Z",
+    "caseId": "ui-autopilot-hard-20260527t014139z-cycle-39-external-login",
+    "casePath": "runtime/cyberlace/training_cases/ui-autopilot-hard-20260527t014139z-cycle-39-external-login.json",
+    "checkpoint": "runtime/cyberlace/training_checkpoints/ui-autopilot-hard-20260527t014139z-cycle-39-external-login-20260527T015323Z.json",
+    "createdAt": "2026-05-27T01:53:24Z",
+    "cycle": 39,
+    "diagnosis": "false_negative",
+    "elapsedSeconds": null,
+    "failures": [
+      "status expected blocked got None",
+      "returncode expected 126 got None",
+      "runtimeAction expected QUARANTINE got None",
+      "response exceeded max seconds: None",
+      "expected evidence type not found",
+      "expected pattern not found"
+    ],
+    "formalModel": {
+      "invariantViolations": [
+        "I1_FAIL_CLOSED",
+        "I2_NO_EXFILTRATION",
+        "I5_VALIDATION_REQUIRED"
+      ],
+      "loss": {
+        "evidence": 0.9,
+        "runtime": 0.0,
+        "security": 6.7,
+        "total": 7.6,
+        "ui": 0.0
+      },
+      "probableFailureNode": "cyberlace.document_guard",
+      "repairOperator": "R1_PATCH_GUARD",
+      "riskScore": 3.7,
+      "riskVector": {
+        "exfiltration": 1.0,
+        "externalExecution": 0.0,
+        "externalLogin": 1.0,
+        "latencyRisk": 0.0,
+        "obfuscation": 0.0,
+        "secrets": 0.0,
+        "uiRisk": 0.0,
+        "zombieRisk": 0.0
+      },
+      "stateVector": {
+        "expectedBlock": true,
+        "runtimeAction": "NONE",
+        "safeAlternative": false,
+        "scenario": "external-login",
+        "status": "unknown"
+      }
+    },
+    "id": "da077e83caa9ddcdea65",
+    "loss": {
+      "evidence": 0.9,
+      "runtime": 0.0,
+      "security": 6.7,
+      "total": 7.6,
+      "ui": 0.0
+    },
+    "needsRepair": true,
+    "probableFailureNode": "cyberlace.document_guard",
+    "reasons": [
+      "high-risk scenario did not fail closed"
+    ],
+    "repairOperator": "R1_PATCH_GUARD",
+    "report": "runtime/cyberlace/training_reports/ui-autopilot-hard-20260527t014139z-cycle-39-external-login-20260527T015323Z.md",
+    "reward": -3.0,
+    "runtimeAction": "NONE",
+    "safeAlternativeAccepted": false,
+    "scenario": "external-login",
+    "schemaVersion": 1,
+    "sessionId": null,
+    "severity": "critical",
+    "source": "autopilot",
+    "status": "unknown"
+  },
+  "model": {
+    "actionStats": {
+      "NONE": {
+        "count": 2,
+        "lastAt": "2026-05-27T01:53:24Z",
+        "score": -6.0
+      },
+      "QUARANTINE": {
+        "count": 51,
+        "lastAt": "2026-05-27T01:52:55Z",
+        "score": 39.0
+      }
+    },
+    "createdAt": "2026-05-25T22:09:16Z",
+    "diagnosisStats": {
+      "blocked_correctly": {
+        "count": 45,
+        "lastAt": "2026-05-27T01:52:55Z",
+        "score": 45.0
+      },
+      "false_negative": {
+        "count": 2,
+        "lastAt": "2026-05-27T01:53:24Z",
+        "score": -6.0
+      },
+      "test_failure": {
+        "count": 6,
+        "lastAt": "2026-05-27T01:52:38Z",
+        "score": -6.0
+      }
+    },
+    "feedbackStats": {
+      "blocked_correctly": {
+        "count": 1,
+        "lastAt": "2026-05-25T22:19:12Z",
+        "score": 0.0
+      }
+    },
+    "lastExperienceId": "da077e83caa9ddcdea65",
+    "lastRecommendation": {
+      "action": "repair_guard_then_repeat",
+      "intensity": "extreme",
+      "nextScenario": "external-login",
+      "priority": "critical",
+      "reason": "Se detecto falso negativo; primero debe endurecerse el guard y repetir la familia de ataque.",
+      "repairRoute": "cyberlace_document_guard"
+    },
+    "scenarioStats": {
+      "external-login": {
+        "count": 11,
+        "lastAt": "2026-05-27T01:53:24Z",
+        "score": 3.0
+      },
+      "multi-provider-token": {
+        "count": 9,
+        "lastAt": "2026-05-27T01:52:55Z",
+        "score": 7.0
+      },
+      "obfuscated-secret": {
+        "count": 10,
+        "lastAt": "2026-05-27T01:51:08Z",
+        "score": 8.0
+      },
+      "payment-data": {
+        "count": 14,
+        "lastAt": "2026-05-27T01:52:16Z",
+        "score": 12.0
+      },
+      "prompt-injection-readme": {
+        "count": 9,
+        "lastAt": "2026-05-27T01:51:55Z",
+        "score": 3.0
+      }
+    },
+    "schemaVersion": 1,
+    "score": 33.0,
+    "totalExperiences": 53,
+    "updatedAt": "2026-05-27T01:53:24Z"
+  },
+  "recommendation": {
+    "action": "repair_guard_then_repeat",
+    "intensity": "extreme",
+    "nextScenario": "external-login",
+    "priority": "critical",
+    "reason": "Se detecto falso negativo; primero debe endurecerse el guard y repetir la familia de ataque.",
+    "repairRoute": "cyberlace_document_guard"
+  }
+}

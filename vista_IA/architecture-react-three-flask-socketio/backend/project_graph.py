@@ -7,8 +7,9 @@ import re
 from pathlib import Path, PurePosixPath
 from typing import Any, Dict, Iterable, List, Sequence
 
-IGNORED_PARTS = {"node_modules", "dist", "__pycache__", ".venv"}
-IGNORED_FILES = {"package-lock.json", ".agent-project.json"}
+IGNORED_PARTS = {".git", ".pytest_cache", ".ruff_cache", ".runtime", "build", "coverage", "node_modules", "dist", "__pycache__", ".venv"}
+IGNORED_FILES = {"package-lock.json", ".agent-project.json", "editor_state.json", "reverse_engineering_state.json"}
+MAX_NODE_CODE_BYTES = 250_000
 IGNORED_WORKSPACE_PROJECT_PARTS = {"runtime", ".vista"}
 SUPPORTED_SUFFIXES = {".py", ".jsx", ".js", ".ts", ".tsx", ".css", ".html", ".json", ".txt", ".md", ".cpp", ".cc", ".cxx", ".h", ".hpp"}
 JS_SUFFIXES = {".js", ".jsx", ".ts", ".tsx"}
@@ -29,6 +30,14 @@ DEFAULT_LAYER_COLORS = {
 CUSTOM_LAYER_COLORS = ["#60a5fa", "#22c55e", "#f43f5e", "#f59e0b", "#14b8a6", "#a855f7", "#fb7185"]
 
 
+def graph_code_payload(content: str) -> tuple[str, bool]:
+    encoded = content.encode("utf-8")
+    if len(encoded) <= MAX_NODE_CODE_BYTES:
+        return content, False
+    preview = encoded[:MAX_NODE_CODE_BYTES].decode("utf-8", errors="ignore")
+    return f"{preview}\n\n[... graph code preview truncated: {len(encoded)} bytes total ...]", True
+
+
 def build_project_graph(project_root: Path) -> Dict[str, Any]:
     files = discover_source_files(project_root)
     known_paths = {to_posix(path.relative_to(project_root)) for path in files}
@@ -37,7 +46,13 @@ def build_project_graph(project_root: Path) -> Dict[str, Any]:
 
     for file_path in files:
         relative_path = to_posix(file_path.relative_to(project_root))
-        content = file_path.read_text(encoding="utf-8")
+        try:
+            content = file_path.read_text(encoding="utf-8")
+            file_size = file_path.stat().st_size
+            source_path = str(file_path.resolve())
+        except (FileNotFoundError, OSError):
+            continue
+        code_payload, code_truncated = graph_code_payload(content)
         statements = extract_real_statements(relative_path, content)
         algorithm = build_real_algorithm(relative_path, content, statements)
         imports = extract_internal_references(relative_path, content, known_paths)
@@ -48,17 +63,18 @@ def build_project_graph(project_root: Path) -> Dict[str, Any]:
                 "id": node_id_for_path(relative_path),
                 "name": file_path.name,
                 "path": relative_path,
-                "sourcePath": str(file_path.resolve()),
+                "sourcePath": source_path,
                 "layer": infer_layer(relative_path),
                 "layerLabel": layer_label_for_path(relative_path),
                 "status": infer_status(relative_path),
-                "size": format_size(file_path.stat().st_size),
+                "size": format_size(file_size),
                 "lines": count_lines(content),
                 "description": describe_file(relative_path, statements),
                 "imports": imports,
                 "dependents": [],
                 "color": default_color_for_layer(infer_layer(relative_path)),
-                "code": content,
+                "code": code_payload,
+                "codeTruncated": code_truncated,
                 "codeLanguage": detect_code_language(relative_path),
                 "algorithm": algorithm,
             }
@@ -120,20 +136,27 @@ def discover_source_files(project_root: Path) -> List[Path]:
         if not root.exists():
             continue
 
-        for file_path in root.rglob("*"):
-            if not file_path.is_file():
-                continue
+        try:
+            iterator = root.rglob("*")
+            for file_path in iterator:
+                try:
+                    if not file_path.is_file():
+                        continue
+                except (FileNotFoundError, OSError):
+                    continue
 
-            if any(part in IGNORED_PARTS for part in file_path.parts):
-                continue
+                if any(part in IGNORED_PARTS for part in file_path.parts):
+                    continue
 
-            if is_workspace_runtime_internal_file(project_root, file_path):
-                continue
+                if is_workspace_runtime_internal_file(project_root, file_path):
+                    continue
 
-            if file_path.name in IGNORED_FILES or file_path.suffix not in SUPPORTED_SUFFIXES:
-                continue
+                if file_path.name in IGNORED_FILES or file_path.suffix not in SUPPORTED_SUFFIXES:
+                    continue
 
-            files.append(file_path)
+                files.append(file_path)
+        except (FileNotFoundError, OSError):
+            continue
 
     return sorted(files, key=lambda path: to_posix(path.relative_to(project_root)))
 

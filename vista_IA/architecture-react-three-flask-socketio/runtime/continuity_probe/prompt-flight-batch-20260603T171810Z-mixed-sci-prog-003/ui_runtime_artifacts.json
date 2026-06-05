@@ -1,0 +1,225 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blockers",
+        "bootstrap_tasks",
+        "complexity_audit_summary",
+        "confidence",
+        "deliverables",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "lace_max_cycles",
+        "lace_min_cycles",
+        "lace_target_cycles",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "observed_task_result",
+        "project_slug",
+        "queue_design_budget",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "task_id",
+        "timeout_seconds",
+        "validation_plan"
+      ],
+      "lineCount": 186,
+      "mtime": "2026-06-03T17:47:01Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/complexity_estimate.json",
+      "sha256": "2ad894ecca4bd73443749bb7ea30cb65b21ffbcd0e3b41345b4c75f269664bdb",
+      "size": 6079,
+      "tail": "s_created\": [],\n    \"files_modified\": [\n      \"runtime/complexity_audit.json\",\n      \"runtime/complexity_estimate.json\",\n      \"LACE_LOG.md\",\n      \"recuperacioncontexto.md\",\n      \"ULTIMO_CONTEXTO_CODEX.md\"\n    ],\n    \"validation_ran\": [\n      \"findings continuity-mixed-pf-003\",\n      \"integrity continuity-mixed-pf-003\",\n      \"json parse validation\",\n      \"expected evidence file validation\",\n      \"scanner continuity-mixed-pf-003\"\n    ],\n    \"validation_passed\": false,\n    \"blockers\": [\n      \"scanner continuity-mixed-pf-003 failed twice with project_locked and once with timeout\",\n      \"post-edit integrity continuity-mixed-pf-003 timed out after pre-edit integrity had passed\"\n    ],\n    \"next_recommendation\": \"Clear the Observer/project lock, rerun scanner and post-edit integrity, then let the control plane decide completion before implementing QUEUE-001.\"\n  },\n  \"blockers\": [\n    {\n      \"id\": \"scanner-post-change-unavailable\",\n      \"reason\": \"Required scanner did not produce a report in this worker turn.\",\n      \"evidence\": [\n        \"statusCode=423 error=project_locked\",\n        \"statusCode=423 error=project_locked\",\n        \"statusCode=0 error=timeout\"\n      ]\n    }\n  ]\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 2,
+      "mtime": "2026-06-03T17:50:24Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/failures.jsonl",
+      "sha256": "28aaddbd5020c31cf4a73cca3ae2acd601f3258c85fbe142bf60fbac1af8c525",
+      "size": 120808,
+      "tail": "fragmented_sensitive_material\"}], \"kind\": \"cyberlace_sensitive_document_blocked\", \"project_id\": \"continuity-mixed-pf-003\", \"reason\": \"CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.\", \"riskScore\": 100.0, \"safeAlternative\": {\"allowedActions\": [\"Usar placeholders o fixtures sinteticos.\", \"Redactar evidencia sensible antes de procesarla.\", \"Disenar controles de acceso, auditoria y rutas seguras.\", \"Convertir la tarea en una validacion de arquitectura segura.\"], \"suggestedRequirement\": \"Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.\", \"summary\": \"HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.\", \"title\": \"Alternativa segura permitida\"}, \"safeNextSteps\": [\"Retirar documentos o valores sensibles del alcance.\", \"Usar datos sinteticos o redactados.\", \"Solicitar una revision de arquitectura segura.\"], \"severity\": \"CRITICAL\", \"task_id\": \"LACE-20260603-001\"}, \"recorded_at\": \"2026-06-03T17:50:24Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_cyberlace_block_at",
+        "last_cyberlace_block_paths",
+        "last_cyberlace_block_reason",
+        "last_cyberlace_denied_action",
+        "last_cyberlace_safe_alternative",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 47,
+      "mtime": "2026-06-03T17:50:24Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/project_state.json",
+      "sha256": "b3ad075a42e0e8027f606fe1fadb0c138add9b127081c1844dcab00d5341a2cf",
+      "size": 2165,
+      "tail": "sing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.\",\n  \"last_cyberlace_denied_action\": \"Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.\",\n  \"last_cyberlace_safe_alternative\": {\n    \"allowedActions\": [\n      \"Usar placeholders o fixtures sinteticos.\",\n      \"Redactar evidencia sensible antes de procesarla.\",\n      \"Disenar controles de acceso, auditoria y rutas seguras.\",\n      \"Convertir la tarea en una validacion de arquitectura segura.\"\n    ],\n    \"suggestedRequirement\": \"Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.\",\n    \"summary\": \"HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.\",\n    \"title\": \"Alternativa segura permitida\"\n  },\n  \"last_preparing_at\": \"2026-06-03T17:37:14.740718+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-b6031906ce\",\n  \"project_id\": \"continuity-mixed-pf-003\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-06-03T17:50:24.255692+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 5,
+      "mtime": "2026-06-03T17:50:11Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/task_history.jsonl",
+      "sha256": "6398ed7bdc7fd6fd8fe747d3cf459928d54162ffcde602ee4eaa00293a34be11",
+      "size": 2844,
+      "tail": " \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-06-03T17:49:47Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260603173715-001-SPLIT-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-06-03T17:50:11Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/mixed_science_programming_case_003_programming.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260603173715-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_003_programming.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 105,
+      "mtime": "2026-06-03T17:50:23Z",
+      "path": "workspace/projects/continuity-mixed-pf-003/runtime/task_queue.json",
+      "sha256": "fb70a19bf0abb9fc94a4c652677d1744a87f88d7ad1e5000fedfbfd040d302f2",
+      "size": 5257,
+      "tail": ": 2,\n    \"mode\": \"build\",\n    \"priority\": 99,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Completar ciclo LACE 01\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/mixed_science_programming_case_003_programming.md', 'recuperacioncontexto.md', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_audit.json', 'runtime/complexity_estimate.json', 'runtime/lace_budget.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -B -c \\\"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 106,
+    "mtime": "2026-06-03T17:50:24Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/checkpoints/lace-20260603-001-cyberlace-document-blocked-20260603T175024Z.json",
+    "sha256": "c2d49a5fa1ca320edd913c2b9e031a75ed716d972e1eb2a001f30add80caeeda",
+    "size": 4549,
+    "tail": "\"safeAlternative\": {\n          \"allowedActions\": [\n            \"Usar placeholders o fixtures sinteticos.\",\n            \"Redactar evidencia sensible antes de procesarla.\",\n            \"Disenar controles de acceso, auditoria y rutas seguras.\",\n            \"Convertir la tarea en una validacion de arquitectura segura.\"\n          ],\n          \"suggestedRequirement\": \"Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.\",\n          \"summary\": \"HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.\",\n          \"title\": \"Alternativa segura permitida\"\n        },\n        \"safeNextSteps\": [\n          \"Retirar documentos o valores sensibles del alcance.\",\n          \"Usar datos sinteticos o redactados.\",\n          \"Solicitar una revision de arquitectura segura.\"\n        ],\n        \"severity\": \"CRITICAL\",\n        \"task_id\": \"LACE-20260603-001\"\n      },\n      \"recorded_at\": \"2026-06-03T17:50:24Z\"\n    },\n    \"project_id\": \"continuity-mixed-pf-003\",\n    \"reason\": \"cyberlace_sensitive_document_blocked\",\n    \"task_id\": \"LACE-20260603-001\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 391,
+    "mtime": "2026-06-03T17:49:51Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/directives/RUNTIME-20260603173715-002-20260603T174951Z-a45437f34b3e.json",
+    "sha256": "8a6c467d5ff70cd76143ba4a98bf12f3cc5246a4a391aae946bcc8224ed5c636",
+    "size": 30336,
+    "tail": "  \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_003_programming.md, manten\"\n  },\n  \"task_id\": \"RUNTIME-20260603173715-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260603173715-001-split-002-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime/checkpoints/runtime-20260603173715-001-split-002-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"a45437f34b3e6ecf2a8ef06d653f334f5a7d539f07b2c7a767a70066fdd3679e\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blockedPaths": [],
+      "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+      "evidence": [
+        {
+          "domain": "private",
+          "line": 1,
+          "path": null,
+          "pattern": "fragmented_secret_reassembly",
+          "sample": "[REDACTED]",
+          "source": "task",
+          "type": "fragmented_sensitive_material"
+        }
+      ],
+      "kind": "cyberlace_sensitive_document_blocked",
+      "project_id": "continuity-mixed-pf-003",
+      "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+      "riskScore": 100.0,
+      "safeAlternative": {
+        "allowedActions": [
+          "Usar placeholders o fixtures sinteticos.",
+          "Redactar evidencia sensible antes de procesarla.",
+          "Disenar controles de acceso, auditoria y rutas seguras.",
+          "Convertir la tarea en una validacion de arquitectura segura."
+        ],
+        "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+        "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Retirar documentos o valores sensibles del alcance.",
+        "Usar datos sinteticos o redactados.",
+        "Solicitar una revision de arquitectura segura."
+      ],
+      "severity": "CRITICAL",
+      "task_id": "LACE-20260603-001"
+    },
+    "recorded_at": "2026-06-03T17:50:24Z"
+  },
+  "latestFailureIgnoredReason": "stale_failure_for_different_task:LACE-20260603-001",
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-06-03T17:50:11Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/mixed_science_programming_case_003_programming.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260603173715-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_003_programming.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-mixed-pf-003",
+  "runtimeDir": "workspace/projects/continuity-mixed-pf-003/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 484,
+    "mtime": "2026-06-03T17:50:24Z",
+    "path": "workspace/projects/continuity-mixed-pf-003/runtime/logs/agent-b6031906ce-terminal.log",
+    "sha256": "372284fa11d986b0afb4731a99041ad30fe138379216c44a51b00080bcd3bd5f",
+    "size": 16174,
+    "tail": "three-flask-socketio/workspace/projects/continuity-mixed-pf-003/runtime/artifacts/tool_invocations/RUNTIME-20260603173715-002-task_completion_gate-20260603T175001Z.json\",\n  \"reportPath\": null,\n  \"tool\": null,\n  \"actions\": null,\n  \"ignoredResidue\": null,\n  \"invocations\": [\n    {\n      \"tool\": \"scanner\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    },\n    {\n      \"tool\": \"findings\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Herramientas internas (broom_after_task):\n{\n  \"phase\": \"after_task\",\n  \"closureAllowed\": null,\n  \"activeFindings\": null,\n  \"warnings\": [],\n  \"blockers\": null,\n  \"artifactPath\": null,\n  \"reportPath\": \"runtime/artifacts/broom/20260603T175011.193604Z-RUNTIME-20260603173715-002-after_task.json\",\n  \"tool\": \"to-sweep-with-a-broom\",\n  \"actions\": [],\n  \"ignoredResidue\": [\n    {\n      \"kind\": \"failure_record\",\n      \"reason\": \"different_task:RUNTIME-20260603173715-001\",\n      \"taskId\": \"RUNTIME-20260603173715-001\"\n    }\n  ],\n  \"invocations\": []\n}\n[cyberlace] PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.\n"
+  }
+}

@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "audit_version": "complexity-audit-kernel-v1",
+  "generated_at": "2026-06-05T19:49:22.859165Z",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001-2",
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "complexity_score": 34,
+  "confidence": 92,
+  "estimated_minutes": 45,
+  "recommended_agents": 3,
+  "max_agents": 4,
+  "lace_min_cycles": 2,
+  "lace_target_cycles": 3,
+  "lace_max_cycles": 4,
+  "early_exit_allowed": true,
+  "early_exit_mode": "allowed",
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "runtime"
+  ],
+  "reasoning": [
+    "prompt palabras=33",
+    "capas detectadas en prompt: runtime, scanner",
+    "archivos materiales estimados=1",
+    "riesgo operativo bajo",
+    "expected_files=0",
+    "validation_commands=0",
+    "sin fallos historicos relevantes",
+    "incertidumbre baja"
+  ],
+  "layer_scores": {
+    "prompt": 30,
+    "project": 4,
+    "operational_risk": 0,
+    "blast_radius": 24,
+    "evidence": 8,
+    "history": 0,
+    "uncertainty": 0
+  },
+  "layers": {
+    "prompt": {
+      "score": 30,
+      "reasons": [
+        "prompt palabras=33",
+        "capas detectadas en prompt: runtime, scanner"
+      ],
+      "required_tools": [
+        "findings",
+        "integrity",
+        "scanner"
+      ],
+      "risk_flags": [
+        "runtime"
+      ]
+    },
+    "project": {
+      "score": 4,
+      "reasons": [
+        "archivos materiales estimados=1"
+      ],
+      "required_tools": [],
+      "risk_flags": [],
+      "observed": true,
+      "file_count": 1
+    },
+    "operational_risk": {
+      "score": 0,
+      "reasons": [
+        "riesgo operativo bajo"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "blast_radius": {
+      "score": 24,
+      "reasons": [
+        "expected_files=0"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "evidence": {
+      "score": 8,
+      "reasons": [
+        "validation_commands=0"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "history": {
+      "score": 0,
+      "reasons": [
+        "sin fallos historicos relevantes"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "uncertainty": {
+      "score": 0,
+      "reasons": [
+        "incertidumbre baja"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    }
+  },
+  "worker_task_audit": {
+    "task_id": "RUNTIME-20260605194922-001",
+    "audit_scope": "persistent_fifo_queue_design",
+    "deliverables": [
+      "runtime/complexity_audit.json",
+      "runtime/complexity_estimate.json"
+    ],
+    "non_goals": [
+      "do not mutate runtime/task_queue.json from this worker",
+      "do not mark project_state or task_history as completed",
+      "do not implement future benchmark suites in this task"
+    ],
+    "design_quality_target": {
+      "clarity": "state machine is explicit and auditable",
+      "traceability": "every queue transition has history and failure cause",
+      "resumability": "running tasks with expired leases are recoverable per task",
+      "verification": "artifact existence and JSON validity are testable immediately"
+    },
+    "fifo_invariants": [
+      "pending tasks keep an immutable sequence assigned at enqueue time",
+      "dequeue reads only pending tasks with dependencies satisfied",
+      "dequeue returns the lowest sequence among eligible pending tasks",
+      "priority remains planning metadata and does not override FIFO unless a future explicit policy changes queue_mode",
+      "completed and exhausted failed tasks are not returned by dequeue",
+      "running tasks require a lease_owner and lease_expires_at",
+      "a task retry creates an auditable failed attempt and returns the task to pending only when retry_count is below max_retries"
+    ],
+    "state_machine": {
+      "pending": {
+        "meaning": "task is durable, not leased, and eligible when dependencies are satisfied",
+        "allowed_next": [
+          "running"
+        ],
+        "required_fields": [
+          "id",
+          "status",
+          "sequence",
+          "created_at",
+          "timeout_seconds",
+          "max_retries",
+          "retry_count"
+        ]
+      },
+      "running": {
+        "meaning": "task has a single active worker lease and task-specific timeout",
+        "allowed_next": [
+          "completed",
+          "failed"
+        ],
+        "required_fields": [
+          "lease_owner",
+          "lease_expires_at",
+          "started_at"
+        ]
+      },
+      "completed": {
+        "meaning": "task produced required evidence and validation passed",
+        "allowed_next": [],
+        "required_fields": [
+          "completed_at",
+          "result"
+        ]
+      },
+      "failed": {
+        "meaning": "task failed with recorded cause; terminal only when retry budget is exhausted",
+        "allowed_next": [
+          "pending"
+        ],
+        "required_fields": [
+          "failed_at",
+          "last_failure_reason"
+        ]
+      }
+    },
+    "persistence_audit": {
+      "write_strategy": "temporary_file_plus_fsync_plus_atomic_rename",
+      "history_strategy": "append-only runtime/task_history.jsonl events controlled by the control plane",
+      "failure_strategy": "append-only runtime/failures.jsonl records with task_id, attempt, cause, and retry_decision",
+      "checkpoint_strategy": "task checkpoint_key points to runtime/checkpoints entries written by the control plane",
+      "resume_strategy": "on startup, expired running leases are reconciled before dequeue selects new pending work"
+    },
+    "validation_gates": [
+      {
+        "gate": "artifact_files_exist",
+        "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      },
+      {
+        "gate": "json_validity",
+        "command": "python3 -m json.tool runtime/complexity_audit.json"
+      },
+      {
+        "gate": "json_validity",
+        "command": "python3 -m json.tool runtime/complexity_estimate.json"
+      },
+      {
+        "gate": "internal_findings",
+        "statusCode": 200,
+        "ok": true,
+        "activeFindings": 0
+      },
+      {
+        "gate": "internal_integrity",
+        "statusCode": 200,
+        "ok": true,
+        "totalFindings": 0
+      },
+      {
+        "gate": "internal_scanner",
+        "statusCode": 423,
+        "ok": false,
+        "note": "project_locked while worker is active; retry after worker completion is required for final control-plane closure"
+      }
+    ],
+    "estimated_followup_tasks": [
+      "Add schema tests for pending/running/completed/failed task records",
+      "Implement atomic dequeue in orchestrator/task_queue.py",
+      "Implement per-task retry and lease expiry recovery in orchestrator/executor.py",
+      "Add resume checkpoint tests for expired running leases"
+    ]
+  }
+}

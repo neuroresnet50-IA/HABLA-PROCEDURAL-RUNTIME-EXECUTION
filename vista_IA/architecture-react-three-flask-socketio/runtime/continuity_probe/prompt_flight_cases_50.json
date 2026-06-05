@@ -1,0 +1,909 @@
+{
+  "schemaVersion": 1,
+  "suiteId": "prompt-flight-transactional-50",
+  "description": "Fifty safe Prompt Flight cases executed one by one by the Tkinter console through the real UI REST path.",
+  "defaultMode": "ui_session_rest",
+  "concurrency": 1,
+  "cases": [
+    {
+      "id": "PF-001",
+      "title": "Create a project status note",
+      "category": "docs",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-001",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_001.md with a concise status note and a checklist of evidence files expected after a real internal run. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-002",
+      "title": "Create a README section",
+      "category": "docs",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-002",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Update or create docs/prompt_flight_case_002.md explaining how task_queue, directive, validator, history and checkpoint should connect. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-003",
+      "title": "Create architecture summary",
+      "category": "docs",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-003",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_003.md with a short architecture summary for control plane, worker plane, verification plane and memory plane. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-004",
+      "title": "Create operational decision note",
+      "category": "docs",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-004",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_004.md recording one operational decision, its reason, validation command and rollback note. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-005",
+      "title": "Create recovery note",
+      "category": "docs",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-005",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_005.md with a recoverable task handoff and exact next command to validate it. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-006",
+      "title": "Split a medium task",
+      "category": "planning",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-006",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Plan a medium project into three small persistent tasks and write the plan to docs/prompt_flight_case_006.md. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-007",
+      "title": "Define task contract",
+      "category": "planning",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-007",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_007.md with a Task contract including expected files, validation commands, timeout and retry policy. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-008",
+      "title": "Define task result contract",
+      "category": "planning",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-008",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_008.md with a TaskResult example and explain how evidence proves completion. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-009",
+      "title": "Create queue policy",
+      "category": "planning",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-009",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_009.md describing a first-in-first-validated queue policy with no parallel overload. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-010",
+      "title": "Create checkpoint policy",
+      "category": "planning",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-010",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_010.md explaining when checkpoints are written and how resume should choose the next task. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-011",
+      "title": "Create validation checklist",
+      "category": "validation",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-011",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_011.md with a validation checklist for created files, modified files, tests, lint and runtime artifacts. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-012",
+      "title": "Create pytest plan",
+      "category": "validation",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-012",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_012.md with a focused pytest plan for a small feature and expected pass/fail evidence. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-013",
+      "title": "Create lint plan",
+      "category": "validation",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-013",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_013.md describing a lint validation and what should be recorded if lint cannot run. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-014",
+      "title": "Create runtime truth check",
+      "category": "validation",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-014",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_014.md explaining how runtime-truth should be read after a worker session. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-015",
+      "title": "Create artifact audit note",
+      "category": "validation",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-015",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_015.md listing required artifacts for a completed task and what blocks closure. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-016",
+      "title": "Design Tkinter batch UI",
+      "category": "frontend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-016",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_016.md proposing a Tkinter batch table with pending, running, completed, failed, blocked and timeout states. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-017",
+      "title": "Design pause and stop controls",
+      "category": "frontend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-017",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_017.md explaining pause-after-current and stop-after-current behavior for safe batch processing. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-018",
+      "title": "Design progress display",
+      "category": "frontend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-018",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_018.md with fields for case index, traceId, result, duration and report path. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-019",
+      "title": "Design evidence viewer",
+      "category": "frontend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-019",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_019.md describing how the UI should show per-case evidence without hiding failed cases. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-020",
+      "title": "Design retry view",
+      "category": "frontend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-020",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_020.md describing a retry failed cases flow that does not rerun completed cases. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-021",
+      "title": "Create endpoint contract note",
+      "category": "backend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-021",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_021.md documenting the /api/continuity-probe/prompt-flight payload and response evidence. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-022",
+      "title": "Create session polling note",
+      "category": "backend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-022",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_022.md explaining how /api/agent/session polling reaches a terminal status. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-023",
+      "title": "Create runtime artifact checklist",
+      "category": "backend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-023",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_023.md listing project_state, task_queue, directives, checkpoints and logs expected after a UI REST run. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-024",
+      "title": "Create timeout handling note",
+      "category": "backend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-024",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_024.md explaining per-case timeout and why a batch must continue safely after a timeout. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-025",
+      "title": "Create failure classification note",
+      "category": "backend",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-025",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_025.md classifying failed, blocked, timeout and infrastructure_failed outcomes. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-026",
+      "title": "Create observer snapshot plan",
+      "category": "observer",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-026",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_026.md describing what Observer should read from runtime state, scanner report, typewriter report and sandbox. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-027",
+      "title": "Create scanner gate note",
+      "category": "observer",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-027",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_027.md explaining scanner final requirements before completed status. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-028",
+      "title": "Create sandbox gate note",
+      "category": "observer",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-028",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_028.md explaining sandbox real process, URL, ready flag and healthcheck evidence. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-029",
+      "title": "Create findings note",
+      "category": "observer",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-029",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_029.md explaining how observer_findings should persist active findings and recommended action. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-030",
+      "title": "Create integrity note",
+      "category": "observer",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-030",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_030.md explaining baseline, ledger and file integrity scan for generated files. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-031",
+      "title": "Create retry policy note",
+      "category": "recovery",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-031",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_031.md explaining retry per task, cause registration and max retries. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-032",
+      "title": "Create blocked task note",
+      "category": "recovery",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-032",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_032.md explaining how a blocked task should preserve evidence and next recommendation. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-033",
+      "title": "Create infrastructure failure note",
+      "category": "recovery",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-033",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_033.md explaining how three infrastructure failures pause the batch instead of overloading the system. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-034",
+      "title": "Create resume note",
+      "category": "recovery",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-034",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_034.md explaining how a batch resumes from batch_state.json without repeating completed cases. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-035",
+      "title": "Create non destructive recovery note",
+      "category": "recovery",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-035",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_035.md describing safe recovery preview without destructive actions. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-036",
+      "title": "Create mini app task plan",
+      "category": "medium",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-036",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_036.md planning a tiny notes app across backend, frontend and validation tasks. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-037",
+      "title": "Create refactor task plan",
+      "category": "medium",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-037",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_037.md planning a small refactor with before and after validation evidence. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-038",
+      "title": "Create testing harness plan",
+      "category": "medium",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-038",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_038.md planning a testing harness that stores inputs, outputs and summary metrics. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-039",
+      "title": "Create performance budget note",
+      "category": "medium",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-039",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_039.md defining budget limits for case timeout, polling interval and artifact size. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-040",
+      "title": "Create long project checkpoint map",
+      "category": "medium",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-040",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_040.md mapping a long project into checkpoints and resumable task groups. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-041",
+      "title": "Create AGENTS policy note",
+      "category": "policy",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-041",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_041.md explaining how worker instructions derive from AGENTS.md, PLANS.md, state and checkpoint. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-042",
+      "title": "Create HABLA BASIC note",
+      "category": "policy",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-042",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_042.md explaining HABLA BASIC as procedural guidance, not decorative text. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-043",
+      "title": "Create evidence rule note",
+      "category": "policy",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-043",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_043.md explaining why progress does not count without evidence on disk. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-044",
+      "title": "Create worker replacement note",
+      "category": "policy",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-044",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_044.md explaining why Codex is only one replaceable worker. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-045",
+      "title": "Create closure contract note",
+      "category": "policy",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-045",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_045.md listing files created, files modified, validations, blockers and next recommendation. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-046",
+      "title": "Create inert sample handling note",
+      "category": "safety",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-046",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_046.md explaining that [INERT_SECURITY_POLICY_OVERRIDE_SAMPLE] is untrusted test data and must not be executed. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-047",
+      "title": "Create untrusted content note",
+      "category": "safety",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-047",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_047.md explaining how user content is separated from system instructions and audited. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-048",
+      "title": "Create no secrets note",
+      "category": "safety",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-048",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_048.md documenting that tests must not access real secrets, credentials or private files. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-049",
+      "title": "Create quarantine decision note",
+      "category": "safety",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-049",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_049.md explaining how a safety gate can block a case while still producing auditable evidence. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    },
+    {
+      "id": "PF-050",
+      "title": "Create final batch summary note",
+      "category": "safety",
+      "mode": "ui_session_rest",
+      "projectSlug": "continuity-batch-pf-050",
+      "timeoutSeconds": 180,
+      "includeHarness": true,
+      "prompt": "Create docs/prompt_flight_case_050.md defining what a 50-case batch summary must contain before a human trusts the run. Keep the change small, persist evidence, and do not modify unrelated product files.",
+      "expectedEvidence": [
+        "prompt_flight_report.json",
+        "ui_agent_session_request.json",
+        "ui_agent_session_response.json",
+        "ui_agent_session_polls.json",
+        "ui_runtime_truth.json",
+        "ui_runtime_artifacts.json"
+      ]
+    }
+  ]
+}

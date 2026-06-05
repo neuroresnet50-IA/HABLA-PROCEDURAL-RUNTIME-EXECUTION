@@ -1,0 +1,801 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 263.384617,
+  "eventsPath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-28T00:28:09Z",
+  "mode": "ui_session_rest",
+  "project": "faro-prompt-flight-e2e-20260528",
+  "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+  "reportPath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 61.574,
+      "evidence": {
+        "durationMs": 61.574,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 7.448,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 7.448,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 0.917,
+      "evidence": {
+        "durationMs": 0.917,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "outputHash": "3c28502301c8399e6d46bf623eb6daf39b8bf3b2ba682278b8c305b9ebbe8813",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "harness_summary": {
+      "durationMs": 79.95,
+      "evidence": {
+        "durationMs": 79.95,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T00:23:46Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "observer_status": {
+      "durationMs": 5.006,
+      "evidence": {
+        "durationMs": 5.006,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "plan_loaded": {
+      "durationMs": 9.026,
+      "evidence": {
+        "durationMs": 9.026,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "policy_loaded": {
+      "durationMs": 3.308,
+      "evidence": {
+        "durationMs": 3.308,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "prompt_classified": {
+      "durationMs": 0.499,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.499,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_classification.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "intent": "validate_or_test",
+        "promptChars": 262,
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "prompt_received": {
+      "durationMs": 1.137,
+      "evidence": {
+        "durationMs": 1.137,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/input_prompt.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "promptChars": 262,
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "response_synthesized": {
+      "durationMs": 7.298,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 7.298,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T00:28:09Z",
+        "mode": "ui_session_rest",
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "3392d62f6ae8b3aed1fc6824378842f18e1b34ec0d41e0ce5d800ad9d25b4b2d",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T00:28:09Z",
+        "taskId": "PROMPT-FLIGHT-faro-e2e-20260528T0024Z",
+        "traceId": "faro-prompt-flight-e2e-20260528T0024Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:09Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "task_planned": {
+      "durationMs": 0.476,
+      "evidence": {
+        "durationMs": 0.476,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "taskHash": "5e01e6035560f6ad741f4109b450715c729ced71f6f445a2d95d5d4c20debf0d",
+        "taskId": "PROMPT-FLIGHT-faro-e2e-20260528T0024Z"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 259202.478,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 259202.478,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T00:28:05Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 219,
+        "returncode": 0,
+        "sessionId": "agent-130639c250",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/logs/agent-130639c250-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:05Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 31.252,
+      "evidence": {
+        "durationMs": 31.252,
+        "elapsedMs": 29.205,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "faro-prompt-flight-e2e-20260528",
+        "sessionId": "agent-130639c250",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 0.628,
+      "evidence": {
+        "durationMs": 0.628,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "method": "POST",
+        "payloadHash": "975ddef445e01290c9cda4b3cb0982898048370f27ad914a67647a847a78b3e8",
+        "projectSlug": "faro-prompt-flight-e2e-20260528",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 1016.23,
+      "evidence": {
+        "durationMs": 1016.23,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T00:28:09Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 444,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/checkpoints/runtime-20260528002346-001-checkpoint.json",
+          "sha256": "3d0dd27877b5c9891689607b07cad14a3e8862304f5134b5992a811a2ad0894f",
+          "size": 16434,
+          "tail": "_level\": \"low\",\n            \"schema_version\": 1,\n            \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528\"\n          },\n          \"stderr\": \"\",\n          \"stdout\": \"\",\n          \"timed_out\": false\n        }\n      ],\n      \"evidence\": {\n        \"blockers\": [],\n        \"expected_files\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/faro_prompt_flight_e2e_20260528.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"size\": 26\n          }\n        ],\n        \"found\": [\n          \"docs/faro_prompt_flight_e2e_20260528.md\"\n        ],\n        \"missing\": [],\n        \"reported_created\": [\n          \"docs/faro_prompt_flight_e2e_20260528.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528002346-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 237,
+          "mtime": "2026-05-28T00:23:46Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/directives/RUNTIME-20260528002346-001-20260528T002346Z-7fe613c1dcde.json",
+          "sha256": "ff031a7d7bcf41109770e75a41e77394c4a18cf583a04aceeaec458a9ec03d14",
+          "size": 23586,
+          "tail": " file, stop.\",\n    \"id\": \"RUNTIME-20260528002346-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"FARO validation smoke for Prompt Flight after sandbox\"\n  },\n  \"task_id\": \"RUNTIME-20260528002346-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"7fe613c1dcdeffd69b0caf640b9bf98be09fea55f8a33f4ad66bf97bf96c9e05\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/faro-prompt-flight-e2e-20260528",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/project_state.json",
+          "sha256": "f4a7f5baedd4a2d51d039c39fa6770827f7774004c2075234f640fc4f05ab7de",
+          "size": 600,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-130639c250\",\n    \"complexity-estimate\",\n    \"runtime-20260528002346-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528002346-001\"\n  ],\n  \"created_at\": \"2026-05-28T00:23:46.277911+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T00:23:46.277911+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-130639c250\",\n  \"project_id\": \"faro-prompt-flight-e2e-20260528\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T00:27:59.886284+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T00:28:08Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/task_queue.json",
+          "sha256": "8a434d285334777ceb94692ae83d67c734b7306948b0c6badb78fd32370b7c04",
+          "size": 894,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528002346-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/faro_prompt_flight_e2e_20260528.md\"\n    ],\n    \"goal\": \"FARO validation smoke for Prompt Flight after sandbox repair.; Create a file named docs/faro_prompt_flight_e2e_20260528.md inside this project.; The file must contain exactly: FARO_PROMPT_FLIGHT_E2E_OK.; Do not modify unrelated files.; After creating the file, stop.\",\n    \"id\": \"RUNTIME-20260528002346-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"FARO validation smoke for Prompt Flight after sandbox\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/faro_prompt_flight_e2e_20260528.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 217,
+          "mtime": "2026-05-28T00:28:04Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/logs/agent-130639c250-terminal.log",
+          "sha256": "ee6834aea1ac0dddb5563ca0a0e88acb6233452c65bad06410c8e4fc1d725647",
+          "size": 7278,
+          "tail": "5-28T00:28:02Z\",\n        \"phase\": \"project_completion_gate\",\n        \"taskId\": \"PROJECT-COMPLETION\",\n        \"projectSlug\": \"faro-prompt-flight-e2e-20260528\",\n        \"tool\": \"findings\",\n        \"dryRun\": false,\n        \"required\": false,\n        \"ok\": false,\n        \"statusCode\": 0,\n        \"summary\": {\n          \"ok\": false,\n          \"statusCode\": 0,\n          \"error\": \"timeout\",\n          \"message\": \"timed out\"\n        },\n        \"artifactPath\": null,\n        \"error\": \"timeout\",\n        \"timedOut\": true\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T002803Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:09Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 948.204,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528002346-001",
+        "durationMs": 948.204,
+        "elapsedMs": 693.686,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T00:28:07Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T00:28:07Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:07Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 1.137,
+      "evidence": {
+        "durationMs": 1.137,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/input_prompt.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "promptChars": 262,
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 0.917,
+      "evidence": {
+        "durationMs": 0.917,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "outputHash": "3c28502301c8399e6d46bf623eb6daf39b8bf3b2ba682278b8c305b9ebbe8813",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 7.448,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 7.448,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 3.308,
+      "evidence": {
+        "durationMs": 3.308,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 9.026,
+      "evidence": {
+        "durationMs": 9.026,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 0.499,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.499,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_classification.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "intent": "validate_or_test",
+        "promptChars": 262,
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 0.476,
+      "evidence": {
+        "durationMs": 0.476,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "taskHash": "5e01e6035560f6ad741f4109b450715c729ced71f6f445a2d95d5d4c20debf0d",
+        "taskId": "PROMPT-FLIGHT-faro-e2e-20260528T0024Z"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 61.574,
+      "evidence": {
+        "durationMs": 61.574,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 5.006,
+      "evidence": {
+        "durationMs": 5.006,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 79.95,
+      "evidence": {
+        "durationMs": 79.95,
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T00:23:46Z",
+        "totalExperiences": 64
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 0.628,
+      "evidence": {
+        "durationMs": 0.628,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "method": "POST",
+        "payloadHash": "975ddef445e01290c9cda4b3cb0982898048370f27ad914a67647a847a78b3e8",
+        "projectSlug": "faro-prompt-flight-e2e-20260528",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T00:23:46Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 31.252,
+      "evidence": {
+        "durationMs": 31.252,
+        "elapsedMs": 29.205,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T00:23:46Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "faro-prompt-flight-e2e-20260528",
+        "sessionId": "agent-130639c250",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:23:46Z"
+    },
+    {
+      "durationMs": 259202.478,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 259202.478,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T00:28:05Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 219,
+        "returncode": 0,
+        "sessionId": "agent-130639c250",
+        "startedAt": "2026-05-28T00:23:46Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/logs/agent-130639c250-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:05Z"
+    },
+    {
+      "durationMs": 948.204,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528002346-001",
+        "durationMs": 948.204,
+        "elapsedMs": 693.686,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T00:28:07Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T00:28:07Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:07Z"
+    },
+    {
+      "durationMs": 1016.23,
+      "evidence": {
+        "durationMs": 1016.23,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T00:28:09Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 444,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/checkpoints/runtime-20260528002346-001-checkpoint.json",
+          "sha256": "3d0dd27877b5c9891689607b07cad14a3e8862304f5134b5992a811a2ad0894f",
+          "size": 16434,
+          "tail": "_level\": \"low\",\n            \"schema_version\": 1,\n            \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528\"\n          },\n          \"stderr\": \"\",\n          \"stdout\": \"\",\n          \"timed_out\": false\n        }\n      ],\n      \"evidence\": {\n        \"blockers\": [],\n        \"expected_files\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/faro_prompt_flight_e2e_20260528.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"size\": 26\n          }\n        ],\n        \"found\": [\n          \"docs/faro_prompt_flight_e2e_20260528.md\"\n        ],\n        \"missing\": [],\n        \"reported_created\": [\n          \"docs/faro_prompt_flight_e2e_20260528.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528002346-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 237,
+          "mtime": "2026-05-28T00:23:46Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/directives/RUNTIME-20260528002346-001-20260528T002346Z-7fe613c1dcde.json",
+          "sha256": "ff031a7d7bcf41109770e75a41e77394c4a18cf583a04aceeaec458a9ec03d14",
+          "size": 23586,
+          "tail": " file, stop.\",\n    \"id\": \"RUNTIME-20260528002346-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"FARO validation smoke for Prompt Flight after sandbox\"\n  },\n  \"task_id\": \"RUNTIME-20260528002346-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"7fe613c1dcdeffd69b0caf640b9bf98be09fea55f8a33f4ad66bf97bf96c9e05\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/faro-prompt-flight-e2e-20260528",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/project_state.json",
+          "sha256": "f4a7f5baedd4a2d51d039c39fa6770827f7774004c2075234f640fc4f05ab7de",
+          "size": 600,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-130639c250\",\n    \"complexity-estimate\",\n    \"runtime-20260528002346-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528002346-001\"\n  ],\n  \"created_at\": \"2026-05-28T00:23:46.277911+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T00:23:46.277911+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-130639c250\",\n  \"project_id\": \"faro-prompt-flight-e2e-20260528\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T00:27:59.886284+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T00:28:08Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T00:27:59Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/task_queue.json",
+          "sha256": "8a434d285334777ceb94692ae83d67c734b7306948b0c6badb78fd32370b7c04",
+          "size": 894,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528002346-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/faro_prompt_flight_e2e_20260528.md\"\n    ],\n    \"goal\": \"FARO validation smoke for Prompt Flight after sandbox repair.; Create a file named docs/faro_prompt_flight_e2e_20260528.md inside this project.; The file must contain exactly: FARO_PROMPT_FLIGHT_E2E_OK.; Do not modify unrelated files.; After creating the file, stop.\",\n    \"id\": \"RUNTIME-20260528002346-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"FARO validation smoke for Prompt Flight after sandbox\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/faro_prompt_flight_e2e_20260528.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 217,
+          "mtime": "2026-05-28T00:28:04Z",
+          "path": "workspace/projects/faro-prompt-flight-e2e-20260528/runtime/logs/agent-130639c250-terminal.log",
+          "sha256": "ee6834aea1ac0dddb5563ca0a0e88acb6233452c65bad06410c8e4fc1d725647",
+          "size": 7278,
+          "tail": "5-28T00:28:02Z\",\n        \"phase\": \"project_completion_gate\",\n        \"taskId\": \"PROJECT-COMPLETION\",\n        \"projectSlug\": \"faro-prompt-flight-e2e-20260528\",\n        \"tool\": \"findings\",\n        \"dryRun\": false,\n        \"required\": false,\n        \"ok\": false,\n        \"statusCode\": 0,\n        \"summary\": {\n          \"ok\": false,\n          \"statusCode\": 0,\n          \"error\": \"timeout\",\n          \"message\": \"timed out\"\n        },\n        \"artifactPath\": null,\n        \"error\": \"timeout\",\n        \"timedOut\": true\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/faro-prompt-flight-e2e-20260528/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T002803Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:09Z"
+    },
+    {
+      "durationMs": 7.298,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 7.298,
+        "evidencePath": "runtime/continuity_probe/faro-prompt-flight-e2e-20260528T0024Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T00:28:09Z",
+        "mode": "ui_session_rest",
+        "promptHash": "3a23f851175b6d1077518bb9cf54d72814f6323f54ea6aba96c532c2b0c0b5e4",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "3392d62f6ae8b3aed1fc6824378842f18e1b34ec0d41e0ce5d800ad9d25b4b2d",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T00:28:09Z",
+        "taskId": "PROMPT-FLIGHT-faro-e2e-20260528T0024Z",
+        "traceId": "faro-prompt-flight-e2e-20260528T0024Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T00:28:09Z"
+    }
+  ],
+  "startedAt": "2026-05-28T00:23:46Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 16,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "faro-prompt-flight-e2e-20260528T0024Z"
+}

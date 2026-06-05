@@ -1,23 +1,28 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import importlib
+import io
 import json
 import mimetypes
 import os
 import re
 import signal
 import shlex
+import shutil
 import socket
 import subprocess
 import sys
 import threading
 import time
+import urllib.parse
 import urllib.error
 import urllib.request
 from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
+from types import SimpleNamespace
 from typing import Any, Dict, List
 
 from agent_repair_service import (
@@ -27,7 +32,7 @@ from agent_repair_service import (
     suggested_repair_files as suggested_repair_files_service,
 )
 from agent_runtime import AgentRuntime, normalize_agent_runtime_mode
-from auth_routes import register_auth_routes
+from auth_routes import register_auth_routes, verify_current_user_password
 from architecture_ir import (
     build_architecture_ir,
     build_project_descriptor,
@@ -50,6 +55,8 @@ from orchestrator.complexity_estimator import estimate_complexity
 from orchestrator.email_command_plane import EmailCommandConfig, EmailCommandPlane
 from orchestrator.live_reviewer import build_reviewer_status, load_reviewer_events
 from orchestrator.observer_plane import ObserverConfig, ObserverPlane, build_observer_findings_report
+from orchestrator.observer_ui_behavior_tree import build_observer_ui_behavior_tree, persist_observer_ui_behavior_tree
+from orchestrator.runtime_task_cleaner import sweep_with_broom
 from orchestrator.state_store import StateStore
 from observer_runtime_service import ObserverRuntimeFacade
 from project_graph import (
@@ -65,6 +72,12 @@ from runtime_admin_routes import register_runtime_admin_routes
 from runtime_admin_service import RuntimeAdminService
 from sandbox_service import SandboxService
 from sandbox_routes import register_sandbox_routes
+from safety_learning_core import (
+    build_safety_learning_status,
+    learn_from_harness_result,
+    queue_repair_recommendation,
+    record_human_feedback,
+)
 from integrity_service import IntegrityService
 from workspace_blanqueo import (
     apply_selective_blanqueo,
@@ -80,6 +93,22 @@ except ImportError:
     CORS = None
 
 SOCKET_ASYNC_MODE = os.environ.get("NEURO_LACE_SOCKET_ASYNC_MODE", "threading")
+
+
+def env_flag_enabled(value: str | None, *, default: bool = False) -> bool:
+    raw = str(value or "").strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
+SOCKET_POLLING_ONLY = env_flag_enabled(
+    os.environ.get("NEURO_LACE_SOCKET_POLLING_ONLY"),
+    default=SOCKET_ASYNC_MODE == "threading",
+)
+SOCKETIO_OPTIONS: Dict[str, Any] = {}
+if SOCKET_POLLING_ONLY:
+    SOCKETIO_OPTIONS.update({"allow_upgrades": False, "transports": ["polling"]})
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "architecture-view-dev"
@@ -99,8 +128,7 @@ socketio = SocketIO(
     app,
     cors_allowed_origins="*",
     async_mode=SOCKET_ASYNC_MODE,
-    allow_upgrades=False,
-    transports=["polling"],
+    **SOCKETIO_OPTIONS,
 )
 register_auth_routes(app, secret_key=str(app.config.get("SECRET_KEY") or "architecture-view-dev"))
 register_cyberlace_routes(app, socketio)
@@ -115,9 +143,10 @@ EDITOR_STATE_FILE = Path(__file__).resolve().with_name("editor_state.json")
 ANALYSIS_STATE_FILE = Path(__file__).resolve().with_name("reverse_engineering_state.json")
 AGENT_WORKSPACE_ROOT = PROJECT_ROOT / "workspace"
 AGENT_PROJECTS_ROOT = AGENT_WORKSPACE_ROOT / "projects"
+PROTECTED_AGENT_PROJECTS = {"sesion-20260524210420", "sesion-20260524233805", "sesion-20260518014728-jeego-en-3d"}
 WORKSPACE_PATH_PREFIX = "workspace/projects/"
 ANALYSIS_PATH_PREFIX = "analysis/projects/"
-ACTIVE_AGENT_SESSION_STATUSES = {"queued", "starting", "running"}
+ACTIVE_AGENT_SESSION_STATUSES = {"queued", "preparing", "starting", "running"}
 CLOSED_AGENT_SESSION_STATUSES = {"completed", "failed", "stopped", "blocked"}
 CLOSED_AGENT_VISUAL_OPS = {
     "session_complete",
@@ -167,6 +196,20 @@ OBSERVER_FINDINGS_REPORT_NAME = "observer_findings.json"
 FROZEN_SNIPER_REPORT_NAME = "frozen_sniper_recovery_report.json"
 FROZEN_SNIPER_CONFIRMATION = "FROZEN_SNIPER"
 FILE_WRITE_LEDGER_NAME = "file_write_ledger.jsonl"
+UI_ACTION_QUEUE_NAME = "ui_action_queue.json"
+UI_ACTION_HISTORY_NAME = "ui_action_history.jsonl"
+UI_ACTION_ALLOWED_TOOLS = {
+    "scanner": "Scanner final",
+    "broom": "Escoba runtime",
+    "web_research": "Web research seguro",
+    "typewriter": "Typewriter final",
+    "integrity": "Integrity scan",
+    "lace_gate": "LACE closure gate",
+}
+UI_ACTION_SENSITIVE_QUERY_PATTERN = re.compile(
+    r"\b(api[_-]?key|token|secret|password|passwd|private[_-]?key|credential|credencial|secreto|contrasena)\b",
+    flags=re.IGNORECASE,
+)
 SANDBOX_HOST = os.environ.get("NEURO_LACE_SANDBOX_HOST", "127.0.0.1")
 SANDBOX_PORT_START = int(os.environ.get("NEURO_LACE_SANDBOX_PORT_START", "5600"))
 SANDBOX_PORT_END = int(os.environ.get("NEURO_LACE_SANDBOX_PORT_END", "5699"))
@@ -187,10 +230,39 @@ sandbox_service = SandboxService(
 )
 code_scanner_locks: Dict[str, threading.Lock] = {}
 integrity_action_locks: Dict[str, threading.Lock] = {}
+ui_action_lock = threading.Lock()
+ui_action_recent_signatures: Dict[str, float] = {}
 runtime_action_locks_lock = threading.Lock()
 frontend_asset_cache: Dict[str, Dict[str, Any]] = {}
 frontend_asset_cache_lock = threading.Lock()
+cyberlace_training_runs: Dict[str, Dict[str, Any]] = {}
+cyberlace_training_runs_lock = threading.RLock()
+continuity_probe_runs: Dict[str, Dict[str, Any]] = {}
+continuity_probe_runs_lock = threading.RLock()
 NORMALIZED_GRAPH_CACHE_TTL_SECONDS = float(os.environ.get("NEURO_LACE_GRAPH_CACHE_TTL_SECONDS", "8"))
+CYBERLACE_TRAINING_SCENARIOS = {
+    "obfuscated-secret",
+    "external-login",
+    "prompt-injection-readme",
+    "payment-data",
+    "multi-provider-token",
+}
+CYBERLACE_TRAINING_INTENSITIES = {"baseline", "hard", "extreme"}
+CYBERLACE_TRAINING_CASES_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_cases"
+CYBERLACE_TRAINING_REPORTS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_reports"
+CYBERLACE_TRAINING_CHECKPOINTS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_checkpoints"
+CYBERLACE_TRAINING_CAMPAIGNS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_campaigns"
+CYBERLACE_TRAINING_MEMORY_PATH = CYBERLACE_TRAINING_CAMPAIGNS_DIR / "memory.json"
+CYBERLACE_TRAINING_RUNS_DIR = PROJECT_ROOT / "runtime" / "cyberlace" / "training_runs"
+CYBERLACE_TRAINING_RUN_ACTIVE_STATUSES = {"queued", "running", "stopping"}
+CYBERLACE_TRAINING_RUN_TERMINAL_STATUSES = {"completed", "failed", "stopped", "interrupted"}
+CYBERLACE_TRAINING_ALLOWED_ROOTS = (
+    CYBERLACE_TRAINING_CASES_DIR,
+    CYBERLACE_TRAINING_REPORTS_DIR,
+    CYBERLACE_TRAINING_CHECKPOINTS_DIR,
+    CYBERLACE_TRAINING_CAMPAIGNS_DIR,
+    CYBERLACE_TRAINING_RUNS_DIR,
+)
 LINT_FULL_IR_MAX_NODES = int(os.environ.get("NEURO_LACE_LINT_FULL_IR_MAX_NODES", "40"))
 LINT_FULL_IR_MAX_BYTES = int(os.environ.get("NEURO_LACE_LINT_FULL_IR_MAX_BYTES", "250000"))
 normalized_graph_cache: Dict[str, Dict[str, Any]] = {}
@@ -422,6 +494,13 @@ def build_habla_runtime_status() -> Dict[str, Any]:
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+def _append_unique(values: Any, value: str) -> List[str]:
+    result = [str(item) for item in values if str(item)] if isinstance(values, list) else []
+    if value and value not in result:
+        result.append(value)
+    return result
 
 
 def runtime_reset_urls(port: int = DEFAULT_RUNTIME_RESET_PORT, host: str = DEFAULT_RUNTIME_RESET_HOST) -> Dict[str, Any]:
@@ -1650,6 +1729,19 @@ def build_default_algorithm(node: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def build_sequential_algorithm_edges(steps: List[Dict[str, Any]]) -> List[Dict[str, str]]:
+    edges: List[Dict[str, str]] = []
+    previous_id = ""
+    for step in steps:
+        step_id = str(step.get("id") or "").strip()
+        if not step_id:
+            continue
+        if previous_id and previous_id != step_id:
+            edges.append({"from": previous_id, "to": step_id, "label": ""})
+        previous_id = step_id
+    return edges
+
+
 def normalize_algorithm(algorithm: Any, node: Dict[str, Any]) -> Dict[str, Any]:
     if not isinstance(algorithm, dict):
         return build_default_algorithm(node)
@@ -1710,6 +1802,9 @@ def normalize_algorithm(algorithm: Any, node: Dict[str, Any]) -> Dict[str, Any]:
                 "label": str(edge.get("label") or ""),
             }
         )
+
+    if not normalized_edges and len(normalized_steps) > 1:
+        normalized_edges = build_sequential_algorithm_edges(normalized_steps)
 
     return {
         "title": str(algorithm.get("title") or f"Algoritmo interno de {node.get('name') or node.get('id')}"),
@@ -2886,6 +2981,23 @@ def emit_observer_event(payload: Dict[str, Any]) -> None:
     event = {key: value for key, value in dict(payload or {}).items() if value is not None}
     socketio.emit("agent:observer", event)
     socketio.emit("agent:visual", event)
+    mouse_action = observer_event_to_mouse_action(event)
+    if mouse_action is not None:
+        mouse_result = enqueue_operational_mouse_action(mouse_action, cooldown_seconds=45)
+        if not mouse_result.get("deduped"):
+            socketio.emit(
+                "agent:visual",
+                {
+                    "op": "operational_mouse_action_queued",
+                    "projectSlug": mouse_action.get("projectSlug"),
+                    "phase": "operational-mouse",
+                    "status": "queued",
+                    "message": f"Mouse operativo preparado: {mouse_action.get('targetToolLabel')}",
+                    "targetTool": mouse_action.get("targetTool"),
+                    "actionId": mouse_action.get("actionId"),
+                    "expectedEvidence": mouse_action.get("expectedEvidence"),
+                },
+            )
 
 
 observer_plane = ObserverPlane(
@@ -3166,7 +3278,7 @@ def dispatch_next_email_command() -> Dict[str, Any]:
             mode=str(command.get("runtimeMode") or "long-run"),
         )
         sync_runtime_graph(save_state=True)
-        projects = agent_runtime.list_projects()
+        projects = list_agent_projects_snapshot()
         socketio.emit("agent:projects", {"projects": projects})
         started = email_command_plane.mark_command(command["id"], "started", sessionId=session.get("sessionId"))
         emit_email_command_event(
@@ -3214,8 +3326,45 @@ def start_email_command_dispatcher() -> None:
         socketio.start_background_task(email_command_dispatch_loop, EMAIL_COMMAND_STOP_EVENT, socketio.sleep)
 
 
-def observer_status_payload() -> Dict[str, Any]:
-    status = observer_plane.status()
+def lightweight_observer_status_payload(error: str | None = None) -> Dict[str, Any]:
+    context = getattr(observer_plane, "context", None)
+    try:
+        behavior_tree = observer_plane.behavior_tree.to_dict()
+    except Exception:
+        behavior_tree = {}
+    try:
+        memory = observer_plane.memory.summary("")
+    except Exception:
+        memory = {}
+    try:
+        incident = observer_plane._incident_status()
+    except Exception:
+        incident = None
+    status: Dict[str, Any] = {
+        "enabled": bool(getattr(observer_plane, "enabled", False)),
+        "state": str(getattr(context, "state", "idle") or "idle"),
+        "tickCount": int(getattr(context, "tick_count", 0) or 0),
+        "behaviorTree": behavior_tree,
+        "activeProjectSlug": "",
+        "memory": memory if isinstance(memory, dict) else {},
+        "timeline": [],
+        "incident": incident,
+        "lightweight": True,
+    }
+    if error:
+        status["degraded"] = True
+        status["warning"] = f"observer_status_degraded: {error}"
+    return status
+
+
+def observer_status_payload(*, full: bool = False) -> Dict[str, Any]:
+    if full:
+        try:
+            status = observer_plane.status()
+        except Exception as error:
+            status = lightweight_observer_status_payload(str(error))
+    else:
+        status = lightweight_observer_status_payload()
     manual_pin = read_observer_manual_pin()
     human_pinned = bool(manual_pin.get("enabled"))
     status["runtimePath"] = str(OBSERVER_ROOT)
@@ -3332,9 +3481,289 @@ def get_habla_status():
     return jsonify({"ok": True, "habla": status})
 
 
+def _load_continuity_probe_module():
+    return importlib.import_module("orchestrator.continuity_probe")
+
+
+def _continuity_probe_public_state(trace_id: str) -> Dict[str, Any] | None:
+    run_id = str(trace_id or "").strip()
+    if not run_id:
+        return None
+    with continuity_probe_runs_lock:
+        state = deepcopy(continuity_probe_runs.get(run_id) or {})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=run_id)
+    except Exception:
+        report = None
+    if isinstance(report, dict):
+        state.update(
+            {
+                "traceId": run_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "eventsPath": report.get("eventsPath"),
+                "finishedAt": report.get("finishedAt"),
+                "report": report,
+            }
+        )
+    return state or None
+
+
+def _run_continuity_probe_background(trace_id: str, payload: Dict[str, Any]) -> None:
+    with continuity_probe_runs_lock:
+        state = continuity_probe_runs.setdefault(trace_id, {"traceId": trace_id})
+        state.update({"status": "running", "startedAt": utc_now()})
+    socketio.emit("agent:observer", {"op": "continuity_probe_started", "traceId": trace_id, "status": "running"})
+    try:
+        module = _load_continuity_probe_module()
+        report = module.run_continuity_probe(
+            repo_root=PROJECT_ROOT,
+            mode=str(payload.get("mode") or "active_canary"),
+            project=str(payload.get("project") or module.DEFAULT_PROJECT),
+            base_url=str(payload.get("baseUrl") or ""),
+            trace_id=trace_id,
+            timeout_seconds=int(payload.get("timeoutSeconds") or 45),
+            include_harness=bool(payload.get("includeHarness", True)),
+        )
+        ok = report.get("result") == "continuity_ok"
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": ok,
+                "traceId": trace_id,
+                "status": report.get("status"),
+                "result": report.get("result"),
+                "mode": report.get("mode"),
+                "project": report.get("project"),
+                "summary": report.get("summary"),
+                "reportPath": report.get("reportPath"),
+                "finishedAt": report.get("finishedAt"),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_completed", "traceId": trace_id, "status": report.get("status"), "result": report.get("result")})
+    except Exception as error:
+        app.logger.exception("continuity_probe_failed")
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = {
+                "ok": False,
+                "traceId": trace_id,
+                "status": "failed",
+                "result": "continuity_failed",
+                "error": str(error),
+                "finishedAt": utc_now(),
+            }
+        socketio.emit("agent:observer", {"op": "continuity_probe_failed", "traceId": trace_id, "status": "failed", "message": str(error)})
+
+
+@app.post("/api/continuity-probe/start")
+def start_continuity_probe():
+    payload = request.get_json(silent=True) or {}
+    try:
+        module = _load_continuity_probe_module()
+        mode = str(payload.get("mode") or "active_canary").strip().lower()
+        if mode not in module.VALID_MODES:
+            return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.VALID_MODES)}), 400
+        trace_id = module.safe_slug(payload.get("traceId") or module.new_trace_id(), "continuity")
+        project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
+        base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
+        base_url = str(base_url_raw or "").rstrip("/")
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 45), 300))
+        include_harness = bool(payload.get("includeHarness", True))
+        run_payload = {
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "timeoutSeconds": timeout_seconds,
+            "includeHarness": include_harness,
+        }
+        initial = {
+            "ok": True,
+            "traceId": trace_id,
+            "status": "queued",
+            "result": "queued",
+            "mode": mode,
+            "project": project,
+            "baseUrl": base_url,
+            "includeHarness": include_harness,
+            "createdAt": utc_now(),
+        }
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = initial
+        if bool(payload.get("sync")):
+            report = module.run_continuity_probe(
+                repo_root=PROJECT_ROOT,
+                mode=mode,
+                project=project,
+                base_url=base_url,
+                trace_id=trace_id,
+                timeout_seconds=timeout_seconds,
+                include_harness=include_harness,
+            )
+            ok = report.get("result") == "continuity_ok"
+            with continuity_probe_runs_lock:
+                continuity_probe_runs[trace_id] = {
+                    **initial,
+                    "ok": ok,
+                    "status": report.get("status"),
+                    "result": report.get("result"),
+                    "summary": report.get("summary"),
+                    "reportPath": report.get("reportPath"),
+                    "finishedAt": report.get("finishedAt"),
+                }
+            return jsonify({"ok": ok, "traceId": trace_id, "run": continuity_probe_runs[trace_id], "report": report})
+        socketio.start_background_task(_run_continuity_probe_background, trace_id, run_payload)
+        return jsonify({"ok": True, "traceId": trace_id, "run": initial})
+    except Exception as error:
+        app.logger.exception("continuity_probe_start_failed")
+        return jsonify({"ok": False, "error": "continuity_probe_start_failed", "message": str(error)}), 500
+
+
+@app.get("/api/continuity-probe/status/<trace_id>")
+def get_continuity_probe_status(trace_id: str):
+    state = _continuity_probe_public_state(trace_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "continuity_probe_not_found"}), 404
+    return jsonify({"ok": True, "run": state})
+
+
+@app.get("/api/continuity-probe/report/<trace_id>")
+def get_continuity_probe_report(trace_id: str):
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_continuity_report(repo_root=PROJECT_ROOT, trace_id=trace_id)
+    except Exception as error:
+        return jsonify({"ok": False, "error": "continuity_probe_report_failed", "message": str(error)}), 500
+    if report is None:
+        return jsonify({"ok": False, "error": "continuity_probe_report_not_found"}), 404
+    return jsonify({"ok": True, "traceId": trace_id, "report": report})
+
+
+@app.get("/api/continuity-probe/runs")
+def list_continuity_probe_runs():
+    try:
+        module = _load_continuity_probe_module()
+        reports = module.list_continuity_reports(repo_root=PROJECT_ROOT, limit=30)
+    except Exception:
+        reports = []
+    with continuity_probe_runs_lock:
+        memory_runs = list(continuity_probe_runs.values())
+    return jsonify({"ok": True, "runs": reports, "memoryRuns": memory_runs})
+
+
+PROMPT_FLIGHT_WORKER_REQUIRED_MODES = {"safe_canary", "real_session_guarded", "ui_session_rest"}
+
+
+def _prompt_flight_worker_diagnostics() -> Dict[str, Any]:
+    diagnostics = agent_runtime.codex_runtime_diagnostics()
+    return {
+        "ok": True,
+        "result": "worker_runtime_diagnostics",
+        "diagnostics": diagnostics,
+    }
+
+
+def _prompt_flight_worker_gate(mode: str) -> dict[str, Any] | None:
+    normalized_mode = str(mode or "").strip().lower()
+    diagnostics = agent_runtime.codex_runtime_diagnostics()
+    if normalized_mode not in PROMPT_FLIGHT_WORKER_REQUIRED_MODES:
+        return None
+    if diagnostics.get("promptFlightWorkerReady") is True:
+        return None
+    return {
+        "ok": False,
+        "result": "prompt_flight_blocked",
+        "reason": "worker_runtime_not_verified",
+        "message": "Prompt Flight requires a verified worker runtime before creating a batch or case.",
+        "mode": normalized_mode,
+        "effectiveSandboxMode": diagnostics.get("effectiveSandboxMode"),
+        "effectiveApprovalPolicy": diagnostics.get("effectiveApprovalPolicy"),
+        "allowDangerFullAccess": diagnostics.get("allowDangerFullAccess"),
+        "usesDangerBypass": diagnostics.get("usesDangerBypass"),
+        "usesWorkspaceWrite": diagnostics.get("usesWorkspaceWrite"),
+        "safeCommandSummary": diagnostics.get("safeCommandSummary"),
+        "blockers": diagnostics.get("blockers") or [],
+        "requiredAction": diagnostics.get("requiredAction") or "./start_prompt_flight_tkinter.sh --local-worker-no-bwrap",
+        "failedStages": ["worker_runtime_gate"],
+    }
+
+
+@app.get("/api/continuity-probe/prompt-flight/worker-diagnostics")
+def get_prompt_flight_worker_diagnostics():
+    return jsonify(_prompt_flight_worker_diagnostics())
+
+
+@app.post("/api/continuity-probe/prompt-flight")
+def run_continuity_prompt_flight():
+    payload = request.get_json(silent=True) or {}
+    try:
+        module = _load_continuity_probe_module()
+        prompt = str(payload.get("prompt") or "").strip()
+        if not prompt:
+            return jsonify({"ok": False, "error": "missing_prompt"}), 400
+        mode = str(payload.get("mode") or "trace_only").strip().lower()
+        if mode not in module.PROMPT_FLIGHT_MODES:
+            return jsonify({"ok": False, "error": "invalid_mode", "modes": sorted(module.PROMPT_FLIGHT_MODES)}), 400
+        gate_block = _prompt_flight_worker_gate(mode)
+        if gate_block is not None:
+            return jsonify(gate_block), 409
+        trace_id = module.safe_slug(payload.get("traceId") or module.new_prompt_trace_id(), "prompt-flight")
+        project = module.safe_slug(payload.get("project") or module.DEFAULT_PROJECT)
+        base_url_raw = payload.get("baseUrl") if "baseUrl" in payload else (request.host_url.rstrip("/") or "http://127.0.0.1:5001")
+        base_url = str(base_url_raw or "").rstrip("/")
+        max_timeout = int(getattr(module, "MAX_PROMPT_FLIGHT_TIMEOUT_SECONDS", 1200))
+        timeout_seconds = max(5, min(int(payload.get("timeoutSeconds") or 90), max_timeout))
+        include_harness = bool(payload.get("includeHarness", True))
+        report = module.run_prompt_flight_probe(
+            repo_root=PROJECT_ROOT,
+            prompt=prompt,
+            mode=mode,
+            project=project,
+            base_url=base_url,
+            trace_id=trace_id,
+            timeout_seconds=timeout_seconds,
+            include_harness=include_harness,
+        )
+        ok = report.get("result") == "prompt_flight_ok"
+        run = {
+            "ok": ok,
+            "traceId": trace_id,
+            "type": "prompt_flight",
+            "status": report.get("status"),
+            "result": report.get("result"),
+            "mode": mode,
+            "project": project,
+            "summary": report.get("summary"),
+            "reportPath": report.get("reportPath"),
+            "finishedAt": report.get("finishedAt"),
+        }
+        with continuity_probe_runs_lock:
+            continuity_probe_runs[trace_id] = run
+        socketio.emit("agent:observer", {"op": "prompt_flight_completed", "traceId": trace_id, "status": report.get("status"), "result": report.get("result")})
+        return jsonify({"ok": ok, "traceId": trace_id, "run": run, "report": report})
+    except Exception as error:
+        app.logger.exception("continuity_prompt_flight_failed")
+        return jsonify({"ok": False, "error": "continuity_prompt_flight_failed", "message": str(error)}), 500
+
+
+@app.get("/api/continuity-probe/prompt-flight/report/<trace_id>")
+def get_continuity_prompt_flight_report(trace_id: str):
+    try:
+        module = _load_continuity_probe_module()
+        report = module.load_prompt_flight_report(repo_root=PROJECT_ROOT, trace_id=trace_id)
+    except Exception as error:
+        return jsonify({"ok": False, "error": "prompt_flight_report_failed", "message": str(error)}), 500
+    if report is None:
+        return jsonify({"ok": False, "error": "prompt_flight_report_not_found"}), 404
+    return jsonify({"ok": True, "traceId": trace_id, "report": report})
+
+
 @app.get("/api/observer/status")
 def get_observer_status():
-    return jsonify({"ok": True, "observer": observer_status_payload()})
+    full = env_flag_enabled(request.args.get("full"), default=False)
+    return jsonify({"ok": True, "observer": observer_status_payload(full=full)})
 
 
 @app.post("/api/observer/enabled")
@@ -3606,9 +4035,859 @@ def load_habla_architecture_demo():
     return jsonify({"ok": True, "graph": graph, "sessions": []})
 
 
+
+def _relative_repo_path(path: Path) -> str:
+    try:
+        return path.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+    except ValueError:
+        return path.as_posix()
+
+
+def _artifact_time(path: Path) -> str:
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat()
+    except OSError:
+        return ""
+
+
+def _list_cyberlace_training_artifacts(root: Path, *, suffixes: tuple[str, ...], limit: int = 30) -> List[Dict[str, Any]]:
+    root.mkdir(parents=True, exist_ok=True)
+    rows: List[Dict[str, Any]] = []
+    for path in sorted(root.glob("*"), key=lambda item: item.stat().st_mtime if item.exists() else 0, reverse=True):
+        if not path.is_file() or path.suffix.lower() not in suffixes:
+            continue
+        try:
+            size = path.stat().st_size
+        except OSError:
+            size = 0
+        rows.append(
+            {
+                "name": path.name,
+                "path": _relative_repo_path(path),
+                "updatedAt": _artifact_time(path),
+                "bytes": size,
+            }
+        )
+        if len(rows) >= limit:
+            break
+    return rows
+
+
+def _load_cyberlace_training_loop_module():
+    tools_root = PROJECT_ROOT / "tools"
+    tools_path = str(tools_root)
+    if tools_path not in sys.path:
+        sys.path.insert(0, tools_path)
+    return importlib.import_module("cyberlace_training_loop")
+
+
+def _training_case_id(value: Any, scenario: str) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        raw = f"ui-{scenario}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}"
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "-", raw).strip("-._")
+    return cleaned[:90] or f"ui-{scenario}"
+
+
+def _training_artifact_path(relative_path: str) -> Path | None:
+    raw = str(relative_path or "").strip().lstrip("/")
+    if not raw:
+        return None
+    candidate = (PROJECT_ROOT / raw).resolve()
+    allowed_roots = [root.resolve() for root in CYBERLACE_TRAINING_ALLOWED_ROOTS]
+    if not any(str(candidate).startswith(str(root) + os.sep) or candidate == root for root in allowed_roots):
+        return None
+    if candidate.suffix.lower() not in {".json", ".jsonl", ".md", ".txt"}:
+        return None
+    return candidate if candidate.exists() and candidate.is_file() else None
+
+
+@app.get("/api/harness/training/summary")
+def get_harness_training_summary():
+    return jsonify(
+        {
+            "ok": True,
+            "scenarios": sorted(CYBERLACE_TRAINING_SCENARIOS),
+            "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES),
+            "cases": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CASES_DIR, suffixes=(".json",)),
+            "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",)),
+            "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",)),
+            "campaigns": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CAMPAIGNS_DIR, suffixes=(".json", ".md")),
+            "runs": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_RUNS_DIR, suffixes=(".json", ".jsonl")),
+            "memory": {
+                "path": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+                "exists": CYBERLACE_TRAINING_MEMORY_PATH.exists(),
+                "updatedAt": _artifact_time(CYBERLACE_TRAINING_MEMORY_PATH) if CYBERLACE_TRAINING_MEMORY_PATH.exists() else "",
+            },
+            "safetyLearning": build_safety_learning_status(limit=8),
+        }
+    )
+
+
+@app.get("/api/harness/safety-learning/status")
+def get_harness_safety_learning_status():
+    return jsonify(build_safety_learning_status(limit=12))
+
+
+@app.post("/api/harness/safety-learning/feedback")
+def post_harness_safety_learning_feedback():
+    payload = request.get_json(silent=True) or {}
+    return jsonify(record_human_feedback(payload))
+
+
+@app.post("/api/harness/safety-learning/repair-request")
+def post_harness_safety_learning_repair_request():
+    payload = request.get_json(silent=True) or {}
+    return jsonify(queue_repair_recommendation(payload))
+
+
+@app.get("/api/harness/training/artifact")
+def get_harness_training_artifact():
+    artifact = _training_artifact_path(str(request.args.get("path") or ""))
+    if artifact is None:
+        return jsonify({"ok": False, "error": "artifact_not_found"}), 404
+    try:
+        content = artifact.read_text(encoding="utf-8", errors="replace")
+    except OSError as error:
+        return jsonify({"ok": False, "error": "artifact_read_failed", "message": str(error)}), 500
+    return jsonify({"ok": True, "path": _relative_repo_path(artifact), "content": content})
+
+
+@app.post("/api/harness/training/generate-run")
+def post_harness_training_generate_run():
+    payload = request.get_json(silent=True) or {}
+    scenario = str(payload.get("scenario") or "").strip().lower()
+    if scenario not in CYBERLACE_TRAINING_SCENARIOS:
+        return jsonify({"ok": False, "error": "invalid_scenario", "scenarios": sorted(CYBERLACE_TRAINING_SCENARIOS)}), 400
+    case_id = _training_case_id(payload.get("caseId") or payload.get("case_id"), scenario)
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        case = loop.generated_case(scenario, case_id)
+        case_path = loop.TRAINING_CASES_DIR / f"{case['id']}.json"
+        loop.write_json(case_path, case)
+        args = SimpleNamespace(case=str(case_path), base_url=base_url)
+        output_buffer = io.StringIO()
+        with contextlib.redirect_stdout(output_buffer):
+            result = loop.run_case(args)
+        learning = learn_from_harness_result(
+            result,
+            case=case,
+            context={"source": "manual", "casePath": _relative_repo_path(case_path), "cycle": 1},
+        )
+        result["learning"] = {
+            "experienceId": learning.get("experience", {}).get("id"),
+            "diagnosis": learning.get("evaluation", {}).get("diagnosis"),
+            "severity": learning.get("evaluation", {}).get("severity"),
+            "recommendation": learning.get("recommendation"),
+        }
+        console_lines = [line for line in output_buffer.getvalue().splitlines() if line.strip()]
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        return jsonify(
+            {
+                "ok": True,
+                "case": {"id": case.get("id"), "path": _relative_repo_path(case_path), "scenario": scenario},
+                "result": result,
+                "console": console_lines[-30:],
+                "summary": {
+                    "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",), limit=8),
+                    "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",), limit=8),
+                    "safetyLearning": build_safety_learning_status(limit=8),
+                },
+                "safetyLearning": learning,
+            }
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_generate_run_failed")
+        return jsonify({"ok": False, "error": "training_run_failed", "message": str(error)}), 500
+
+
+
+
+def _training_run_paths(run_id: str) -> tuple[Path, Path]:
+    safe_run_id = _training_case_id(run_id, "autopilot-run")
+    return (
+        CYBERLACE_TRAINING_RUNS_DIR / f"{safe_run_id}.json",
+        CYBERLACE_TRAINING_RUNS_DIR / f"{safe_run_id}.jsonl",
+    )
+
+
+def _training_run_status_active(status: Any) -> bool:
+    return str(status or "").lower() in CYBERLACE_TRAINING_RUN_ACTIVE_STATUSES
+
+
+def _training_run_resume_from_cycle(state: Dict[str, Any]) -> int:
+    results = state.get("results") if isinstance(state.get("results"), list) else []
+    return max(1, len(results) + 1)
+
+
+def _training_run_attach_paths(run_id: str, state: Dict[str, Any]) -> Dict[str, Any]:
+    state = dict(state)
+    state_path, events_path = _training_run_paths(run_id)
+    state.setdefault("runId", run_id)
+    state["runPath"] = _relative_repo_path(state_path)
+    state["eventsPath"] = _relative_repo_path(events_path)
+    return state
+
+
+def _training_run_persist_state(run_id: str, state: Dict[str, Any]) -> Dict[str, Any]:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    state = _training_run_attach_paths(run_id, state)
+    state_path, _ = _training_run_paths(run_id)
+    state_path.write_text(json.dumps(state, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return state
+
+
+def _training_run_append_event_record(run_id: str, event: Dict[str, Any]) -> None:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    _, events_path = _training_run_paths(run_id)
+    payload = dict(event)
+    payload.setdefault("runId", run_id)
+    payload.setdefault("at", datetime.now(timezone.utc).isoformat())
+    with events_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def _training_run_load_from_disk(run_id: str) -> Dict[str, Any] | None:
+    state_path, _ = _training_run_paths(run_id)
+    data = load_json_file(state_path, None)
+    if not isinstance(data, dict):
+        return None
+    return _training_run_attach_paths(str(data.get("runId") or run_id), data)
+
+
+def _training_run_mark_interrupted(run_id: str, state: Dict[str, Any], *, reason: str) -> Dict[str, Any]:
+    updated = _training_run_attach_paths(run_id, state)
+    now = datetime.now(timezone.utc).isoformat()
+    updated.update(
+        {
+            "status": "interrupted",
+            "phase": "interrupted",
+            "message": "Campaña interrumpida: el backend no conserva una tarea viva para este run.",
+            "interruptedAt": now,
+            "interruptionReason": reason,
+            "resumable": True,
+            "resumeFromCycle": _training_run_resume_from_cycle(updated),
+            "stopRequested": False,
+            "updatedAt": now,
+        }
+    )
+    steps = updated.setdefault("steps", [])
+    if isinstance(steps, list):
+        steps.append(
+            {
+                "cycle": None,
+                "phase": "interrupted",
+                "message": updated["message"],
+                "status": "interrupted",
+                "at": now,
+            }
+        )
+        if len(steps) > 120:
+            del steps[:-120]
+    updated = _training_run_persist_state(run_id, updated)
+    _training_run_append_event_record(
+        run_id,
+        {
+            "type": "run_interrupted",
+            "phase": "interrupted",
+            "status": "interrupted",
+            "reason": reason,
+            "resumeFromCycle": updated.get("resumeFromCycle"),
+        },
+    )
+    return updated
+
+
+def _training_recover_orphaned_runs() -> None:
+    CYBERLACE_TRAINING_RUNS_DIR.mkdir(parents=True, exist_ok=True)
+    with cyberlace_training_runs_lock:
+        live_run_ids = {run_id for run_id, state in cyberlace_training_runs.items() if _training_run_status_active((state or {}).get("status"))}
+    for state_path in CYBERLACE_TRAINING_RUNS_DIR.glob("*.json"):
+        state = load_json_file(state_path, None)
+        if not isinstance(state, dict):
+            continue
+        run_id = str(state.get("runId") or state_path.stem)
+        if run_id in live_run_ids:
+            continue
+        if _training_run_status_active(state.get("status")):
+            _training_run_mark_interrupted(run_id, state, reason="backend_process_restart_or_memory_loss")
+
+
+def _training_active_run_state() -> Dict[str, Any] | None:
+    _training_recover_orphaned_runs()
+    with cyberlace_training_runs_lock:
+        for state in cyberlace_training_runs.values():
+            if isinstance(state, dict) and _training_run_status_active(state.get("status")):
+                return deepcopy(state)
+    return None
+
+
+def _training_run_public_state(run_id: str) -> Dict[str, Any] | None:
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.get(run_id)
+        if isinstance(state, dict):
+            return deepcopy(state)
+    state = _training_run_load_from_disk(run_id)
+    if state is None:
+        return None
+    if _training_run_status_active(state.get("status")):
+        state = _training_run_mark_interrupted(run_id, state, reason="backend_process_restart_or_memory_loss")
+    return deepcopy(state)
+
+
+def _training_run_update(run_id: str, **updates: Any) -> Dict[str, Any]:
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.setdefault(run_id, {"runId": run_id})
+        state.update(updates)
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+        return deepcopy(state)
+
+
+def _training_run_append_step(run_id: str, *, cycle: int | None, phase: str, message: str, status: str = "running") -> None:
+    now = datetime.now(timezone.utc).isoformat()
+    step = {
+        "cycle": cycle,
+        "phase": phase,
+        "message": message,
+        "status": status,
+        "at": now,
+    }
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.setdefault(run_id, {"runId": run_id})
+        steps = state.setdefault("steps", [])
+        steps.append(step)
+        state["phase"] = phase
+        state["message"] = message
+        state["updatedAt"] = now
+        if len(steps) > 120:
+            del steps[:-120]
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+    _training_run_append_event_record(run_id, {"type": "step", **step})
+
+
+def _training_run_stop_requested(run_id: str) -> bool:
+    with cyberlace_training_runs_lock:
+        return bool((cyberlace_training_runs.get(run_id) or {}).get("stopRequested"))
+
+
+def _training_wait_between_autopilot_tasks(run_id: str, *, cycle: int, next_cycle: int, seconds: float) -> bool:
+    delay = max(1.0, min(float(seconds or 8.0), 300.0))
+    deadline = time.monotonic() + delay
+    _training_run_append_step(
+        run_id,
+        cycle=cycle,
+        phase="cooldown",
+        message=f"Pausa de {delay:g}s antes de lanzar la tarea {next_cycle}; protegiendo el runtime de solapamientos.",
+        status="running",
+    )
+    while True:
+        if _training_run_stop_requested(run_id):
+            _training_run_update(run_id, phase="stopping", delayRemainingSeconds=0)
+            return False
+        remaining = max(0.0, deadline - time.monotonic())
+        _training_run_update(
+            run_id,
+            phase="cooldown",
+            delayRemainingSeconds=round(remaining, 1),
+            message=f"Pausa entre tareas: {remaining:.1f}s antes de la tarea {next_cycle}.",
+        )
+        if remaining <= 0:
+            break
+        time.sleep(min(1.0, remaining))
+    _training_run_update(run_id, delayRemainingSeconds=0)
+    _training_run_append_step(
+        run_id,
+        cycle=cycle,
+        phase="cooldown",
+        message=f"Pausa completada; la tarea {next_cycle} puede iniciar.",
+        status="completed",
+    )
+    return True
+
+
+def _run_harness_training_autopilot_background(
+    *,
+    run_id: str,
+    campaign_id: str,
+    cycles: int,
+    intensity: str,
+    objective: str,
+    base_url: str,
+    continuous: bool = False,
+    task_delay_seconds: float = 8.0,
+    start_cycle: int = 1,
+    initial_results: List[Dict[str, Any]] | None = None,
+) -> None:
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        memory = loop.load_training_memory()
+        results: List[Dict[str, Any]] = deepcopy(initial_results or [])
+        _training_run_update(run_id, status="running", phase="bootstrap", message="Inicializando agente generador y memoria de entrenamiento.")
+        _training_run_append_step(run_id, cycle=None, phase="bootstrap", message="Memoria cargada; iniciando campaña autónoma.", status="completed")
+
+        max_cycles = 1000 if continuous else cycles
+        stopped_by_user = False
+        for cycle in range(max(1, int(start_cycle or 1)), max_cycles + 1):
+            if _training_run_stop_requested(run_id):
+                stopped_by_user = True
+                _training_run_append_step(run_id, cycle=None, phase="stopping", message="Solicitud humana de detener recibida; cerrando campaña con evidencia acumulada.", status="completed")
+                break
+            _training_run_append_step(run_id, cycle=cycle, phase="metacognitive-plan", message=f"Ciclo {cycle}: analizando memoria previa y seleccionando familia de ataque.")
+            case = loop.build_autonomous_case(
+                campaign_id=campaign_id,
+                cycle=cycle,
+                intensity=intensity,
+                objective=objective,
+                previous_results=results,
+            )
+            scenario = str(case.get("scenario") or "unknown")
+            case_path = loop.TRAINING_CASES_DIR / f"{case['id']}.json"
+            loop.write_json(case_path, case)
+            _training_run_update(
+                run_id,
+                currentCycle=cycle,
+                currentScenario=scenario,
+                currentCase=case.get("id"),
+                currentCasePath=_relative_repo_path(case_path),
+            )
+            _training_run_append_step(run_id, cycle=cycle, phase="case-generated", message=f"Ciclo {cycle}: caso fabricado ({scenario}) y fixture escrito.", status="completed")
+            _training_run_append_step(run_id, cycle=cycle, phase="runtime-dispatch", message=f"Ciclo {cycle}: enviando caso al runtime real por /api/agent/session.")
+
+            output_buffer = io.StringIO()
+            with contextlib.redirect_stdout(output_buffer):
+                result = loop.run_case(SimpleNamespace(case=str(case_path), base_url=base_url))
+            result["cycle"] = cycle
+            result["scenario"] = scenario
+            result["casePath"] = _relative_repo_path(case_path)
+            result["selectionReason"] = (case.get("campaign") or {}).get("selectionReason")
+            learning = learn_from_harness_result(
+                result,
+                case=case,
+                context={
+                    "source": "autopilot",
+                    "campaignId": campaign_id,
+                    "cycle": cycle,
+                    "casePath": _relative_repo_path(case_path),
+                },
+            )
+            result["learning"] = {
+                "experienceId": learning.get("experience", {}).get("id"),
+                "diagnosis": learning.get("evaluation", {}).get("diagnosis"),
+                "severity": learning.get("evaluation", {}).get("severity"),
+                "needsRepair": learning.get("evaluation", {}).get("needsRepair"),
+                "recommendation": learning.get("recommendation"),
+            }
+            results.append(result)
+            _training_run_update(run_id, results=deepcopy(results), learningStatus=build_safety_learning_status(limit=8))
+            _training_run_append_step(
+                run_id,
+                cycle=cycle,
+                phase="evaluation",
+                message=f"Ciclo {cycle}: evaluación {'PASSED' if result.get('passed') else 'FAILED'} con status={result.get('status')} action={result.get('runtimeAction')}.",
+                status="completed" if result.get("passed") else "failed",
+            )
+            _training_run_append_step(
+                run_id,
+                cycle=cycle,
+                phase="learning",
+                message=f"Ciclo {cycle}: Safety Learning Core clasificó {result['learning'].get('diagnosis')} y recomienda {((result['learning'].get('recommendation') or {}).get('action') or 'generate_next_case')}.",
+                status="completed",
+            )
+
+            lessons = memory.setdefault("lessons", [])
+            lessons.append(
+                {
+                    "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                    "campaignId": campaign_id,
+                    "cycle": cycle,
+                    "scenario": scenario,
+                    "case": case.get("id"),
+                    "passed": result.get("passed"),
+                    "status": result.get("status"),
+                    "runtimeAction": result.get("runtimeAction"),
+                    "failures": result.get("failures") or [],
+                    "report": result.get("report"),
+                    "checkpoint": result.get("checkpoint"),
+                }
+            )
+            loop.save_training_memory(memory)
+            _training_run_append_step(run_id, cycle=cycle, phase="memory", message=f"Ciclo {cycle}: memoria actualizada para orientar el siguiente caso.", status="completed")
+            if cycle < max_cycles:
+                if not _training_wait_between_autopilot_tasks(run_id, cycle=cycle, next_cycle=cycle + 1, seconds=task_delay_seconds):
+                    stopped_by_user = True
+                    _training_run_append_step(run_id, cycle=None, phase="stopping", message="Loop detenido durante la pausa entre tareas.", status="completed")
+                    break
+
+        campaign = {
+            "schemaVersion": 1,
+            "id": campaign_id,
+            "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "objective": objective,
+            "intensity": intensity,
+            "cycles": len(results),
+            "requestedCycles": cycles,
+            "continuous": continuous,
+            "taskDelaySeconds": task_delay_seconds,
+            "stoppedByUser": stopped_by_user,
+            "passed": bool(results) and all(item.get("passed") for item in results),
+            "results": results,
+            "memoryPath": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            "learningSummary": build_safety_learning_status(limit=8),
+        }
+        run_stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        checkpoint_path = CYBERLACE_TRAINING_CAMPAIGNS_DIR / f"{campaign_id}-{run_stamp}.json"
+        checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
+        checkpoint_path.write_text(json.dumps(campaign, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        report_path = CYBERLACE_TRAINING_CAMPAIGNS_DIR / f"{campaign_id}-{run_stamp}.md"
+        report_path.write_text(loop.campaign_markdown_report(campaign, checkpoint_path), encoding="utf-8")
+
+        memory.setdefault("campaigns", []).append(
+            {
+                "createdAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "campaignId": campaign_id,
+                "cycles": len(results),
+                "requestedCycles": cycles,
+                "continuous": continuous,
+                "taskDelaySeconds": task_delay_seconds,
+                "stoppedByUser": stopped_by_user,
+                "intensity": intensity,
+                "passed": campaign["passed"],
+                "report": _relative_repo_path(report_path),
+                "checkpoint": _relative_repo_path(checkpoint_path),
+            }
+        )
+        loop.save_training_memory(memory)
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        final_status = "stopped" if stopped_by_user else "completed"
+        final_message = "Loop autónomo detenido por el usuario; reporte, checkpoint y memoria listos." if stopped_by_user else "Campaña autónoma finalizada; reporte, checkpoint y memoria listos."
+        _training_run_append_step(run_id, cycle=None, phase=final_status, message=final_message, status="completed")
+        _training_run_update(
+            run_id,
+            status=final_status,
+            passed=campaign["passed"],
+            campaign={
+                "ok": True,
+                "campaignId": campaign_id,
+                "passed": campaign["passed"],
+                "cycles": len(results),
+                "requestedCycles": cycles,
+                "continuous": continuous,
+                "taskDelaySeconds": task_delay_seconds,
+                "stoppedByUser": stopped_by_user,
+                "results": results,
+                "report": _relative_repo_path(report_path),
+                "checkpoint": _relative_repo_path(checkpoint_path),
+                "memory": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            },
+            report=_relative_repo_path(report_path),
+            checkpoint=_relative_repo_path(checkpoint_path),
+            memory=_relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+            learningStatus=build_safety_learning_status(limit=8),
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_autopilot_background_failed")
+        _training_run_append_step(run_id, cycle=None, phase="failed", message=f"Campaña falló: {error}", status="failed")
+        _training_run_update(run_id, status="failed", passed=False, error=str(error))
+
+
+@app.post("/api/harness/training/autopilot-start")
+def post_harness_training_autopilot_start():
+    payload = request.get_json(silent=True) or {}
+    continuous = bool(payload.get("continuous"))
+    try:
+        cycles = max(1, min(int(payload.get("cycles", 50)), 1000))
+    except (TypeError, ValueError):
+        cycles = 50
+    if continuous:
+        cycles = 1000
+    try:
+        task_delay_seconds = max(1.0, min(float(payload.get("taskDelaySeconds", payload.get("task_delay_seconds", 8))), 300.0))
+    except (TypeError, ValueError):
+        task_delay_seconds = 8.0
+    intensity = str(payload.get("intensity") or "hard").strip().lower()
+    if intensity not in CYBERLACE_TRAINING_INTENSITIES:
+        return jsonify({"ok": False, "error": "invalid_intensity", "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES)}), 400
+    campaign_id = _training_case_id(payload.get("campaignId") or payload.get("campaign_id"), f"autopilot-{intensity}")
+    run_id = _training_case_id(f"{campaign_id}-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}", "autopilot-run")
+    objective = str(payload.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.").strip()
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    active_run = _training_active_run_state()
+    if active_run is not None:
+        return jsonify({"ok": False, "error": "training_run_active", "message": "Ya hay una campaña autónoma activa; detén o espera ese run antes de iniciar otro.", "activeRun": active_run}), 409
+    created_at = datetime.now(timezone.utc).isoformat()
+    initial = {
+        "ok": True,
+        "runId": run_id,
+        "campaignId": campaign_id,
+        "status": "queued",
+        "phase": "queued",
+        "message": "Campaña en cola; preparando agente generador.",
+        "createdAt": created_at,
+        "updatedAt": created_at,
+        "cycles": cycles,
+        "continuous": continuous,
+        "taskDelaySeconds": task_delay_seconds,
+        "delayRemainingSeconds": 0,
+        "stopRequested": False,
+        "intensity": intensity,
+        "objective": objective,
+        "baseUrl": base_url,
+        "resumable": False,
+        "resumeFromCycle": 1,
+        "results": [],
+        "steps": [],
+        "passed": None,
+    }
+    with cyberlace_training_runs_lock:
+        initial = _training_run_persist_state(run_id, initial)
+        cyberlace_training_runs[run_id] = initial
+        _training_run_append_event_record(run_id, {"type": "run_created", "phase": "queued", "status": "queued", "campaignId": campaign_id, "cycles": cycles})
+        if len(cyberlace_training_runs) > 40:
+            for old_key in list(cyberlace_training_runs.keys())[:-40]:
+                old_state = cyberlace_training_runs.get(old_key) or {}
+                if not _training_run_status_active(old_state.get("status")):
+                    cyberlace_training_runs.pop(old_key, None)
+    socketio.start_background_task(
+        _run_harness_training_autopilot_background,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        cycles=cycles,
+        intensity=intensity,
+        objective=objective,
+        base_url=base_url,
+        continuous=continuous,
+        task_delay_seconds=task_delay_seconds,
+    )
+    return jsonify({"ok": True, "run": initial})
+
+
+@app.post("/api/harness/training/autopilot-stop/<run_id>")
+def post_harness_training_autopilot_stop(run_id: str):
+    with cyberlace_training_runs_lock:
+        state = cyberlace_training_runs.get(run_id)
+        if not isinstance(state, dict):
+            disk_state = _training_run_public_state(run_id)
+            if disk_state is None:
+                return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+            return jsonify({"ok": True, "run": disk_state})
+        if str(state.get("status") or "").lower() in CYBERLACE_TRAINING_RUN_TERMINAL_STATUSES:
+            return jsonify({"ok": True, "run": deepcopy(state)})
+        state["stopRequested"] = True
+        state["status"] = "stopping"
+        state["phase"] = "stopping"
+        state["message"] = "Detencion solicitada; el loop cerrara al terminar el ciclo actual."
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+        run = deepcopy(state)
+    _training_run_append_step(run_id, cycle=None, phase="stopping", message="Usuario solicito detener el loop autonomo.", status="running")
+    return jsonify({"ok": True, "run": _training_run_public_state(run_id) or run})
+
+
+@app.post("/api/harness/training/autopilot-resume/<run_id>")
+def post_harness_training_autopilot_resume(run_id: str):
+    state = _training_run_public_state(run_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+    if str(state.get("status") or "").lower() != "interrupted":
+        return jsonify({"ok": False, "error": "training_run_not_resumable", "run": state}), 409
+    active_run = _training_active_run_state()
+    if active_run is not None and active_run.get("runId") != run_id:
+        return jsonify({"ok": False, "error": "training_run_active", "message": "Ya hay una campaña autónoma activa; no se puede reanudar otra.", "activeRun": active_run}), 409
+
+    results = state.get("results") if isinstance(state.get("results"), list) else []
+    cycles = max(1, min(int(state.get("cycles") or state.get("requestedCycles") or len(results) or 1), 1000))
+    start_cycle = _training_run_resume_from_cycle(state)
+    if start_cycle > cycles and not bool(state.get("continuous")):
+        state["status"] = "completed"
+        state["phase"] = "completed"
+        state["message"] = "No quedan ciclos pendientes para reanudar."
+        state["updatedAt"] = datetime.now(timezone.utc).isoformat()
+        state = _training_run_persist_state(run_id, state)
+        return jsonify({"ok": True, "run": state})
+
+    campaign_id = str(state.get("campaignId") or _training_case_id(run_id, "autopilot-resume"))
+    intensity = str(state.get("intensity") or "hard")
+    objective = str(state.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.")
+    base_url = str(state.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    task_delay_seconds = float(state.get("taskDelaySeconds") or 8.0)
+    continuous = bool(state.get("continuous"))
+    now = datetime.now(timezone.utc).isoformat()
+    state.update(
+        {
+            "status": "queued",
+            "phase": "queued",
+            "message": f"Reanudando campaña desde ciclo {start_cycle}.",
+            "stopRequested": False,
+            "resumable": False,
+            "resumeFromCycle": start_cycle,
+            "resumedAt": now,
+            "updatedAt": now,
+        }
+    )
+    with cyberlace_training_runs_lock:
+        state = _training_run_persist_state(run_id, state)
+        cyberlace_training_runs[run_id] = state
+    _training_run_append_step(run_id, cycle=None, phase="resume", message=state["message"], status="running")
+    socketio.start_background_task(
+        _run_harness_training_autopilot_background,
+        run_id=run_id,
+        campaign_id=campaign_id,
+        cycles=cycles,
+        intensity=intensity,
+        objective=objective,
+        base_url=base_url,
+        continuous=continuous,
+        task_delay_seconds=task_delay_seconds,
+        start_cycle=start_cycle,
+        initial_results=deepcopy(results),
+    )
+    return jsonify({"ok": True, "run": _training_run_public_state(run_id) or state})
+
+
+@app.get("/api/harness/training/autopilot-status/<run_id>")
+def get_harness_training_autopilot_status(run_id: str):
+    state = _training_run_public_state(run_id)
+    if state is None:
+        return jsonify({"ok": False, "error": "training_run_not_found"}), 404
+    return jsonify({"ok": True, "run": state})
+
+
+@app.post("/api/harness/training/autopilot-run")
+def post_harness_training_autopilot_run():
+    payload = request.get_json(silent=True) or {}
+    raw_cycles = payload.get("cycles", 50)
+    try:
+        cycles = max(1, min(int(raw_cycles), 1000))
+    except (TypeError, ValueError):
+        cycles = 50
+    intensity = str(payload.get("intensity") or "hard").strip().lower()
+    if intensity not in CYBERLACE_TRAINING_INTENSITIES:
+        return jsonify({"ok": False, "error": "invalid_intensity", "intensities": sorted(CYBERLACE_TRAINING_INTENSITIES)}), 400
+    campaign_id = _training_case_id(payload.get("campaignId") or payload.get("campaign_id"), f"autopilot-{intensity}")
+    objective = str(payload.get("objective") or "Entrenamiento autonomo de seguridad operacional para agentes IA.").strip()
+    base_url = str(payload.get("baseUrl") or request.host_url.rstrip("/") or "http://127.0.0.1:5001").rstrip("/")
+    try:
+        task_delay_seconds = max(1.0, min(float(payload.get("taskDelaySeconds", payload.get("task_delay_seconds", 8))), 300.0))
+    except (TypeError, ValueError):
+        task_delay_seconds = 8.0
+    try:
+        loop = _load_cyberlace_training_loop_module()
+        loop.ensure_dirs()
+        args = SimpleNamespace(
+            campaign_id=campaign_id,
+            cycles=cycles,
+            intensity=intensity,
+            objective=objective,
+            base_url=base_url,
+            task_delay_seconds=task_delay_seconds,
+        )
+        output_buffer = io.StringIO()
+        with contextlib.redirect_stdout(output_buffer):
+            campaign = loop.run_campaign(args)
+        console_lines = [line for line in output_buffer.getvalue().splitlines() if line.strip()]
+        socketio.start_background_task(sync_runtime_graph, True)
+        socketio.start_background_task(lambda: socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()}))
+        return jsonify(
+            {
+                "ok": True,
+                "campaign": campaign,
+                "console": console_lines[-60:],
+                "summary": {
+                    "campaigns": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CAMPAIGNS_DIR, suffixes=(".json", ".md"), limit=12),
+                    "reports": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_REPORTS_DIR, suffixes=(".md",), limit=12),
+                    "checkpoints": _list_cyberlace_training_artifacts(CYBERLACE_TRAINING_CHECKPOINTS_DIR, suffixes=(".json",), limit=12),
+                    "memory": _relative_repo_path(CYBERLACE_TRAINING_MEMORY_PATH),
+                },
+            }
+        )
+    except Exception as error:
+        app.logger.exception("cyberlace_training_autopilot_run_failed")
+        return jsonify({"ok": False, "error": "training_autopilot_failed", "message": str(error)}), 500
+
+def list_agent_projects_snapshot() -> List[Dict[str, Any]]:
+    """Return a fast, disk-only projects snapshot for UI hydration.
+
+    This endpoint is on the critical UI path. It intentionally avoids runtime
+    session state so stale workers, sockets, or queues cannot freeze the
+    project picker.
+    """
+
+    AGENT_WORKSPACE_ROOT.mkdir(parents=True, exist_ok=True)
+    AGENT_PROJECTS_ROOT.mkdir(parents=True, exist_ok=True)
+    projects: List[Dict[str, Any]] = []
+    source_suffixes = {
+        ".py", ".js", ".jsx", ".ts", ".tsx", ".json", ".md", ".html", ".css",
+        ".scss", ".yaml", ".yml", ".txt", ".sh", ".sql", ".toml", ".ini",
+    }
+    ignored_dirs = {".git", ".pytest_cache", ".ruff_cache", ".vista", "node_modules", "__pycache__", ".venv", "venv", "runtime", "dist", "build", "coverage"}
+
+    def titleize_project(value: str) -> str:
+        return " ".join(part.capitalize() for part in str(value or "").replace("-", " ").split()) or "Nuevo Proyecto"
+
+    def count_files_fast(project_dir: Path) -> int:
+        count = 0
+        try:
+            for root_dir, dirnames, filenames in os.walk(project_dir):
+                dirnames[:] = [name for name in dirnames if name not in ignored_dirs and not name.startswith(".")]
+                for filename in filenames:
+                    if Path(filename).suffix.lower() in source_suffixes:
+                        count += 1
+        except OSError:
+            return count
+        return count
+
+    for project_dir in sorted(AGENT_PROJECTS_ROOT.iterdir(), key=lambda item: item.name):
+        if not project_dir.is_dir():
+            continue
+        metadata: Dict[str, Any] = {}
+        metadata_path = project_dir / ".agent-project.json"
+        if metadata_path.exists() and metadata_path.is_file():
+            try:
+                loaded = json.loads(metadata_path.read_text(encoding="utf-8"))
+                metadata = loaded if isinstance(loaded, dict) else {}
+            except (json.JSONDecodeError, OSError):
+                metadata = {}
+        try:
+            relative_path = str(project_dir.relative_to(PROJECT_ROOT))
+        except ValueError:
+            relative_path = str(project_dir)
+        now_value = utc_now()
+        projects.append(
+            {
+                "name": metadata.get("name") or titleize_project(project_dir.name),
+                "slug": project_dir.name,
+                "path": str(project_dir),
+                "relativePath": relative_path,
+                "updatedAt": metadata.get("updatedAt") or now_value,
+                "createdAt": metadata.get("createdAt") or now_value,
+                "fileCount": count_files_fast(project_dir),
+                "demoLabel": metadata.get("demoLabel") or "",
+                "description": metadata.get("description") or "",
+                "demoRole": metadata.get("demoRole") or "",
+                "systemDemo": bool(metadata.get("systemDemo")),
+                "nativeExample": bool(metadata.get("nativeExample")),
+                "evaluatedProject": bool(metadata.get("evaluatedProject")),
+                "learningMode": bool(metadata.get("learningMode")),
+                "protected": bool(metadata.get("protected") or project_dir.name in PROTECTED_AGENT_PROJECTS),
+                "protectedReason": metadata.get("protectedReason") or ("Proyecto protegido del sistema." if project_dir.name in PROTECTED_AGENT_PROJECTS else ""),
+            }
+        )
+    return projects
+
+
+
 @app.get("/api/agent/projects")
 def get_agent_projects():
-    return jsonify({"projects": agent_runtime.list_projects()})
+    return jsonify({"projects": list_agent_projects_snapshot()})
 
 
 def resolve_reviewer_project(project_id: str) -> Path | None:
@@ -3664,8 +4943,568 @@ def load_json_file(path: Path, fallback: Any) -> Any:
         return fallback
 
 
+def ui_action_runtime_dir() -> Path:
+    runtime_dir = PROJECT_ROOT / "runtime"
+    runtime_dir.mkdir(parents=True, exist_ok=True)
+    return runtime_dir
+
+
+def ui_action_queue_path() -> Path:
+    return ui_action_runtime_dir() / UI_ACTION_QUEUE_NAME
+
+
+def ui_action_history_path() -> Path:
+    return ui_action_runtime_dir() / UI_ACTION_HISTORY_NAME
+
+
+def atomic_write_json_file(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_name(f".{path.name}.tmp")
+    tmp_path.write_text(json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_path.replace(path)
+
+
+def load_ui_action_queue() -> List[Dict[str, Any]]:
+    payload = load_json_file(ui_action_queue_path(), [])
+    if isinstance(payload, dict) and isinstance(payload.get("actions"), list):
+        payload = payload["actions"]
+    return [item for item in payload if isinstance(item, dict)] if isinstance(payload, list) else []
+
+
+def ui_action_time(value: Any) -> datetime | None:
+    if not value:
+        return None
+    raw = str(value).strip().replace("Z", "+00:00")
+    try:
+        parsed = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def ui_action_is_expired(action: Dict[str, Any]) -> bool:
+    expires_at = ui_action_time(action.get("expiresAt"))
+    return bool(expires_at and expires_at <= datetime.now(timezone.utc))
+
+
+def ui_action_is_queue_active(action: Dict[str, Any]) -> bool:
+    return (
+        isinstance(action, dict)
+        and str(action.get("status") or "queued") in {"queued", "running"}
+        and not ui_action_is_expired(action)
+    )
+
+
+def save_ui_action_queue(actions: List[Dict[str, Any]]) -> None:
+    active_actions = [action for action in actions if ui_action_is_queue_active(action)]
+    atomic_write_json_file(ui_action_queue_path(), active_actions[-100:])
+
+
+def append_ui_action_history(record: Dict[str, Any]) -> None:
+    history_path = ui_action_history_path()
+    history_path.parent.mkdir(parents=True, exist_ok=True)
+    with history_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=True, sort_keys=True) + "\n")
+
+
+def ui_action_id() -> str:
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    return f"UI-ACTION-{stamp}"
+
+
+def normalize_ui_action_tool(value: Any) -> str:
+    tool = str(value or "").strip().lower().replace("-", "_")
+    return tool if tool in UI_ACTION_ALLOWED_TOOLS else ""
+
+
+def compact_tool_result(payload: Any) -> Dict[str, Any]:
+    if not isinstance(payload, dict):
+        return {"value": str(payload)[:500]}
+    compact: Dict[str, Any] = {}
+    for key in ("ok", "error", "message", "projectId", "reportPath", "artifactPath", "checkpointPath", "url", "status"):
+        if key in payload:
+            compact[key] = payload.get(key)
+    report = payload.get("report")
+    if isinstance(report, dict):
+        compact["reportSummary"] = report.get("summary") or report.get("validation") or {}
+    return compact
+
+
+def queue_tasks_from_payload(payload: Any) -> List[Dict[str, Any]]:
+    if isinstance(payload, dict) and isinstance(payload.get("tasks"), list):
+        payload = payload.get("tasks")
+    if not isinstance(payload, list):
+        return []
+    return [item for item in payload if isinstance(item, dict)]
+
+
+def task_history_ids(history_path: Path) -> set[str]:
+    ids: set[str] = set()
+    try:
+        lines = history_path.read_text(encoding="utf-8", errors="replace").splitlines()
+    except OSError:
+        return ids
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        stack = [record]
+        while stack:
+            item = stack.pop()
+            if isinstance(item, dict):
+                for key in ("task_id", "taskId", "id", "currentTaskId"):
+                    value = item.get(key)
+                    if isinstance(value, str) and value.startswith("LACE-"):
+                        ids.add(value)
+                stack.extend(item.values())
+            elif isinstance(item, list):
+                stack.extend(item)
+    return ids
+
+
+LACE_TASK_ID_PATTERN = re.compile(r"^(LACE-\d{8})-(\d{3})$")
+LACE_DOC_CYCLE_PATTERN = re.compile(r"ciclo-(\d{2,3})\.md$")
+LACE_CHECKPOINT_CYCLE_PATTERN = re.compile(r"lace-cycle-(\d{2,3})")
+
+
+def lace_cycle_from_task(task_id: Any) -> int | None:
+    match = LACE_TASK_ID_PATTERN.match(str(task_id or ""))
+    if not match:
+        return None
+    try:
+        return int(match.group(2))
+    except ValueError:
+        return None
+
+
+def lace_task_prefix(task_id: Any) -> str:
+    match = LACE_TASK_ID_PATTERN.match(str(task_id or ""))
+    return match.group(1) if match else ""
+
+
+def lace_cycle_from_expected_file(task: Dict[str, Any]) -> int | None:
+    for item in task.get("expected_files") or []:
+        match = LACE_DOC_CYCLE_PATTERN.search(str(item or ""))
+        if match:
+            try:
+                return int(match.group(1))
+            except ValueError:
+                return None
+    return None
+
+
+def lace_marker_validation_commands(cycle: int, expected_file: str) -> List[str]:
+    return [
+        f"test -f {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} PROBLEMAS]' {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} MEJORA]' {expected_file}",
+        f"grep -Fq '[CICLO-{cycle} COMPLETADO]' {expected_file}",
+    ]
+
+
+def build_lace_cycle_task(task_id: str, cycle: int, required_cycles: int, dependency: str | None, mode: str) -> Dict[str, Any]:
+    expected_file = f"docs/lace_cycles/ciclo-{cycle:02d}.md"
+    dependencies = [dependency] if dependency else []
+    return {
+        "id": task_id,
+        "title": f"LACE Automejora Ciclo {cycle}",
+        "goal": (
+            f"Ejecutar el ciclo LACE {cycle} de {required_cycles}: analizar evidencia real, "
+            f"aplicar mejora segura si corresponde, escribir {expected_file}, crear checkpoint lace-cycle-{cycle:03d} "
+            "y validar marcadores canonicos antes de cierre."
+        ),
+        "status": "pending",
+        "priority": max(1, 50 - cycle),
+        "dependencies": dependencies,
+        "expected_files": [expected_file],
+        "validation_commands": lace_marker_validation_commands(cycle, expected_file),
+        "timeout_seconds": 2700,
+        "max_retries": 3,
+        "mode": mode if mode in {"build", "medium", "long-run", "smoke"} else "long-run",
+        "checkpoint_key": f"lace-cycle-{cycle:03d}-checkpoint",
+        "kind": "lace_cycle",
+        "execution_strategy": "codex_worker",
+        "selector_reason": "lace_dependency_repair_enqueue_missing_cycle",
+    }
+
+
+def build_lace_dependency_status(project_slug: str, project_dir: Path) -> Dict[str, Any]:
+    runtime_dir = project_dir / "runtime"
+    queue_tasks = queue_tasks_from_payload(load_json_file(runtime_dir / "task_queue.json", []))
+    project_state_payload = load_json_file(runtime_dir / "project_state.json", {})
+    estimate_payload = load_json_file(runtime_dir / "complexity_estimate.json", {})
+    project_state = project_state_payload if isinstance(project_state_payload, dict) else {}
+    estimate = estimate_payload if isinstance(estimate_payload, dict) else {}
+    completed_ids = {str(item) for item in project_state.get("completed_tasks") or [] if str(item).strip()}
+    completed_ids.update(task_history_ids(runtime_dir / "task_history.jsonl"))
+    queue_ids = {str(task.get("id") or "") for task in queue_tasks if str(task.get("id") or "").strip()}
+    # TaskQueue validation requires dependencies to exist in runtime/task_queue.json.
+    # History/state ids are evidence, but they cannot satisfy the queue DAG contract.
+    known_ids = set(queue_ids)
+    lace_tasks = [task for task in queue_tasks if str(task.get("id") or "").startswith("LACE-") or str(task.get("kind") or "").startswith("lace")]
+    dependency_findings: List[Dict[str, Any]] = []
+    for task in lace_tasks:
+        task_id = str(task.get("id") or "")
+        dependencies = [str(item) for item in task.get("dependencies") or [] if str(item).strip()]
+        missing = [dependency for dependency in dependencies if dependency not in known_ids]
+        if missing:
+            dependency_findings.append({
+                "taskId": task_id,
+                "status": str(task.get("status") or "unknown"),
+                "missingDependencies": missing,
+                "dependencies": dependencies,
+            })
+    checkpoints = [str(item) for item in project_state.get("checkpoints") or [] if str(item).strip()]
+    lace_cycle_docs = sorted((project_dir / "docs" / "lace_cycles").glob("ciclo-*.md")) if (project_dir / "docs" / "lace_cycles").is_dir() else []
+    lace_cycle_checkpoints = [item for item in checkpoints if item.startswith("lace-cycle-")]
+    doc_cycles: Dict[int, str] = {}
+    for doc_path in lace_cycle_docs:
+        match = LACE_DOC_CYCLE_PATTERN.search(doc_path.name)
+        if not match:
+            continue
+        try:
+            cycle = int(match.group(1))
+        except ValueError:
+            continue
+        doc_cycles.setdefault(cycle, f"docs/lace_cycles/{doc_path.name}")
+    checkpoint_cycles: Dict[int, List[str]] = {}
+    for checkpoint in lace_cycle_checkpoints:
+        match = LACE_CHECKPOINT_CYCLE_PATTERN.search(checkpoint)
+        if not match:
+            continue
+        try:
+            cycle = int(match.group(1))
+        except ValueError:
+            continue
+        checkpoint_cycles.setdefault(cycle, []).append(checkpoint)
+    task_by_cycle: Dict[int, Dict[str, Any]] = {}
+    for task in lace_tasks:
+        cycle = lace_cycle_from_task(task.get("id")) or lace_cycle_from_expected_file(task)
+        if cycle is not None:
+            task_by_cycle.setdefault(cycle, task)
+    try:
+        recommended = int(estimate.get("recommended_lace_cycles") or project_state.get("lace_required_cycles") or 0)
+    except (TypeError, ValueError):
+        recommended = 0
+    valid_like = min(len(lace_cycle_docs), len(lace_cycle_checkpoints))
+    missing_cycles = max(0, recommended - valid_like)
+    blocked = bool(dependency_findings or missing_cycles > 0 or any(item in {"lace-closure-gate-blocked", "lace-closure-gate-pending"} for item in checkpoints))
+
+    dependency_findings_by_task = {str(item.get("taskId") or ""): item for item in dependency_findings}
+    graph_nodes: List[Dict[str, Any]] = []
+    graph_edges: List[Dict[str, Any]] = []
+    max_cycle = max([recommended, *doc_cycles.keys(), *checkpoint_cycles.keys(), *task_by_cycle.keys()], default=0)
+    for cycle in range(1, max_cycle + 1):
+        task = task_by_cycle.get(cycle)
+        task_id = str(task.get("id") or f"LACE-CYCLE-{cycle:03d}") if task else f"LACE-CYCLE-{cycle:03d}"
+        finding = dependency_findings_by_task.get(task_id) or {}
+        dependencies = [str(item) for item in (task or {}).get("dependencies") or [] if str(item).strip()]
+        missing_dependencies = [str(item) for item in finding.get("missingDependencies") or [] if str(item).strip()]
+        has_doc = cycle in doc_cycles
+        has_checkpoint = cycle in checkpoint_cycles
+        if not task:
+            graph_status = "missing_task" if cycle <= recommended else "orphan_evidence"
+        elif missing_dependencies:
+            graph_status = "ghost_dependency"
+        elif has_doc and has_checkpoint:
+            graph_status = "evidence_present"
+        elif has_doc or has_checkpoint:
+            graph_status = "partial_evidence"
+        else:
+            graph_status = str(task.get("status") or "pending")
+        graph_nodes.append({
+            "id": task_id,
+            "label": f"Ciclo {cycle:02d}",
+            "cycle": cycle,
+            "kind": "lace_cycle",
+            "status": graph_status,
+            "taskStatus": str((task or {}).get("status") or "missing"),
+            "taskId": task_id if task else "",
+            "hasTask": bool(task),
+            "hasDoc": has_doc,
+            "hasCheckpoint": has_checkpoint,
+            "docPath": doc_cycles.get(cycle, ""),
+            "checkpointCount": len(checkpoint_cycles.get(cycle, [])),
+            "dependencies": dependencies,
+            "missingDependencies": missing_dependencies,
+        })
+        if dependencies:
+            for dependency in dependencies:
+                graph_edges.append({
+                    "from": dependency,
+                    "to": task_id,
+                    "status": "missing" if dependency not in known_ids else "linked",
+                })
+        elif cycle > 1:
+            previous_task = task_by_cycle.get(cycle - 1)
+            previous_id = str(previous_task.get("id") or f"LACE-CYCLE-{cycle - 1:03d}") if previous_task else f"LACE-CYCLE-{cycle - 1:03d}"
+            graph_edges.append({
+                "from": previous_id,
+                "to": task_id,
+                "status": "expected_sequence" if task else "missing_task",
+            })
+
+    return {
+        "ok": True,
+        "projectId": project_slug,
+        "generatedAt": utc_now(),
+        "lace": {
+            "active": recommended > 0,
+            "requiredCycles": recommended,
+            "cycleDocs": len(lace_cycle_docs),
+            "cycleCheckpoints": len(lace_cycle_checkpoints),
+            "validCycleEvidenceCount": valid_like,
+            "missingCycles": missing_cycles,
+            "closureBlocked": blocked,
+            "closureStatus": "blocked" if blocked else "ok",
+        },
+        "queue": {
+            "taskCount": len(queue_tasks),
+            "laceTaskCount": len(lace_tasks),
+            "knownTaskIds": len(known_ids),
+        },
+        "dependencyFindings": dependency_findings,
+        "ghostDependencies": sorted({dep for finding in dependency_findings for dep in finding.get("missingDependencies", [])}),
+        "graph": {
+            "nodes": graph_nodes,
+            "edges": graph_edges,
+            "requiredCycles": recommended,
+            "status": "blocked" if blocked else "ok",
+        },
+        "evidence": {
+            "taskQueue": "runtime/task_queue.json",
+            "projectState": "runtime/project_state.json",
+            "complexityEstimate": "runtime/complexity_estimate.json",
+            "laceCycleDocsDir": "docs/lace_cycles",
+        },
+    }
+
+
+def build_lace_repair_plan(project_slug: str, project_dir: Path) -> Dict[str, Any]:
+    status = build_lace_dependency_status(project_slug, project_dir)
+    runtime_dir = project_dir / "runtime"
+    queue_payload = load_json_file(runtime_dir / "task_queue.json", [])
+    queue_tasks = queue_tasks_from_payload(queue_payload)
+    project_state_payload = load_json_file(runtime_dir / "project_state.json", {})
+    estimate_payload = load_json_file(runtime_dir / "complexity_estimate.json", {})
+    project_state = project_state_payload if isinstance(project_state_payload, dict) else {}
+    estimate = estimate_payload if isinstance(estimate_payload, dict) else {}
+    mode = str(estimate.get("runtime_mode") or project_state.get("mode") or "long-run")
+    required = int(status.get("lace", {}).get("requiredCycles") or 0)
+
+    known_ids = {str(task.get("id") or "") for task in queue_tasks if str(task.get("id") or "").strip()}
+
+    known_by_cycle: Dict[int, str] = {}
+    prefixes: list[tuple[int, str]] = []
+    for task_id in sorted(known_ids):
+        cycle = lace_cycle_from_task(task_id)
+        if cycle is None:
+            continue
+        known_by_cycle.setdefault(cycle, task_id)
+        prefix = lace_task_prefix(task_id)
+        if prefix:
+            prefixes.append((cycle, prefix))
+    for task in queue_tasks:
+        task_id = str(task.get("id") or "")
+        if not task_id.startswith("LACE-"):
+            continue
+        cycle = lace_cycle_from_task(task_id) or lace_cycle_from_expected_file(task)
+        if cycle is not None:
+            known_by_cycle.setdefault(cycle, task_id)
+
+    preferred_prefix = sorted(prefixes, key=lambda item: item[0])[-1][1] if prefixes else f"LACE-{datetime.now(timezone.utc).strftime('%Y%m%d')}"
+    cycles_to_create: set[int] = set()
+    valid_like = int(status.get("lace", {}).get("validCycleEvidenceCount") or 0)
+    for cycle in range(1, required + 1):
+        if cycle <= valid_like and cycle in known_by_cycle:
+            continue
+        if cycle not in known_by_cycle:
+            cycles_to_create.add(cycle)
+
+    for ghost in status.get("ghostDependencies") or []:
+        ghost_cycle = lace_cycle_from_task(ghost)
+        if ghost_cycle and ghost_cycle <= max(required, ghost_cycle) and ghost not in known_ids:
+            cycles_to_create.add(ghost_cycle)
+
+    planned_tasks: list[Dict[str, Any]] = []
+    planned_by_cycle = dict(known_by_cycle)
+    for cycle in sorted(cycles_to_create):
+        if cycle in planned_by_cycle:
+            continue
+        task_id = f"{preferred_prefix}-{cycle:03d}"
+        if task_id in known_ids:
+            planned_by_cycle[cycle] = task_id
+            continue
+        dependency = planned_by_cycle.get(cycle - 1) if cycle > 1 else None
+        task = build_lace_cycle_task(task_id, cycle, max(required, cycle), dependency, mode)
+        planned_tasks.append(task)
+        planned_by_cycle[cycle] = task_id
+        known_ids.add(task_id)
+
+    candidate_queue = [*queue_tasks, *planned_tasks]
+    validation_error = ""
+    try:
+        from orchestrator.task_queue import validate_queue as validate_runtime_task_queue
+        validate_runtime_task_queue(candidate_queue)
+    except Exception as error:  # surfaced to UI; no write happens when invalid.
+        validation_error = str(error)
+
+    return {
+        "ok": not validation_error,
+        "projectId": project_slug,
+        "generatedAt": utc_now(),
+        "statusBefore": status,
+        "plannedTasks": planned_tasks,
+        "plannedTaskIds": [task["id"] for task in planned_tasks],
+        "validationError": validation_error,
+        "queueFormat": "dict" if isinstance(queue_payload, dict) else "list",
+        "requiredCycles": required,
+        "validCycleEvidenceCount": valid_like,
+        "missingCycles": max(0, required - valid_like),
+    }
+
+
+def persist_lace_repair_plan(project_dir: Path, plan: Dict[str, Any], *, applied: bool) -> Dict[str, str]:
+    runtime_dir = project_dir / "runtime"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    artifacts_dir = runtime_dir / "artifacts" / "lace_dependency_repair"
+    checkpoints_dir = runtime_dir / "checkpoints"
+    artifacts_dir.mkdir(parents=True, exist_ok=True)
+    checkpoints_dir.mkdir(parents=True, exist_ok=True)
+    artifact_path = artifacts_dir / f"{stamp}-lace-dependency-repair.json"
+    checkpoint_path = checkpoints_dir / f"lace-dependency-repair-{stamp}.json"
+    payload = {**plan, "applied": applied, "persistedAt": utc_now()}
+    serialized = json.dumps(payload, ensure_ascii=True, indent=2, sort_keys=True) + "\n"
+    artifact_path.write_text(serialized, encoding="utf-8")
+    checkpoint_path.write_text(serialized, encoding="utf-8")
+    return {"artifactPath": str(artifact_path), "checkpointPath": str(checkpoint_path)}
+
+
+def apply_lace_repair_plan(project_dir: Path, plan: Dict[str, Any]) -> None:
+    runtime_dir = project_dir / "runtime"
+    queue_path = runtime_dir / "task_queue.json"
+    queue_payload = load_json_file(queue_path, [])
+    queue_tasks = queue_tasks_from_payload(queue_payload)
+    task_ids = {str(task.get("id") or "") for task in queue_tasks}
+    tasks_to_add = [task for task in plan.get("plannedTasks") or [] if str(task.get("id") or "") not in task_ids]
+    candidate = [*queue_tasks, *tasks_to_add]
+    from orchestrator.task_queue import validate_queue as validate_runtime_task_queue
+    validate_runtime_task_queue(candidate)
+    if isinstance(queue_payload, dict):
+        next_payload = {**queue_payload, "tasks": candidate}
+    else:
+        next_payload = candidate
+    atomic_write_json_file(queue_path, next_payload)
+
+
+def build_ui_mouse_action(
+    *,
+    target_tool: str,
+    project_slug: str,
+    source: str,
+    reason: str,
+    expected_evidence: Any = None,
+    auto_run: bool = True,
+    expires_seconds: int = 120,
+) -> Dict[str, Any]:
+    tool = normalize_ui_action_tool(target_tool)
+    if not tool:
+        raise ValueError("unsupported_ui_tool")
+    now_dt = datetime.now(timezone.utc)
+    now = now_dt.isoformat()
+    expires_at = (now_dt.timestamp() + max(10, min(int(expires_seconds or 120), 600)))
+    action = {
+        "actionId": ui_action_id(),
+        "status": "queued",
+        "createdAt": now,
+        "updatedAt": now,
+        "expiresAt": datetime.fromtimestamp(expires_at, timezone.utc).isoformat(),
+        "source": str(source or "control_plane"),
+        "targetTool": tool,
+        "targetToolLabel": UI_ACTION_ALLOWED_TOOLS[tool],
+        "targetSelector": f'[data-operational-tool="{tool}"]',
+        "action": "click",
+        "projectSlug": normalize_layer_name(project_slug),
+        "reason": str(reason or "runtime_requested_tool"),
+        "expectedEvidence": expected_evidence or {},
+        "autoRun": bool(auto_run),
+        "requiresAutonomousMode": True,
+        "requiresHuman": False,
+        "safetyLevel": "safe",
+    }
+    tree = build_observer_ui_behavior_tree(action)
+    tree_path = persist_observer_ui_behavior_tree(OBSERVER_ROOT, tree)
+    action["behaviorTree"] = tree
+    action["behaviorTreePath"] = tree_path
+    action["governedBy"] = "observer_behavior_tree"
+    return action
+
+
+def ui_action_signature(action: Dict[str, Any]) -> str:
+    return "|".join([
+        str(action.get("source") or ""),
+        str(action.get("projectSlug") or ""),
+        str(action.get("targetTool") or ""),
+        str(action.get("reason") or "")[:180],
+    ])
+
+
+def enqueue_operational_mouse_action(action: Dict[str, Any], *, cooldown_seconds: int = 45) -> Dict[str, Any]:
+    now = time.time()
+    signature = ui_action_signature(action)
+    with ui_action_lock:
+        for key, seen_at in list(ui_action_recent_signatures.items()):
+            if now - seen_at > max(cooldown_seconds, 60):
+                ui_action_recent_signatures.pop(key, None)
+        if signature and now - float(ui_action_recent_signatures.get(signature) or 0) < cooldown_seconds:
+            return {"ok": True, "deduped": True, "signature": signature}
+        actions = load_ui_action_queue()
+        for existing in actions:
+            if ui_action_is_queue_active(existing) and ui_action_signature(existing) == signature:
+                return {"ok": True, "deduped": True, "action": existing, "signature": signature}
+        actions.append(action)
+        save_ui_action_queue(actions)
+        append_ui_action_history({**action, "event": "queued"})
+        if signature:
+            ui_action_recent_signatures[signature] = now
+    socketio.emit("ui:mouse-action", action)
+    return {"ok": True, "action": action, "signature": signature}
+
+
+def observer_event_to_mouse_action(event: Dict[str, Any]) -> Dict[str, Any] | None:
+    phase = str(event.get("phase") or "").strip().lower()
+    action_name = str(event.get("action") or "").strip().lower()
+    project_slug = normalize_layer_name(event.get("projectSlug") or "")
+    if not project_slug:
+        return None
+    if phase == "observer:scanner-evidence" or action_name == "inspect_scanner_evidence":
+        return build_ui_mouse_action(
+            target_tool="scanner",
+            project_slug=project_slug,
+            source="observer_plane",
+            reason=str(event.get("reason") or "Scanner final requerido antes de cierre canonico."),
+            expected_evidence="runtime/artifacts/final_code_scanner_report.json",
+            auto_run=True,
+        )
+    if phase == "observer:file-integrity" or action_name == "inspect_file_integrity":
+        return build_ui_mouse_action(
+            target_tool="integrity",
+            project_slug=project_slug,
+            source="observer_plane",
+            reason=str(event.get("reason") or "Integrity scan requerido por hallazgos de evidencia."),
+            expected_evidence="runtime/artifacts/file_integrity_report.json",
+            auto_run=True,
+        )
+    return None
+
+
 def build_editor_lock_state(project_slug: str, project_dir: Path) -> Dict[str, Any]:
-    active_statuses = {"queued", "starting", "running"}
+    active_statuses = {"queued", "preparing", "starting", "running"}
     terminal_state_statuses = {"blocked", "completed", "failed", "stopped"}
     active_sessions = [
         session
@@ -4138,6 +5977,266 @@ def persist_project_final_typewriter(project_id: str):
 
 
 
+@app.get("/api/ui-actions/queue")
+def get_ui_action_queue_endpoint():
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        save_ui_action_queue(actions)
+        actions = load_ui_action_queue()
+    return jsonify({"ok": True, "actions": actions})
+
+
+@app.post("/api/ui-actions/enqueue")
+def enqueue_ui_action_endpoint():
+    payload = request.get_json(silent=True) or {}
+    target_tool = normalize_ui_action_tool(payload.get("targetTool") or payload.get("tool"))
+    if not target_tool:
+        return jsonify({"ok": False, "error": "unsupported_ui_tool", "allowedTools": sorted(UI_ACTION_ALLOWED_TOOLS)}), 400
+    try:
+        expires_seconds = int(payload.get("expiresSeconds") or 120)
+    except (TypeError, ValueError):
+        expires_seconds = 120
+    try:
+        project_slug = str(
+            payload.get("projectSlug")
+            or payload.get("projectId")
+            or payload.get("project")
+            or payload.get("scene")
+            or payload.get("workspaceScene")
+            or ""
+        )
+        action = build_ui_mouse_action(
+            target_tool=target_tool,
+            project_slug=project_slug,
+            source=str(payload.get("source") or "control_plane"),
+            reason=str(payload.get("reason") or "runtime_requested_tool"),
+            expected_evidence=payload.get("expectedEvidence") or {},
+            auto_run=payload.get("autoRun") is not False,
+            expires_seconds=expires_seconds,
+        )
+    except ValueError:
+        return jsonify({"ok": False, "error": "unsupported_ui_tool", "allowedTools": sorted(UI_ACTION_ALLOWED_TOOLS)}), 400
+    if not action.get("projectSlug"):
+        return jsonify({"ok": False, "error": "project_required"}), 400
+    result = enqueue_operational_mouse_action(action, cooldown_seconds=0)
+    return jsonify({"ok": True, **result})
+
+
+@app.post("/api/ui-actions/<action_id>/ack")
+def ack_ui_action_endpoint(action_id: str):
+    payload = request.get_json(silent=True) or {}
+    now = utc_now()
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        updated_actions: List[Dict[str, Any]] = []
+        matched = False
+        for action in actions:
+            if str(action.get("actionId") or "") == action_id:
+                matched = True
+                updated_actions.append({**action, "status": "running", "ackAt": now, "updatedAt": now})
+            else:
+                updated_actions.append(action)
+        save_ui_action_queue(updated_actions)
+        append_ui_action_history({
+            "event": "ack",
+            "actionId": action_id,
+            "status": "running",
+            "updatedAt": now,
+            "client": str(payload.get("client") or "operational_mouse"),
+            "matched": matched,
+        })
+    return jsonify({"ok": True, "actionId": action_id, "status": "running", "matched": matched})
+
+
+@app.post("/api/ui-actions/<action_id>/result")
+def record_ui_action_result_endpoint(action_id: str):
+    payload = request.get_json(silent=True) or {}
+    status = str(payload.get("status") or "completed").strip().lower()
+    if status not in {"completed", "failed", "blocked", "running"}:
+        status = "completed"
+    now = utc_now()
+    with ui_action_lock:
+        actions = load_ui_action_queue()
+        updated_actions: List[Dict[str, Any]] = []
+        matched_action: Dict[str, Any] | None = None
+        for action in actions:
+            if str(action.get("actionId") or "") == action_id:
+                matched_action = {
+                    **action,
+                    "status": status,
+                    "updatedAt": now,
+                    "result": compact_tool_result(payload.get("result") or {}),
+                }
+                updated_actions.append(matched_action)
+            else:
+                updated_actions.append(action)
+        save_ui_action_queue(updated_actions)
+        history_record = {
+            "event": "result",
+            "actionId": action_id,
+            "status": status,
+            "updatedAt": now,
+            "result": compact_tool_result(payload.get("result") or {}),
+        }
+        if matched_action:
+            history_record.update({
+                "targetTool": matched_action.get("targetTool"),
+                "projectSlug": matched_action.get("projectSlug"),
+                "reason": matched_action.get("reason"),
+            })
+        append_ui_action_history(history_record)
+    return jsonify({"ok": True, "actionId": action_id, "status": status})
+
+
+@app.get("/api/projects/<project_id>/lace-dependency-status")
+def get_project_lace_dependency_status(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    status = build_lace_dependency_status(project_slug, project_dir)
+    return jsonify(status)
+
+
+@app.post("/api/projects/<project_id>/lace-dependency-repair")
+def repair_project_lace_dependency_queue(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    dry_run = payload.get("dryRun", True) is not False
+    confirm = str(payload.get("confirm") or "")
+    plan = build_lace_repair_plan(project_slug, project_dir)
+    if not plan.get("ok"):
+        paths = persist_lace_repair_plan(project_dir, plan, applied=False)
+        return jsonify({"ok": False, "error": "lace_repair_plan_invalid", "plan": plan, **paths}), 400
+    if dry_run:
+        paths = persist_lace_repair_plan(project_dir, plan, applied=False)
+        return jsonify({"ok": True, "dryRun": True, "projectId": project_slug, "plan": plan, **paths})
+    if confirm != "ENQUEUE_LACE":
+        return jsonify({
+            "ok": False,
+            "error": "confirmation_required",
+            "message": "Para escribir en runtime/task_queue.json envia confirm=ENQUEUE_LACE.",
+            "plan": plan,
+        }), 400
+    try:
+        apply_lace_repair_plan(project_dir, plan)
+        status_after = build_lace_dependency_status(project_slug, project_dir)
+        applied_plan = {**plan, "statusAfter": status_after}
+        paths = persist_lace_repair_plan(project_dir, applied_plan, applied=True)
+    except Exception as error:
+        failed_plan = {**plan, "applyError": str(error)}
+        paths = persist_lace_repair_plan(project_dir, failed_plan, applied=False)
+        return jsonify({"ok": False, "error": "lace_repair_apply_failed", "message": str(error), "plan": failed_plan, **paths}), 500
+
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "lace_dependency_repair_applied",
+            "projectSlug": project_slug,
+            "phase": "lace-dependency-repair",
+            "status": "queued" if applied_plan.get("plannedTasks") else "no-op",
+            "message": f"LACE repair encolo {len(applied_plan.get('plannedTasks') or [])} tarea(s) faltantes.",
+            "relativePath": "runtime/task_queue.json",
+            "artifactPath": paths.get("artifactPath"),
+            "checkpointPath": paths.get("checkpointPath"),
+        },
+    )
+    return jsonify({"ok": True, "dryRun": False, "projectId": project_slug, "plan": applied_plan, **paths})
+
+
+@app.post("/api/projects/<project_id>/broom")
+def run_project_broom_endpoint(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    phase = str(payload.get("phase") or "ui_manual").strip() or "ui_manual"
+    if not re.fullmatch(r"[A-Za-z0-9_.:-]{1,80}", phase):
+        phase = "ui_manual"
+    runtime_state = load_json_file(project_dir / "runtime" / "project_state.json", {})
+    task_id = str(payload.get("taskId") or runtime_state.get("current_task_id") or runtime_state.get("currentTaskId") or "UI-MANUAL").strip()
+    reason = str(payload.get("reason") or "operational_mouse_broom").strip()[:160] or "operational_mouse_broom"
+    dry_run = bool(payload.get("dryRun", False))
+    lock_state = build_editor_lock_state(project_slug, project_dir)
+    try:
+        report = sweep_with_broom(project_dir, task_id=task_id, phase=phase, dry_run=dry_run, reason=reason)
+    except OSError as error:
+        return jsonify({"ok": False, "error": "broom_failed", "message": str(error)}), 500
+
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "broom_sweep",
+            "projectSlug": project_slug,
+            "phase": phase,
+            "status": "passed" if report.get("ok") else "blocked",
+            "message": "Escoba runtime completo." if report.get("ok") else "Escoba runtime bloqueada.",
+            "visualTool": "to-sweep-with-a-broom",
+            "reportPath": report.get("reportPath"),
+            "lock": lock_state,
+        },
+    )
+    return jsonify({"ok": bool(report.get("ok")), "projectId": project_slug, "lock": lock_state, "report": report, "reportPath": report.get("reportPath")})
+
+
+@app.post("/api/projects/<project_id>/web-research/record")
+def record_project_web_research_endpoint(project_id: str):
+    resolved = resolve_editor_project(project_id)
+    if resolved is None:
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+    project_slug, project_dir = resolved
+    payload = request.get_json(silent=True) or {}
+    query = str(payload.get("query") or "").strip()
+    if len(query) < 3:
+        return jsonify({"ok": False, "error": "query_too_short"}), 400
+    if UI_ACTION_SENSITIVE_QUERY_PATTERN.search(query):
+        return jsonify({
+            "ok": False,
+            "error": "unsafe_research_query",
+            "message": "CyberLACE bloqueo una busqueda con posibles secretos; usa datos sinteticos o redactados.",
+        }), 400
+
+    safe_query = query[:240]
+    url = "https://duckduckgo.com/html/?q=" + urllib.parse.quote_plus(safe_query)
+    artifact_dir = project_dir / "runtime" / "artifacts" / "web_research"
+    artifact_dir.mkdir(parents=True, exist_ok=True)
+    artifact_name = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ") + "-web-research.json"
+    artifact_path = artifact_dir / artifact_name
+    record = {
+        "ok": True,
+        "projectId": project_slug,
+        "createdAt": utc_now(),
+        "source": str(payload.get("source") or "operational_mouse"),
+        "query": safe_query,
+        "url": url,
+        "notes": str(payload.get("notes") or "")[:1200],
+        "policy": {
+            "realBrowserActionRequired": True,
+            "secretsBlocked": True,
+            "safeRewriteOnly": True,
+        },
+    }
+    artifact_path.write_text(json.dumps(record, ensure_ascii=True, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    relative_artifact = artifact_path.relative_to(project_dir).as_posix()
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "web_research_recorded",
+            "projectSlug": project_slug,
+            "phase": "operational-web-research",
+            "status": "recorded",
+            "message": "Investigacion web segura registrada para abrir en modal.",
+            "url": url,
+            "relativePath": relative_artifact,
+        },
+    )
+    return jsonify({"ok": True, "projectId": project_slug, "url": url, "artifactPath": str(artifact_path), "relativePath": relative_artifact, "record": record})
+
+
 register_sandbox_routes(
     app,
     resolve_editor_project=lambda project_id: resolve_editor_project(project_id),
@@ -4302,6 +6401,24 @@ def _runtime_truth_iso_from_epoch(epoch: float | None) -> str | None:
     return datetime.fromtimestamp(float(epoch), timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def _pid_is_alive(pid: Any) -> bool | None:
+    try:
+        normalized_pid = int(pid)
+    except (TypeError, ValueError):
+        return None
+    if normalized_pid <= 0:
+        return False
+    try:
+        os.kill(normalized_pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+    return True
+
+
 def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[str, Any]:
     runtime_dir = project_dir / "runtime"
     lock_state = build_editor_lock_state(project_slug, project_dir)
@@ -4341,12 +6458,27 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
     )
     worker_alive = None
     worker_pid = None
+    running_without_pid = False
+    for session in active_sessions:
+        status = str(session.get("status") or "").strip().lower()
+        session_pid = session.get("pid")
+        if status == "running" and not session_pid:
+            running_without_pid = True
+            continue
+        pid_alive = _pid_is_alive(session_pid)
+        if pid_alive is not None:
+            worker_pid = session_pid
+            worker_alive = pid_alive
+            if pid_alive:
+                break
     has_recent_activity = last_activity_age_seconds is not None and last_activity_age_seconds < RUNTIME_TRUTH_STALE_SECONDS
+    has_preparing_session = any(str(session.get("status") or "").strip().lower() == "preparing" for session in active_sessions)
+    orphaned_persisted_running = bool(persisted_running and not active_sessions and worker_alive is not True)
     stale = bool(
         persisted_running
-        and not active_sessions
+        and not has_preparing_session
         and worker_alive is not True
-        and not has_recent_activity
+        and (not has_recent_activity or orphaned_persisted_running or running_without_pid)
     )
     if stale:
         verdict = "zombie"
@@ -4364,6 +6496,8 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
         reasons.append("no_live_worker_pid")
     if persisted_running:
         reasons.append("persisted_control_plane_running")
+    if running_without_pid:
+        reasons.append("running_session_without_pid")
     if not has_recent_activity:
         reasons.append("no_recent_disk_activity")
     if isinstance(sandbox, dict) and sandbox.get("running") is False:
@@ -4376,7 +6510,31 @@ def _build_project_runtime_truth(project_slug: str, project_dir: Path) -> Dict[s
             {
                 "code": "runtime_zombie_state",
                 "severity": "error",
-                "message": "Persisted running state without active session, worker pid, or recent disk activity.",
+                "message": "Persisted running state without active preparing/running session or worker pid.",
+            }
+        )
+    if running_without_pid:
+        warnings.append(
+            {
+                "code": "running_session_without_pid",
+                "severity": "error",
+                "message": "A runtime session reported running with pid=null; this must be repaired to preparing or failed.",
+            }
+        )
+    if state_status == "blocked" and queue_counts.get("pending", 0) and not queue_counts.get("blocked", 0) and not queue_counts.get("failed", 0):
+        warnings.append(
+            {
+                "code": "blocked_state_with_pending_queue",
+                "severity": "warning",
+                "message": "Project state is blocked but the queue only has pending work.",
+            }
+        )
+    if state_status == "blocked" and not any(queue_counts.get(status, 0) for status in ("pending", "running", "blocked", "failed")):
+        warnings.append(
+            {
+                "code": "blocked_state_without_blocked_queue",
+                "severity": "error",
+                "message": "Project state is blocked but no pending, running, blocked or failed task remains in the queue.",
             }
         )
 
@@ -4660,8 +6818,9 @@ def release_project_runtime_zombie(project_id: str):
     for task in queue_tasks:
         status = str(task.get("status") or "").strip().lower()
         if status in ACTIVE_AGENT_SESSION_STATUSES:
-            task["status"] = "blocked"
-            task["blocked_reason"] = "runtime_truth_zombie_release"
+            task["status"] = "pending"
+            task["previous_status"] = status
+            task["requeued_reason"] = "runtime_truth_zombie_release"
             task["released_at"] = release_time
             if task.get("id"):
                 released_task_ids.append(str(task.get("id")))
@@ -4674,22 +6833,51 @@ def release_project_runtime_zombie(project_id: str):
     runtime_dir.mkdir(parents=True, exist_ok=True)
     queue_path.write_text(json.dumps(next_queue_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
+    checkpoint_key = "runtime-zombie-recovered-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    failure_event = None
+    checkpoint_path = None
+    try:
+        store = StateStore(runtime_dir)
+        failure_event = store.append_failure(
+            {
+                "kind": "runtime_zombie_recovered",
+                "project_id": project_slug,
+                "released_task_ids": released_task_ids,
+                "reason": "No active agent session, no live worker, and stale disk activity.",
+            }
+        )
+        checkpoint_path = store.save_checkpoint(
+            checkpoint_key,
+            {
+                "reason": "runtime_zombie_recovered",
+                "project_id": project_slug,
+                "released_task_ids": released_task_ids,
+                "failure_event": failure_event,
+                "backup_dir": str(backup_dir),
+            },
+        )
+    except Exception:
+        failure_event = None
+        checkpoint_path = None
+
     if isinstance(state_payload, dict):
-        blocked_tasks = state_payload.get("blocked_tasks")
-        blocked_tasks = blocked_tasks if isinstance(blocked_tasks, list) else []
-        for task_id in released_task_ids:
-            if task_id not in blocked_tasks:
-                blocked_tasks.append(task_id)
-        state_payload["blocked_tasks"] = blocked_tasks
-        state_payload["status"] = "blocked"
+        state_payload["blocked_tasks"] = [
+            item for item in state_payload.get("blocked_tasks", []) if str(item) not in released_task_ids
+        ] if isinstance(state_payload.get("blocked_tasks"), list) else []
+        state_payload["failed_tasks"] = [
+            item for item in state_payload.get("failed_tasks", []) if str(item) not in released_task_ids
+        ] if isinstance(state_payload.get("failed_tasks"), list) else []
+        state_payload["status"] = "initialized"
         state_payload["current_task_id"] = None
         state_payload["last_released_zombie_task_ids"] = released_task_ids
         state_payload["last_released_zombie_at"] = release_time
         state_payload["last_released_zombie_reason"] = "No active agent session, no live worker, and stale disk activity."
+        if checkpoint_path is not None:
+            state_payload["checkpoints"] = _append_unique(state_payload.get("checkpoints", []), checkpoint_key)
         state_payload["updated_at"] = release_time
         state_path.write_text(json.dumps(state_payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     next_truth = _build_project_runtime_truth(project_slug, project_dir)
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -4699,7 +6887,7 @@ def release_project_runtime_zombie(project_id: str):
             "phase": "runtime-truth",
             "status": "blocked",
             "projectSlug": project_slug,
-            "message": f"Supervisor real libero tarea zombie: {', '.join(released_task_ids) or 'sin id'}.",
+            "message": f"Supervisor real reencolo tarea zombie con backup: {', '.join(released_task_ids) or 'sin id'}.",
         },
     )
     return jsonify(
@@ -4708,6 +6896,9 @@ def release_project_runtime_zombie(project_id: str):
             "projectId": project_slug,
             "releasedTaskIds": released_task_ids,
             "backupDir": str(backup_dir),
+            "checkpointKey": checkpoint_key,
+            "checkpointPath": str(checkpoint_path) if checkpoint_path is not None else None,
+            "failureEvent": failure_event,
             "truth": next_truth,
             "projects": projects,
         }
@@ -4941,10 +7132,136 @@ def create_agent_project():
     ensure_unique = bool(payload.get("ensureUnique"))
     bootstrap = bool(payload.get("bootstrapProject", True))
     project = agent_runtime.create_project(project_name, ensure_unique=ensure_unique, bootstrap=bootstrap)
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     socketio.start_background_task(sync_runtime_graph, True)
     return jsonify({"ok": True, "project": project, "projects": projects})
+
+
+@app.post("/api/agent/projects/<project_id>/delete")
+def delete_agent_project(project_id: str):
+    payload = request.get_json(silent=True) or {}
+    if not isinstance(payload, dict):
+        return jsonify({"ok": False, "error": "invalid_payload", "message": "El cuerpo debe ser JSON."}), 400
+
+    normalized_slug = normalize_layer_name(project_id)
+    if normalized_slug in PROTECTED_AGENT_PROJECTS:
+        return jsonify({"ok": False, "error": "protected_project", "message": "Proyecto protegido; no se puede eliminar."}), 403
+    if not payload.get("confirmDelete") or str(payload.get("projectSlug") or "") != normalized_slug:
+        return jsonify({"ok": False, "error": "delete_confirmation_required", "message": "Confirmacion de eliminacion invalida."}), 400
+
+    password = str(payload.get("password") or "")
+    verified, auth_context, auth_error, auth_message, auth_status = verify_current_user_password(str(app.config.get("SECRET_KEY") or "architecture-view-dev"), password)
+    if not verified:
+        return jsonify({"ok": False, "error": auth_error, "message": auth_message}), auth_status
+
+    project_dir = workspace_project_dir(normalized_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 400
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    active_statuses = {"queued", "preparing", "starting", "running"}
+    active_sessions = []
+    for session in agent_runtime.list_sessions():
+        try:
+            same_project = Path(session.get("projectDir") or "").resolve() == project_dir
+        except OSError:
+            same_project = False
+        if same_project and str(session.get("status") or "").lower() in active_statuses:
+            active_sessions.append(session.get("sessionId") or session.get("id") or "active")
+    if active_sessions:
+        return jsonify({"ok": False, "error": "project_runtime_active", "message": "Deten el runtime del proyecto antes de eliminarlo.", "sessions": active_sessions}), 409
+
+    deleted_at = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    backup_root = PROJECT_ROOT / "runtime" / "backups" / "deleted_projects" / deleted_at
+    backup_root.mkdir(parents=True, exist_ok=True)
+    backup_dir = backup_root / normalized_slug
+    suffix = 2
+    while backup_dir.exists():
+        backup_dir = backup_root / f"{normalized_slug}-{suffix}"
+        suffix += 1
+
+    shutil.copytree(project_dir, backup_dir)
+    manifest = {
+        "kind": "agent_project_deleted",
+        "deletedAt": datetime.now(timezone.utc).isoformat(),
+        "projectSlug": normalized_slug,
+        "sourcePath": str(project_dir),
+        "backupPath": str(backup_dir),
+        "operatorUserId": (auth_context or {}).get("user", {}).get("id"),
+        "operatorEmail": (auth_context or {}).get("user", {}).get("email"),
+        "reason": "sidebar_project_delete_password_confirmed",
+    }
+    (backup_dir / ".deleted-project.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+    shutil.rmtree(project_dir)
+
+    projects = list_agent_projects_snapshot()
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.start_background_task(sync_runtime_graph, True)
+    try:
+        backup_relative = str(backup_dir.relative_to(PROJECT_ROOT))
+    except ValueError:
+        backup_relative = str(backup_dir)
+    return jsonify({"ok": True, "deleted": manifest, "backupRelativePath": backup_relative, "projects": projects})
+
+
+@app.post("/api/agent/projects/<project_id>/archive")
+def archive_agent_project(project_id: str):
+    normalized_slug = normalize_layer_name(project_id)
+    if normalized_slug in PROTECTED_AGENT_PROJECTS:
+        return jsonify({"ok": False, "error": "protected_project", "message": "Proyecto protegido; no se puede archivar desde la UI."}), 403
+
+    project_dir = workspace_project_dir(normalized_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 400
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    active_statuses = {"queued", "preparing", "starting", "running"}
+    active_sessions = []
+    for session in agent_runtime.list_sessions():
+        try:
+            same_project = Path(session.get("projectDir") or "").resolve() == project_dir
+        except OSError:
+            same_project = False
+        if same_project and str(session.get("status") or "").lower() in active_statuses:
+            active_sessions.append(session.get("sessionId") or session.get("id") or "active")
+    if active_sessions:
+        return jsonify({"ok": False, "error": "project_runtime_active", "message": "Deten el runtime del proyecto antes de archivarlo.", "sessions": active_sessions}), 409
+
+    archived_at = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    backup_root = PROJECT_ROOT / "runtime" / "backups" / "archived_projects" / archived_at
+    backup_root.mkdir(parents=True, exist_ok=True)
+    backup_dir = backup_root / normalized_slug
+    suffix = 2
+    while backup_dir.exists():
+        backup_dir = backup_root / f"{normalized_slug}-{suffix}"
+        suffix += 1
+    shutil.move(str(project_dir), str(backup_dir))
+
+    manifest = {
+        "kind": "agent_project_archived",
+        "archivedAt": datetime.now(timezone.utc).isoformat(),
+        "projectSlug": normalized_slug,
+        "sourcePath": str(project_dir),
+        "backupPath": str(backup_dir),
+        "reason": "sidebar_project_archive",
+    }
+    (backup_dir / ".archived-project.json").write_text(json.dumps(manifest, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+
+    projects = list_agent_projects_snapshot()
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.start_background_task(sync_runtime_graph, True)
+    try:
+        backup_relative = str(backup_dir.relative_to(PROJECT_ROOT))
+    except ValueError:
+        backup_relative = str(backup_dir)
+    return jsonify({"ok": True, "archived": manifest, "backupRelativePath": backup_relative, "projects": projects})
 
 
 def clear_pending_project_queue(
@@ -4962,7 +7279,7 @@ def clear_pending_project_queue(
     if not project_dir.exists() or not project_dir.is_dir():
         return {"ok": False, "error": "project_not_found"}
 
-    active_statuses = {"queued", "starting", "running"}
+    active_statuses = {"queued", "preparing", "starting", "running"}
     stopped_sessions: List[str] = []
     if force:
         for session in agent_runtime.list_sessions():
@@ -5059,9 +7376,14 @@ def clear_pending_project_queue(
             str(task.get("status") or "").strip().lower() in {"pending", "blocked"}
             for task in retained_tasks
         )
+        state_status = str(state_payload.get("status") or "").strip().lower()
+        retained_statuses = {str(task.get("status") or "").strip().lower() for task in retained_tasks}
+        retained_all_completed = bool(retained_tasks) and retained_statuses <= {"completed"}
         if force and not has_active_queue and not has_pending_or_blocked:
             state_payload["status"] = "stopped"
-        elif not has_active_queue and str(state_payload.get("status") or "").strip().lower() in active_statuses:
+        elif not has_active_queue and not has_pending_or_blocked and state_status == "blocked":
+            state_payload["status"] = "completed" if retained_all_completed else "stopped"
+        elif not has_active_queue and state_status in active_statuses:
             state_payload["status"] = "completed"
         state_payload["last_queue_clear_at"] = utc_now()
         state_payload["last_queue_clear_force"] = bool(force)
@@ -5092,7 +7414,7 @@ def clear_agent_project_pending_queue(project_id: str):
         return jsonify(result), 423
     if result.get("error") in {"invalid_project", "project_not_found"}:
         return jsonify(result), 404
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     result["projects"] = projects
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -5221,23 +7543,30 @@ def _project_display_name(project_dir: Path, fallback_slug: str) -> str:
     return fallback_slug
 
 
-def _build_retry_requirement(project_slug: str, retryable_task: Dict[str, Any]) -> str:
+def _build_retry_requirement(project_slug: str, retryable_task: Dict[str, Any], *, include_original_order: bool = True) -> str:
     expected_files = retryable_task.get("expectedFiles") if isinstance(retryable_task.get("expectedFiles"), list) else []
     validation_commands = retryable_task.get("validationCommands") if isinstance(retryable_task.get("validationCommands"), list) else []
     expected_label = "\n".join(f"- {item}" for item in expected_files) or "- usar los archivos del proyecto existente"
     validation_label = "\n".join(f"- {item}" for item in validation_commands) or "- ejecutar validacion real disponible"
-    return "\n\n".join(
-        [
-            "MODO EJECUCION AGENTICA CONTROLADA.",
-            f"Proyecto existente: {project_slug}.",
-            "No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales.",
-            f"Retomar la orden recuperada de la tarea {retryable_task.get('id')}. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo.",
-            "Orden original:\n" + str(retryable_task.get("goal") or "").strip(),
-            RETRY_REAL_BROWSER_RULE,
-            "Entregables esperados:\n" + expected_label,
-            "Validacion obligatoria:\n" + validation_label,
-        ]
-    )
+    lines = [
+        "MODO EJECUCION AGENTICA CONTROLADA.",
+        f"Proyecto existente: {project_slug}.",
+        "No crear proyecto nuevo. No cambiar workspace. No blanquear el proyecto. Trabajar como refactor/continuacion sobre los archivos actuales.",
+        f"Retomar la orden recuperada de la tarea {retryable_task.get('id')}. Relanzarla como ejecucion limpia de runtime, no como proyecto nuevo.",
+    ]
+    if include_original_order:
+        lines.append("Orden original:\n" + str(retryable_task.get("goal") or "").strip())
+    else:
+        lines.extend([
+            "Orden original: bloqueada por CyberLACE; no se inserta en esta continuacion P_safe.",
+            "Objetivo seguro: usar exclusivamente el P_safe autorizado para reinterpretar la tarea y reparar el cierre.",
+        ])
+    lines.extend([
+        RETRY_REAL_BROWSER_RULE,
+        "Entregables esperados:\n" + expected_label,
+        "Validacion obligatoria:\n" + validation_label,
+    ])
+    return "\n\n".join(lines)
 
 
 @app.get("/api/agent/projects/<project_id>/retryable-task")
@@ -5292,7 +7621,7 @@ def relaunch_agent_project_retryable_task(project_id: str):
         ensure_new_project=False,
         mode=runtime_mode,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     sync_runtime_graph(save_state=True)
     socketio.emit("agent:projects", {"projects": projects})
     socketio.emit(
@@ -5314,6 +7643,142 @@ def relaunch_agent_project_retryable_task(project_id: str):
             "cleanup": cleanup_result,
             "projects": projects,
             "subagentPlan": subagent_plan,
+        }
+    )
+
+
+def _build_cyberlace_safe_continuation_requirement(
+    project_slug: str,
+    safe_prompt: str,
+    retryable_task: Dict[str, Any] | None,
+    *,
+    rescue_id: str = "",
+    source_session_id: str = "",
+) -> str:
+    safe_prompt = str(safe_prompt or "").strip()
+    recovered_requirement = ""
+    if retryable_task is not None:
+        recovered_requirement = _build_retry_requirement(project_slug, retryable_task, include_original_order=False)
+    else:
+        recovered_requirement = "\n\n".join(
+            [
+                "MODO EJECUCION AGENTICA CONTROLADA.",
+                f"Proyecto existente: {project_slug}.",
+                "No crear proyecto nuevo. Continuar sobre el workspace actual con una tarea segura y verificable.",
+                RETRY_REAL_BROWSER_RULE,
+            ]
+        )
+    metadata_lines = [
+        "[CONTEXTO AUTORIZADO CYBERLACE]",
+        "P_safe fue confirmado con PIN de contexto. El prompt original sigue bloqueado y no debe ejecutarse.",
+    ]
+    if rescue_id:
+        metadata_lines.append(f"rescueId={rescue_id}")
+    if source_session_id:
+        metadata_lines.append(f"sourceSessionId={source_session_id}")
+    return "\n\n".join(
+        [
+            *metadata_lines,
+            "PROMPT SEGURO P_safe:",
+            safe_prompt,
+            "OBJETIVO RECUPERADO BAJO GOBIERNO DE P_safe:",
+            recovered_requirement,
+            "Reglas obligatorias:",
+            "- No procesar ni reconstruir el prompt original bloqueado.",
+            "- No leer, transportar ni exponer secretos reales detectados por CyberLACE.",
+            "- Usar placeholders, datos sinteticos o evidencia redactada cuando haga falta.",
+            "- Persistir evidencia real en filesystem antes de completed=true.",
+        ]
+    )
+
+
+@app.post("/api/agent/projects/<project_id>/cyberlace-safe-continue")
+def continue_agent_project_with_cyberlace_safe_prompt(project_id: str):
+    payload = request.get_json(silent=True) or {}
+    project_slug = normalize_layer_name(project_id)
+    project_dir = workspace_project_dir(project_slug).resolve()
+    try:
+        project_dir.relative_to(AGENT_PROJECTS_ROOT.resolve())
+    except ValueError:
+        return jsonify({"ok": False, "error": "invalid_project"}), 404
+    if not project_dir.exists() or not project_dir.is_dir():
+        return jsonify({"ok": False, "error": "project_not_found"}), 404
+
+    safe_prompt = str(payload.get("safePrompt") or payload.get("safe_prompt") or payload.get("requirement") or "").strip()
+    if not safe_prompt:
+        return jsonify({"ok": False, "error": "safe_prompt_required", "message": "P_safe es obligatorio para continuar."}), 400
+    autonomous_safe_rewrite = bool(payload.get("autonomousSafeRewrite") or payload.get("autonomous_safe_rewrite"))
+    safe_prompt_has_contract = all(
+        marker in safe_prompt.lower()
+        for marker in (
+            "[prompt seguro generado por cyberlace]",
+            "no ejecutar el prompt original bloqueado",
+            "reglas de continuacion segura",
+        )
+    )
+    if not bool(payload.get("pinAuthenticated")) and not (autonomous_safe_rewrite and bool(payload.get("hardBlockStillEnforced")) and safe_prompt_has_contract):
+        return jsonify({"ok": False, "error": "pin_authentication_required", "message": "CyberLACE requiere PIN autenticado o politica autonoma P_safe antes de continuar."}), 401
+
+    try:
+        runtime_mode = normalize_agent_runtime_mode(payload.get("runtimeMode") or payload.get("mode") or "build")
+    except ValueError as error:
+        return jsonify({"ok": False, "error": "invalid_runtime_mode", "message": str(error)}), 400
+
+    cleanup_result = None
+    if bool(payload.get("forceClean", True)):
+        cleanup_result = clear_pending_project_queue(
+            project_slug,
+            statuses=["queued", "starting", "running", "pending", "blocked"],
+            force=True,
+        )
+        if cleanup_result.get("ok") is False:
+            status_code = 423 if cleanup_result.get("error") == "project_locked" else 400
+            return jsonify(cleanup_result), status_code
+
+    retryable_task = _find_retryable_project_task(project_slug, str(payload.get("taskId") or "").strip() or None)
+    requirement = _build_cyberlace_safe_continuation_requirement(
+        project_slug,
+        safe_prompt,
+        retryable_task,
+        rescue_id=str(payload.get("rescueId") or payload.get("rescue_id") or ""),
+        source_session_id=str(payload.get("sourceSessionId") or payload.get("source_session_id") or ""),
+    )
+    project_name = _project_display_name(project_dir, project_slug)
+    session = agent_runtime.start_session(
+        requirement=requirement,
+        project_name=project_name,
+        project_slug=project_slug,
+        bootstrap=False,
+        ensure_new_project=False,
+        mode=runtime_mode,
+    )
+    projects = list_agent_projects_snapshot()
+    sync_runtime_graph(save_state=True)
+    socketio.emit("agent:projects", {"projects": projects})
+    socketio.emit(
+        "agent:visual",
+        {
+            "op": "cyberlace_safe_continue_started",
+            "phase": "cyberlace-safe-continue",
+            "status": "running",
+            "projectSlug": project_slug,
+            "sessionId": session.get("sessionId"),
+            "message": "P_safe autorizado por politica autonoma segura; continuacion segura iniciada sobre el mismo proyecto." if autonomous_safe_rewrite else "P_safe autenticado con PIN; continuacion segura iniciada sobre el mismo proyecto.",
+            "rescueId": str(payload.get("rescueId") or payload.get("rescue_id") or ""),
+            "retryableTaskId": retryable_task.get("id") if isinstance(retryable_task, dict) else "",
+        },
+    )
+    return jsonify(
+        {
+            "ok": True,
+            "projectId": project_slug,
+            "session": session,
+            "task": retryable_task,
+            "cleanup": cleanup_result,
+            "projects": projects,
+            "hardBlockStillEnforced": True,
+            "pinAuthenticated": not autonomous_safe_rewrite,
+            "autonomousSafeRewrite": autonomous_safe_rewrite,
         }
     )
 
@@ -5390,6 +7855,8 @@ def start_agent_session():
 
     subagent_plan = normalize_subagent_plan(payload.get("subagentPlan") or payload.get("subagents"))
     prepared_requirement = attach_subagent_plan_to_requirement(requirement, subagent_plan)
+    source = str(payload.get("source") or "").strip()
+    control_plane_repair = bool(payload.get("controlPlaneRepair")) or source == "closure_certificate_repair"
     session = agent_runtime.start_session(
         requirement=prepared_requirement,
         project_name=project_name,
@@ -5397,6 +7864,8 @@ def start_agent_session():
         bootstrap=bootstrap,
         ensure_new_project=ensure_new_project,
         mode=runtime_mode,
+        control_plane_repair=control_plane_repair,
+        control_plane_repair_source=source,
     )
     if subagent_plan:
         socketio.emit(
@@ -5404,14 +7873,21 @@ def start_agent_session():
             {
                 "op": "subagents_assigned",
                 "phase": "orchestration",
-                "status": "running",
+                "status": "preparing",
                 "projectSlug": session.get("projectSlug") or project_slug,
                 "message": f"{subagent_plan.get('recommendedAgents')} subagente(s) asignados a la sesion.",
                 "subagentPlan": subagent_plan,
             },
         )
-    sync_runtime_graph(save_state=True)
-    return jsonify({"ok": True, "session": session, "projects": agent_runtime.list_projects(), "subagentPlan": subagent_plan})
+    def refresh_agent_projects_snapshot() -> None:
+        try:
+            socketio.emit("agent:projects", {"projects": list_agent_projects_snapshot()})
+        except Exception:
+            app.logger.exception("agent_projects_snapshot_refresh_failed")
+
+    socketio.start_background_task(sync_runtime_graph, True)
+    socketio.start_background_task(refresh_agent_projects_snapshot)
+    return jsonify({"ok": True, "session": session, "subagentPlan": subagent_plan})
 
 
 @app.post("/api/agent/session/<session_id>/stop")
@@ -5425,8 +7901,9 @@ def stop_agent_session(session_id: str):
 @socketio.on("connect")
 def handle_connect():
     start_email_command_dispatcher()
-    emit("architecture:update", normalize_graph(load_default_graph()))
-    emit("agent:projects", {"projects": agent_runtime.list_projects()})
+    # App.jsx asks for the full graph with architecture:request. Avoid sending
+    # multi-MB architecture payloads to every auxiliary socket on handshake.
+    emit("agent:projects", {"projects": list_agent_projects_snapshot()})
     emit("reverse:sessions", {"sessions": list_analysis_sessions()})
     emit(
         "agent:observer",
@@ -5548,7 +8025,7 @@ def handle_reverse_agent_transcribe(payload=None):
         reason="Sesion de proyecto iniciada: Observer entra en modo autonomo de mision.",
         persistent=True,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     return {"ok": True, "session": session, "projects": projects, "targetPath": str(resolved_target)}
 
@@ -5562,7 +8039,7 @@ def handle_architecture_patch(payload):
 
 @socketio.on("agent:request")
 def handle_agent_request(_payload=None):
-    emit("agent:projects", {"projects": agent_runtime.list_projects()})
+    emit("agent:projects", {"projects": list_agent_projects_snapshot()})
     emit("agent:email_command", {"op": "email_command_status", "emailStatus": email_command_plane.status()})
     for session in agent_runtime.list_sessions():
         emit("agent:session", session)
@@ -5641,7 +8118,7 @@ def handle_agent_project_create(payload):
     ensure_unique = bool((payload or {}).get("ensureUnique"))
     bootstrap = bool((payload or {}).get("bootstrapProject", True))
     project = agent_runtime.create_project(project_name, ensure_unique=ensure_unique, bootstrap=bootstrap)
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     socketio.start_background_task(sync_runtime_graph, True)
     return {"ok": True, "project": project, "projects": projects}
@@ -5679,20 +8156,20 @@ def handle_agent_session_start(payload):
             {
                 "op": "subagents_assigned",
                 "phase": "orchestration",
-                "status": "running",
+                "status": "preparing",
                 "projectSlug": session.get("projectSlug") or project_slug,
                 "message": f"{subagent_plan.get('recommendedAgents')} subagente(s) asignados a la sesion.",
                 "subagentPlan": subagent_plan,
             },
         )
-    sync_runtime_graph(save_state=True)
+    socketio.start_background_task(sync_runtime_graph, True)
     observer_event = observe_with_tool_event(
         "agent_started",
         project_slug=str(session.get("projectSlug") or project_slug or project_name),
         reason="Sesion de proyecto iniciada: Observer entra en modo autonomo de mision.",
         persistent=True,
     )
-    projects = agent_runtime.list_projects()
+    projects = list_agent_projects_snapshot()
     socketio.emit("agent:projects", {"projects": projects})
     return {"ok": True, "session": session, "projects": projects, "observerEvent": observer_event}
 

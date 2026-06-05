@@ -21,7 +21,7 @@ export const RUNTIME_MODE_PRESETS = [
     detail: "proyecto grande con LACE y ciclos largos",
   },
 ];
-export const ACTIVE_AGENT_STATUSES = new Set(["queued", "starting", "running"]);
+export const ACTIVE_AGENT_STATUSES = new Set(["queued", "preparing", "starting", "running"]);
 
 export function humanizeAgentError(error) {
   const message = String(error?.message || error || "request_failed");

@@ -78,7 +78,7 @@ export const AGENT_PRESENCE_STEPS = [
     kind: "map-click",
     area: "mapa",
     phase: "Marcando nodo sospechoso",
-    detail: "simulando foco/click visual sobre una conexion",
+    detail: "evento real del runtime enfocando una conexion observada",
     targetId: "architecture-map-section",
     mapScale: 0.92,
     mapPanX: 22,
@@ -518,13 +518,37 @@ export function collectWorkspaceProjectScenes(graph) {
   return [...sceneMap.values()].sort((left, right) => right.key.localeCompare(left.key));
 }
 
+export function buildSceneFallbackEdges(nodes) {
+  const orderedNodes = [...(nodes || [])]
+    .filter((node) => node?.id)
+    .sort((left, right) => {
+      const layerDiff = (SEQUENCE_LAYER_PRIORITY[left.layer] ?? 50) - (SEQUENCE_LAYER_PRIORITY[right.layer] ?? 50);
+      if (layerDiff) return layerDiff;
+      return compareCanvasPosition(left, right);
+    });
+
+  return orderedNodes.slice(0, -1).map((node, index) => {
+    const nextNode = orderedNodes[index + 1];
+    return {
+      id: `derived-scene-flow:${node.id}:${nextNode.id}`,
+      from: node.id,
+      to: nextNode.id,
+      label: index === 0 ? "flujo" : "",
+      type: "sequence",
+      dashed: true,
+      derived: true,
+    };
+  });
+}
+
 export function filterGraphByScene(graph, sceneKey) {
   const scopedGraph = sanitizeGraphForVisualScope(graph);
   if (!sceneKey) return scopedGraph;
 
   const nodes = scopedGraph.nodes.filter((node) => node.workspaceScene === sceneKey);
   const nodeIds = new Set(nodes.map((node) => node.id));
-  const edges = scopedGraph.edges.filter((edge) => nodeIds.has(edge.from) && nodeIds.has(edge.to));
+  const sceneEdges = scopedGraph.edges.filter((edge) => nodeIds.has(edge.from) && nodeIds.has(edge.to));
+  const edges = sceneEdges.length ? sceneEdges : buildSceneFallbackEdges(nodes);
   const scenes = Array.isArray(scopedGraph.scenes) ? scopedGraph.scenes.filter((scene) => scene.key === sceneKey || scene.id === `scene:${sceneKey}`) : [];
   const filtered = {
     ...scopedGraph,

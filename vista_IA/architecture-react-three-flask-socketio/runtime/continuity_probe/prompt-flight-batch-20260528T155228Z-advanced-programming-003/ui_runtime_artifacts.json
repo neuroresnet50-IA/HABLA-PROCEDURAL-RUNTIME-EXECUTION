@@ -1,0 +1,184 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 38,
+      "mtime": "2026-05-28T16:08:54Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/complexity_estimate.json",
+      "sha256": "5ebd8e7498569a01af125dd29f1bb18a6191ec2baffbf4fed064cc6978b63068",
+      "size": 910,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-28T16:08:54.460049Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-code-pf-003\",\n  \"project_file_count\": 4,\n  \"prompt_word_count\": 36,\n  \"score\": 31,\n  \"difficulty\": \"medio\",\n  \"difficulty_label\": \"Medio\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 3,\n  \"recommended_agents\": 2,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 4,\n  \"max_tasks\": 8,\n  \"timeout_seconds\": 900,\n  \"recovery_budget\": 5,\n  \"max_retries\": 3,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"pytest\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt medio: 36 palabras\",\n    \"archivos estimados del proyecto: 4\",\n    \"requiere evidencia auditable\",\n    \"incluye backend/API\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 6,
+      "mtime": "2026-05-27T19:10:45Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/failures.jsonl",
+      "sha256": "acebec9589e2f8e6b458c28ec0de6e493e94366952292c6de74f9871d973ab0e",
+      "size": 281575,
+      "tail": "ueo\", \"critical_compile_failure\": true, \"irrecoverable\": false, \"selective_attempted\": false, \"downgrade_reason\": \"Regla 4 exige blanqueo selectivo antes del total.\", \"summary_markdown\": \"=== DECISION DE BLANQUEO ===\\nTarea: RUNTIME-20260527185027-002-SPLIT-001\\nDecision: Blanqueo Selectivo\\nMotivo principal: Fallo critico de compilacion/validacion end-to-end detectado por AgentRuntime tras 3 intentos consecutivos.\\nIntentos fallidos: 3\\nArchivos/Carpetas a eliminar: __pycache__/, node_modules/, build/, dist/, .pytest_cache/, .ruff_cache/, venv/, .venv/, *.pyc, *.log\\nBackups creados en: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backups/blanqueo\\nProceder: si\"}}\n{\"failure\": {\"blocked_task_ids\": [\"RUNTIME-20260527185027-001\"], \"checkpoint_key\": \"manual-stop-agent-a20db45918\", \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/checkpoints/manual-stop-agent-a20db45918.json\", \"failure_type\": \"manual_stop\", \"session_id\": \"agent-a20db45918\", \"task_id\": \"RUNTIME-20260527185027-001\"}, \"recorded_at\": \"2026-05-27T19:10:44Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 38,
+      "mtime": "2026-05-28T16:09:39Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/project_state.json",
+      "sha256": "a7031e1325521a5e2618a631ad7f7e77b4f4c59588205ff3a28e4f97d8f3af0f",
+      "size": 1339,
+      "tail": "stimate\",\n    \"runtime-20260527185027-001-checkpoint\",\n    \"runtime-20260527185027-002-retry-0-recovery\",\n    \"runtime-20260527185027-002-split-001-retry-0-recovery\",\n    \"runtime-20260527185027-002-split-001-retry-1-recovery\",\n    \"runtime-20260527185027-002-split-001-retry-2-recovery\",\n    \"post-blanqueo-recovery-checkpoint\",\n    \"manual-stop-agent-a20db45918\",\n    \"runtime-20260527185027-002-split-001-stopped\",\n    \"session-preparing-agent-e1d3e10c09\",\n    \"runtime-20260527185027-002-split-001-checkpoint\",\n    \"runtime-20260527185027-002-checkpoint\",\n    \"runtime-20260527185027-002-split-002-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260527185027-001\",\n    \"POST-BLANQUEO-RECOVERY\",\n    \"RUNTIME-20260527185027-002-SPLIT-001\",\n    \"RUNTIME-20260527185027-002\",\n    \"RUNTIME-20260527185027-002-SPLIT-002\"\n  ],\n  \"created_at\": \"2026-05-27T18:50:27.396263+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T16:08:53.951810+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-e1d3e10c09\",\n  \"project_id\": \"continuity-code-pf-003\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T16:09:39.542953+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 12,
+      "mtime": "2026-05-28T16:09:39Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/task_history.jsonl",
+      "sha256": "fc63dbe6036aff307f1bb9712cdc8cc17721a18b661e407a2bb71c71a06f552e",
+      "size": 10430,
+      "tail": "ion_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-28T16:09:27Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"docs/advanced_programming_case_003.md\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260527185027-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n{\"recorded_at\": \"2026-05-28T16:09:39Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"docs/advanced_programming_case_003.md\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260527185027-002-SPLIT-002\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 99,
+      "mtime": "2026-05-28T16:09:32Z",
+      "path": "workspace/projects/continuity-code-pf-003/runtime/task_queue.json",
+      "sha256": "6daecd01803f78bfafffdff0cb7b77d87711179528201d4724b13317504418cc",
+      "size": 4187,
+      "tail": "x_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 8,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten split 2\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"post-blanqueo-recovery-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"lessons_learned/blanqueo-2026-05-27.md\"\n    ],\n    \"goal\": \"Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.\",\n    \"id\": \"POST-BLANQUEO-RECOVERY\",\n    \"max_retries\": 0,\n    \"mode\": \"build\",\n    \"priority\": 100,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 300,\n    \"title\": \"POST-BLANQUEO-RECOVERY\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -B -c \\\"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 121,
+    "mtime": "2026-05-28T16:09:39Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/checkpoints/runtime-20260527185027-002-split-002-checkpoint.json",
+    "sha256": "6ffe4156b258bebaa4576b3a1149da7bc8e187aa537b2a742904ac8dbae09beb",
+    "size": 5538,
+    "tail": "/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/docs/advanced_programming_case_003.md\",\n            \"size\": 566\n          }\n        ],\n        \"found\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/advanced_programming_case_003.md\",\n            \"reported_created\": false,\n            \"reported_modified\": true,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/docs/advanced_programming_case_003.md\",\n            \"size\": 566\n          }\n        ],\n        \"reported_created\": [],\n        \"reported_modified\": [\n          \"docs/advanced_programming_case_003.md\"\n        ],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260527185027-002-SPLIT-002\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 240,
+    "mtime": "2026-05-28T16:09:28Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/directives/RUNTIME-20260527185027-002-SPLIT-002-20260528T160927Z-58c8d4365244.json",
+    "sha256": "da6dc1c2fae4ed4bba16b9b44b2b16b98f3847486ce428067fce0784e598920f",
+    "size": 23385,
+    "tail": " \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_003.md, manten split 2\"\n  },\n  \"task_id\": \"RUNTIME-20260527185027-002-SPLIT-002\",\n  \"traceability\": {\n    \"checkpoint_key\": \"runtime-20260527185027-002-checkpoint\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/checkpoints/runtime-20260527185027-002-checkpoint.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"58c8d4365244c765ae3cd5b8b3b82090df98b683d48d21cf199a5082f1d2d99e\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blocked_task_ids": [
+        "RUNTIME-20260527185027-001"
+      ],
+      "checkpoint_key": "manual-stop-agent-a20db45918",
+      "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/checkpoints/manual-stop-agent-a20db45918.json",
+      "failure_type": "manual_stop",
+      "session_id": "agent-a20db45918",
+      "task_id": "RUNTIME-20260527185027-001"
+    },
+    "recorded_at": "2026-05-27T19:10:44Z"
+  },
+  "latestFailureIgnoredReason": "stale_failure_for_different_task:RUNTIME-20260527185027-001",
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T16:09:39Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [],
+      "files_modified": [
+        "docs/advanced_programming_case_003.md"
+      ],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260527185027-002-SPLIT-002",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_003.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-003",
+  "runtimeDir": "workspace/projects/continuity-code-pf-003/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 183,
+    "mtime": "2026-05-28T16:09:41Z",
+    "path": "workspace/projects/continuity-code-pf-003/runtime/logs/agent-e1d3e10c09-terminal.log",
+    "sha256": "740a577ad0958f1566a0772576034e72de4c0c81b0df746ad9899c450b1a6769",
+    "size": 6812,
+    "tail": "tions\": [\n    {\n      \"tool\": \"scanner\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    },\n    {\n      \"tool\": \"findings\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-003/runtime/artifacts/observer_findings.json\"\n    }\n  ]\n}\n[control-plane] Resumen de cola:\n{\n  \"status\": \"failed\",\n  \"stopped_reason\": \"queue_idle\",\n  \"tasks_executed\": 2,\n  \"ready_task_ids\": [],\n  \"lace_gate\": {\n    \"status\": \"not_applicable\",\n    \"reason\": \"runtime_mode_not_long_run\"\n  },\n  \"tool_policy_final\": null,\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"blocked\",\n    \"event_op\": \"session_blocked\",\n    \"event_status\": \"blocked\",\n    \"phase\": \"blocked\",\n    \"error_code\": \"control_plane_blocked\",\n    \"message\": \"El estado canonico mantiene bloqueos activos: blocked_tasks=['RUNTIME-20260527185027-001'], queue_blocked=['RUNTIME-20260527185027-001'].\",\n    \"completed\": false,\n    \"warnings\": [\n      \"failure_events=6\"\n    ]\n  }\n}\n"
+  }
+}

@@ -6,10 +6,15 @@ import AppAgentPresenceLayer from "./components/AppAgentPresenceLayer.jsx";
 import AppLintPanel from "./components/AppLintPanel.jsx";
 import AppObserverPanel from "./components/AppObserverPanel.jsx";
 import AppRuntimeWorkbenches from "./components/AppRuntimeWorkbenches.jsx";
+import HarnessEngineeringStudio from "./components/HarnessEngineeringStudio.jsx";
+import RuntimeDashboardSidebar from "./components/RuntimeDashboardSidebar.jsx";
+import CyberLACEPanel from "./components/CyberLACEPanel.jsx";
 import AppStatusbar from "./components/AppStatusbar.jsx";
 import AppTopbar from "./components/AppTopbar.jsx";
 import SectionDividerMenu from "./components/SectionDividerMenu.jsx";
 import WelcomeAuthGate from "./components/WelcomeAuthGate.jsx";
+import OperationalMouseLayer from "./components/OperationalMouseLayer.jsx";
+import ForensicTruthRail from "./components/ForensicTruthRail.jsx";
 
 import {
   AGENT_PRESENCE_ACTION_DELAYS_MS,
@@ -51,10 +56,46 @@ import {
   titleizeLayer,
 } from "./appUtils.js";
 
+const HABLA_AUTH_TOKEN_STORAGE_KEY = "hablaAuthToken";
+const HABLA_AUTONOMOUS_MODE_STORAGE_KEY = "hablaAutonomousMode";
+
+function readHablaAuthToken() {
+  try {
+    return window.localStorage.getItem(HABLA_AUTH_TOKEN_STORAGE_KEY) || window.sessionStorage.getItem(HABLA_AUTH_TOKEN_STORAGE_KEY) || "";
+  } catch {
+    return "";
+  }
+}
+
+function readAutonomousModePreference() {
+  try {
+    return window.localStorage.getItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeAutonomousModePreference(enabled) {
+  try {
+    if (enabled) {
+      window.localStorage.setItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY, "1");
+    } else {
+      window.localStorage.removeItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY);
+    }
+  } catch {
+    // The visual autonomy switch still works in-memory if storage is unavailable.
+  }
+}
+
 export default function App() {
+  const initialAutonomousMode = readAutonomousModePreference();
   const socketRef = useRef(null);
-  const autonomousModeRef = useRef(false);
-  const observerPinnedRef = useRef(false);
+  const autonomousModeRef = useRef(initialAutonomousMode);
+  const harnessTrainingAutomationRef = useRef({ active: false, autoAcceptSafeAlternative: false });
+  const cyberlaceAutoAcceptKeyRef = useRef("");
+  const cyberlaceAutonomousRecoveryKeyRef = useRef("");
+  const cyberlaceMathBoardRef = useRef(null);
+  const observerPinnedRef = useRef(initialAutonomousMode);
   const agentPresenceModeTimerRef = useRef(null);
   const agentPresenceBurstTimerRef = useRef(null);
   const agentPresenceActionTimerRef = useRef(null);
@@ -79,7 +120,7 @@ export default function App() {
   const [agentPresenceActive, setAgentPresenceActive] = useState(false);
   const [agentPresenceStep, setAgentPresenceStep] = useState(0);
   const [agentPresenceMode, setAgentPresenceMode] = useState("");
-  const [autonomousMode, setAutonomousMode] = useState(false);
+  const [autonomousMode, setAutonomousMode] = useState(initialAutonomousMode);
   const [observerStatus, setObserverStatus] = useState(null);
   const [observerTimeline, setObserverTimeline] = useState([]);
   const [observerBehaviorTree, setObserverBehaviorTree] = useState(null);
@@ -92,6 +133,18 @@ export default function App() {
   const [embeddedSandboxBusy, setEmbeddedSandboxBusy] = useState(false);
   const [embeddedSandboxError, setEmbeddedSandboxError] = useState("");
   const [embeddedSandboxFrameKey, setEmbeddedSandboxFrameKey] = useState(0);
+  const [cyberlaceBlockingAlert, setCyberlaceBlockingAlert] = useState(null);
+  const [cyberlaceSafeRewriteBusy, setCyberlaceSafeRewriteBusy] = useState(false);
+  const [cyberlaceSafeRewriteError, setCyberlaceSafeRewriteError] = useState("");
+  const [cyberlaceRescuePin, setCyberlaceRescuePin] = useState("");
+  const [cyberlaceMathWriter, setCyberlaceMathWriter] = useState({ lineIndex: 0, charIndex: 0 });
+  const [harnessTrainingAutomationState, setHarnessTrainingAutomationState] = useState({ active: false, autoAcceptSafeAlternative: false });
+  const [runtimeDashboardWidth, setRuntimeDashboardWidth] = useState(318);
+  const [agentProjects, setAgentProjects] = useState([]);
+  const [agentProjectsLoading, setAgentProjectsLoading] = useState(false);
+  const [projectActionStatus, setProjectActionStatus] = useState("");
+  const [harnessStudioOpen, setHarnessStudioOpen] = useState(false);
+  const [newProjectName, setNewProjectName] = useState("");
   const [editorJumpTarget, setEditorJumpTarget] = useState(null);
   const [editorExpanded, setEditorExpanded] = useState(false);
   const [mapTool, setMapTool] = useState("select");
@@ -128,15 +181,455 @@ export default function App() {
     }
   }
 
+  function getCyberlaceBlockSource(payload) {
+    if (payload?.securityBlock && typeof payload.securityBlock === "object") return payload.securityBlock;
+    if (payload?.security_block && typeof payload.security_block === "object") return payload.security_block;
+    if (payload?.decision && typeof payload.decision === "object") return payload.decision;
+    const decisions = payload?.cyberlace?.decisions;
+    if (Array.isArray(decisions) && decisions[0] && typeof decisions[0] === "object") return decisions[0];
+    return payload || {};
+  }
+
+  function buildCyberlaceMathTrace(source, payload, action, paths, evidenceCount, safeAlternative) {
+    const combined = [
+      source?.message,
+      source?.reason,
+      source?.deniedAction,
+      payload?.message,
+      payload?.errorCode,
+      payload?.op,
+      ...(Array.isArray(source?.evidence) ? source.evidence.map((item) => `${item?.pattern || ""} ${item?.domain || ""} ${item?.type || ""}`) : []),
+      ...(Array.isArray(paths) ? paths : []),
+    ].filter(Boolean).join(" ").toLowerCase();
+    const hasSecret = /secret|token|api[_-]?key|password|passwd|pwd|cvv|cvc|pin|tarjeta|card|bank|banco|cuenta|credential/.test(combined);
+    const hasExfil = /exfil|upload|subir|send|enviar|correo|email|external|nube|cloud|transfer/.test(combined);
+    const hasExternal = /ssh|aws|github|stripe|openai|codex|api|login|correo|email|imap|smtp/.test(combined);
+    const hasLogin = /login|entrar|correo|email|password|inbox|mensajes|adjuntos/.test(combined);
+    const hasObfuscation = /base64|hex|rot13|decode|decodifica|normaliza|ofusc/.test(combined);
+    const uiRisk = safeAlternative ? 0 : 1;
+    const zombieRisk = /zombie|running|null|pid/.test(combined) ? 1 : 0;
+    const latencyRisk = /timeout|latency|lento|5s/.test(combined) ? 1 : 0;
+    const riskVector = {
+      s: hasSecret ? 1 : 0,
+      e: hasExfil ? 1 : 0,
+      x: hasExternal ? 1 : 0,
+      l: hasLogin ? 1 : 0,
+      o: hasObfuscation ? 1 : 0,
+      u: uiRisk,
+      z: zombieRisk,
+      t: latencyRisk,
+    };
+    const weights = { s: 2.0, e: 2.0, x: 1.5, l: 1.7, o: 1.4, u: 0.8, z: 1.6, t: 0.9 };
+    const computedRisk = Object.entries(riskVector).reduce((sum, [key, value]) => sum + value * weights[key], 0);
+    const sourceRisk = Number(source?.riskScore ?? source?.risk_score ?? source?.risk ?? payload?.riskScore ?? NaN);
+    const riskScore = Number.isFinite(sourceRisk) ? sourceRisk : Number(computedRisk.toFixed(2));
+    const threshold = 1;
+    const blockSet = "{BLOCK, QUARANTINE, HUMAN_REVIEW, REDACT}";
+    const invariantViolations = [];
+    if (riskScore >= threshold && !["BLOCK", "QUARANTINE", "HUMAN_REVIEW", "REDACT"].includes(action)) invariantViolations.push("I1_FAIL_CLOSED");
+    if (hasExfil && !["BLOCK", "QUARANTINE", "HUMAN_REVIEW", "REDACT"].includes(action)) invariantViolations.push("I2_NO_EXFILTRATION");
+    if (!safeAlternative) invariantViolations.push("I4_SAFE_GUIDANCE_VISIBILITY");
+    const loss = Number((Math.max(0, riskScore - threshold) + invariantViolations.length * 0.7 + (safeAlternative ? 0 : 0.8)).toFixed(2));
+    const repairOperator = invariantViolations.includes("I1_FAIL_CLOSED")
+      ? "R1_PATCH_GUARD"
+      : invariantViolations.includes("I4_SAFE_GUIDANCE_VISIBILITY")
+        ? "R2_PATCH_UI_SAFE_GUIDANCE"
+        : "R0_BLOCK_AND_REWRITE_SAFE";
+    const failureNode = invariantViolations.includes("I1_FAIL_CLOSED")
+      ? "cyberlace.document_guard"
+      : invariantViolations.includes("I4_SAFE_GUIDANCE_VISIBILITY")
+        ? "frontend.cyberlace_safe_guidance"
+        : "policy.safe_rewrite";
+    const vectorText = `[${riskVector.s}, ${riskVector.e}, ${riskVector.x}, ${riskVector.l}, ${riskVector.o}, ${riskVector.u}, ${riskVector.z}, ${riskVector.t}]`;
+    const safeEquation = safeAlternative?.suggestedRequirement
+      ? "rewrite(P) = P_safe; P_sensitive ∩ P_safe = ∅"
+      : "rewrite(P) -> synthetic_data + redaction + audit";
+    return {
+      riskVector,
+      riskScore,
+      threshold,
+      invariantViolations,
+      loss,
+      repairOperator,
+      failureNode,
+      rows: [
+        { label: "Estado", equation: "S_t = (P, R, C, U, E, M)" },
+        { label: "Vector", equation: `r = [s,e,x,l,o,u,z,t] = ${vectorText}` },
+        { label: "Riesgo", equation: `Risk(P) = w · r = ${riskScore} >= θ=${threshold}` },
+        { label: "Invariante I1", equation: `Risk(P) >= θ => action(C) ∈ ${blockSet}; action=${action}` },
+        { label: "No exfiltracion", equation: "secret(x) => output(x) = REDACTED" },
+        { label: "Perdida", equation: `L = αL_sec + βL_run + γL_ui + δL_evidence = ${loss}` },
+        { label: "Solucion", equation: `R* = argmin_R L(apply(R,S_t)) + Cost(R) = ${repairOperator}` },
+        { label: "Ruta segura", equation: safeEquation },
+      ],
+    };
+  }
+
+  function buildFallbackCyberlaceGuidance(source, payload) {
+    const combined = [
+      source?.message,
+      source?.reason,
+      source?.deniedAction,
+      payload?.message,
+      payload?.errorCode,
+      payload?.op,
+      ...(Array.isArray(source?.evidence) ? source.evidence.map((item) => `${item?.pattern || ""} ${item?.domain || ""} ${item?.type || ""}`) : []),
+    ].filter(Boolean).join(" ").toLowerCase();
+    const isFinancial = /pago|pagos|payment|tarjeta|card|cvv|cvc|pin|banco|bank|cuenta|transfer/.test(combined);
+    if (isFinancial) {
+      return {
+        deniedAction: "Validar, copiar, almacenar, transportar o preparar pagos/transferencias usando PAN, CVV, PIN, cuentas bancarias, passwords o tokens sensibles.",
+        safeAlternative: {
+          title: "Alternativa segura permitida",
+          summary: "HABLA no procesa CVV, PIN, passwords bancarias ni transferencias con datos sensibles. Si puede ayudar a disenar un flujo seguro con tokenizacion, checkout hospedado, recibos, ultimos 4 digitos, controles de acceso y datos sinteticos.",
+          allowedActions: [
+            "Disenar arquitectura PCI-style sin que la app vea ni almacene CVV/PIN.",
+            "Usar tokenizacion o checkout hospedado por el proveedor de pagos.",
+            "Mostrar solo recibos, IDs de transaccion y ultimos 4 digitos.",
+            "Usar datos sinteticos para QA y pruebas automatizadas.",
+            "Definir auditoria, permisos y monitoreo sin exponer secretos financieros.",
+          ],
+          suggestedRequirement: "Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria, datos sinteticos y sin procesar ni transportar PAN/CVV/PIN/passwords/tokens sensibles.",
+        },
+        safeNextSteps: [
+          "Reformular la tarea hacia arquitectura segura de pagos.",
+          "Eliminar validacion directa de CVV/PIN/passwords/cuentas del flujo de la app.",
+          "Trabajar solo con tokens del proveedor, recibos, ultimos 4 digitos y datos sinteticos.",
+        ],
+      };
+    }
+    return {
+      deniedAction: "Procesar, exponer, transportar o ejecutar acciones con informacion sensible detectada por CyberLACE.",
+      safeAlternative: {
+        title: "Alternativa segura permitida",
+        summary: "HABLA bloqueo el camino inseguro, pero puede ayudar a redisenar el flujo para trabajar con datos sinteticos, evidencia redactada, controles de acceso y procedimientos auditables.",
+        allowedActions: [
+          "Redisenar el flujo para no leer ni transportar secretos.",
+          "Usar datos sinteticos o placeholders no sensibles.",
+          "Crear validaciones de seguridad y auditoria sin exponer valores reales.",
+        ],
+        suggestedRequirement: "Redisenar esta tarea con datos sinteticos, evidencia redactada, controles de acceso y sin procesar informacion sensible local.",
+      },
+      safeNextSteps: [
+        "Quitar del alcance cualquier secreto o dato sensible.",
+        "Reformular con datos sinteticos.",
+        "Documentar el bloqueo y la alternativa segura.",
+      ],
+    };
+  }
+
+  function getCyberlaceSafePrompt(alert) {
+    return String(alert?.safeRewrite?.safePrompt || alert?.safeAlternative?.suggestedRequirement || "").trim();
+  }
+
+  function dispatchCyberlaceSafeAlternative(alert, { auto = false, acceptanceType = "continue_safe", acceptedPayload = null } = {}) {
+    const safeAlternative = alert?.safeAlternative;
+    const safePrompt = String(acceptedPayload?.safePrompt || getCyberlaceSafePrompt(alert)).trim();
+    if (!safePrompt) return false;
+    window.dispatchEvent(new CustomEvent("habla:safe-alternative-accepted", {
+      detail: {
+        requirement: safePrompt,
+        safePrompt,
+        rescueId: alert?.safeRewrite?.rescueId || acceptedPayload?.rescueId || "",
+        projectSlug: alert.projectSlug,
+        sourceSessionId: alert.sessionId,
+        title: safeAlternative?.title || "Alternativa segura CyberLACE",
+        autoAccepted: Boolean(auto),
+        confirmedSafeRewrite: Boolean(acceptedPayload?.ok || alert?.safeRewriteAccepted),
+        acceptanceType,
+        hardBlockStillEnforced: true,
+        source: auto ? "harness-autonomous-training" : "human",
+      },
+    }));
+    return true;
+  }
+
+  function buildCyberlaceRouteSafePrompt(detail = {}) {
+    const projectSlug = String(detail.projectSlug || "proyecto activo").trim() || "proyecto activo";
+    return [
+      "[PROMPT SEGURO GENERADO POR CYBERLACE]",
+      "No ejecutar el prompt original bloqueado.",
+      "Reglas de continuacion segura:",
+      "- Mantener el bloqueo del prompt original y trabajar solo con esta version P_safe.",
+      "- Reparar el cierre del runtime usando evidencia redactada, datos sinteticos y controles auditables.",
+      "- No transportar, reconstruir ni exponer valores sensibles reales.",
+      "- Validar por filesystem, scanner, sandbox e integrity antes de permitir completed=true.",
+      `Proyecto objetivo: ${projectSlug}.`,
+    ].join("\n");
+  }
+
+  function showCyberlaceBlockingAlert(payload) {
+    const source = getCyberlaceBlockSource(payload);
+    const fallback = buildFallbackCyberlaceGuidance(source, payload);
+    const action = String(source.runtimeAction || source.action || payload?.runtimeAction || payload?.action || "QUARANTINE").toUpperCase();
+    const paths = Array.isArray(source.blockedPaths) ? source.blockedPaths.filter(Boolean).slice(0, 6) : [];
+    const evidenceCount = Array.isArray(source.evidence) ? source.evidence.length : 0;
+    const sourceSafeAlternative = source.safeAlternative && typeof source.safeAlternative === "object" ? source.safeAlternative : null;
+    const sourceSafeNextSteps = Array.isArray(source.safeNextSteps) ? source.safeNextSteps.filter(Boolean).slice(0, 5) : [];
+    const projectSlug = payload?.projectSlug || source.projectSlug || "";
+    const sessionId = payload?.sessionId || source.sessionId || "";
+    setCyberlaceBlockingAlert((current) => {
+      const sameBlock = current && (
+        (sessionId && current.sessionId === sessionId) ||
+        (projectSlug && current.projectSlug === projectSlug)
+      );
+      const safeAlternative = sourceSafeAlternative || (sameBlock ? current.safeAlternative : null) || fallback.safeAlternative;
+      const safeNextSteps = sourceSafeNextSteps.length ? sourceSafeNextSteps : (sameBlock && current.safeNextSteps?.length ? current.safeNextSteps : fallback.safeNextSteps);
+      const mathTrace = buildCyberlaceMathTrace(source, payload, action, paths, evidenceCount, safeAlternative);
+      const nextAlert = {
+        action,
+        projectSlug,
+        sessionId,
+        message: payload?.message || source.message || "CyberLACE bloqueo esta accion antes de ejecutar el runtime.",
+        reason: source.reason || "Se detectaron patrones compatibles con informacion sensible en documentos locales.",
+        deniedAction: source.deniedAction || (sameBlock ? current.deniedAction : "") || fallback.deniedAction,
+        safeAlternative,
+        safeNextSteps,
+        mathTrace,
+        paths,
+        evidenceCount,
+        humanMessage: {
+          intro: "Este es un mensaje de CyberLACE, el nucleo runtime de seguridad. No te alarmes: el proceso no termino y podemos continuar por una ruta segura.",
+          why: source.reason || fallback.safeAlternative?.summary || "CyberLACE detecto lenguaje ambiguo o evidencia sensible y bloqueo el prompt original antes de lanzar el worker.",
+          nextStep: "Oprime el boton verde Continuar con prompt seguro para transformar la intencion en P_safe, revisarla y seguir sin ejecutar el prompt bloqueado.",
+        },
+        safeRewrite: null,
+        safeRewriteRequested: false,
+        timestamp: new Date().toISOString(),
+      };
+      return nextAlert;
+    });
+  }
+
+  async function requestCyberlaceSafeRewrite(alert) {
+    if (!alert) return null;
+    setCyberlaceSafeRewriteBusy(true);
+    setCyberlaceSafeRewriteError("");
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/cyberlace/rescue/rewrite`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          projectSlug: alert.projectSlug,
+          sessionId: alert.sessionId,
+          prompt: alert.originalPrompt || "",
+          decision: {
+            runtimeAction: alert.action,
+            riskScore: alert.mathTrace?.riskScore,
+            reason: alert.reason,
+            deniedAction: alert.deniedAction,
+            blockedPaths: alert.paths,
+            evidence: [],
+            safeAlternative: alert.safeAlternative,
+            safeNextSteps: alert.safeNextSteps,
+          },
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "No fue posible generar P_safe.");
+      }
+      setCyberlaceBlockingAlert((current) => {
+        if (!current || current.timestamp !== alert.timestamp) return current;
+        return {
+          ...current,
+          safeRewrite: payload,
+          humanMessage: payload.humanMessage || current.humanMessage,
+          safeAlternative: payload.safeAlternative || current.safeAlternative,
+          safeNextSteps: Array.isArray(payload.safeNextSteps) ? payload.safeNextSteps : current.safeNextSteps,
+        };
+      });
+      return payload;
+    } catch (error) {
+      setCyberlaceSafeRewriteError(error?.message || "No fue posible generar P_safe.");
+      return null;
+    } finally {
+      setCyberlaceSafeRewriteBusy(false);
+    }
+  }
+
+  async function continueCyberlaceSafeExecution(alert, accepted, safePrompt, acceptanceType) {
+    const projectSlug = String(alert?.projectSlug || "").trim();
+    if (!projectSlug || !["continue_safe", "autonomous_safe_rewrite"].includes(acceptanceType)) return null;
+    const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(projectSlug)}/cyberlace-safe-continue`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        safePrompt,
+        rescueId: accepted?.rescueId || alert?.safeRewrite?.rescueId || "",
+        sourceSessionId: alert?.sessionId || accepted?.sourceSessionId || "",
+        pinAuthenticated: Boolean(accepted?.pinAuthenticated),
+        autonomousSafeRewrite: Boolean(accepted?.autonomousSafeRewrite),
+        hardBlockStillEnforced: true,
+        runtimeMode: "build",
+        forceClean: true,
+      }),
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload?.ok === false) {
+      throw new Error(payload?.message || payload?.error || "CyberLACE acepto P_safe, pero no pudo iniciar la continuacion segura.");
+    }
+    return payload;
+  }
+
+  async function acceptCyberlaceSafeAlternative(options = {}) {
+    const automation = harnessTrainingAutomationRef.current || {};
+    const auto = options.auto ?? Boolean(automation.active && automation.autoAcceptSafeAlternative);
+    const acceptanceType = options.acceptanceType || "continue_safe";
+    const autonomousSafeRewrite = acceptanceType === "autonomous_safe_rewrite";
+    const alert = cyberlaceBlockingAlert;
+    if (!alert) return;
+    let workingAlert = alert;
+    let rewrite = alert.safeRewrite;
+    if (!rewrite?.rescueId) {
+      rewrite = await requestCyberlaceSafeRewrite(alert);
+      if (!rewrite?.rescueId) return;
+      workingAlert = {
+        ...alert,
+        safeRewrite: rewrite,
+        safeAlternative: rewrite.safeAlternative || alert.safeAlternative,
+      };
+    }
+    const safePrompt = String(rewrite.safePrompt || getCyberlaceSafePrompt(workingAlert)).trim();
+    if (!safePrompt) {
+      setCyberlaceSafeRewriteError("No hay P_safe para continuar.");
+      return;
+    }
+    setCyberlaceSafeRewriteBusy(true);
+    setCyberlaceSafeRewriteError("");
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/cyberlace/rescue/accept`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          rescueId: rewrite.rescueId,
+          safePrompt,
+          projectSlug: alert.projectSlug,
+          sourceSessionId: alert.sessionId,
+          confirmation: autonomousSafeRewrite ? "AUTONOMOUS_SAFE_REWRITE" : acceptanceType === "human_review" ? "HUMAN_REVIEW" : acceptanceType === "manual_edit" ? "EDIT_SAFE_PROMPT" : "CONTINUAR_SEGURO",
+          acceptanceType,
+          rescuePin: autonomousSafeRewrite ? "" : cyberlaceRescuePin,
+        }),
+      });
+      const accepted = await response.json().catch(() => ({}));
+      if (!response.ok || accepted?.ok === false) {
+        throw new Error(accepted?.message || accepted?.error || "CyberLACE no pudo auditar la confirmacion segura.");
+      }
+      if (acceptanceType === "human_review") {
+        setProjectActionStatus("CyberLACE registro revision humana solicitada; el prompt original sigue bloqueado.");
+        setCyberlaceRescuePin("");
+        setCyberlaceBlockingAlert(null);
+        return;
+      }
+      const continuation = await continueCyberlaceSafeExecution(alert, accepted, safePrompt, acceptanceType);
+      if (continuation?.session?.sessionId) {
+        setProjectActionStatus(`${autonomousSafeRewrite ? "Autonomous Recovery Kernel" : "CyberLACE"} inicio continuacion segura con P_safe: ${continuation.session.sessionId}.`);
+        setCyberlaceRescuePin("");
+        setCyberlaceBlockingAlert(null);
+        if (!auto) {
+          window.setTimeout(() => {
+            document.getElementById("section-agents")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 50);
+        }
+        return;
+      }
+      const dispatchAlert = {
+        ...workingAlert,
+        safeRewrite: rewrite,
+        safeRewriteAccepted: true,
+      };
+      if (!dispatchCyberlaceSafeAlternative(dispatchAlert, { auto, acceptanceType, acceptedPayload: accepted })) return;
+      setCyberlaceRescuePin("");
+      setCyberlaceBlockingAlert(null);
+      if (!auto) {
+        window.setTimeout(() => {
+          document.getElementById("section-agents")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 50);
+      }
+    } catch (error) {
+      setCyberlaceSafeRewriteError(error?.message || "CyberLACE no pudo auditar la confirmacion segura.");
+    } finally {
+      setCyberlaceSafeRewriteBusy(false);
+    }
+  }
+
+  async function continueCyberlaceSafeRouteFromEvent(detail = {}) {
+    if (cyberlaceSafeRewriteBusy) {
+      setProjectActionStatus("CyberLACE ya esta preparando una continuacion P_safe.");
+      return;
+    }
+    if (cyberlaceBlockingAlert) {
+      setProjectActionStatus("CyberLACE: aceptando P_safe y lanzando continuacion segura sobre el mismo proyecto.");
+      await acceptCyberlaceSafeAlternative({ auto: true, acceptanceType: "autonomous_safe_rewrite" });
+      return;
+    }
+    const projectSlug = String(detail.projectSlug || "").trim();
+    if (!projectSlug) {
+      setProjectActionStatus("CyberLACE no encontro proyecto activo para continuar con P_safe.");
+      return;
+    }
+    const safePrompt = String(detail.safePrompt || buildCyberlaceRouteSafePrompt(detail)).trim();
+    setCyberlaceSafeRewriteBusy(true);
+    setCyberlaceSafeRewriteError("");
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(projectSlug)}/cyberlace-safe-continue`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          safePrompt,
+          rescueId: String(detail.rescueId || ""),
+          sourceSessionId: String(detail.sourceSessionId || ""),
+          pinAuthenticated: false,
+          autonomousSafeRewrite: true,
+          hardBlockStillEnforced: true,
+          runtimeMode: "build",
+          forceClean: true,
+        }),
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
+      }
+      if (Array.isArray(payload.projects)) {
+        setAgentProjects(payload.projects);
+      }
+      setProjectActionStatus(`CyberLACE inicio continuacion segura con P_safe: ${payload?.session?.sessionId || projectSlug}.`);
+      window.dispatchEvent(new CustomEvent("habla:safe-alternative-accepted", {
+        detail: {
+          requirement: safePrompt,
+          safePrompt,
+          rescueId: String(detail.rescueId || ""),
+          projectSlug,
+          sourceSessionId: String(detail.sourceSessionId || ""),
+          title: "Ruta segura CyberLACE",
+          autoAccepted: true,
+          confirmedSafeRewrite: true,
+          acceptanceType: "autonomous_safe_rewrite",
+          hardBlockStillEnforced: true,
+          source: "closure-certificate-safe-route",
+        },
+      }));
+    } catch (error) {
+      setCyberlaceSafeRewriteError(error?.message || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
+      setProjectActionStatus(error?.message || "CyberLACE no pudo iniciar la continuacion segura P_safe.");
+    } finally {
+      setCyberlaceSafeRewriteBusy(false);
+    }
+  }
+
   function syncObserverStatus(nextObserver) {
     if (!nextObserver || typeof nextObserver !== "object") return;
     setObserverStatus(nextObserver);
-    observerPinnedRef.current = Boolean(nextObserver.humanPinned);
+    observerPinnedRef.current = Boolean(nextObserver.humanPinned) || autonomousModeRef.current;
     if (nextObserver.enabled && nextObserver.humanPinned) {
       autonomousModeRef.current = true;
+      observerPinnedRef.current = true;
+      writeAutonomousModePreference(true);
       setAutonomousMode(true);
-    } else if (nextObserver.enabled === false && !nextObserver.humanPinned) {
+    } else if (nextObserver.enabled === false && !nextObserver.humanPinned && !autonomousModeRef.current) {
       autonomousModeRef.current = false;
+      observerPinnedRef.current = false;
+      writeAutonomousModePreference(false);
       setAutonomousMode(false);
     }
     if (Array.isArray(nextObserver.timeline)) {
@@ -155,6 +648,130 @@ export default function App() {
     } catch (error) {
       setObserverActionStatus(error?.message || "No fue posible cargar Observer Plane.");
     }
+  }
+
+  async function loadAgentProjects({ silent = false } = {}) {
+    if (!silent) setAgentProjectsLoading(true);
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects`);
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "No fue posible cargar proyectos.");
+      }
+      setAgentProjects(Array.isArray(payload?.projects) ? payload.projects : []);
+      if (!silent) setProjectActionStatus("");
+      return payload?.projects || [];
+    } catch (error) {
+      setProjectActionStatus(error?.message || "No fue posible cargar proyectos.");
+      return [];
+    } finally {
+      if (!silent) setAgentProjectsLoading(false);
+    }
+  }
+
+  async function createSidebarProject() {
+    const name = newProjectName.trim();
+    if (!name) {
+      setProjectActionStatus("Escribe un nombre de proyecto.");
+      return;
+    }
+    setAgentProjectsLoading(true);
+    setProjectActionStatus("Creando proyecto...");
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, ensureUnique: true, bootstrapProject: true }),
+      });
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "No fue posible crear el proyecto.");
+      }
+      setAgentProjects(Array.isArray(payload?.projects) ? payload.projects : []);
+      setNewProjectName("");
+      if (payload?.project?.slug) {
+        focusWorkspaceScene(payload.project.slug);
+        socketRef.current?.emit("architecture:request");
+      }
+      setProjectActionStatus(`Proyecto creado: ${payload?.project?.slug || name}`);
+    } catch (error) {
+      setProjectActionStatus(error?.message || "No fue posible crear el proyecto.");
+    } finally {
+      setAgentProjectsLoading(false);
+    }
+  }
+
+  async function archiveSidebarProject(projectSlug) {
+    const slug = String(projectSlug || "").trim();
+    if (!slug) return;
+    if (slug === "sesion-20260524210420" || slug === "sesion-20260524233805") {
+      setProjectActionStatus("Proyecto protegido: no se puede archivar desde la UI.");
+      return;
+    }
+    const accepted = window.confirm(`Archivar proyecto ${slug}? Se movera a backup, no se borrara directo.`);
+    if (!accepted) return;
+    setAgentProjectsLoading(true);
+    setProjectActionStatus(`Archivando ${slug}...`);
+    try {
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(slug)}/archive`, { method: "POST" });
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "No fue posible archivar el proyecto.");
+      }
+      setAgentProjects(Array.isArray(payload?.projects) ? payload.projects : []);
+      if (effectiveWorkspaceScene === slug) {
+        setActiveWorkspaceScene("");
+      }
+      socketRef.current?.emit("architecture:request");
+      setProjectActionStatus(`Proyecto archivado con backup: ${payload?.backupRelativePath || slug}`);
+    } catch (error) {
+      setProjectActionStatus(error?.message || "No fue posible archivar el proyecto.");
+    } finally {
+      setAgentProjectsLoading(false);
+    }
+  }
+
+  async function deleteSidebarProject(projectSlug, password) {
+    const slug = String(projectSlug || "").trim();
+    if (!slug) throw new Error("Proyecto invalido.");
+    if (slug === "sesion-20260524210420" || slug === "sesion-20260524233805") {
+      throw new Error("Proyecto protegido: no se puede eliminar.");
+    }
+    setAgentProjectsLoading(true);
+    setProjectActionStatus(`Eliminando ${slug}...`);
+    try {
+      const token = readHablaAuthToken();
+      const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(slug)}/delete`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({ password, confirmDelete: true, projectSlug: slug }),
+      });
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.message || payload?.error || "No fue posible eliminar el proyecto.");
+      }
+      setAgentProjects(Array.isArray(payload?.projects) ? payload.projects : []);
+      if (effectiveWorkspaceScene === slug) {
+        setActiveWorkspaceScene("");
+      }
+      socketRef.current?.emit("architecture:request");
+      setProjectActionStatus(`Proyecto eliminado. Backup: ${payload?.backupRelativePath || slug}`);
+      return true;
+    } catch (error) {
+      setProjectActionStatus(error?.message || "No fue posible eliminar el proyecto.");
+      throw error;
+    } finally {
+      setAgentProjectsLoading(false);
+    }
+  }
+
+  function openHarnessEngineeringStudio() {
+    setHarnessStudioOpen(true);
+    setProjectActionStatus("Harness Engineering Studio abierto.");
+    document.getElementById("section-runtime")?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function saveObserverBehaviorTree(nextTree = observerBehaviorTree) {
@@ -226,6 +843,7 @@ export default function App() {
       const sourceLabel = source === "keyboard" ? "tecla A" : "boton Modo autonomo";
       autonomousModeRef.current = next;
       observerPinnedRef.current = next;
+      writeAutonomousModePreference(next);
       socketRef.current?.emit("observer:enabled", {
         enabled: next,
         source: "human",
@@ -262,6 +880,7 @@ export default function App() {
     }
     autonomousModeRef.current = false;
     observerPinnedRef.current = false;
+    writeAutonomousModePreference(false);
     setAutonomousMode(false);
     clearAgentPresenceTimers();
     setAgentPresenceActive(false);
@@ -305,6 +924,101 @@ export default function App() {
   }, [autonomousMode]);
 
   useEffect(() => {
+    function handleCyberlaceBlockedEvent(event) {
+      showCyberlaceBlockingAlert(event?.detail || {});
+    }
+
+    function handleHarnessTrainingAutomation(event) {
+      const detail = event?.detail || {};
+      const automationState = {
+        active: Boolean(detail.active),
+        autoAcceptSafeAlternative: Boolean(detail.autoAcceptSafeAlternative),
+        runId: detail.runId || "",
+        campaignId: detail.campaignId || "",
+      };
+      harnessTrainingAutomationRef.current = automationState;
+      setHarnessTrainingAutomationState(automationState);
+      if (detail.active && detail.autoAcceptSafeAlternative) {
+        setProjectActionStatus("Harness Autopilot activo: alternativas seguras se aceptan automaticamente durante la campana.");
+      } else if (detail.active === false) {
+        setProjectActionStatus("Harness Autopilot finalizado: autoaceptacion segura desactivada.");
+      }
+    }
+
+    window.addEventListener("habla:cyberlace-blocked", handleCyberlaceBlockedEvent);
+    window.addEventListener("habla:harness-training-automation", handleHarnessTrainingAutomation);
+    return () => {
+      window.removeEventListener("habla:cyberlace-blocked", handleCyberlaceBlockedEvent);
+      window.removeEventListener("habla:harness-training-automation", handleHarnessTrainingAutomation);
+    };
+  }, []);
+
+  useEffect(() => {
+    const alert = cyberlaceBlockingAlert;
+    if (!alert || alert.safeRewrite || alert.safeRewriteRequested) return undefined;
+    setCyberlaceBlockingAlert((current) => (
+      current && current.timestamp === alert.timestamp ? { ...current, safeRewriteRequested: true } : current
+    ));
+    const timer = window.setTimeout(() => {
+      void requestCyberlaceSafeRewrite(alert);
+    }, 120);
+    return () => window.clearTimeout(timer);
+  }, [cyberlaceBlockingAlert]);
+
+  useEffect(() => {
+    const automation = harnessTrainingAutomationState || {};
+    if (!cyberlaceBlockingAlert || !automation.active || !automation.autoAcceptSafeAlternative) return undefined;
+    if (!cyberlaceBlockingAlert.safeAlternative?.suggestedRequirement) return undefined;
+    const acceptKey = [
+      cyberlaceBlockingAlert.sessionId || "session",
+      cyberlaceBlockingAlert.projectSlug || "project",
+      cyberlaceBlockingAlert.timestamp || "time",
+    ].join("|");
+    if (cyberlaceAutoAcceptKeyRef.current === acceptKey) return undefined;
+    cyberlaceAutoAcceptKeyRef.current = acceptKey;
+    const timer = window.setTimeout(() => {
+      const button = document.querySelector('[data-cyberlace-safe-accept="primary"]');
+      if (button instanceof HTMLButtonElement) {
+        button.dataset.autoClicking = "true";
+        button.click();
+        setProjectActionStatus("Harness Autopilot oprimio automaticamente Aceptar alternativa segura; la accion peligrosa sigue bloqueada.");
+        return;
+      }
+      void acceptCyberlaceSafeAlternative({ auto: true });
+      setProjectActionStatus("Harness Autopilot pidio continuar con P_safe; la accion peligrosa sigue bloqueada.");
+    }, 1400);
+    return () => window.clearTimeout(timer);
+  }, [cyberlaceBlockingAlert, harnessTrainingAutomationState]);
+
+  useEffect(() => {
+    if (!autonomousMode || !cyberlaceBlockingAlert?.safeRewrite?.rescueId) return undefined;
+    if (!cyberlaceBlockingAlert?.safeAlternative?.suggestedRequirement) return undefined;
+    if (cyberlaceSafeRewriteBusy) return undefined;
+    const recoveryKey = [
+      cyberlaceBlockingAlert.sessionId || "session",
+      cyberlaceBlockingAlert.projectSlug || "project",
+      cyberlaceBlockingAlert.timestamp || "time",
+      cyberlaceBlockingAlert.safeRewrite.rescueId || "rescue",
+    ].join("|");
+    if (cyberlaceAutonomousRecoveryKeyRef.current === recoveryKey) return undefined;
+    cyberlaceAutonomousRecoveryKeyRef.current = recoveryKey;
+    setProjectActionStatus("Autonomous Recovery Kernel: CyberLACE genero P_safe; continuacion segura automatica en preparacion.");
+    const timer = window.setTimeout(() => {
+      void acceptCyberlaceSafeAlternative({ auto: true, acceptanceType: "autonomous_safe_rewrite" });
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [autonomousMode, cyberlaceBlockingAlert?.timestamp, cyberlaceBlockingAlert?.safeRewrite?.rescueId, cyberlaceSafeRewriteBusy]);
+
+  useEffect(() => {
+    function handleCyberlaceSafeRouteRequested(event) {
+      const detail = event?.detail && typeof event.detail === "object" ? event.detail : {};
+      void continueCyberlaceSafeRouteFromEvent(detail);
+    }
+    window.addEventListener("habla:cyberlace-safe-route-requested", handleCyberlaceSafeRouteRequested);
+    return () => window.removeEventListener("habla:cyberlace-safe-route-requested", handleCyberlaceSafeRouteRequested);
+  }, [cyberlaceBlockingAlert, cyberlaceSafeRewriteBusy]);
+
+  useEffect(() => {
     const socket = io(SOCKET_URL, {
       transports: ["polling"],
       upgrade: false,
@@ -315,7 +1029,16 @@ export default function App() {
       setConnected(true);
       socket.emit("architecture:request");
       socket.emit("reverse:request");
+      if (autonomousModeRef.current) {
+        socket.emit("observer:enabled", {
+          enabled: true,
+          source: "human",
+          allowIdle: true,
+          reason: "Modo autonomo restaurado por preferencia humana.",
+        });
+      }
       loadObserverStatus();
+      loadAgentProjects({ silent: true });
     });
 
     socket.on("disconnect", () => {
@@ -336,6 +1059,12 @@ export default function App() {
     socket.on("agent:visual", (payload) => {
       if (!payload) return;
       const visualOp = String(payload.op || "").toLowerCase();
+      if (
+        visualOp === "cyberlace_document_blocked" ||
+        (visualOp === "session_blocked" && String(payload.errorCode || "").includes("cyberlace"))
+      ) {
+        showCyberlaceBlockingAlert(payload);
+      }
       setAgentVisual(payload);
       if (payload.projectSlug) {
         focusWorkspaceScene(payload.projectSlug);
@@ -374,6 +1103,19 @@ export default function App() {
       }
     });
 
+    socket.on("agent:cyberlace", (payload) => {
+      const action = String(payload?.action || payload?.runtimeAction || "").toUpperCase();
+      if (["BLOCK", "QUARANTINE", "HUMAN_REVIEW"].includes(action)) {
+        showCyberlaceBlockingAlert(payload);
+      }
+    });
+
+    socket.on("agent:projects", (payload) => {
+      if (Array.isArray(payload?.projects)) {
+        setAgentProjects(payload.projects);
+      }
+    });
+
     socket.on("agent:observer", (payload) => {
       if (!payload) return;
       if (payload.observer) {
@@ -381,22 +1123,24 @@ export default function App() {
       }
       if (payload.op === "observer_status") {
         setObserverStatus((current) => ({ ...(current || {}), enabled: payload.enabled, state: payload.state }));
-        if (payload.enabled === false && !payload.observer?.humanPinned) {
+        if (payload.enabled === false && !payload.observer?.humanPinned && !autonomousModeRef.current) {
           clearAgentPresenceTimers();
           setAgentPresenceActive(false);
           setAgentPresenceMode("");
           autonomousModeRef.current = false;
           observerPinnedRef.current = false;
+          writeAutonomousModePreference(false);
           setAutonomousMode(false);
         }
       }
       if (payload.op === "observer_auto_disabled") {
-        if (!payload.observer?.humanPinned) {
+        if (!payload.observer?.humanPinned && !autonomousModeRef.current) {
           clearAgentPresenceTimers();
           setAgentPresenceActive(false);
           setAgentPresenceMode("");
           autonomousModeRef.current = false;
           observerPinnedRef.current = false;
+          writeAutonomousModePreference(false);
           setAutonomousMode(false);
         }
         setObserverActionStatus(payload.message || "Observer Plane apagado por cierre del runtime.");
@@ -404,6 +1148,7 @@ export default function App() {
       if (payload.op === "observer_auto_disable_skipped") {
         autonomousModeRef.current = true;
         observerPinnedRef.current = true;
+        writeAutonomousModePreference(true);
         setAutonomousMode(true);
         setObserverActionStatus(payload.message || "Observer Plane sigue activo por activacion humana.");
       }
@@ -1397,6 +2142,94 @@ export default function App() {
     ? workspaceSceneOptions.find((scene) => scene.key === effectiveWorkspaceScene)?.label || effectiveWorkspaceScene
     : "Sin proyecto activo";
   const embeddedSandboxReady = Boolean(embeddedSandbox.running && embeddedSandbox.ready && embeddedSandboxUrl);
+  const cyberlaceMathBoardLines = useMemo(() => {
+    const trace = cyberlaceBlockingAlert?.mathTrace;
+    if (!trace) return [];
+    const rows = Array.isArray(trace.rows) ? trace.rows : [];
+    const action = cyberlaceBlockingAlert?.action || "BLOCK";
+    const project = cyberlaceBlockingAlert?.projectSlug || "runtime";
+    const headerLines = [
+      { label: "Pregunta", equation: "¿Ejecutar P o transformar P en P_safe?" },
+      { label: "Contexto", equation: `project=${project}; action=${action}; evidence=${cyberlaceBlockingAlert?.evidenceCount || 0}` },
+    ];
+    const conclusionLines = [
+      { label: "Decision", equation: `Risk=${trace.riskScore} >= θ=${trace.threshold} => ${action}; worker=DENIED; pid=null` },
+      { label: "Memoria", equation: `experience -> SafetyLearningCore; repair=${trace.repairOperator}; node=${trace.failureNode}` },
+    ];
+    return [...headerLines, ...rows, ...conclusionLines].filter((row) => row?.label && row?.equation);
+  }, [cyberlaceBlockingAlert]);
+
+  useEffect(() => {
+    setCyberlaceMathWriter({ lineIndex: 0, charIndex: 0 });
+  }, [
+    cyberlaceBlockingAlert?.timestamp,
+    cyberlaceBlockingAlert?.sessionId,
+    cyberlaceBlockingAlert?.projectSlug,
+    cyberlaceBlockingAlert?.action,
+    cyberlaceBlockingAlert?.mathTrace?.riskScore,
+  ]);
+
+  useEffect(() => {
+    if (!cyberlaceMathBoardLines.length) return undefined;
+    const activeLine = cyberlaceMathBoardLines[cyberlaceMathWriter.lineIndex];
+    if (!activeLine) return undefined;
+    const equation = String(activeLine.equation || "");
+    const atLineEnd = cyberlaceMathWriter.charIndex >= equation.length;
+    const atBoardEnd = cyberlaceMathWriter.lineIndex >= cyberlaceMathBoardLines.length - 1;
+    if (atLineEnd && atBoardEnd) return undefined;
+    const delay = atLineEnd ? 620 : 24 + Math.min(24, Math.floor(equation.length / 18));
+    const timer = window.setTimeout(() => {
+      setCyberlaceMathWriter((current) => {
+        const currentLine = cyberlaceMathBoardLines[current.lineIndex];
+        if (!currentLine) return current;
+        const currentEquation = String(currentLine.equation || "");
+        if (current.charIndex < currentEquation.length) {
+          return { lineIndex: current.lineIndex, charIndex: current.charIndex + 1 };
+        }
+        if (current.lineIndex < cyberlaceMathBoardLines.length - 1) {
+          return { lineIndex: current.lineIndex + 1, charIndex: 0 };
+        }
+        return current;
+      });
+    }, delay);
+    return () => window.clearTimeout(timer);
+  }, [cyberlaceMathBoardLines, cyberlaceMathWriter.lineIndex, cyberlaceMathWriter.charIndex]);
+
+  useEffect(() => {
+    const board = cyberlaceMathBoardRef.current;
+    if (!board) return;
+    board.scrollTop = board.scrollHeight;
+  }, [cyberlaceMathWriter.lineIndex, cyberlaceMathWriter.charIndex]);
+
+  function clampRuntimeDashboardWidth(value) {
+    return Math.min(520, Math.max(248, Number(value) || 318));
+  }
+
+  function startRuntimeDashboardResize(event) {
+    event.preventDefault();
+    const startX = event.clientX;
+    const startWidth = runtimeDashboardWidth;
+    document.body.classList.add("is-runtime-dashboard-resizing");
+    function handleMove(moveEvent) {
+      setRuntimeDashboardWidth(clampRuntimeDashboardWidth(startWidth + moveEvent.clientX - startX));
+    }
+    function handleDone() {
+      document.body.classList.remove("is-runtime-dashboard-resizing");
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleDone);
+      window.removeEventListener("pointercancel", handleDone);
+    }
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleDone);
+    window.addEventListener("pointercancel", handleDone);
+  }
+
+  function handleRuntimeDashboardResizeKey(event) {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const delta = event.key === "ArrowRight" ? 24 : -24;
+    setRuntimeDashboardWidth((current) => clampRuntimeDashboardWidth(current + delta));
+  }
 
   return (
     <div
@@ -1426,32 +2259,261 @@ export default function App() {
         mode={agentPresenceMode}
       />
 
+      {cyberlaceBlockingAlert ? (
+        <div className="cyberlace-critical-overlay" role="dialog" aria-modal="true" aria-label="CyberLACE bloqueo critico">
+          <div className="cyberlace-critical-stage">
+            <div className="cyberlace-critical-modal">
+              <div className="cyberlace-critical-badge">CYBERLACE</div>
+              <h2>Mensaje del nucleo runtime de seguridad</h2>
+              <div className="cyberlace-human-rescue">
+                <strong>No te alarmes. Este proceso no termino.</strong>
+                <p>{cyberlaceBlockingAlert.safeRewrite?.humanMessage?.intro || cyberlaceBlockingAlert.humanMessage?.intro}</p>
+                <p>{cyberlaceBlockingAlert.safeRewrite?.humanMessage?.why || cyberlaceBlockingAlert.humanMessage?.why || cyberlaceBlockingAlert.message}</p>
+                <p>{cyberlaceBlockingAlert.safeRewrite?.humanMessage?.nextStep || cyberlaceBlockingAlert.humanMessage?.nextStep}</p>
+              </div>
+              <p className="cyberlace-critical-message">{cyberlaceBlockingAlert.message}</p>
+              <p>El prompt original sigue bloqueado. La confirmacion humana solo permite usar una version segura P_safe; no funciona como bypass.</p>
+              {cyberlaceSafeRewriteBusy ? <p className="cyberlace-safe-status">CyberLACE esta preparando P_safe y registrando auditoria.</p> : null}
+              {cyberlaceSafeRewriteError ? <p className="cyberlace-safe-status is-error">{cyberlaceSafeRewriteError}</p> : null}
+              <div className="cyberlace-pin-panel">
+                <label htmlFor="cyberlace-rescue-pin">PIN de seguridad para continuar con P_safe</label>
+                <input
+                  id="cyberlace-rescue-pin"
+                  type="password"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  value={cyberlaceRescuePin}
+                  onChange={(event) => setCyberlaceRescuePin(event.target.value)}
+                  placeholder="PIN requerido"
+                />
+                <small>{autonomousMode ? "Modo autonomo activo: CyberLACE puede continuar con P_safe firmado; el prompt original sigue bloqueado." : "Sin PIN valido, CyberLACE conserva el bloqueo y no entrega la tarea al worker."}</small>
+              </div>
+              {harnessTrainingAutomationState.active && harnessTrainingAutomationState.autoAcceptSafeAlternative ? (
+                <p className="cyberlace-autoaccept-banner">Harness Autopilot activo: el sistema aceptara automaticamente la alternativa segura.</p>
+              ) : null}
+              {cyberlaceBlockingAlert.mathTrace ? (
+                <div className="cyberlace-math-proof cyberlace-math-blackboard" aria-label="Pizarra matematica CyberLACE en vivo">
+                  <div className="cyberlace-math-board-head">
+                    <strong>Pizarra matematica en vivo</strong>
+                    <span>typewriter · investigacion formal</span>
+                  </div>
+                  <div className="cyberlace-math-grid">
+                    <code>Risk={cyberlaceBlockingAlert.mathTrace.riskScore}</code>
+                    <code>θ={cyberlaceBlockingAlert.mathTrace.threshold}</code>
+                    <code>Loss={cyberlaceBlockingAlert.mathTrace.loss}</code>
+                    <code>R*={cyberlaceBlockingAlert.mathTrace.repairOperator}</code>
+                  </div>
+                  <div className="cyberlace-math-board" ref={cyberlaceMathBoardRef}>
+                    {cyberlaceMathBoardLines.slice(0, cyberlaceMathWriter.lineIndex + 1).map((row, index) => {
+                      const equation = String(row.equation || "");
+                      const isActive = index === cyberlaceMathWriter.lineIndex;
+                      const visibleEquation = isActive ? equation.slice(0, cyberlaceMathWriter.charIndex) : equation;
+                      return (
+                        <div className={`cyberlace-math-line ${isActive ? "is-active" : "is-complete"}`} key={`${row.label}-${index}`}>
+                          <span>{String(index + 1).padStart(2, "0")} · {row.label}</span>
+                          <code>
+                            {visibleEquation}
+                            {isActive ? <i aria-hidden="true" /> : null}
+                          </code>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <p>Nodo geometrico probable: <b>{cyberlaceBlockingAlert.mathTrace.failureNode}</b></p>
+                </div>
+              ) : null}
+              {cyberlaceBlockingAlert.safeAlternative ? (
+                <div className="cyberlace-safe-inline-visible">
+                  <div className="cyberlace-safe-inline-head">
+                    <span>DIRECCION SEGURA DISPONIBLE</span>
+                    <b aria-hidden="true">✓</b>
+                  </div>
+                  <h3>{cyberlaceBlockingAlert.safeAlternative.title || "Alternativa segura permitida"}</h3>
+                  <p>{cyberlaceBlockingAlert.safeAlternative.summary}</p>
+                  {cyberlaceBlockingAlert.safeAlternative.suggestedRequirement ? (
+                    <>
+                      <strong>Tarea segura que HABLA si puede hacer</strong>
+                      <p className="cyberlace-safe-inline-rewrite">{cyberlaceBlockingAlert.safeAlternative.suggestedRequirement}</p>
+                      <button className="cyberlace-safe-inline-accept" type="button" onClick={() => acceptCyberlaceSafeAlternative(autonomousMode ? { auto: true, acceptanceType: "autonomous_safe_rewrite" } : {})} disabled={cyberlaceSafeRewriteBusy || (!autonomousMode && !cyberlaceRescuePin.trim())}>
+                        Continuar con prompt seguro
+                      </button>
+                    </>
+                  ) : null}
+                </div>
+              ) : null}
+              <dl>
+                <div>
+                  <dt>Accion</dt>
+                  <dd>{cyberlaceBlockingAlert.action}</dd>
+                </div>
+                <div>
+                  <dt>Proyecto</dt>
+                  <dd>{cyberlaceBlockingAlert.projectSlug || "runtime"}</dd>
+                </div>
+                <div>
+                  <dt>Evidencia</dt>
+                  <dd>{cyberlaceBlockingAlert.evidenceCount} patron(es) sensible(s), valores redactados</dd>
+                </div>
+              </dl>
+              {cyberlaceBlockingAlert.paths.length ? (
+                <ul>
+                  {cyberlaceBlockingAlert.paths.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              ) : null}
+              <p className="cyberlace-critical-reason">{cyberlaceBlockingAlert.reason}</p>
+              {cyberlaceBlockingAlert.deniedAction ? (
+                <div className="cyberlace-denied-action">
+                  <strong>Accion negada</strong>
+                  <p>{cyberlaceBlockingAlert.deniedAction}</p>
+                </div>
+              ) : null}
+              <div className="cyberlace-critical-actions">
+                {cyberlaceBlockingAlert.safeAlternative ? (
+                  <button
+                    className="cyberlace-safe-focus-button"
+                    type="button"
+                    onClick={() => document.getElementById("cyberlace-safe-guidance-panel")?.scrollIntoView({ behavior: "smooth", block: "nearest" })}
+                  >
+                    Ver direccion segura
+                  </button>
+                ) : null}
+                {cyberlaceBlockingAlert.safeAlternative ? (
+                  <button className="cyberlace-safe-focus-button" type="button" onClick={() => acceptCyberlaceSafeAlternative(autonomousMode ? { auto: true, acceptanceType: "autonomous_safe_rewrite" } : {})} disabled={cyberlaceSafeRewriteBusy || (!autonomousMode && !cyberlaceRescuePin.trim())}>
+                    Continuar con prompt seguro
+                  </button>
+                ) : null}
+                {cyberlaceBlockingAlert.safeAlternative ? (
+                  <button type="button" onClick={() => acceptCyberlaceSafeAlternative({ acceptanceType: "manual_edit" })} disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}>
+                    Editar prompt seguro
+                  </button>
+                ) : null}
+                <button type="button" onClick={() => acceptCyberlaceSafeAlternative({ acceptanceType: "human_review" })} disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}>Pedir revision humana</button>
+                <button type="button" onClick={() => setCyberlaceBlockingAlert(null)}>Entendido</button>
+              </div>
+            </div>
+            {cyberlaceBlockingAlert.safeAlternative ? (
+              <aside id="cyberlace-safe-guidance-panel" className="cyberlace-safe-guidance-modal" aria-label="Direccion segura valida de HABLA">
+                <div className="cyberlace-safe-topline">
+                  <div className="cyberlace-safe-badge">DIRECCION SEGURA</div>
+                  <div className="cyberlace-safe-check" aria-hidden="true">✓</div>
+                </div>
+                <h2>{cyberlaceBlockingAlert.safeAlternative.title || "Propuesta segura valida"}</h2>
+                <p>{cyberlaceBlockingAlert.safeAlternative.summary}</p>
+                {Array.isArray(cyberlaceBlockingAlert.safeAlternative.allowedActions) && cyberlaceBlockingAlert.safeAlternative.allowedActions.length ? (
+                  <ul>
+                    {cyberlaceBlockingAlert.safeAlternative.allowedActions.slice(0, 6).map((item) => <li key={item}>{item}</li>)}
+                  </ul>
+                ) : null}
+                {cyberlaceBlockingAlert.mathTrace ? (
+                  <div className="cyberlace-safe-math-card">
+                    <strong>Ecuacion de direccion segura</strong>
+                    <code>{cyberlaceBlockingAlert.mathTrace.rows.find((row) => row.label === "Ruta segura")?.equation}</code>
+                    <p>La solucion valida transforma el prompt inseguro P en P_safe, removiendo secretos y manteniendo la intencion profesional permitida.</p>
+                  </div>
+                ) : null}
+                {cyberlaceBlockingAlert.safeAlternative.suggestedRequirement ? (
+                  <div className="cyberlace-safe-rewrite-card">
+                    <strong>Tarea segura sugerida</strong>
+                    <p>{cyberlaceBlockingAlert.safeAlternative.suggestedRequirement}</p>
+                    <button
+                      className="cyberlace-safe-accept-button"
+                      type="button"
+                      data-cyberlace-safe-accept="primary"
+                      onClick={() => acceptCyberlaceSafeAlternative()}
+                      disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}
+                    >
+                      Continuar con prompt seguro
+                    </button>
+                    <button
+                      className="cyberlace-safe-secondary-button"
+                      type="button"
+                      onClick={() => acceptCyberlaceSafeAlternative({ acceptanceType: "manual_edit" })}
+                      disabled={cyberlaceSafeRewriteBusy || !cyberlaceRescuePin.trim()}
+                    >
+                      Editar antes de lanzar
+                    </button>
+                  </div>
+                ) : null}
+                {cyberlaceBlockingAlert.safeNextSteps?.length ? (
+                  <div className="cyberlace-safe-next-card">
+                    <strong>Siguiente camino seguro</strong>
+                    <ul>
+                      {cyberlaceBlockingAlert.safeNextSteps.map((item) => <li key={item}>{item}</li>)}
+                    </ul>
+                  </div>
+                ) : null}
+              </aside>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
       <SectionDividerMenu id="runtime" label="01 Runtime" title="Runtime" />
 
-      <AppLintPanel
-        visibleGraph={visibleGraph}
-        lintReport={lintReport}
-        lintScopeLabel={lintScopeLabel}
-        lintScopeScene={lintScopeScene}
-        lintError={lintError}
-        isLinting={isLinting}
-        agentVisual={agentVisual}
-        onLoadLintReport={loadLintReport}
-        onFindingNavigation={handleFindingNavigation}
-      />
+      <div className="runtime-dashboard-zone" style={{ "--runtime-dashboard-width": `${runtimeDashboardWidth}px` }}>
+        <RuntimeDashboardSidebar
+          projects={agentProjects}
+          projectsLoading={agentProjectsLoading}
+          projectActionStatus={projectActionStatus}
+          newProjectName={newProjectName}
+          selectedProjectSlug={effectiveWorkspaceScene}
+          onNewProjectNameChange={setNewProjectName}
+          onCreateProject={createSidebarProject}
+          onSelectProject={(projectSlug) => {
+            focusWorkspaceScene(projectSlug);
+            document.getElementById("section-editor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }}
+          onArchiveProject={archiveSidebarProject}
+          onDeleteProject={deleteSidebarProject}
+          onOpenHarnessStudio={openHarnessEngineeringStudio}
+        />
 
-      <AppObserverPanel
-        observerStatus={observerStatus}
-        observerTimeline={observerTimeline}
-        observerRules={observerRules}
-        observerMemory={observerMemory}
-        latestObserverEvent={latestObserverEvent}
-        observerActionStatus={observerActionStatus}
-        effectiveWorkspaceScene={effectiveWorkspaceScene}
-        onObserveNow={observeNow}
-        onRunObserverAction={runObserverAction}
-        onUpdateObserverRule={updateObserverRule}
-      />
+        <div
+          className="runtime-dashboard-resizer"
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize runtime dashboard"
+          tabIndex="0"
+          onPointerDown={startRuntimeDashboardResize}
+          onKeyDown={handleRuntimeDashboardResizeKey}
+        />
+
+        <div className="runtime-dashboard-content">
+          {harnessStudioOpen ? (
+            <HarnessEngineeringStudio
+              socketUrl={SOCKET_URL}
+              onClose={() => setHarnessStudioOpen(false)}
+            />
+          ) : null}
+
+          <AppLintPanel
+            visibleGraph={visibleGraph}
+            lintReport={lintReport}
+            lintScopeLabel={lintScopeLabel}
+            lintScopeScene={lintScopeScene}
+            lintError={lintError}
+            isLinting={isLinting}
+            agentVisual={agentVisual}
+            onLoadLintReport={loadLintReport}
+            onFindingNavigation={handleFindingNavigation}
+          />
+
+          <AppObserverPanel
+            observerStatus={observerStatus}
+            observerTimeline={observerTimeline}
+            observerRules={observerRules}
+            observerMemory={observerMemory}
+            latestObserverEvent={latestObserverEvent}
+            observerActionStatus={observerActionStatus}
+            effectiveWorkspaceScene={effectiveWorkspaceScene}
+            onObserveNow={observeNow}
+            onRunObserverAction={runObserverAction}
+            onUpdateObserverRule={updateObserverRule}
+          />
+
+          <CyberLACEPanel />
+        </div>
+      </div>
 
       <SectionDividerMenu id="input" label="03 Entrada" title="Entrada" />
 
@@ -1605,7 +2667,9 @@ export default function App() {
         editorExpanded={editorExpanded}
         onSceneFocus={focusWorkspaceScene}
         onWorkspaceClean={handleWorkspaceClean}
+        onCyberlaceBlock={showCyberlaceBlockingAlert}
         onRepairPresenceStart={triggerRepairPresence}
+        autonomousMode={autonomousMode}
         onToggleEditorExpanded={() => setEditorExpanded((current) => !current)}
       />
 
@@ -1977,6 +3041,16 @@ export default function App() {
         </div>
       </section>
 
+      <ForensicTruthRail
+        socketUrl={SOCKET_URL}
+        autonomousMode={autonomousMode}
+        selectedProject={effectiveWorkspaceScene}
+      />
+      <OperationalMouseLayer
+        socketUrl={SOCKET_URL}
+        selectedProject={effectiveWorkspaceScene}
+        autonomousMode={autonomousMode}
+      />
       <AppStatusbar graph={graph} mapTool={mapTool} flowTool={flowTool} />
       <WelcomeAuthGate apiBaseUrl={SOCKET_URL} logoSrc={HABLA_OBSERVER_LOGO_SRC} />
     </div>

@@ -1,0 +1,166 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 35,
+      "mtime": "2026-05-28T03:15:09Z",
+      "path": "workspace/projects/continuity-geom-pf-012/runtime/complexity_estimate.json",
+      "sha256": "53a05e6584683f0e39275d8e6163c556ed9ffaaa04369d4049a6f4dda4191a89",
+      "size": 827,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-28T03:15:09.687888Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-geom-pf-012\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 28,\n  \"score\": 18,\n  \"difficulty\": \"facil\",\n  \"difficulty_label\": \"Facil\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 2,\n  \"recommended_agents\": 1,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 1,\n  \"max_tasks\": 3,\n  \"timeout_seconds\": 600,\n  \"recovery_budget\": 2,\n  \"max_retries\": 2,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt corto: 28 palabras\",\n    \"requiere evidencia auditable\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-geom-pf-012/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-28T14:20:43Z",
+      "path": "workspace/projects/continuity-geom-pf-012/runtime/project_state.json",
+      "sha256": "353b4cc152cd82031bd5312ac0f0f96998725a427ab814be49f84430b46ef1f4",
+      "size": 591,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-edaee9313e\",\n    \"complexity-estimate\",\n    \"runtime-20260528031509-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528031509-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-edaee9313e\",\n  \"project_id\": \"continuity-geom-pf-012\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T14:20:43.984182+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T14:20:43Z",
+      "path": "workspace/projects/continuity-geom-pf-012/runtime/task_history.jsonl",
+      "sha256": "c7ded94242ddf8c3b757df23fd5385e769ec68309f7260db960cedd7e2efa4b5",
+      "size": 469,
+      "tail": "{\"recorded_at\": \"2026-05-28T14:20:43Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/geometry_case_012.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260528031509-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_012.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-05-28T14:20:43Z",
+      "path": "workspace/projects/continuity-geom-pf-012/runtime/task_queue.json",
+      "sha256": "8bef83e57f214fe36fbd90933de561547b641c5088e06d06cc08748a59d44b9f",
+      "size": 799,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528031509-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_012.md\"\n    ],\n    \"goal\": \"Calcular interseccion de dos rectas no paralelas.; Escribe la solucion o plan en docs/geometry_case_012.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_012.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 461,
+    "mtime": "2026-05-28T14:20:43Z",
+    "path": "workspace/projects/continuity-geom-pf-012/runtime/checkpoints/runtime-20260528031509-001-checkpoint.json",
+    "sha256": "762e099b752ce7ede4eeae67c26640d746f9a4e2cf1600f0d05277dbcdbb7343",
+    "size": 17395,
+    "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_012.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528031509-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 240,
+    "mtime": "2026-05-28T03:15:10Z",
+    "path": "workspace/projects/continuity-geom-pf-012/runtime/directives/RUNTIME-20260528031509-001-20260528T031510Z-461291286156.json",
+    "sha256": "2f94517d5e663031b7e0219fd3af8b2b05afe58d8aff036c2c4e8f9f7efe745a",
+    "size": 22926,
+    "tail": "archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528031509-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"461291286156090db2879f04a69374e34b456f2a14e3d47bdd57934dcc02142f\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T14:20:43Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/geometry_case_012.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260528031509-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/geometry_case_012.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-geom-pf-012",
+  "runtimeDir": "workspace/projects/continuity-geom-pf-012/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 229,
+    "mtime": "2026-05-28T14:20:48Z",
+    "path": "workspace/projects/continuity-geom-pf-012/runtime/logs/agent-edaee9313e-terminal.log",
+    "sha256": "3521e8bfdefaf3615e8afadc1aeabe3bed645d7a45585b535a3a43951be8430a",
+    "size": 8191,
+    "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T142046Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

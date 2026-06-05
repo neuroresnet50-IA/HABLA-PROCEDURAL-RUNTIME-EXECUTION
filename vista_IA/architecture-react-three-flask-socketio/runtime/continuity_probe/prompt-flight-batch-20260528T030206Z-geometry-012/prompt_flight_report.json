@@ -1,0 +1,801 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 431.606335,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-28T14:20:55Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-geom-pf-012",
+  "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+  "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 91.676,
+      "evidence": {
+        "durationMs": 91.676,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 65.83,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 65.83,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 16.562,
+      "evidence": {
+        "durationMs": 16.562,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "outputHash": "2571f5cebcae7fbb400694a9f3016774e4fcf5c698219a62c67838409a7e4b62",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "harness_summary": {
+      "durationMs": 6471.868,
+      "evidence": {
+        "durationMs": 6471.868,
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T03:15:02Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    "observer_status": {
+      "durationMs": 20.662,
+      "evidence": {
+        "durationMs": 20.662,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "observerEnabled": true,
+        "observerState": "waiting_worker",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "plan_loaded": {
+      "durationMs": 34.999,
+      "evidence": {
+        "durationMs": 34.999,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "policy_loaded": {
+      "durationMs": 7.994,
+      "evidence": {
+        "durationMs": 7.994,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "prompt_classified": {
+      "durationMs": 13.357,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 13.357,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_classification.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "intent": "general_runtime_request",
+        "promptChars": 193,
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "prompt_received": {
+      "durationMs": 90.697,
+      "evidence": {
+        "durationMs": 90.697,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/input_prompt.json",
+        "finishedAt": "2026-05-28T03:15:01Z",
+        "promptChars": 193,
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "startedAt": "2026-05-28T03:15:01Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:01Z"
+    },
+    "response_synthesized": {
+      "durationMs": 7.854,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 7.854,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T14:20:55Z",
+        "mode": "ui_session_rest",
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "fdd8ee98b82adc2ec007c1e0b9c25b693c110fdeb81d076f81d18c86b0e1e099",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T14:20:55Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-012",
+        "traceId": "prompt-flight-batch-20260528T030206Z-geometry-012",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:55Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    "task_planned": {
+      "durationMs": 7.217,
+      "evidence": {
+        "durationMs": 7.217,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "taskHash": "c7bcfba1fa979ea356bd25996c34db96cf012f483a5641cb8c8b4b3908cf9c32",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-012"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 417743.686,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 417743.686,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T14:20:48Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 326,
+        "returncode": 0,
+        "sessionId": "agent-edaee9313e",
+        "startedAt": "2026-05-28T03:15:09Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/logs/agent-edaee9313e-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:48Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 282.694,
+      "evidence": {
+        "durationMs": 282.694,
+        "elapsedMs": 268.323,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-geom-pf-012",
+        "sessionId": "agent-edaee9313e",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T03:15:09Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 13.968,
+      "evidence": {
+        "durationMs": 13.968,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "method": "POST",
+        "payloadHash": "ed0d08ec676985e67076ef27ed23bb4c193a508b57a296d7224ac0696b0a667a",
+        "projectSlug": "continuity-geom-pf-012",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T03:15:09Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 135.805,
+      "evidence": {
+        "durationMs": 135.805,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T14:20:55Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 461,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/checkpoints/runtime-20260528031509-001-checkpoint.json",
+          "sha256": "762e099b752ce7ede4eeae67c26640d746f9a4e2cf1600f0d05277dbcdbb7343",
+          "size": 17395,
+          "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_012.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528031509-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-28T03:15:10Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/directives/RUNTIME-20260528031509-001-20260528T031510Z-461291286156.json",
+          "sha256": "2f94517d5e663031b7e0219fd3af8b2b05afe58d8aff036c2c4e8f9f7efe745a",
+          "size": 22926,
+          "tail": "archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528031509-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"461291286156090db2879f04a69374e34b456f2a14e3d47bdd57934dcc02142f\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-geom-pf-012",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/project_state.json",
+          "sha256": "353b4cc152cd82031bd5312ac0f0f96998725a427ab814be49f84430b46ef1f4",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-edaee9313e\",\n    \"complexity-estimate\",\n    \"runtime-20260528031509-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528031509-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-edaee9313e\",\n  \"project_id\": \"continuity-geom-pf-012\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T14:20:43.984182+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T14:20:55Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/task_queue.json",
+          "sha256": "8bef83e57f214fe36fbd90933de561547b641c5088e06d06cc08748a59d44b9f",
+          "size": 799,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528031509-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_012.md\"\n    ],\n    \"goal\": \"Calcular interseccion de dos rectas no paralelas.; Escribe la solucion o plan en docs/geometry_case_012.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_012.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 229,
+          "mtime": "2026-05-28T14:20:48Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/logs/agent-edaee9313e-terminal.log",
+          "sha256": "3521e8bfdefaf3615e8afadc1aeabe3bed645d7a45585b535a3a43951be8430a",
+          "size": 8191,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T142046Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:55Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 5677.842,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528031509-001",
+        "durationMs": 5677.842,
+        "elapsedMs": 5590.971,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T14:20:54Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T14:20:49Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:54Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 90.697,
+      "evidence": {
+        "durationMs": 90.697,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/input_prompt.json",
+        "finishedAt": "2026-05-28T03:15:01Z",
+        "promptChars": 193,
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "startedAt": "2026-05-28T03:15:01Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:01Z"
+    },
+    {
+      "durationMs": 16.562,
+      "evidence": {
+        "durationMs": 16.562,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "outputHash": "2571f5cebcae7fbb400694a9f3016774e4fcf5c698219a62c67838409a7e4b62",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 65.83,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 65.83,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 7.994,
+      "evidence": {
+        "durationMs": 7.994,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 34.999,
+      "evidence": {
+        "durationMs": 34.999,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 13.357,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 13.357,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_classification.json",
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "intent": "general_runtime_request",
+        "promptChars": 193,
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "startedAt": "2026-05-28T03:15:02Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 7.217,
+      "evidence": {
+        "durationMs": 7.217,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "taskHash": "c7bcfba1fa979ea356bd25996c34db96cf012f483a5641cb8c8b4b3908cf9c32",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-012"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 91.676,
+      "evidence": {
+        "durationMs": 91.676,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 20.662,
+      "evidence": {
+        "durationMs": 20.662,
+        "finishedAt": "2026-05-28T03:15:02Z",
+        "observerEnabled": true,
+        "observerState": "waiting_worker",
+        "startedAt": "2026-05-28T03:15:02Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:02Z"
+    },
+    {
+      "durationMs": 6471.868,
+      "evidence": {
+        "durationMs": 6471.868,
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T03:15:02Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    {
+      "durationMs": 13.968,
+      "evidence": {
+        "durationMs": 13.968,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "method": "POST",
+        "payloadHash": "ed0d08ec676985e67076ef27ed23bb4c193a508b57a296d7224ac0696b0a667a",
+        "projectSlug": "continuity-geom-pf-012",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T03:15:09Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    {
+      "durationMs": 282.694,
+      "evidence": {
+        "durationMs": 282.694,
+        "elapsedMs": 268.323,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T03:15:09Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-geom-pf-012",
+        "sessionId": "agent-edaee9313e",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T03:15:09Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:15:09Z"
+    },
+    {
+      "durationMs": 417743.686,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 417743.686,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T14:20:48Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 326,
+        "returncode": 0,
+        "sessionId": "agent-edaee9313e",
+        "startedAt": "2026-05-28T03:15:09Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/logs/agent-edaee9313e-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:48Z"
+    },
+    {
+      "durationMs": 5677.842,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528031509-001",
+        "durationMs": 5677.842,
+        "elapsedMs": 5590.971,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T14:20:54Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T14:20:49Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:54Z"
+    },
+    {
+      "durationMs": 135.805,
+      "evidence": {
+        "durationMs": 135.805,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T14:20:55Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 461,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/checkpoints/runtime-20260528031509-001-checkpoint.json",
+          "sha256": "762e099b752ce7ede4eeae67c26640d746f9a4e2cf1600f0d05277dbcdbb7343",
+          "size": 17395,
+          "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_012.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/docs/geometry_case_012.md\",\n            \"size\": 479\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_012.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528031509-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-28T03:15:10Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/directives/RUNTIME-20260528031509-001-20260528T031510Z-461291286156.json",
+          "sha256": "2f94517d5e663031b7e0219fd3af8b2b05afe58d8aff036c2c4e8f9f7efe745a",
+          "size": 22926,
+          "tail": "archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528031509-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"461291286156090db2879f04a69374e34b456f2a14e3d47bdd57934dcc02142f\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-geom-pf-012",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/project_state.json",
+          "sha256": "353b4cc152cd82031bd5312ac0f0f96998725a427ab814be49f84430b46ef1f4",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-edaee9313e\",\n    \"complexity-estimate\",\n    \"runtime-20260528031509-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528031509-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:15:09.343649+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-edaee9313e\",\n  \"project_id\": \"continuity-geom-pf-012\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T14:20:43.984182+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T14:20:55Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T14:20:43Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/task_queue.json",
+          "sha256": "8bef83e57f214fe36fbd90933de561547b641c5088e06d06cc08748a59d44b9f",
+          "size": 799,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528031509-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_012.md\"\n    ],\n    \"goal\": \"Calcular interseccion de dos rectas no paralelas.; Escribe la solucion o plan en docs/geometry_case_012.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528031509-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Calcular interseccion de dos rectas no paralelas.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_012.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 229,
+          "mtime": "2026-05-28T14:20:48Z",
+          "path": "workspace/projects/continuity-geom-pf-012/runtime/logs/agent-edaee9313e-terminal.log",
+          "sha256": "3521e8bfdefaf3615e8afadc1aeabe3bed645d7a45585b535a3a43951be8430a",
+          "size": 8191,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-012/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T142046Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:55Z"
+    },
+    {
+      "durationMs": 7.854,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 7.854,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-012/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T14:20:55Z",
+        "mode": "ui_session_rest",
+        "promptHash": "6e14429139c15c24a385dce2eebac411e5a3afe8a22c5b8e53133817fce954ef",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "fdd8ee98b82adc2ec007c1e0b9c25b693c110fdeb81d076f81d18c86b0e1e099",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T14:20:55Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-012",
+        "traceId": "prompt-flight-batch-20260528T030206Z-geometry-012",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T14:20:55Z"
+    }
+  ],
+  "startedAt": "2026-05-28T03:15:01Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 16,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "prompt-flight-batch-20260528T030206Z-geometry-012"
+}

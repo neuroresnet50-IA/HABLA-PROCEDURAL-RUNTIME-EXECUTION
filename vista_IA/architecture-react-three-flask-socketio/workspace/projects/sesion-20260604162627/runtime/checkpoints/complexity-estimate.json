@@ -1,0 +1,225 @@
+{
+  "checkpoint_key": "complexity-estimate",
+  "created_at": "2026-06-04T22:29:04Z",
+  "payload": {
+    "estimate": {
+      "audit_version": "complexity-audit-kernel-v1",
+      "bootstrap_tasks": 6,
+      "complexity_audit": {
+        "audit_version": "complexity-audit-kernel-v1",
+        "complexity_score": 62,
+        "confidence": 84,
+        "difficulty": "dificil",
+        "difficulty_label": "Dificil",
+        "early_exit_allowed": true,
+        "early_exit_mode": "allowed",
+        "estimated_minutes": 120,
+        "generated_at": "2026-06-04T22:29:04.597428Z",
+        "lace_max_cycles": 7,
+        "lace_min_cycles": 3,
+        "lace_target_cycles": 5,
+        "launch_mode": "existing",
+        "layer_scores": {
+          "blast_radius": 24,
+          "evidence": 38,
+          "history": 54,
+          "operational_risk": 40,
+          "project": 18,
+          "prompt": 74,
+          "uncertainty": 0
+        },
+        "layers": {
+          "blast_radius": {
+            "reasons": [
+              "expected_files=0"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 24
+          },
+          "evidence": {
+            "reasons": [
+              "validation_commands=0",
+              "evidencia requerida: integrity, sandbox, scanner"
+            ],
+            "required_tools": [
+              "integrity",
+              "sandbox",
+              "scanner"
+            ],
+            "risk_flags": [
+              "requires_integrity",
+              "requires_sandbox",
+              "requires_scanner"
+            ],
+            "score": 38
+          },
+          "history": {
+            "reasons": [
+              "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout"
+            ],
+            "required_tools": [],
+            "risk_flags": [
+              "bubblewrap",
+              "bwrap",
+              "cyberlace",
+              "project_locked",
+              "runtime_zombie_recovered",
+              "timeout"
+            ],
+            "score": 54
+          },
+          "operational_risk": {
+            "reasons": [
+              "riesgo operativo: lace, runtime, task_queue, validator"
+            ],
+            "required_tools": [
+              "findings",
+              "integrity"
+            ],
+            "risk_flags": [
+              "lace",
+              "runtime",
+              "task_queue",
+              "validator"
+            ],
+            "score": 40
+          },
+          "project": {
+            "file_count": 27,
+            "observed": true,
+            "reasons": [
+              "archivos materiales estimados=27",
+              "frontend/package detectado",
+              "LACE.md presente"
+            ],
+            "required_tools": [
+              "sandbox"
+            ],
+            "risk_flags": [
+              "frontend",
+              "lace_policy"
+            ],
+            "score": 18
+          },
+          "prompt": {
+            "reasons": [
+              "prompt palabras=173",
+              "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests"
+            ],
+            "required_tools": [
+              "pytest",
+              "sandbox",
+              "scanner"
+            ],
+            "risk_flags": [
+              "lace",
+              "runtime",
+              "three_d"
+            ],
+            "score": 74
+          },
+          "uncertainty": {
+            "reasons": [
+              "incertidumbre baja"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          }
+        },
+        "max_agents": 6,
+        "project_slug": "sesion-20260604162627",
+        "reasoning": [
+          "prompt palabras=173",
+          "capas detectadas en prompt: frontend, backend, runtime, lace, scanner, sandbox, three_d, tests",
+          "archivos materiales estimados=27",
+          "frontend/package detectado",
+          "LACE.md presente",
+          "riesgo operativo: lace, runtime, task_queue, validator",
+          "expected_files=0",
+          "validation_commands=0",
+          "evidencia requerida: integrity, sandbox, scanner",
+          "fallos historicos: bwrap, bubblewrap, runtime_zombie_recovered, project_locked, cyberlace, timeout",
+          "incertidumbre baja"
+        ],
+        "recommended_agents": 5,
+        "required_tools": [
+          "findings",
+          "integrity",
+          "pytest",
+          "sandbox",
+          "scanner"
+        ],
+        "risk_flags": [
+          "bubblewrap",
+          "bwrap",
+          "cyberlace",
+          "frontend",
+          "lace",
+          "lace_policy",
+          "project_locked",
+          "runtime",
+          "runtime_zombie_recovered",
+          "task_queue",
+          "three_d",
+          "timeout",
+          "validator"
+        ],
+        "runtime_mode": "build",
+        "schema_version": 1
+      },
+      "confidence": 88,
+      "difficulty": "dificil",
+      "difficulty_label": "Dificil",
+      "early_exit_allowed": true,
+      "estimate_type": "project_complexity_budget",
+      "estimated_minutes": 120,
+      "generated_at": "2026-06-04T22:29:04.570783Z",
+      "lace_max_cycles": 7,
+      "lace_min_cycles": 3,
+      "lace_target_cycles": 5,
+      "launch_mode": "existing",
+      "max_agents": 8,
+      "max_lace_cycles": 10,
+      "max_retries": 3,
+      "max_tasks": 22,
+      "min_lace_cycles": 2,
+      "project_file_count": 27,
+      "project_slug": "sesion-20260604162627",
+      "prompt_word_count": 173,
+      "quality_threshold": 85,
+      "reasons": [
+        "modo runtime solicitado: build",
+        "prompt largo: 173 palabras",
+        "archivos estimados del proyecto: 27",
+        "marcadores de trabajo puntual/minimo",
+        "toca runtime/estado persistido",
+        "requiere evidencia auditable",
+        "declara pruebas o validacion",
+        "incluye backend/API",
+        "incluye 3D/WebGL",
+        "multiples capas tecnicas: 2"
+      ],
+      "recommended_agents": 5,
+      "recommended_lace_cycles": 6,
+      "recovery_budget": 8,
+      "required_tools": [
+        "findings",
+        "integrity",
+        "pytest",
+        "sandbox",
+        "scanner"
+      ],
+      "risk_flags": [
+        "estado_persistido",
+        "visual_3d"
+      ],
+      "runtime_mode": "build",
+      "schema_version": 1,
+      "score": 62,
+      "timeout_seconds": 1800
+    },
+    "reason": "complexity_estimate_created"
+  }
+}

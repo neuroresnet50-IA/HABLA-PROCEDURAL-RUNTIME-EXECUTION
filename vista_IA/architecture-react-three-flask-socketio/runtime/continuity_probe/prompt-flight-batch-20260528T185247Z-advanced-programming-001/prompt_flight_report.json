@@ -1,0 +1,813 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 227.574822,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_events.jsonl",
+  "failedStages": [
+    "ui_agent_session_polled"
+  ],
+  "finishedAt": "2026-05-28T18:56:34Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-code-pf-001-4",
+  "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+  "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_failed",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 15.899,
+      "evidence": {
+        "durationMs": 15.899,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 67.451,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 67.451,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 0.458,
+      "evidence": {
+        "durationMs": 0.458,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "outputHash": "eea50986686a02917e8aa3ad69a8b261fe6429260fd2d4885e08b2e6073b0bc1",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "harness_summary": {
+      "durationMs": 983.159,
+      "evidence": {
+        "durationMs": 983.159,
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T18:52:47Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    "observer_status": {
+      "durationMs": 2.052,
+      "evidence": {
+        "durationMs": 2.052,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "observerEnabled": true,
+        "observerState": "verifying_sandbox",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "plan_loaded": {
+      "durationMs": 10.614,
+      "evidence": {
+        "durationMs": 10.614,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "policy_loaded": {
+      "durationMs": 53.327,
+      "evidence": {
+        "durationMs": 53.327,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "prompt_classified": {
+      "durationMs": 1.239,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 1.239,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_classification.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "intent": "general_runtime_request",
+        "promptChars": 239,
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "prompt_received": {
+      "durationMs": 0.912,
+      "evidence": {
+        "durationMs": 0.912,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/input_prompt.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "promptChars": 239,
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "response_synthesized": {
+      "durationMs": 1.395,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 1.395,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "mode": "ui_session_rest",
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "ec9c007f78a84a738c4e3df7fb9903c6c8bdb0512dac65bea36fab8d6689fac0",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T18:56:34Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T185247Z-advanced-programming-001",
+        "traceId": "prompt-flight-batch-20260528T185247Z-advanced-programming-001",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    "task_planned": {
+      "durationMs": 3.955,
+      "evidence": {
+        "durationMs": 3.955,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "taskHash": "404169602d36735c03d1009e60c13abe8c046f08c8f72b777f7ed455695cbca2",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T185247Z-advanced-programming-001"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 225107.175,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 900,
+        "durationMs": 225107.175,
+        "errorCode": "manual_stop",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_polls.json",
+        "finalStatus": "stopped",
+        "finishedAt": "2026-05-28T18:56:33Z",
+        "lastProgressLabel": "Sesion detenida por el usuario.",
+        "lastProgressPercent": 94,
+        "monitorBudgetSeconds": 1020,
+        "pid": null,
+        "pollCount": 185,
+        "returncode": -15,
+        "sessionId": "agent-bb4ee4db65",
+        "startedAt": "2026-05-28T18:52:48Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/logs/agent-bb4ee4db65-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: stopped.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-05-28T18:56:33Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 97.092,
+      "evidence": {
+        "durationMs": 97.092,
+        "elapsedMs": 38.502,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-code-pf-001-4",
+        "sessionId": "agent-bb4ee4db65",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T18:52:48Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 1.136,
+      "evidence": {
+        "durationMs": 1.136,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "method": "POST",
+        "payloadHash": "ba9bf9d72caa7cfc8fa4d221d6488e8b2ba6d0ea979a2b77c38ad207239e5279",
+        "projectSlug": "continuity-code-pf-001",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T18:52:48Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 23.095,
+      "evidence": {
+        "durationMs": 23.095,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 15,
+          "mtime": "2026-05-28T18:56:33Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/manual-stop-agent-bb4ee4db65.json",
+          "sha256": "174fda006cd5e8f8cd600a59ef93da4c49da42bc28e686fc1c92b6eee44212e2",
+          "size": 445,
+          "tail": "{\n  \"checkpoint_key\": \"manual-stop-agent-bb4ee4db65\",\n  \"created_at\": \"2026-05-28T18:56:33Z\",\n  \"payload\": {\n    \"active_task_id\": \"RUNTIME-20260528185248-001\",\n    \"blocked_task_ids\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"previous_current_task_id\": \"RUNTIME-20260528185248-001\",\n    \"previous_status\": \"running\",\n    \"project_slug\": \"continuity-code-pf-001-4\",\n    \"reason\": \"manual_stop\",\n    \"session_id\": \"agent-bb4ee4db65\"\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 242,
+          "mtime": "2026-05-28T18:52:48Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json",
+          "sha256": "2b4b4f5bb823b01017ffcd7ba898878a67ccd55faa2252e7513af96b33231ec7",
+          "size": 22668,
+          "tail": "nning, completed y failed.\",\n    \"id\": \"RUNTIME-20260528185248-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\"\n  },\n  \"task_id\": \"RUNTIME-20260528185248-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"28f16ceb06eba3e8a57179916f74923b9d281dfaa2e3b30fd86e4f524c5e6e82\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-code-pf-001-4",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T18:56:33Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/project_state.json",
+          "sha256": "d73bdfa8b181161cb440aa2ae5309c02a6d0d5738e4ad08b9dd8479672f29fd0",
+          "size": 582,
+          "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260528185248-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-bb4ee4db65\",\n    \"complexity-estimate\",\n    \"manual-stop-agent-bb4ee4db65\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-bb4ee4db65\",\n  \"project_id\": \"continuity-code-pf-001-4\",\n  \"schema_version\": 1,\n  \"status\": \"stopped\",\n  \"updated_at\": \"2026-05-28T18:56:33.186317+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T18:56:34Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 40,
+          "mtime": "2026-05-28T18:56:32Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/task_queue.json",
+          "sha256": "054b8e6822d2b5093ae016d3aaaffe2e2c45ef6b0ead2e9d5c71b0edb9663b64",
+          "size": 1531,
+          "tail": "mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260528185248-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_001.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528185248-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 24,
+          "mtime": "2026-05-28T18:56:32Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/logs/agent-bb4ee4db65-terminal.log",
+          "sha256": "4ad2b481be7e3c1f6f445988578eb8ab35374aecff9f0a672a325f2e08a1dbdf",
+          "size": 1211,
+          "tail": "ane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260528185248-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/artifacts/tool_invocations/RUNTIME-20260528185248-001-preflight-20260528T185307Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260528185248-001 con timeout 900s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json.\n\n[agent] Sesion detenida por el usuario.\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 680.745,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528185248-002",
+        "durationMs": 680.745,
+        "elapsedMs": 652.055,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "projectStatus": "stopped",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 0,
+          "failed": 0,
+          "pending": 1,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T18:56:33Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 0.912,
+      "evidence": {
+        "durationMs": 0.912,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/input_prompt.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "promptChars": 239,
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 0.458,
+      "evidence": {
+        "durationMs": 0.458,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "outputHash": "eea50986686a02917e8aa3ad69a8b261fe6429260fd2d4885e08b2e6073b0bc1",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 67.451,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 67.451,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 53.327,
+      "evidence": {
+        "durationMs": 53.327,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 10.614,
+      "evidence": {
+        "durationMs": 10.614,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 1.239,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 1.239,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_classification.json",
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "intent": "general_runtime_request",
+        "promptChars": 239,
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "startedAt": "2026-05-28T18:52:47Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 3.955,
+      "evidence": {
+        "durationMs": 3.955,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "taskHash": "404169602d36735c03d1009e60c13abe8c046f08c8f72b777f7ed455695cbca2",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T185247Z-advanced-programming-001"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 15.899,
+      "evidence": {
+        "durationMs": 15.899,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 2.052,
+      "evidence": {
+        "durationMs": 2.052,
+        "finishedAt": "2026-05-28T18:52:47Z",
+        "observerEnabled": true,
+        "observerState": "verifying_sandbox",
+        "startedAt": "2026-05-28T18:52:47Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:47Z"
+    },
+    {
+      "durationMs": 983.159,
+      "evidence": {
+        "durationMs": 983.159,
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T18:52:47Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    {
+      "durationMs": 1.136,
+      "evidence": {
+        "durationMs": 1.136,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "method": "POST",
+        "payloadHash": "ba9bf9d72caa7cfc8fa4d221d6488e8b2ba6d0ea979a2b77c38ad207239e5279",
+        "projectSlug": "continuity-code-pf-001",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T18:52:48Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    {
+      "durationMs": 97.092,
+      "evidence": {
+        "durationMs": 97.092,
+        "elapsedMs": 38.502,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T18:52:48Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-code-pf-001-4",
+        "sessionId": "agent-bb4ee4db65",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T18:52:48Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:52:48Z"
+    },
+    {
+      "durationMs": 225107.175,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 900,
+        "durationMs": 225107.175,
+        "errorCode": "manual_stop",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_agent_session_polls.json",
+        "finalStatus": "stopped",
+        "finishedAt": "2026-05-28T18:56:33Z",
+        "lastProgressLabel": "Sesion detenida por el usuario.",
+        "lastProgressPercent": 94,
+        "monitorBudgetSeconds": 1020,
+        "pid": null,
+        "pollCount": 185,
+        "returncode": -15,
+        "sessionId": "agent-bb4ee4db65",
+        "startedAt": "2026-05-28T18:52:48Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/logs/agent-bb4ee4db65-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: stopped.",
+      "name": "ui_agent_session_polled",
+      "status": "failed",
+      "updatedAt": "2026-05-28T18:56:33Z"
+    },
+    {
+      "durationMs": 680.745,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528185248-002",
+        "durationMs": 680.745,
+        "elapsedMs": 652.055,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "projectStatus": "stopped",
+        "queueCounts": {
+          "blocked": 1,
+          "completed": 0,
+          "failed": 0,
+          "pending": 1,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T18:56:33Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    },
+    {
+      "durationMs": 23.095,
+      "evidence": {
+        "durationMs": 23.095,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 15,
+          "mtime": "2026-05-28T18:56:33Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/manual-stop-agent-bb4ee4db65.json",
+          "sha256": "174fda006cd5e8f8cd600a59ef93da4c49da42bc28e686fc1c92b6eee44212e2",
+          "size": 445,
+          "tail": "{\n  \"checkpoint_key\": \"manual-stop-agent-bb4ee4db65\",\n  \"created_at\": \"2026-05-28T18:56:33Z\",\n  \"payload\": {\n    \"active_task_id\": \"RUNTIME-20260528185248-001\",\n    \"blocked_task_ids\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"previous_current_task_id\": \"RUNTIME-20260528185248-001\",\n    \"previous_status\": \"running\",\n    \"project_slug\": \"continuity-code-pf-001-4\",\n    \"reason\": \"manual_stop\",\n    \"session_id\": \"agent-bb4ee4db65\"\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 242,
+          "mtime": "2026-05-28T18:52:48Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json",
+          "sha256": "2b4b4f5bb823b01017ffcd7ba898878a67ccd55faa2252e7513af96b33231ec7",
+          "size": 22668,
+          "tail": "nning, completed y failed.\",\n    \"id\": \"RUNTIME-20260528185248-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\"\n  },\n  \"task_id\": \"RUNTIME-20260528185248-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"28f16ceb06eba3e8a57179916f74923b9d281dfaa2e3b30fd86e4f524c5e6e82\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-code-pf-001-4",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T18:56:33Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/project_state.json",
+          "sha256": "d73bdfa8b181161cb440aa2ae5309c02a6d0d5738e4ad08b9dd8479672f29fd0",
+          "size": 582,
+          "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260528185248-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-bb4ee4db65\",\n    \"complexity-estimate\",\n    \"manual-stop-agent-bb4ee4db65\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T18:52:48.449444+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-bb4ee4db65\",\n  \"project_id\": \"continuity-code-pf-001-4\",\n  \"schema_version\": 1,\n  \"status\": \"stopped\",\n  \"updated_at\": \"2026-05-28T18:56:33.186317+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T18:56:34Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 40,
+          "mtime": "2026-05-28T18:56:32Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/task_queue.json",
+          "sha256": "054b8e6822d2b5093ae016d3aaaffe2e2c45ef6b0ead2e9d5c71b0edb9663b64",
+          "size": 1531,
+          "tail": "mode\": \"build\",\n    \"priority\": 20,\n    \"status\": \"blocked\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Disenar una cola FIFO persistente con estados pending\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260528185248-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260528185248-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_001.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528185248-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 24,
+          "mtime": "2026-05-28T18:56:32Z",
+          "path": "workspace/projects/continuity-code-pf-001-4/runtime/logs/agent-bb4ee4db65-terminal.log",
+          "sha256": "4ad2b481be7e3c1f6f445988578eb8ab35374aecff9f0a672a325f2e08a1dbdf",
+          "size": 1211,
+          "tail": "ane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260528185248-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/artifacts/tool_invocations/RUNTIME-20260528185248-001-preflight-20260528T185307Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260528185248-001 con timeout 900s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001-4/runtime/directives/RUNTIME-20260528185248-001-20260528T185248Z-28f16ceb06eb.json.\n\n[agent] Sesion detenida por el usuario.\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    },
+    {
+      "durationMs": 1.395,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 1.395,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T185247Z-advanced-programming-001/response_summary.json",
+        "failedStages": [
+          "ui_agent_session_polled"
+        ],
+        "finishedAt": "2026-05-28T18:56:34Z",
+        "mode": "ui_session_rest",
+        "promptHash": "f9b7dc2d8dfba011d2a3a8f5da81893e0139b04e8510edbaac4c992529ffe628",
+        "recommendation": "Inspect blocked/failed stages before executing a real session.",
+        "responseHash": "ec9c007f78a84a738c4e3df7fb9903c6c8bdb0512dac65bea36fab8d6689fac0",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T18:56:34Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T185247Z-advanced-programming-001",
+        "traceId": "prompt-flight-batch-20260528T185247Z-advanced-programming-001",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T18:56:34Z"
+    }
+  ],
+  "startedAt": "2026-05-28T18:52:47Z",
+  "status": "failed",
+  "summary": {
+    "blocked": 0,
+    "failed": 1,
+    "ok": 15,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "prompt-flight-batch-20260528T185247Z-advanced-programming-001"
+}

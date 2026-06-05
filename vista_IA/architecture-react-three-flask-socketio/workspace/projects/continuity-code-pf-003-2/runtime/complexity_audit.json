@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "audit_version": "runtime-task-complexity-audit-v1",
+  "generated_at": "2026-06-05T20:14:01Z",
+  "task_id": "RUNTIME-20260605200955-001",
+  "project_slug": "continuity-code-pf-003-2",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "goal": "Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.",
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "complexity_score": 31,
+  "confidence": 88,
+  "estimated_minutes": 45,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "lace_min_cycles": 2,
+  "lace_target_cycles": 4,
+  "lace_max_cycles": 10,
+  "timeout_seconds": 900,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "deliverables": [
+    "docs/advanced_programming_case_003.md",
+    "runtime/complexity_audit.json",
+    "runtime/complexity_estimate.json"
+  ],
+  "risk_flags": [
+    "integrity_cli_timeout_on_first_attempt",
+    "scanner_project_locked_while_worker_running"
+  ],
+  "reasoning": [
+    "La tarea es documental y acotada, pero exige evidencia runtime auditable.",
+    "La estrategia debe cubrir cuatro contratos HTTP: 200, 400, 404 y 500.",
+    "El alcance no requiere implementar una API real ni avanzar entregables futuros.",
+    "La validacion esperada comprueba existencia de los artefactos de runtime.",
+    "findings se ejecuto con ok=true y activeFindings=0 antes de editar.",
+    "integrity se invoco antes de editar y devolvio timeout; el reintento posterior paso con ok=true.",
+    "scanner se invoco tras los cambios y devolvio project_locked porque el Observer detecta active_worker_running."
+  ],
+  "layer_scores": {
+    "prompt": 30,
+    "project": 4,
+    "operational_risk": 6,
+    "blast_radius": 12,
+    "evidence": 8,
+    "history": 0,
+    "uncertainty": 2
+  },
+  "layers": {
+    "prompt": {
+      "score": 30,
+      "reasons": [
+        "Prompt medio con salida documental clara.",
+        "Incluye API REST, validacion y evidencia auditable."
+      ],
+      "required_tools": [
+        "pytest",
+        "scanner"
+      ],
+      "risk_flags": []
+    },
+    "project": {
+      "score": 4,
+      "reasons": [
+        "Workspace minimo con LACE, runtime y docs/habla-session.md existentes."
+      ],
+      "required_tools": [],
+      "risk_flags": [],
+      "observed": true,
+      "file_count": 5
+    },
+    "operational_risk": {
+      "score": 6,
+      "reasons": [
+        "Se deben respetar rutas prohibidas y propiedad del control plane.",
+        "integrity puede depender de backend local y tuvo timeout inicial.",
+        "scanner queda bloqueado mientras el control plane mantiene este worker en running."
+      ],
+      "required_tools": [
+        "integrity",
+        "findings"
+      ],
+      "risk_flags": [
+        "integrity_cli_timeout_on_first_attempt",
+        "scanner_project_locked_while_worker_running"
+      ]
+    },
+    "blast_radius": {
+      "score": 12,
+      "reasons": [
+        "Cambios acotados a documentacion, evidencia runtime declarada y memoria de recuperacion."
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "evidence": {
+      "score": 8,
+      "reasons": [
+        "La validacion declarada comprueba los JSON requeridos.",
+        "pytest, scanner, findings e integrity deben quedar intentados con salida real."
+      ],
+      "required_tools": [
+        "findings",
+        "integrity",
+        "pytest",
+        "scanner"
+      ],
+      "risk_flags": []
+    },
+    "history": {
+      "score": 0,
+      "reasons": [
+        "No se detectaron fallos activos en findings antes de editar."
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "uncertainty": {
+      "score": 2,
+      "reasons": [
+        "No hay implementacion de API real en este workspace; la salida esperada es una estrategia reutilizable."
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    }
+  }
+}

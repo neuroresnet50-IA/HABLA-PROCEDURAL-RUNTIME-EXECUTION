@@ -1,0 +1,166 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 35,
+      "mtime": "2026-05-28T22:27:12Z",
+      "path": "workspace/projects/continuity-math-pf-025/runtime/complexity_estimate.json",
+      "sha256": "f448173341a6915cc12adfadbf205dbde2f9f45dd192e934eaf595d6e17e5ddf",
+      "size": 827,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-28T22:27:12.061039Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-math-pf-025\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 29,\n  \"score\": 18,\n  \"difficulty\": \"facil\",\n  \"difficulty_label\": \"Facil\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 2,\n  \"recommended_agents\": 1,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 1,\n  \"max_tasks\": 3,\n  \"timeout_seconds\": 600,\n  \"recovery_budget\": 2,\n  \"max_retries\": 2,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt corto: 29 palabras\",\n    \"requiere evidencia auditable\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-math-pf-025/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-28T22:28:42Z",
+      "path": "workspace/projects/continuity-math-pf-025/runtime/project_state.json",
+      "sha256": "2d90dbd7eae350155a289b720404c0e498664c42ff2f6ebe744b28962375f494",
+      "size": 591,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-d930197140\",\n    \"complexity-estimate\",\n    \"runtime-20260528222713-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528222713-001\"\n  ],\n  \"created_at\": \"2026-05-28T22:27:10.277711+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T22:27:10.277711+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-d930197140\",\n  \"project_id\": \"continuity-math-pf-025\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T22:28:42.422145+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T22:28:42Z",
+      "path": "workspace/projects/continuity-math-pf-025/runtime/task_history.jsonl",
+      "sha256": "2d9a88543918e2d573dc0cf1f2cf1314d3c45e9022eccae3e3f3e2a9afdef018",
+      "size": 475,
+      "tail": "{\"recorded_at\": \"2026-05-28T22:28:42Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/mathematics_case_025.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260528222713-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_025.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-05-28T22:28:42Z",
+      "path": "workspace/projects/continuity-math-pf-025/runtime/task_queue.json",
+      "sha256": "2d10e9703a75cbda756333d9698f7e539d6465d1c2bcef5d6308562010acce14",
+      "size": 834,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528222713-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/mathematics_case_025.md\"\n    ],\n    \"goal\": \"Comparar crecimiento lineal, cuadratico y exponencial con ejemplos.; Escribe la solucion o plan en docs/mathematics_case_025.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528222713-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Comparar crecimiento lineal, cuadratico y exponencial con ejemplos\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_025.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 486,
+    "mtime": "2026-05-28T22:28:42Z",
+    "path": "workspace/projects/continuity-math-pf-025/runtime/checkpoints/runtime-20260528222713-001-checkpoint.json",
+    "sha256": "93d0080c2bad78256046a2eabcc6506e28ce50c8dd44b5b0f78ac7c8cdce4afb",
+    "size": 18570,
+    "tail": "_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/docs/mathematics_case_025.md\",\n            \"size\": 511\n          }\n        ],\n        \"found\": [\n          \"docs/mathematics_case_025.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/mathematics_case_025.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/docs/mathematics_case_025.md\",\n            \"size\": 511\n          }\n        ],\n        \"reported_created\": [\n          \"docs/mathematics_case_025.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528222713-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 240,
+    "mtime": "2026-05-28T22:27:17Z",
+    "path": "workspace/projects/continuity-math-pf-025/runtime/directives/RUNTIME-20260528222713-001-20260528T222715Z-cf382712f0ca.json",
+    "sha256": "1f1f17c9c97e53f91f06470446b319aeb72eb004575b29df5829b85a7250195b",
+    "size": 23103,
+    "tail": " no relacionados.\",\n    \"id\": \"RUNTIME-20260528222713-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Comparar crecimiento lineal, cuadratico y exponencial con ejemplos\"\n  },\n  \"task_id\": \"RUNTIME-20260528222713-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"cf382712f0ca460df435e487210d3b977396673748e9f46a7eba4cde3fe94db3\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T22:28:42Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/mathematics_case_025.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260528222713-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_025.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-math-pf-025",
+  "runtimeDir": "workspace/projects/continuity-math-pf-025/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 279,
+    "mtime": "2026-05-28T22:28:51Z",
+    "path": "workspace/projects/continuity-math-pf-025/runtime/logs/agent-d930197140-terminal.log",
+    "sha256": "c9bcbf3bc8cb4c70328688bffa4f3a096446ac8eee671ea761931a20aa617aa8",
+    "size": 9468,
+    "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-025/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T222850Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

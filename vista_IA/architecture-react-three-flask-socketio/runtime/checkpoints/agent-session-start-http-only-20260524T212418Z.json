@@ -1,0 +1,91 @@
+{
+  "changes": [
+    {
+      "detail": "handleSendRequirement now posts directly to /api/agent/session and aborts after 45 seconds instead of waiting on Socket.IO agent:session:start acknowledgement.",
+      "file": "frontend/src/components/AgentStudio.jsx",
+      "lines": "993-1015"
+    },
+    {
+      "detail": "socketio.run now uses threaded=True to reduce long-polling saturation under concurrent UI polling.",
+      "file": "backend/app.py",
+      "lines": "5781-5788"
+    }
+  ],
+  "event": "AGENT-SESSION-START-HTTP-ONLY",
+  "files_modified": [
+    "frontend/src/components/AgentStudio.jsx",
+    "backend/app.py",
+    "frontend/dist/index.html",
+    "frontend/dist/assets/index-Dj7nt0On.js",
+    "frontend/dist/assets/index-L78j9hAI.css"
+  ],
+  "next_step": "Hard refresh the browser with Ctrl+Shift+R and retry the AgentStudio Codex start button. If it fails now, the UI should leave Abriendo Codex after the HTTP error or 45 second timeout instead of staying stuck.",
+  "residual_risks": [
+    "Existing browser tabs may still show old Socket.IO 400 Invalid session entries until they are hard-refreshed.",
+    "The project folder sesion-20260524210420 was created during the user earlier click and was intentionally left untouched.",
+    "CyberLACE remains globally in monitor mode for UI stability; enforce credential testing remains available through scripts/test_cyberlace_live_credentials.sh."
+  ],
+  "root_cause": [
+    "Browser kept stale Socket.IO polling sessions after server restarts.",
+    "Backend log showed POST /socket.io 400 Invalid session while the UI button was waiting for the socket acknowledgement.",
+    "No backend Codex session was created during the stuck state; /api/agent/sessions returned an empty list."
+  ],
+  "status": "completed",
+  "summary": "Fixed the AgentStudio Codex start button stuck on Abriendo Codex by removing its dependency on Socket.IO ack and starting sessions through the REST endpoint with a timeout.",
+  "timestamp": "2026-05-24T21:24:18Z",
+  "validation": [
+    {
+      "command": "rg -n \"agent:session:start|agent_session_start_timeout|const sessionUrl|socketRef.current\\\\?\\\\.connected\" frontend/src/components/AgentStudio.jsx",
+      "ok": true,
+      "result": "No agent:session:start dependency remains in AgentStudio source; agent_session_start_timeout is present."
+    },
+    {
+      "command": "python3 -B -m py_compile backend/app.py backend/agent_runtime.py",
+      "ok": true
+    },
+    {
+      "bundle": "frontend/dist/assets/index-Dj7nt0On.js",
+      "command": "npm --prefix frontend run build",
+      "ok": true
+    },
+    {
+      "backendPid": 1317054,
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true
+    },
+    {
+      "command": "curl --max-time 5 http://127.0.0.1:5001/api/agent/sessions",
+      "httpCode": 200,
+      "ok": true,
+      "response": {
+        "sessions": []
+      },
+      "timeSeconds": 0.090097
+    },
+    {
+      "command": "curl --max-time 5 -H 'Content-Type: application/json' -d '{}' http://127.0.0.1:5001/api/agent/session",
+      "expected": "Endpoint responds quickly with missing_requirement instead of hanging.",
+      "httpCode": 400,
+      "ok": true,
+      "timeSeconds": 0.074
+    },
+    {
+      "bytes": 402,
+      "command": "curl --max-time 5 http://127.0.0.1:5001/",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "command": "curl --max-time 5 http://127.0.0.1:5001/api/health",
+      "httpCode": 200,
+      "ok": true
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/cyberlace/health",
+      "enabled": true,
+      "engineAvailable": true,
+      "mode": "monitor",
+      "ok": true
+    }
+  ]
+}

@@ -34,6 +34,23 @@ class WorkspaceVisualSyncRegressionTest(unittest.TestCase):
             self.assertNotIn("workspace/projects/demo-app/runtime/directives/TASK-001.json", node_paths)
             self.assertNotIn("workspace/projects/demo-app/.vista/events.jsonl", node_paths)
 
+    def test_project_graph_ignores_persisted_editor_state_and_truncates_large_code(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            project_root = Path(tmpdir)
+            backend_dir = project_root / "backend"
+            backend_dir.mkdir(parents=True, exist_ok=True)
+            (backend_dir / "editor_state.json").write_text('{"nodes": []}\n', encoding="utf-8")
+            large_source = "PAYLOAD = '" + ("x" * 300000) + "'\n"
+            (backend_dir / "large_module.py").write_text(large_source, encoding="utf-8")
+
+            graph = build_project_graph(project_root)
+            node_paths = {node["path"] for node in graph["nodes"]}
+            self.assertNotIn("backend/editor_state.json", node_paths)
+
+            large_node = next(node for node in graph["nodes"] if node["path"] == "backend/large_module.py")
+            self.assertTrue(large_node["codeTruncated"])
+            self.assertLess(len(large_node["code"]), len(large_source))
+
     def test_sync_workspace_file_infers_javascript_dependencies_and_flow(self) -> None:
         with TemporaryDirectory() as tmpdir:
             projects_root = Path(tmpdir) / "projects"
@@ -148,6 +165,29 @@ class WorkspaceVisualSyncRegressionTest(unittest.TestCase):
                 edge_lookup[(backend_app.node_id_for_path(html_graph_path), backend_app.node_id_for_path(app_graph_path))],
                 "import",
             )
+
+
+    def test_normalize_algorithm_derives_sequence_edges_when_steps_have_no_valid_edges(self) -> None:
+        algorithm = {
+            "title": "Flujo desconectado",
+            "source": "agent_live",
+            "steps": [
+                {"id": "start", "type": "start", "label": "Inicio", "x": 100, "y": 50},
+                {"id": "process", "type": "process", "label": "Procesar", "x": 100, "y": 170},
+                {"id": "end", "type": "end", "label": "Fin", "x": 100, "y": 290},
+            ],
+            "edges": [],
+        }
+
+        normalized = backend_app.normalize_algorithm(
+            algorithm,
+            {"id": "demo-node", "name": "demo.py", "codeLanguage": "python"},
+        )
+
+        self.assertEqual(
+            [(edge["from"], edge["to"]) for edge in normalized["edges"]],
+            [("start", "process"), ("process", "end")],
+        )
 
 
 if __name__ == "__main__":

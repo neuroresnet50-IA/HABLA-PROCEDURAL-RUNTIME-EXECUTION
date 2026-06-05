@@ -1,0 +1,74 @@
+{
+  "checkpoint": "habla-green-modal-visible-top-final",
+  "createdAt": "2026-05-25T12:03:37Z",
+  "status": "validated_visible_final",
+  "problem": "El usuario veia el modal rojo de WARNING pero no encontraba el modal verde de alternativa segura.",
+  "fix": [
+    "El panel verde dejo de depender de posicion fixed lateral como unica senal visual.",
+    "El contenedor CyberLACE ahora muestra rojo y verde en una grilla visible.",
+    "La alternativa segura tambien aparece como bloque verde grande dentro del modal rojo, inmediatamente debajo del mensaje de bloqueo.",
+    "Ambos botones de aceptar usan la misma funcion acceptCyberlaceSafeAlternative."
+  ],
+  "files": [
+    "frontend/src/App.jsx",
+    "frontend/src/App.css"
+  ],
+  "test": {
+    "chromePid": 1518023,
+    "projectSlug": "visible-final-green-050303",
+    "sessionId": "agent-85fd92181f",
+    "backend": {
+      "status": "blocked",
+      "pid": null,
+      "commandLength": 0,
+      "runtimeAction": "QUARANTINE",
+      "safeAlternative": true
+    },
+    "ui": {
+      "redModal": true,
+      "inlineGreen": true,
+      "sideGreen": true,
+      "acceptInline": true,
+      "acceptSide": true,
+      "inlineVisible": true,
+      "sideVisible": true,
+      "inlineBox": {
+        "x": 104,
+        "y": 523,
+        "w": 623,
+        "h": 376
+      },
+      "sideBox": {
+        "x": 791,
+        "y": 24,
+        "w": 602,
+        "h": 842
+      }
+    },
+    "runtimeTruth": {
+      "verdict": "idle",
+      "stale": false,
+      "canReleaseZombie": false,
+      "workerPid": null,
+      "activeSessions": 0,
+      "projectStatus": "blocked",
+      "persistedRunning": false
+    },
+    "processCheck": "no agent/codex worker process found"
+  },
+  "artifacts": [
+    "runtime/artifacts/habla_visible_final_green_top_and_side_20260525T121500Z.png"
+  ],
+  "validations": [
+    "npm --prefix frontend run build OK",
+    "OPEN_BROWSER=0 ./start.sh restart OK",
+    "GET /api/health OK",
+    "runtime-truth idle/no zombie OK"
+  ],
+  "safety": {
+    "backendSecurityChanged": false,
+    "dangerousActionExecuted": false,
+    "codexSpawned": false,
+    "autoExecution": false
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "estimate_type": "project_complexity_budget",
+  "generated_at": "2026-06-05T20:14:01Z",
+  "task_id": "RUNTIME-20260605200955-001",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-003-2",
+  "project_file_count": 5,
+  "prompt_word_count": 36,
+  "score": 31,
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "min_lace_cycles": 2,
+  "max_lace_cycles": 10,
+  "recommended_lace_cycles": 4,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "bootstrap_tasks": 4,
+  "max_tasks": 8,
+  "timeout_seconds": 900,
+  "recovery_budget": 5,
+  "max_retries": 3,
+  "required_tools": [
+    "findings",
+    "integrity",
+    "pytest",
+    "scanner"
+  ],
+  "deliverables": {
+    "product": [
+      "docs/advanced_programming_case_003.md"
+    ],
+    "required_evidence": [
+      "runtime/complexity_audit.json",
+      "runtime/complexity_estimate.json"
+    ],
+    "session_memory": [
+      "LACE_LOG.md",
+      "recuperacioncontexto.md",
+      "ULTIMO_CONTEXTO_CODEX.md"
+    ]
+  },
+  "risk_flags": [
+    "integrity_cli_timeout_on_first_attempt",
+    "scanner_project_locked_while_worker_running"
+  ],
+  "reasons": [
+    "modo runtime solicitado: build",
+    "prompt medio: 36 palabras",
+    "requiere evidencia auditable",
+    "incluye estrategia para backend/API",
+    "no requiere implementar endpoints reales en este sprint",
+    "casos HTTP requeridos: 200, 400, 404 y 500"
+  ],
+  "confidence": 88,
+  "quality_threshold": 85,
+  "estimated_minutes": 45,
+  "validation_commands": [
+    "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+    "python3 -m pytest -q"
+  ],
+  "tool_status": {
+    "findings": {
+      "statusCode": 200,
+      "ok": true,
+      "activeFindings": 0,
+      "reportPath": "runtime/artifacts/observer_findings.json"
+    },
+    "integrity": {
+      "statusCode": 200,
+      "ok": true,
+      "reportPath": "runtime/artifacts/file_integrity_report.json",
+      "summary": {
+        "deletedFiles": 0,
+        "modifiedFiles": 0,
+        "registeredWrites": 0,
+        "totalFindings": 0,
+        "untrackedFiles": 0
+      },
+      "note": "Primer intento antes de editar devolvio timeout; reintento posterior paso."
+    },
+    "pytest": {
+      "ok": true,
+      "command": "python3 -m pytest -q",
+      "result": "2 passed in 0.02s"
+    },
+    "scanner": {
+      "statusCode": 423,
+      "ok": false,
+      "error": "project_locked",
+      "note": "Invocado despues de cambios; el Observer reporto rootCause=active_worker_running mientras este worker seguia activo."
+    }
+  },
+  "complexity_audit": {
+    "schema_version": 1,
+    "audit_version": "runtime-task-complexity-audit-v1",
+    "generated_at": "2026-06-05T20:14:01Z",
+    "runtime_mode": "build",
+    "project_slug": "continuity-code-pf-003-2",
+    "complexity_score": 31,
+    "confidence": 88,
+    "lace_target_cycles": 4,
+    "required_tools": [
+      "findings",
+      "integrity",
+      "pytest",
+      "scanner"
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+# Ultimo contexto Codex
+
+- Fecha/hora UTC: 2026-06-05T20:19:30Z
+- Ultima solicitud del usuario: RUNTIME-20260605200955-001 - Crear estrategia de pruebas para una API REST con casos 200, 400, 404 y 500.
+- Estado real: artefactos de estrategia y evidencia creados/actualizados; validacion de existencia y pytest pasan; findings e integrity limpios; scanner bloqueado por `project_locked` incluso en el ultimo reintento mientras el worker sigue `running`.
+- Archivos tocados:
+  - `docs/advanced_programming_case_003.md`
+  - `tests/test_api_strategy_artifacts.py`
+  - `runtime/complexity_audit.json`
+  - `runtime/complexity_estimate.json`
+  - `LACE_LOG.md`
+  - `recuperacioncontexto.md`
+  - `ULTIMO_CONTEXTO_CODEX.md`
+- Validacion ejecutada:
+  - `python3 -B -c "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"` -> OK.
+  - `python3 -m pytest -q` -> OK, `2 passed in 0.01s`.
+  - `PYTHONDONTWRITEBYTECODE=1 python3 -m pytest -q -p no:cacheprovider` -> OK, `2 passed in 0.01s`, sin caches finales.
+  - `to-sweep-with-a-broom after_task` -> OK, `reportPath=runtime/artifacts/broom/20260605T202138.640405Z-RUNTIME-20260605200955-001-after_task.json`.
+  - `findings` -> OK, `activeFindings=0`.
+  - `integrity` -> OK en reintento, `totalFindings=0`.
+  - `scanner` -> bloqueado, `statusCode=423`, `error=project_locked`, Observer `rootCause=active_worker_running`; ultimo reintento posterior a la validacion final tambien bloqueado.
+- Siguiente paso exacto: cuando el control plane deje de marcar este worker como `running`, reintentar `python3 orchestrator/agent_tools.py scanner continuity-code-pf-003-2`; si pasa, continuar con la tarea dependiente.

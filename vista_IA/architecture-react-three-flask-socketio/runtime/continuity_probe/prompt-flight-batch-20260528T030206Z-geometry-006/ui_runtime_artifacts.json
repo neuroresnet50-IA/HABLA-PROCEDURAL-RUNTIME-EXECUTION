@@ -1,0 +1,166 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 35,
+      "mtime": "2026-05-28T03:05:27Z",
+      "path": "workspace/projects/continuity-geom-pf-006/runtime/complexity_estimate.json",
+      "sha256": "7b4e81fb3503ff72272d23043839a4372899407a1694bf3388c755a56c143397",
+      "size": 827,
+      "tail": "{\n  \"schema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-28T03:05:27.749198Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-geom-pf-006\",\n  \"project_file_count\": 0,\n  \"prompt_word_count\": 28,\n  \"score\": 18,\n  \"difficulty\": \"facil\",\n  \"difficulty_label\": \"Facil\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 2,\n  \"recommended_agents\": 1,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 1,\n  \"max_tasks\": 3,\n  \"timeout_seconds\": 600,\n  \"recovery_budget\": 2,\n  \"max_retries\": 2,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt corto: 28 palabras\",\n    \"requiere evidencia auditable\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-geom-pf-006/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-28T03:10:40Z",
+      "path": "workspace/projects/continuity-geom-pf-006/runtime/project_state.json",
+      "sha256": "0ec40a2cd633446bf32b1121f081ad0f0c2344d0679e406a99aac1c15bb3e575",
+      "size": 591,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-a81933f98c\",\n    \"complexity-estimate\",\n    \"runtime-20260528030527-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528030527-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:05:27.433834+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:05:27.433834+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-a81933f98c\",\n  \"project_id\": \"continuity-geom-pf-006\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T03:10:40.886012+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-05-28T03:10:40Z",
+      "path": "workspace/projects/continuity-geom-pf-006/runtime/task_history.jsonl",
+      "sha256": "37f6aca5900188046fd42305b1535fa3a1b80eee75dad00df11ff6704344b01d",
+      "size": 469,
+      "tail": "{\"recorded_at\": \"2026-05-28T03:10:40Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/geometry_case_006.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260528030527-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_006.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-05-28T03:10:40Z",
+      "path": "workspace/projects/continuity-geom-pf-006/runtime/task_queue.json",
+      "sha256": "b779092ce6cdae28a60ebf63b2ec37d02c634aabbc1e19cd5d17ef5d64e9b8ad",
+      "size": 801,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528030527-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_006.md\"\n    ],\n    \"goal\": \"Aplicar teorema de Pitagoras y validar hipotenusa.; Escribe la solucion o plan en docs/geometry_case_006.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030527-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Aplicar teorema de Pitagoras y validar hipotenusa.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_006.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 461,
+    "mtime": "2026-05-28T03:10:40Z",
+    "path": "workspace/projects/continuity-geom-pf-006/runtime/checkpoints/runtime-20260528030527-001-checkpoint.json",
+    "sha256": "599092c3a1c3e2205e8240ed960ebb034c98dcbd0f1166d1e018c03c8d7b3061",
+    "size": 17397,
+    "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/docs/geometry_case_006.md\",\n            \"size\": 481\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_006.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_006.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/docs/geometry_case_006.md\",\n            \"size\": 481\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_006.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528030527-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006\"\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 240,
+    "mtime": "2026-05-28T03:05:28Z",
+    "path": "workspace/projects/continuity-geom-pf-006/runtime/directives/RUNTIME-20260528030527-001-20260528T030528Z-b87161c47ddf.json",
+    "sha256": "f960884217cbaa9a4ead89cd2315c481cdb58d0b6f01e9d6b5b22532b9c56256",
+    "size": 22934,
+    "tail": "rchivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030527-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Aplicar teorema de Pitagoras y validar hipotenusa.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528030527-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"b87161c47ddfe366aaa30f28d11de01738c9fec8e497372cb9472724f4b00566\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-05-28T03:10:40Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/geometry_case_006.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260528030527-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/geometry_case_006.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-geom-pf-006",
+  "runtimeDir": "workspace/projects/continuity-geom-pf-006/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 229,
+    "mtime": "2026-05-28T03:10:46Z",
+    "path": "workspace/projects/continuity-geom-pf-006/runtime/logs/agent-a81933f98c-terminal.log",
+    "sha256": "a191299f69ae7423409f838b8e6efdc75c1865f1f426807aefd154e6b301204f",
+    "size": 8191,
+    "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-006/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T031044Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

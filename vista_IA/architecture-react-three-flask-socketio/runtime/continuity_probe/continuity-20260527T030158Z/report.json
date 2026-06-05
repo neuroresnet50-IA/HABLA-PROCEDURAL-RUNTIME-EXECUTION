@@ -1,0 +1,257 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/continuity-20260527T030158Z/events.jsonl",
+    "markdownPath": "runtime/continuity_probe/continuity-20260527T030158Z/report.md",
+    "reportPath": "runtime/continuity_probe/continuity-20260527T030158Z/report.json",
+    "runDir": "runtime/continuity_probe/continuity-20260527T030158Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "checks": {
+    "autopilot_memory": {
+      "evidence": {
+        "jsonRunCount": 0,
+        "path": "runtime/cyberlace/training_runs"
+      },
+      "message": "Autopilot persistent run directory is present.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:03Z"
+    },
+    "backend_health": {
+      "evidence": {
+        "service": "HABLA Observer IA",
+        "statusCode": 200
+      },
+      "message": "Backend health endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:00Z"
+    },
+    "checkpoint_written": {
+      "evidence": {
+        "path": "workspace/projects/continuity-probe-canary/runtime/checkpoints/continuity-continuity-20260527T030158Z.json",
+        "projectState": "workspace/projects/continuity-probe-canary/runtime/project_state.json"
+      },
+      "message": "Continuity checkpoint written and project state updated.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:02Z"
+    },
+    "directive_generated": {
+      "evidence": {
+        "path": "workspace/projects/continuity-probe-canary/runtime/directives/CONTINUITY-20260527T030158Z-20260527T030201Z-691864eddfc5.json",
+        "taskId": "CONTINUITY-20260527T030158Z"
+      },
+      "message": "Worker directive generated and persisted.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:01Z"
+    },
+    "harness_reachable": {
+      "evidence": {
+        "caseCount": 30,
+        "hasRunsKey": true,
+        "statusCode": 200
+      },
+      "message": "Harness training summary endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:03Z"
+    },
+    "history_written": {
+      "evidence": {
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+        "taskId": "CONTINUITY-20260527T030158Z"
+      },
+      "message": "Task history event appended.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:02Z"
+    },
+    "imports_loaded": {
+      "evidence": {
+        "modules": [
+          "orchestrator.state_store",
+          "orchestrator.task_queue",
+          "orchestrator.directive_context",
+          "orchestrator.directive_generator",
+          "orchestrator.executor",
+          "orchestrator.validator",
+          "workers.codex_worker"
+        ]
+      },
+      "message": "Core orchestration imports resolved.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:01:59Z"
+    },
+    "observer_readable": {
+      "evidence": {
+        "enabled": false,
+        "state": "idle",
+        "statusCode": 200
+      },
+      "message": "Observer status is readable without starting a mission.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:03Z"
+    },
+    "plan_loaded": {
+      "evidence": {
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10
+      },
+      "message": "PLANS.md loaded through plan_loader.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:01:59Z"
+    },
+    "policy_loaded": {
+      "evidence": {
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md"
+      },
+      "message": "AGENTS.md loaded through policy_loader.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:01:58Z"
+    },
+    "prompt_input": {
+      "evidence": {
+        "evidencePath": "runtime/continuity_probe/continuity-20260527T030158Z/input.json"
+      },
+      "message": "Probe input persisted with traceId.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:01:58Z"
+    },
+    "queue_persisted": {
+      "evidence": {
+        "path": "workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+        "taskCount": 1
+      },
+      "message": "Task queue persisted and reloaded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:01Z"
+    },
+    "safety_learning_readable": {
+      "evidence": {
+        "statusCode": 200,
+        "totalExperiences": 64
+      },
+      "message": "Safety Learning status endpoint responded.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:03Z"
+    },
+    "task_created": {
+      "evidence": {
+        "projectPath": "workspace/projects/continuity-probe-canary",
+        "taskId": "CONTINUITY-20260527T030158Z"
+      },
+      "message": "Canary task built and validated.",
+      "status": "ok",
+      "updatedAt": "2026-05-27T03:02:00Z"
+    },
+    "validator_passed": {
+      "evidence": {
+        "blockers": [
+          "CyberLACE document hard gate blocked worker before child process launch.",
+          "Validation command failed with return code 1: python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030158Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+        ],
+        "validationPassed": false,
+        "validationRan": [
+          "python3 -B -c 'from pathlib import Path; text=Path('\"'\"'src/continuity_probe.txt'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"'); assert '\"'\"'traceId=continuity-20260527T030158Z'\"'\"' in text; assert '\"'\"'status=worker_executed'\"'\"' in text'"
+        ]
+      },
+      "message": "Validator rejected canary evidence.",
+      "status": "failed",
+      "updatedAt": "2026-05-27T03:02:02Z"
+    },
+    "worker_executed": {
+      "evidence": {
+        "blockers": [
+          "CyberLACE document hard gate blocked worker before child process launch."
+        ],
+        "childReturnCode": 126,
+        "cyberlaceDocumentDecision": {
+          "action": "QUARANTINE",
+          "agentId": "cyberlace-document-guard",
+          "allowed": false,
+          "blocked": true,
+          "blockedPaths": [
+            "external:python"
+          ],
+          "blocksRuntime": true,
+          "deniedAction": "Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.",
+          "evidence": [
+            {
+              "domain": "filesystem",
+              "line": 1,
+              "path": "external:python",
+              "pattern": "external_path",
+              "sample": "[REDACTED]",
+              "source": "requirement",
+              "type": "external_document_reference_denied"
+            },
+            {
+              "domain": "filesystem",
+              "line": 1,
+              "path": "external:python",
+              "pattern": "external_path",
+              "sample": "[REDACTED]",
+              "source": "directive",
+              "type": "external_document_reference_denied"
+            }
+          ],
+          "message": "PELIGRO: potencial informacion insegura. La accion fue negada y no se lanzara Codex.",
+          "mode": "hard-gate",
+          "ok": true,
+          "projectSlug": "continuity-probe-canary",
+          "reason": "CyberLACE hard gate blocked local document processing: sensitive credentials, financial secrets, unsafe external path references, or unscannable workspace documents were found.",
+          "recordType": "decision",
+          "redactsPayload": false,
+          "requiresHumanReview": false,
+          "riskScore": 100.0,
+          "runtimeAction": "QUARANTINE",
+          "safeAlternative": {
+            "allowedActions": [
+              "Usar placeholders o fixtures sinteticos.",
+              "Redactar evidencia sensible antes de procesarla.",
+              "Disenar controles de acceso, auditoria y rutas seguras.",
+              "Convertir la tarea en una validacion de arquitectura segura."
+            ],
+            "suggestedRequirement": "Redisenar la tarea para usar datos sinteticos o redactados y validar una arquitectura segura sin procesar secretos reales.",
+            "summary": "HABLA puede ayudar a redactar, tokenizar, simular o redisenar el flujo para que los secretos no entren al modelo ni salgan del entorno seguro.",
+            "title": "Alternativa segura permitida"
+          },
+          "safeNextSteps": [
+            "Retirar documentos o valores sensibles del alcance.",
+            "Usar datos sinteticos o redactados.",
+            "Solicitar una revision de arquitectura segura."
+          ]
+        },
+        "output": "",
+        "taskId": "CONTINUITY-20260527T030158Z",
+        "workerAdapter": "codex_subprocess_worker",
+        "workerProcessStderr": "",
+        "workerProcessStdout": "{\"execution\": {\"child_pid\": null, \"command\": [\"/home/neurodriver/ferrari_env/bin/python\", \"-B\", \"-c\", \"from pathlib import Path\\np=Path('src/continuity_probe.txt')\\np.parent.mkdir(parents=True, exist_ok=True)\\np.write_text('traceId=continuity-20260527T030158Z\\\\nstatus=worker_executed\\\\npayload=' + '{\\\"createdAt\\\": \\\"2026-05-27T03:02:01Z\\\", \\\"source\\\": \\\"HABLA CircuitProbe\\\", \\\"status\\\": \\\"worker_executed\\\", \\\"traceId\\\": \\\"continuity-20260527T030158Z\\\"}' + '\\\\n', encoding='utf-8')\\nprint('wrote ' + str(p))\\n\"], \"cyberlace_document_decision\": {\"action\": \"QUARANTINE\", \"agentId\": \"cyberlace-document-guard\", \"allowed\": false, \"blocked\": true, \"blockedPaths\": [\"external:python\"], \"blocksRuntime\": true, \"deniedAction\": \"Procesar, reconstruir, exponer o transportar informacion sensible detectada por CyberLACE.\", \"evidence\": [{\"domain\": \"filesystem\", \"line\": 1, \"path\": \"external:python\", \"pattern\": \"external_path\", \"sample\": \"[REDACTED]\", \"source\": \"requirement\", \"type\": \"external_document_reference_denied\"}, {\"domain\": \"filesystem\", \"line\": 1, \"path\": \"external:python\", \"pattern\": \"external_path\", \"sample\": \"[REDACTED]\", \"source\": \"directive\", \"type\": \"external_document_reference_denied...",
+        "workerReturnCode": 0
+      },
+      "message": "Worker did not complete the canary task.",
+      "status": "failed",
+      "updatedAt": "2026-05-27T03:02:02Z"
+    }
+  },
+  "durationSeconds": 4.845509,
+  "eventsPath": "runtime/continuity_probe/continuity-20260527T030158Z/events.jsonl",
+  "failedChecks": [
+    "worker_executed",
+    "validator_passed"
+  ],
+  "finishedAt": "2026-05-27T03:02:03Z",
+  "mode": "active_canary",
+  "project": "continuity-probe-canary",
+  "reportPath": "runtime/continuity_probe/continuity-20260527T030158Z/report.json",
+  "result": "continuity_failed",
+  "schemaVersion": 1,
+  "startedAt": "2026-05-27T03:01:58Z",
+  "status": "failed",
+  "summary": {
+    "failed": 2,
+    "ok": 14,
+    "skipped": 0,
+    "total": 16,
+    "warning": 0
+  },
+  "traceId": "continuity-20260527T030158Z"
+}

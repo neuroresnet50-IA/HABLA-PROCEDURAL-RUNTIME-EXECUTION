@@ -1,0 +1,401 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-20260527T173159Z"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 0.064431,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-27T17:31:59Z",
+  "mode": "trace_only",
+  "project": "continuity-probe-canary",
+  "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+  "reportPath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 23.107,
+      "evidence": {
+        "durationMs": 23.107,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 1.219,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 1.219,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 0.374,
+      "evidence": {
+        "durationMs": 0.374,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "outputHash": "51b5b430e6a7833194914909df53b9c807a8b3435e5d2d0f9a08da0d4b6e9cd4",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "harness_summary": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Harness checks disabled.",
+      "name": "harness_summary",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "observer_status": {
+      "durationMs": 5.403,
+      "evidence": {
+        "durationMs": 5.403,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "plan_loaded": {
+      "durationMs": 5.981,
+      "evidence": {
+        "durationMs": 5.981,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "policy_loaded": {
+      "durationMs": 3.622,
+      "evidence": {
+        "durationMs": 3.622,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "prompt_classified": {
+      "durationMs": 0.483,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.483,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "intent": "validate_or_test",
+        "promptChars": 65,
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "prompt_received": {
+      "durationMs": 0.521,
+      "evidence": {
+        "durationMs": 0.521,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/input_prompt.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "promptChars": 65,
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "response_synthesized": {
+      "durationMs": 0.804,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 0.804,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "mode": "trace_only",
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "612a4f92dfc5075de6cb612855e49544680524626136333d0fbbd2327c48cabb",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-27T17:31:59Z",
+        "taskId": "PROMPT-FLIGHT-20260527T173159Z",
+        "traceId": "prompt-flight-20260527T173159Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is trace_only.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    "task_planned": {
+      "durationMs": 0.376,
+      "evidence": {
+        "durationMs": 0.376,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "taskHash": "8f2d32a052943894ca7022d96384f4e02dfed1d540be3520669c486d44fadd2d",
+        "taskId": "PROMPT-FLIGHT-20260527T173159Z"
+      },
+      "message": "Diagnostic task model planned without hidden execution.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 0.521,
+      "evidence": {
+        "durationMs": 0.521,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/input_prompt.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "promptChars": 65,
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.374,
+      "evidence": {
+        "durationMs": 0.374,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/habla_basic_envelope.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "outputHash": "51b5b430e6a7833194914909df53b9c807a8b3435e5d2d0f9a08da0d4b6e9cd4",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 1.219,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 1.219,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/cyberlace_preflight.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 3.622,
+      "evidence": {
+        "durationMs": 3.622,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 5.981,
+      "evidence": {
+        "durationMs": 5.981,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.483,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 0.483,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_classification.json",
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "intent": "validate_or_test",
+        "promptChars": 65,
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "startedAt": "2026-05-27T17:31:59Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.376,
+      "evidence": {
+        "durationMs": 0.376,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-20260527T173159Z/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "taskHash": "8f2d32a052943894ca7022d96384f4e02dfed1d540be3520669c486d44fadd2d",
+        "taskId": "PROMPT-FLIGHT-20260527T173159Z"
+      },
+      "message": "Diagnostic task model planned without hidden execution.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 23.107,
+      "evidence": {
+        "durationMs": 23.107,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 5.403,
+      "evidence": {
+        "durationMs": 5.403,
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-27T17:31:59Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Harness checks disabled.",
+      "name": "harness_summary",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is trace_only.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    },
+    {
+      "durationMs": 0.804,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 0.804,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-20260527T173159Z/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-27T17:31:59Z",
+        "mode": "trace_only",
+        "promptHash": "81ca1bba9b3511e4420d1e26ac39f732201f39c17cc0006a009f813e8d0ad26d",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "612a4f92dfc5075de6cb612855e49544680524626136333d0fbbd2327c48cabb",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-27T17:31:59Z",
+        "taskId": "PROMPT-FLIGHT-20260527T173159Z",
+        "traceId": "prompt-flight-20260527T173159Z",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-27T17:31:59Z"
+    }
+  ],
+  "startedAt": "2026-05-27T17:31:59Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 10,
+    "skipped": 2,
+    "total": 12
+  },
+  "traceId": "prompt-flight-20260527T173159Z"
+}

@@ -1,0 +1,108 @@
+{
+  "checkpoint": "cyberlace-integration",
+  "createdAt": "2026-05-24T19:04:26Z",
+  "mode": "surgical-integration",
+  "workspaceRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+  "integrationMode": {
+    "default": "off unless CYBERLACE_ENABLED=true",
+    "supported": [
+      "off",
+      "monitor",
+      "enforce"
+    ],
+    "transport": [
+      "import",
+      "rest"
+    ]
+  },
+  "filesCreated": [
+    "frontend/src/components/CyberLACEPanel.jsx",
+    "backend/test_cyberlace_integration.py",
+    "backend/test_cyberlace_routes.py",
+    "backend/test_cyberlace_agent_runtime_hooks.py",
+    "scripts/run_cyberlace_api.sh",
+    "scripts/test_cyberlace_integration.sh",
+    "docs/CYBERLACE_INTEGRATION.md"
+  ],
+  "filesModified": [
+    "backend/agent_runtime.py",
+    "backend/cyberlace/supervisor/lace_security_supervisor.py",
+    "frontend/src/App.jsx",
+    "frontend/src/App.css",
+    "frontend/dist/index.html"
+  ],
+  "routesAddedOrConfirmed": [
+    "GET /api/cyberlace/health",
+    "POST /api/cyberlace/guard/prompt",
+    "POST /api/cyberlace/guard/memory",
+    "POST /api/cyberlace/guard/tool",
+    "POST /api/cyberlace/guard/output",
+    "POST /api/cyberlace/guard/external-action",
+    "GET /api/cyberlace/evidence/recent"
+  ],
+  "hooksInserted": [
+    "AgentRuntime control-plane directive prompt guard before worker command build",
+    "AgentRuntime legacy PTY prompt guard before process launch",
+    "AgentRuntime control-plane codex_worker tool guard before execute_task_with_details",
+    "AgentRuntime control-plane output guard after validation",
+    "AgentRuntime legacy final output guard before final session emission"
+  ],
+  "evidencePaths": [
+    "runtime/cyberlace/evidence/cyberlace_events.jsonl",
+    "runtime/cyberlace/evidence/cyberlace_decisions.jsonl",
+    "runtime/cyberlace/evidence/cyberlace_engine_events.jsonl",
+    "runtime/cyberlace/evidence/cyberlace_engine_evidence.jsonl",
+    "runtime/cyberlace/logs/cyberlace_failures.jsonl"
+  ],
+  "validation": [
+    {
+      "command": "python3 -B -m py_compile backend/cyberlace_integration.py backend/cyberlace_routes.py backend/cyberlace_policy_bridge.py backend/agent_runtime.py backend/cyberlace/supervisor/lace_security_supervisor.py backend/test_cyberlace_integration.py backend/test_cyberlace_routes.py backend/test_cyberlace_agent_runtime_hooks.py",
+      "ok": true
+    },
+    {
+      "command": "python3 -m unittest backend.test_cyberlace_integration backend.test_cyberlace_routes backend.test_cyberlace_agent_runtime_hooks",
+      "ok": true,
+      "summary": "Ran 12 tests OK"
+    },
+    {
+      "command": "PYTHONPATH=backend:. python3 -m unittest backend.test_security_policy backend.test_validator_security backend.test_runtime_boundary backend.test_agent_runtime_habla",
+      "ok": true,
+      "summary": "Ran 44 tests OK"
+    },
+    {
+      "command": "npm --prefix frontend run build",
+      "ok": true,
+      "summary": "vite build OK"
+    },
+    {
+      "command": "./scripts/test_cyberlace_integration.sh",
+      "ok": true,
+      "summary": "CyberLACE tests and critical backend tests OK"
+    },
+    {
+      "command": "curl -sS --max-time 5 http://127.0.0.1:5001/api/cyberlace/health",
+      "ok": true,
+      "summary": "ok=true, enabled=false, mode=off, engineAvailable=true"
+    },
+    {
+      "command": "python3 orchestrator/agent_tools.py --base-url http://127.0.0.1:5001 --timeout-seconds 5 health",
+      "ok": true,
+      "summary": "statusCode=200, ok=true"
+    }
+  ],
+  "result": {
+    "ok": true,
+    "cyberlaceDefaultOff": true,
+    "monitorNonBlocking": true,
+    "enforceBlocksCriticalPrompt": true,
+    "enforceRedactsSensitiveOutput": true,
+    "restProxyRoutesTested": true,
+    "frontendBuildPassed": true
+  },
+  "residualRisks": [
+    "The already-running Flask process on 5001 may need restart to load new AgentRuntime hooks and frontend dist if it started before this integration.",
+    "Live REST microservice mode requires uvicorn available in the active Python environment.",
+    "Existing unittest command from repo root needs PYTHONPATH=backend:. for legacy top-level imports in backend/test_agent_runtime_habla.py."
+  ],
+  "checkpointKey": "cyberlace_success_20260524T190426Z"
+}

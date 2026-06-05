@@ -1,0 +1,807 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 255.202644,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-30T13:15:57Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-math-pf-030",
+  "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+  "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 34.857,
+      "evidence": {
+        "durationMs": 34.857,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 32.505,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 32.505,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 5.804,
+      "evidence": {
+        "durationMs": 5.804,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/habla_basic_envelope.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "outputHash": "12a787a46f544ccc89d17fd82acd230bf0b8de38d0664a4952b4c1c843449a83",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "harness_summary": {
+      "durationMs": 2201.23,
+      "evidence": {
+        "durationMs": 2201.23,
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-30T13:11:42Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    "observer_status": {
+      "durationMs": 10.078,
+      "evidence": {
+        "durationMs": 10.078,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "observerEnabled": true,
+        "observerState": "idle",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "plan_loaded": {
+      "durationMs": 22.296,
+      "evidence": {
+        "durationMs": 22.296,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "policy_loaded": {
+      "durationMs": 5.945,
+      "evidence": {
+        "durationMs": 5.945,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "prompt_classified": {
+      "durationMs": 10.843,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 10.843,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_classification.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "intent": "inspect_or_debug",
+        "promptChars": 215,
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "prompt_received": {
+      "durationMs": 8.463,
+      "evidence": {
+        "durationMs": 8.463,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/input_prompt.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "promptChars": 215,
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "response_synthesized": {
+      "durationMs": 14.9,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 14.9,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "mode": "ui_session_rest",
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "590e631821765fe0edd48285814464918de14f09c303928f663a0eb77e8b4bf0",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-30T13:15:57Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260529T052013Z-mathematics-030",
+        "traceId": "prompt-flight-batch-20260529T052013Z-mathematics-030",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    "task_planned": {
+      "durationMs": 3.406,
+      "evidence": {
+        "durationMs": 3.406,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "taskHash": "e17135ff005cabeb7cb09224014bcb671f330a3b257a0856bb28b851c7ea0430",
+        "taskId": "PROMPT-FLIGHT-batch-20260529T052013Z-mathematics-030"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 251537.863,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 251537.863,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 173,
+        "returncode": 0,
+        "sessionId": "agent-62778c6c79",
+        "startedAt": "2026-05-30T13:11:45Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/logs/agent-62778c6c79-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 386.22,
+      "evidence": {
+        "durationMs": 386.22,
+        "elapsedMs": 378.299,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_response.json",
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-math-pf-030",
+        "sessionId": "agent-62778c6c79",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-30T13:11:45Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 7.801,
+      "evidence": {
+        "durationMs": 7.801,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_request.json",
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "method": "POST",
+        "payloadHash": "d3448ab1d0e28bd5ae70b4dd9d13d0742cfde84ead475c6b83c1feb1a4b218a7",
+        "projectSlug": "continuity-math-pf-030",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-30T13:11:45Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 117.806,
+      "evidence": {
+        "durationMs": 117.806,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 486,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/checkpoints/runtime-20260530131145-001-checkpoint.json",
+          "sha256": "97a63ad3eae0a90fd010071c96876634ecf938467957da99c09c7b309c584c0f",
+          "size": 18570,
+          "tail": "_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/docs/mathematics_case_030.md\",\n            \"size\": 500\n          }\n        ],\n        \"found\": [\n          \"docs/mathematics_case_030.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/mathematics_case_030.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/docs/mathematics_case_030.md\",\n            \"size\": 500\n          }\n        ],\n        \"reported_created\": [\n          \"docs/mathematics_case_030.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260530131145-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-30T13:11:47Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/directives/RUNTIME-20260530131145-001-20260530T131147Z-de3773140d27.json",
+          "sha256": "4815b563d8661619dfa458bca44c265876d9778ca24aeac3ca6e023527a27d40",
+          "size": 23072,
+          "tail": "ues archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260530131145-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Detectar un error comun en una demostracion algebraica\"\n  },\n  \"task_id\": \"RUNTIME-20260530131145-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"de3773140d2743dd1a6cd429c2e2368f874253103d3e3b6270d0c716998eea4f\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-math-pf-030",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/project_state.json",
+          "sha256": "da45a6099fedf1289d493b303db96a2244b92d055f27dfd47ae5d28e2670c716",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-62778c6c79\",\n    \"complexity-estimate\",\n    \"runtime-20260530131145-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260530131145-001\"\n  ],\n  \"created_at\": \"2026-05-30T13:11:45.261136+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-30T13:11:45.261136+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-62778c6c79\",\n  \"project_id\": \"continuity-math-pf-030\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-30T13:15:50.939306+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-30T13:15:57Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/task_queue.json",
+          "sha256": "eb7d365210cc743ae73cacea5ff160c1d25956965852a4cfe2a971cdee9327d3",
+          "size": 823,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260530131145-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/mathematics_case_030.md\"\n    ],\n    \"goal\": \"Detectar un error comun en una demostracion algebraica y corregirlo.; Escribe la solucion o plan en docs/mathematics_case_030.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260530131145-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Detectar un error comun en una demostracion algebraica\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_030.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 279,
+          "mtime": "2026-05-30T13:15:56Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/logs/agent-62778c6c79-terminal.log",
+          "sha256": "34b8cd77586676ad2cea3e45a15bc78b702b874bbdf38cfe831f47a4bf650a82",
+          "size": 9468,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 3,\n            \"totalFindings\": 4\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260530T131555Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 497.623,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260530131145-001",
+        "durationMs": 497.623,
+        "elapsedMs": 491.595,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_runtime_truth.json",
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-30T13:15:57Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 8.463,
+      "evidence": {
+        "durationMs": 8.463,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/input_prompt.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "promptChars": 215,
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 5.804,
+      "evidence": {
+        "durationMs": 5.804,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/habla_basic_envelope.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "outputHash": "12a787a46f544ccc89d17fd82acd230bf0b8de38d0664a4952b4c1c843449a83",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 32.505,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 32.505,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/cyberlace_preflight.json",
+        "evidencePatterns": [],
+        "evidenceTypes": [],
+        "findingCount": 0,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 5.945,
+      "evidence": {
+        "durationMs": 5.945,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 22.296,
+      "evidence": {
+        "durationMs": 22.296,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 10.843,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 10.843,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_classification.json",
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "intent": "inspect_or_debug",
+        "promptChars": 215,
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "startedAt": "2026-05-30T13:11:42Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 3.406,
+      "evidence": {
+        "durationMs": 3.406,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "taskHash": "e17135ff005cabeb7cb09224014bcb671f330a3b257a0856bb28b851c7ea0430",
+        "taskId": "PROMPT-FLIGHT-batch-20260529T052013Z-mathematics-030"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 34.857,
+      "evidence": {
+        "durationMs": 34.857,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 10.078,
+      "evidence": {
+        "durationMs": 10.078,
+        "finishedAt": "2026-05-30T13:11:42Z",
+        "observerEnabled": true,
+        "observerState": "idle",
+        "startedAt": "2026-05-30T13:11:42Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:42Z"
+    },
+    {
+      "durationMs": 2201.23,
+      "evidence": {
+        "durationMs": 2201.23,
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-30T13:11:42Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    {
+      "durationMs": 7.801,
+      "evidence": {
+        "durationMs": 7.801,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_request.json",
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "method": "POST",
+        "payloadHash": "d3448ab1d0e28bd5ae70b4dd9d13d0742cfde84ead475c6b83c1feb1a4b218a7",
+        "projectSlug": "continuity-math-pf-030",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-30T13:11:45Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    {
+      "durationMs": 386.22,
+      "evidence": {
+        "durationMs": 386.22,
+        "elapsedMs": 378.299,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_response.json",
+        "finishedAt": "2026-05-30T13:11:45Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-math-pf-030",
+        "sessionId": "agent-62778c6c79",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-30T13:11:45Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:11:45Z"
+    },
+    {
+      "durationMs": 251537.863,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 251537.863,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 173,
+        "returncode": 0,
+        "sessionId": "agent-62778c6c79",
+        "startedAt": "2026-05-30T13:11:45Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/logs/agent-62778c6c79-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    {
+      "durationMs": 497.623,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260530131145-001",
+        "durationMs": 497.623,
+        "elapsedMs": 491.595,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_runtime_truth.json",
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-30T13:15:57Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    {
+      "durationMs": 117.806,
+      "evidence": {
+        "durationMs": 117.806,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 486,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/checkpoints/runtime-20260530131145-001-checkpoint.json",
+          "sha256": "97a63ad3eae0a90fd010071c96876634ecf938467957da99c09c7b309c584c0f",
+          "size": 18570,
+          "tail": "_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/docs/mathematics_case_030.md\",\n            \"size\": 500\n          }\n        ],\n        \"found\": [\n          \"docs/mathematics_case_030.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/mathematics_case_030.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/docs/mathematics_case_030.md\",\n            \"size\": 500\n          }\n        ],\n        \"reported_created\": [\n          \"docs/mathematics_case_030.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260530131145-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-30T13:11:47Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/directives/RUNTIME-20260530131145-001-20260530T131147Z-de3773140d27.json",
+          "sha256": "4815b563d8661619dfa458bca44c265876d9778ca24aeac3ca6e023527a27d40",
+          "size": 23072,
+          "tail": "ues archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260530131145-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Detectar un error comun en una demostracion algebraica\"\n  },\n  \"task_id\": \"RUNTIME-20260530131145-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"de3773140d2743dd1a6cd429c2e2368f874253103d3e3b6270d0c716998eea4f\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-math-pf-030",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/project_state.json",
+          "sha256": "da45a6099fedf1289d493b303db96a2244b92d055f27dfd47ae5d28e2670c716",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-62778c6c79\",\n    \"complexity-estimate\",\n    \"runtime-20260530131145-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260530131145-001\"\n  ],\n  \"created_at\": \"2026-05-30T13:11:45.261136+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-30T13:11:45.261136+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-62778c6c79\",\n  \"project_id\": \"continuity-math-pf-030\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-30T13:15:50.939306+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-30T13:15:57Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-30T13:15:50Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/task_queue.json",
+          "sha256": "eb7d365210cc743ae73cacea5ff160c1d25956965852a4cfe2a971cdee9327d3",
+          "size": 823,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260530131145-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/mathematics_case_030.md\"\n    ],\n    \"goal\": \"Detectar un error comun en una demostracion algebraica y corregirlo.; Escribe la solucion o plan en docs/mathematics_case_030.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260530131145-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Detectar un error comun en una demostracion algebraica\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mathematics_case_030.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 279,
+          "mtime": "2026-05-30T13:15:56Z",
+          "path": "workspace/projects/continuity-math-pf-030/runtime/logs/agent-62778c6c79-terminal.log",
+          "sha256": "34b8cd77586676ad2cea3e45a15bc78b702b874bbdf38cfe831f47a4bf650a82",
+          "size": 9468,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 3,\n            \"totalFindings\": 4\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-math-pf-030/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260530T131555Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    },
+    {
+      "durationMs": 14.9,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 14.9,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260529T052013Z-mathematics-030/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-30T13:15:57Z",
+        "mode": "ui_session_rest",
+        "promptHash": "e692dbff69f6970acb7f53be42b9a19964b02fe7436e5ccc0bb5d1784fa8cb51",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "590e631821765fe0edd48285814464918de14f09c303928f663a0eb77e8b4bf0",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-30T13:15:57Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260529T052013Z-mathematics-030",
+        "traceId": "prompt-flight-batch-20260529T052013Z-mathematics-030",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-30T13:15:57Z"
+    }
+  ],
+  "startedAt": "2026-05-30T13:11:42Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 16,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "prompt-flight-batch-20260529T052013Z-mathematics-030"
+}

@@ -1,0 +1,174 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "audit_version",
+        "bootstrap_tasks",
+        "complexity_audit",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "early_exit_allowed",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "lace_max_cycles",
+        "lace_min_cycles",
+        "lace_target_cycles",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "quality_threshold",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 148,
+      "mtime": "2026-06-04T01:58:53Z",
+      "path": "workspace/projects/continuity-code-pf-002/runtime/complexity_estimate.json",
+      "sha256": "5ae375024b6e474cd60c59c4b92e8d29b60df6504c88bb88644b007af85726e2",
+      "size": 3570,
+      "tail": "      \"required_tools\": [],\n        \"risk_flags\": [],\n        \"observed\": true,\n        \"file_count\": 1\n      },\n      \"operational_risk\": {\n        \"score\": 0,\n        \"reasons\": [\n          \"riesgo operativo bajo\"\n        ],\n        \"required_tools\": [],\n        \"risk_flags\": []\n      },\n      \"blast_radius\": {\n        \"score\": 24,\n        \"reasons\": [\n          \"expected_files=0\"\n        ],\n        \"required_tools\": [],\n        \"risk_flags\": []\n      },\n      \"evidence\": {\n        \"score\": 8,\n        \"reasons\": [\n          \"validation_commands=0\"\n        ],\n        \"required_tools\": [],\n        \"risk_flags\": []\n      },\n      \"history\": {\n        \"score\": 0,\n        \"reasons\": [\n          \"sin fallos historicos relevantes\"\n        ],\n        \"required_tools\": [],\n        \"risk_flags\": []\n      },\n      \"uncertainty\": {\n        \"score\": 0,\n        \"reasons\": [\n          \"incertidumbre baja\"\n        ],\n        \"required_tools\": [],\n        \"risk_flags\": []\n      }\n    }\n  },\n  \"audit_version\": \"complexity-audit-kernel-v1\",\n  \"lace_min_cycles\": 0,\n  \"lace_target_cycles\": 1,\n  \"lace_max_cycles\": 2,\n  \"early_exit_allowed\": true,\n  \"quality_threshold\": 85,\n  \"estimated_minutes\": 15\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-code-pf-002/runtime/failures.jsonl"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 22,
+      "mtime": "2026-06-04T02:00:15Z",
+      "path": "workspace/projects/continuity-code-pf-002/runtime/project_state.json",
+      "sha256": "793df77cb22875cbcb4ba218e732900b3e9c3e995b9bcdd016c5a1623b443c38",
+      "size": 626,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-03cb159de5\",\n    \"complexity-estimate\",\n    \"runtime-20260604015853-001-checkpoint\",\n    \"lace-closure-gate-completed\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260604015853-001\"\n  ],\n  \"created_at\": \"2026-06-04T01:58:53.138429+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-04T01:58:53.138429+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-03cb159de5\",\n  \"project_id\": \"continuity-code-pf-002\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-06-04T02:00:15.309061+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-04T02:00:05Z",
+      "path": "workspace/projects/continuity-code-pf-002/runtime/task_history.jsonl",
+      "sha256": "5709e4084f5cd69017448f45ff67ca6593f36ff5e6eff165fba8ae02e94701d6",
+      "size": 493,
+      "tail": "{\"recorded_at\": \"2026-06-04T02:00:05Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [\"docs/advanced_programming_case_002.md\"], \"files_modified\": [], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"RUNTIME-20260604015853-001\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_002.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 20,
+      "mtime": "2026-06-04T02:00:05Z",
+      "path": "workspace/projects/continuity-code-pf-002/runtime/task_queue.json",
+      "sha256": "24d8027030e10daae9e0c6e16e7fe2897bea2693fc84074ac66680403a4a6b96",
+      "size": 876,
+      "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260604015853-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/advanced_programming_case_002.md\"\n    ],\n    \"goal\": \"Refactorizar conceptualmente un modulo grande en tres capas con responsabilidades claras.; Escribe la solucion o plan en docs/advanced_programming_case_002.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260604015853-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Refactorizar conceptualmente un modulo grande en tres capas\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_002.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 115,
+    "mtime": "2026-06-04T02:00:15Z",
+    "path": "workspace/projects/continuity-code-pf-002/runtime/checkpoints/lace-closure-gate-completed.json",
+    "sha256": "b1975312c070c15953d43f09ae945a05682134fb4d5d60538814f1ceb439b388",
+    "size": 3962,
+    "tail": ",\n          \"path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/sandbox.json\",\n          \"ready\": null,\n          \"running\": null,\n          \"statusCode\": null,\n          \"url\": null\n        },\n        \"scanner\": {\n          \"blockers\": null,\n          \"error\": \"missing\",\n          \"path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/artifacts/final_code_scanner_report.json\",\n          \"scrolls_to_last_line\": null,\n          \"validation_passed\": null,\n          \"visual_playback\": null\n        },\n        \"task_status_counts\": {\n          \"completed\": 1\n        }\n      },\n      \"findings_ok\": false,\n      \"integrity_ok\": false,\n      \"issues\": [\n        \"scanner_ok\",\n        \"sandbox_ok\",\n        \"integrity_ok\",\n        \"findings_ok\"\n      ],\n      \"passed\": false,\n      \"queue_idle\": true,\n      \"sandbox_ok\": false,\n      \"scanner_ok\": false\n    },\n    \"queue_completed_cycle_numbers\": [],\n    \"reason\": \"lace_cycles_completed\",\n    \"required_cycles\": 0,\n    \"target_cycles\": 1\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 353,
+    "mtime": "2026-06-04T01:58:54Z",
+    "path": "workspace/projects/continuity-code-pf-002/runtime/directives/RUNTIME-20260604015853-001-20260604T015854Z-a1379149091a.json",
+    "sha256": "05da62d6cdf3019614d2934dcd1baf1bff2d1f4d8ddb9ca3530ef83ee90e7647",
+    "size": 26576,
+    "tail": "rchivos no relacionados.\",\n    \"id\": \"RUNTIME-20260604015853-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Refactorizar conceptualmente un modulo grande en tres capas\"\n  },\n  \"task_id\": \"RUNTIME-20260604015853-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"a1379149091a6506720c4d40f470799d6c8dc6d977c47d07f4c69ba6e37c7c16\"\n  }\n}\n"
+  },
+  "latestFailure": null,
+  "latestFailureIncludedInClassification": false,
+  "latestHistory": {
+    "recorded_at": "2026-06-04T02:00:05Z",
+    "result": {
+      "blockers": [],
+      "completed": true,
+      "files_created": [
+        "docs/advanced_programming_case_002.md"
+      ],
+      "files_modified": [],
+      "next_recommendation": "Task evidence and validation commands passed.",
+      "task_id": "RUNTIME-20260604015853-001",
+      "validation_passed": true,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_002.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-code-pf-002",
+  "runtimeDir": "workspace/projects/continuity-code-pf-002/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 390,
+    "mtime": "2026-06-04T02:00:15Z",
+    "path": "workspace/projects/continuity-code-pf-002/runtime/logs/agent-03cb159de5-terminal.log",
+    "sha256": "669760dcdc39e2eeb95a656c86741ed47f92fbfa838deca8d4fad1708ec5e9d2",
+    "size": 13535,
+    "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 2,\n            \"totalFindings\": 3\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-002/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260604T020013Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+  }
+}

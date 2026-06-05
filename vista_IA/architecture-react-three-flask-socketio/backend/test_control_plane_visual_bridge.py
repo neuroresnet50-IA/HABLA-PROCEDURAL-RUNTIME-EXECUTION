@@ -17,6 +17,7 @@ from orchestrator.directive_generator import generate_directive
 from orchestrator.live_reviewer import build_reviewer_status
 from orchestrator.planner import create_task
 from orchestrator.recovery import decide_recovery
+from orchestrator.runtime_task_cleaner import sweep_with_broom
 from orchestrator.state_store import StateStore
 from orchestrator.task_queue import TaskQueue
 from orchestrator.validator import validate_task_execution
@@ -278,7 +279,9 @@ def seed_canonical_lace_cycle_evidence(store: StateStore, project_dir: Path, cyc
                 f"# Ciclo {cycle_number:02d}\n\n"
                 "- Estado: validated\n"
                 "- Valido para cierre LACE: si\n"
-                "- Validacion registrada: si\n"
+                "- Validacion registrada: si\n\n"
+                + build_valid_lace_cycle(cycle_number)
+                + "\n"
             ),
             encoding="utf-8",
         )
@@ -681,18 +684,12 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
                 sys.modules["threading"].Thread = original_thread
 
             session = runtime.sessions[payload["sessionId"]]
-            self.assertEqual(session.complexity_estimate["difficulty"], "extradificil")
-            self.assertEqual(session.lace_required_cycles, session.complexity_estimate["recommended_lace_cycles"])
-            self.assertEqual(session.lace_required_cycles, 8)
-            self.assertTrue(session.habla_available)
-            self.assertEqual(session.active_task["mode"], "long-run")
-            self.assertEqual(session.active_task["timeout_seconds"], 3600)
-            self.assertIn("Bridge visual obligatorio", session.prompt)
-            self.assertIn("LACE_LOG.md", session.prompt)
-            self.assertIn("HABLA BASIC", session.prompt)
-            self.assertIn("Complejidad operativa", session.prompt)
-            self.assertIn("No ejecutes todos los ciclos LACE dentro de una sola tarea", session.prompt)
-            self.assertTrue((session.project_dir / "LACE_LOG.md").exists())
+            self.assertEqual(session.status, "preparing")
+            self.assertEqual(session.prompt, "")
+            self.assertEqual(session.command, [])
+            self.assertEqual(session.complexity_estimate, {})
+            self.assertEqual(session.active_task, {})
+            self.assertTrue(session.habla_available is False or session.habla_available is None)
 
     def test_task_defaults_use_mode_specific_timeouts(self) -> None:
         base = {
@@ -751,12 +748,9 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             state = store.load_project_state()
             lace_tasks = [task for task in queue if task["id"].startswith("LACE-") and task["status"] == "pending"]
             self.assertEqual(gate["status"], "enqueued")
-            self.assertEqual(gate["missing_cycles"], [7, 8, 9, 10])
+            self.assertEqual(gate["missing_cycles"], [7])
             self.assertEqual([task["expected_files"][1] for task in lace_tasks], [
                 "docs/lace_cycles/ciclo-07.md",
-                "docs/lace_cycles/ciclo-08.md",
-                "docs/lace_cycles/ciclo-09.md",
-                "docs/lace_cycles/ciclo-10.md",
             ])
             self.assertTrue(all(task["timeout_seconds"] == 3600 for task in lace_tasks))
             self.assertNotEqual(state["status"], "completed")
@@ -770,6 +764,10 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=2, completed_cycles=2)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 3))
+            (project_dir / "runtime" / "complexity_estimate.json").write_text(
+                json.dumps({"difficulty": "medio", "recommended_lace_cycles": 4}),
+                encoding="utf-8",
+            )
             seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "blocked"
@@ -785,7 +783,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             )
 
             self.assertEqual(gate["status"], "clear")
-            self.assertEqual(gate["configured_required_cycles"], 10)
+            self.assertEqual(gate["configured_required_cycles"], 4)
             self.assertEqual(gate["required_cycles"], 2)
             self.assertEqual(gate["completed_cycles"], 2)
             self.assertEqual(gate["missing_cycles"], [])
@@ -796,6 +794,61 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             self.assertEqual(state["status"], "completed")
             self.assertEqual(state["blocked_tasks"], [])
 
+    def test_lace_quality_gate_ignores_non_blocking_lint_findings(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "lace-lint-non-blocking"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, session = seed_completed_runtime(runtime, project_dir, task_count=2, completed_cycles=2)
+            seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 3))
+            (project_dir / "runtime" / "complexity_estimate.json").write_text(
+                json.dumps({"difficulty": "medio", "recommended_lace_cycles": 4}),
+                encoding="utf-8",
+            )
+            seed_clean_lace_quality_gates(project_dir)
+            findings_path = project_dir / "runtime" / "artifacts" / "observer_findings.json"
+            findings_path.write_text(
+                json.dumps(
+                    {
+                        "summary": {"totalFindings": 2, "activeFindings": 2, "resolvedFindings": 0},
+                        "findings": [
+                            {
+                                "id": "repair-doc-flow",
+                                "status": "active",
+                                "severity": "error",
+                                "source": "lint",
+                                "relativePath": "docs/closure_repairs/closure-repair-test.md",
+                            },
+                            {
+                                "id": "frontend-warning",
+                                "status": "active",
+                                "severity": "warning",
+                                "source": "lint",
+                                "relativePath": "frontend/app.js",
+                            },
+                        ],
+                    },
+                    ensure_ascii=True,
+                ),
+                encoding="utf-8",
+            )
+
+            gate = runtime._apply_lace_closure_gate(
+                runtime_dir=project_dir / "runtime",
+                workspace=project_dir,
+                runtime_mode="long-run",
+                session_id=session.session_id,
+                allow_enqueue=True,
+            )
+
+            self.assertEqual(gate["status"], "clear")
+            self.assertTrue(gate["quality_gates"]["passed"])
+            self.assertEqual(gate["quality_gates"]["details"]["findings"]["blockingFindings"], 0)
+            self.assertEqual(gate["required_cycles"], 2)
+
+
     def test_lace_closure_gate_requires_minimum_two_cycles_even_when_quality_gates_clear(self) -> None:
         with TemporaryDirectory() as tmpdir:
             app_root = Path(tmpdir) / "app"
@@ -805,6 +858,10 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=1)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 2))
+            (project_dir / "runtime" / "complexity_estimate.json").write_text(
+                json.dumps({"difficulty": "medio", "recommended_lace_cycles": 4}),
+                encoding="utf-8",
+            )
             seed_clean_lace_quality_gates(project_dir)
 
             gate = runtime._apply_lace_closure_gate(
@@ -816,7 +873,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             )
 
             self.assertEqual(gate["status"], "enqueued")
-            self.assertEqual(gate["configured_required_cycles"], 10)
+            self.assertEqual(gate["configured_required_cycles"], 4)
             self.assertEqual(gate["required_cycles"], 2)
             self.assertEqual(gate["completed_cycles"], 1)
             self.assertEqual(gate["missing_cycles"], [2])
@@ -836,7 +893,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             cycle_doc = project_dir / "docs" / "lace_cycles" / "ciclo-07.md"
             cycle_doc.parent.mkdir(parents=True, exist_ok=True)
             cycle_doc.write_text(
-                "# Ciclo 07\n\n- Estado: completed\n- Valido para cierre LACE: si\n",
+                "# Ciclo 07\n\n- Estado: completed\n- Valido para cierre LACE: si\n\n" + build_valid_lace_cycle(7) + "\n",
                 encoding="utf-8",
             )
             queue = TaskQueue(store)
@@ -953,7 +1010,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             self.assertEqual(statuses["LACE-20260513-007-SPLIT-002"], "completed")
             self.assertEqual(queue.next_ready_task()["id"], "LACE-20260513-008")
             state = store.load_project_state()
-            self.assertEqual(state["status"], "running")
+            self.assertEqual(state["status"], "initialized")
             self.assertEqual(state["blocked_tasks"], [])
             self.assertIn("LACE-20260513-007", state["completed_tasks"])
             self.assertTrue((project_dir / "runtime" / "checkpoints" / "lace-cycle-007-checkpoint.json").exists())
@@ -964,6 +1021,159 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
                     for event in store.load_task_history()
                 )
             )
+
+    def test_reconciles_blocked_lace_cycle_from_current_validator_evidence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "lace-direct-evidence"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, _session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=1)
+            cycle_doc = project_dir / "docs" / "lace_cycles" / "ciclo-01.md"
+            cycle_doc.parent.mkdir(parents=True, exist_ok=True)
+            cycle_doc.write_text(
+                "# Ciclo 01\n\n- Estado: validated\n- Valido para cierre LACE: si\n\n"
+                + build_valid_lace_cycle(1)
+                + "\n",
+                encoding="utf-8",
+            )
+            queue = TaskQueue(store)
+            queue.enqueue(
+                {
+                    "id": "LACE-20260513-001",
+                    "title": "Completar ciclo LACE 01",
+                    "goal": "Completar ciclo LACE 01 con evidencia canonica.",
+                    "status": "blocked",
+                    "priority": 99,
+                    "dependencies": ["RUNTIME-20260513-001"],
+                    "expected_files": ["LACE_LOG.md", "docs/lace_cycles/ciclo-01.md"],
+                    "validation_commands": [
+                        'python3 -B -c "from pathlib import Path; doc=Path(\'docs/lace_cycles/ciclo-01.md\'); log=Path(\'LACE_LOG.md\'); assert log.exists(); assert doc.exists(); text=doc.read_text(encoding=\'utf-8\'); assert \'valido para cierre lace: si\' in text.lower(); assert \'[CICLO-1 COMPLETADO]\' in text"'
+                    ],
+                    "timeout_seconds": 3600,
+                    "max_retries": 2,
+                    "mode": "long-run",
+                    "checkpoint_key": "lace-cycle-001-checkpoint",
+                }
+            )
+            state = store.load_project_state()
+            state["status"] = "blocked"
+            state["blocked_tasks"] = ["LACE-20260513-001"]
+            store.save_project_state(state)
+
+            reconciled = runtime._reconcile_recovered_split_tasks(store, TaskQueue(store), project_dir)
+
+            self.assertTrue(reconciled)
+            queue = TaskQueue(store)
+            statuses = {task["id"]: task["status"] for task in queue.list()}
+            self.assertEqual(statuses["LACE-20260513-001"], "completed")
+            self.assertTrue((project_dir / "runtime" / "checkpoints" / "lace-cycle-001-checkpoint.json").exists())
+            state = store.load_project_state()
+            self.assertNotIn("LACE-20260513-001", state["blocked_tasks"])
+            self.assertIn("LACE-20260513-001", state["completed_tasks"])
+            self.assertTrue(
+                any(
+                    event.get("result", {}).get("task_id") == "LACE-20260513-001"
+                    and event.get("result", {}).get("validation_passed") is True
+                    for event in store.load_task_history()
+                )
+            )
+
+    def test_reconciles_blocked_closure_repair_artifact_from_current_validator_evidence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "closure-repair-direct-evidence"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, _session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=0)
+            report = project_dir / "docs" / "closure_repairs" / "closure-repair-test.md"
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text("# Reparacion controlada\n\nEvidencia persistida sin forzar cierre.\n", encoding="utf-8")
+            queue = TaskQueue(store)
+            queue.enqueue(
+                {
+                    "id": "CLOSURE-REPAIR-TEST",
+                    "title": "Reparar cierre bloqueado desde certificado runtime",
+                    "goal": "Persistir diagnostico controlado sin forzar completed.",
+                    "status": "blocked",
+                    "priority": 10000,
+                    "dependencies": [],
+                    "expected_files": ["docs/closure_repairs/closure-repair-test.md"],
+                    "validation_commands": [
+                        'python3 -B -c "from pathlib import Path; assert Path(\'docs/closure_repairs/closure-repair-test.md\').is_file()"'
+                    ],
+                    "timeout_seconds": 1200,
+                    "max_retries": 3,
+                    "mode": "long-run",
+                    "checkpoint_key": "closure-repair-test-checkpoint",
+                    "kind": "closure_repair",
+                }
+            )
+            state = store.load_project_state()
+            state["status"] = "blocked"
+            state["blocked_tasks"] = ["CLOSURE-REPAIR-TEST"]
+            store.save_project_state(state)
+
+            reconciled = runtime._reconcile_recovered_split_tasks(store, TaskQueue(store), project_dir)
+
+            self.assertTrue(reconciled)
+            queue = TaskQueue(store)
+            statuses = {task["id"]: task["status"] for task in queue.list()}
+            self.assertEqual(statuses["CLOSURE-REPAIR-TEST"], "completed")
+            self.assertTrue((project_dir / "runtime" / "checkpoints" / "closure-repair-test-checkpoint.json").exists())
+            state = store.load_project_state()
+            self.assertNotIn("CLOSURE-REPAIR-TEST", state["blocked_tasks"])
+            self.assertIn("CLOSURE-REPAIR-TEST", state["completed_tasks"])
+
+    def test_reconciles_controlled_runtime_closure_task_from_current_validator_evidence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "runtime-closure-direct-evidence"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, _session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=0)
+            frontend_dir = project_dir / "frontend"
+            frontend_dir.mkdir(parents=True, exist_ok=True)
+            (frontend_dir / "index.html").write_text("<main>OK</main>\n", encoding="utf-8")
+            (frontend_dir / "styles.css").write_text("body { color: #111; }\n", encoding="utf-8")
+            (frontend_dir / "app.js").write_text("console.log('ok');\n", encoding="utf-8")
+            queue = TaskQueue(store)
+            queue.enqueue(
+                {
+                    "id": "RUNTIME-20260513-999",
+                    "title": "Build runnable static web app",
+                    "goal": "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME: reconciliar solo si el validator confirma evidencia real.",
+                    "status": "blocked",
+                    "priority": 10,
+                    "dependencies": [],
+                    "expected_files": ["frontend/index.html", "frontend/styles.css", "frontend/app.js"],
+                    "validation_commands": [
+                        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['frontend/index.html','frontend/styles.css','frontend/app.js'] if not Path(p).is_file()]; assert not missing, missing\""
+                    ],
+                    "timeout_seconds": 1200,
+                    "max_retries": 2,
+                    "mode": "build",
+                    "checkpoint_key": "runtime-20260513-999-checkpoint",
+                }
+            )
+            state = store.load_project_state()
+            state["status"] = "blocked"
+            state["blocked_tasks"] = ["RUNTIME-20260513-999"]
+            store.save_project_state(state)
+
+            reconciled = runtime._reconcile_recovered_split_tasks(store, TaskQueue(store), project_dir)
+
+            self.assertTrue(reconciled)
+            queue = TaskQueue(store)
+            statuses = {task["id"]: task["status"] for task in queue.list()}
+            self.assertEqual(statuses["RUNTIME-20260513-999"], "completed")
+            self.assertTrue((project_dir / "runtime" / "checkpoints" / "runtime-20260513-999-checkpoint.json").exists())
+            state = store.load_project_state()
+            self.assertNotIn("RUNTIME-20260513-999", state["blocked_tasks"])
+            self.assertIn("RUNTIME-20260513-999", state["completed_tasks"])
 
     def test_completed_queue_accepts_incremental_work_on_same_project(self) -> None:
         with TemporaryDirectory() as tmpdir:
@@ -986,7 +1196,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             queue = TaskQueue(store)
             state = store.load_project_state()
             self.assertGreater(len(queue.list()), initial_task_count)
-            self.assertEqual(state["status"], "running")
+            self.assertEqual(state["status"], "preparing")
             self.assertEqual(state["blocked_tasks"], [])
             self.assertEqual(state["failed_tasks"], [])
             self.assertIsNotNone(queue.next_ready_task())
@@ -1001,6 +1211,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "blocked"
             state["blocked_tasks"] = ["lace_cycles_pending"]
@@ -1041,6 +1252,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, _session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "completed"
             state["current_task_id"] = None
@@ -1069,6 +1281,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, _session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "completed"
             state["current_task_id"] = None
@@ -1148,7 +1361,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             state_after = store.load_project_state()
             self.assertTrue(recovered)
             self.assertEqual(queue_after[0]["status"], "pending")
-            self.assertEqual(state_after["status"], "running")
+            self.assertEqual(state_after["status"], "initialized")
             self.assertIsNone(state_after["current_task_id"])
             self.assertEqual(state_after["failed_tasks"], [])
             self.assertEqual(state_after["blocked_tasks"], [])
@@ -1246,6 +1459,32 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
 
             self.assertEqual(normalized[0]["expected_files"], ["frontend/app.js"])
             self.assertIn("frontend/app.js", normalized[0]["validation_commands"][0])
+
+    def test_control_plane_normalization_preserves_lace_cycle_expected_files(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "lace-normalization"
+            (project_dir / "frontend").mkdir(parents=True, exist_ok=True)
+            (project_dir / "frontend" / "app.js").write_text("console.log('product');\n", encoding="utf-8")
+            task = create_task(
+                task_id="LACE-20260604-007",
+                title="Completar ciclo LACE 07",
+                goal="Actualizar LACE_LOG.md y docs/lace_cycles/ciclo-07.md.",
+                priority=10,
+                expected_files=["LACE_LOG.md", "docs/lace_cycles/ciclo-07.md"],
+                validation_commands=["python3 -c 'print(1)'"],
+                mode="build",
+            )
+
+            normalized = runtime._normalize_control_plane_planned_tasks([task], project_dir)
+
+            self.assertEqual(normalized[0]["expected_files"], ["LACE_LOG.md", "docs/lace_cycles/ciclo-07.md"])
+            self.assertIn("LACE_LOG.md", normalized[0]["validation_commands"][0])
+            self.assertIn("docs/lace_cycles/ciclo-07.md", normalized[0]["validation_commands"][0])
+            self.assertNotIn("frontend/app.js", normalized[0]["validation_commands"][0])
+            self.assertIn("python3 -c 'print(1)'", normalized[0]["validation_commands"])
 
     def test_control_plane_normalization_preserves_extra_validation_commands(self) -> None:
         with TemporaryDirectory() as tmpdir:
@@ -1382,6 +1621,180 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
         )
 
         self.assertEqual(decision["action"], "retry")
+
+
+    def test_recovery_does_not_split_lace_cycle_tasks(self) -> None:
+        task = create_task(
+            task_id="LACE-20260604-006",
+            title="LACE Automejora Ciclo 6",
+            goal="Ejecutar ciclo canonico LACE con documento y checkpoint.",
+            priority=10,
+            expected_files=["LACE_LOG.md", "docs/lace_cycles/ciclo-06.md"],
+            validation_commands=["test -f docs/lace_cycles/ciclo-06.md"],
+            mode="build",
+        )
+        decision = decide_recovery(
+            task,
+            {
+                "task_result": {
+                    "task_id": task["id"],
+                    "completed": False,
+                    "files_created": [],
+                    "files_modified": [],
+                    "validation_ran": [],
+                    "validation_passed": False,
+                    "blockers": ["Worker process timed out after 300 seconds"],
+                    "next_recommendation": "Retry LACE cycle after timeout.",
+                }
+            },
+            retry_count=0,
+            allow_split=True,
+        )
+
+        self.assertNotEqual(decision["action"], "split")
+        self.assertFalse(decision.get("split_tasks"))
+
+
+    def test_broom_defers_invalid_lace_split_after_parent_validated(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            project_dir = Path(tmpdir) / "project"
+            runtime_dir = project_dir / "runtime"
+            checkpoints_dir = runtime_dir / "checkpoints"
+            docs_dir = project_dir / "docs" / "lace_cycles"
+            runtime_dir.mkdir(parents=True)
+            checkpoints_dir.mkdir(parents=True)
+            docs_dir.mkdir(parents=True)
+            parent_id = "LACE-20260604-006"
+            split_id = "LACE-20260604-006-SPLIT-001"
+            timestamp = "2026-06-05T00:00:00+00:00"
+            (docs_dir / "ciclo-06.md").write_text(
+                "[CICLO-6 PROBLEMAS]\n[CICLO-6 MEJORA]\n[CICLO-6 COMPLETADO]\n",
+                encoding="utf-8",
+            )
+            (checkpoints_dir / "lace-cycle-006-checkpoint.json").write_text(
+                json.dumps({"checkpoint_key": "lace-cycle-006-checkpoint"}),
+                encoding="utf-8",
+            )
+            state = {
+                "schema_version": 1,
+                "project_id": project_dir.name,
+                "status": "completed",
+                "mode": "build",
+                "current_task_id": None,
+                "completed_tasks": [parent_id],
+                "failed_tasks": [],
+                "blocked_tasks": [split_id],
+                "checkpoints": ["lace-cycle-006-checkpoint"],
+                "created_at": timestamp,
+                "updated_at": timestamp,
+            }
+            parent_task = create_task(
+                task_id=parent_id,
+                title="LACE Ciclo 6",
+                goal="Ejecutar ciclo LACE 6.",
+                priority=10,
+                expected_files=["LACE_LOG.md", "docs/lace_cycles/ciclo-06.md"],
+                validation_commands=["test -f docs/lace_cycles/ciclo-06.md"],
+                mode="build",
+            )
+            parent_task["status"] = "completed"
+            split_task = create_task(
+                task_id=split_id,
+                title="Invalid split residue",
+                goal="Residuo de recovery invalido para LACE.",
+                priority=9,
+                expected_files=["ULTIMO_CONTEXTO_CODEX.md"],
+                validation_commands=["test -f ULTIMO_CONTEXTO_CODEX.md"],
+                mode="build",
+            )
+            split_task["status"] = "blocked"
+            (runtime_dir / "project_state.json").write_text(json.dumps(state), encoding="utf-8")
+            (runtime_dir / "task_queue.json").write_text(json.dumps([parent_task, split_task]), encoding="utf-8")
+            (runtime_dir / "task_history.jsonl").write_text(
+                json.dumps({
+                    "recorded_at": "2026-06-05T00:00:01Z",
+                    "result": {
+                        "task_id": parent_id,
+                        "completed": True,
+                        "files_created": [],
+                        "files_modified": ["docs/lace_cycles/ciclo-06.md"],
+                        "validation_ran": ["test -f docs/lace_cycles/ciclo-06.md"],
+                        "validation_passed": True,
+                        "blockers": [],
+                        "next_recommendation": "OK",
+                    },
+                }) + "\n",
+                encoding="utf-8",
+            )
+            (runtime_dir / "failures.jsonl").write_text("", encoding="utf-8")
+
+            report = sweep_with_broom(
+                project_dir,
+                task_id=split_id,
+                phase="after_task",
+                reason="test_invalid_lace_split_residue",
+            )
+
+            queue_after = json.loads((runtime_dir / "task_queue.json").read_text(encoding="utf-8"))
+            state_after = json.loads((runtime_dir / "project_state.json").read_text(encoding="utf-8"))
+            split_after = next(task for task in queue_after if task["id"] == split_id)
+            self.assertTrue(report["ok"])
+            self.assertEqual(split_after["status"], "deferred")
+            self.assertEqual(state_after["blocked_tasks"], [])
+            self.assertTrue(any(action.get("action") == "defer_invalid_lace_split_task" for action in report["actions"]))
+            self.assertTrue(any(action.get("action") == "drop_stale_blocked_tasks" for action in report["actions"]))
+
+
+    def test_task_broom_emits_visual_cleanup_event_without_blocking_runtime(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "broom-visual"
+            runtime_dir = project_dir / "runtime"
+            runtime._ensure_control_plane_runtime(runtime_dir, project_dir.name, "build")
+            task = create_task(
+                task_id="TASK-BROOM-001",
+                title="Broom visual smoke",
+                goal="Crear evidencia visual de limpieza runtime.",
+                priority=10,
+                expected_files=["docs/broom.md"],
+                validation_commands=[],
+                mode="build",
+            )
+            session = AgentSession(
+                session_id="agent-broom-visual",
+                project_name="Broom Visual",
+                project_slug=project_dir.name,
+                project_dir=project_dir,
+                requirement="show broom sweep",
+                prompt="",
+                command=[],
+                event_file=runtime_dir / "logs" / "agent-broom-visual-events.jsonl",
+                terminal_file=runtime_dir / "logs" / "agent-broom-visual-terminal.log",
+                control_plane_enabled=True,
+                control_plane_runtime_dir=str(runtime_dir),
+                runtime_mode="build",
+            )
+            runtime.sessions[session.session_id] = session
+
+            report = runtime._run_task_broom(
+                workspace=project_dir,
+                task=task,
+                phase="before_task",
+                session_id=session.session_id,
+                reason="test_visual_broom",
+            )
+
+            self.assertTrue(report["ok"])
+            broom_events = [event for event in visual_events if event.get("op") == "broom_sweep"]
+            self.assertEqual(len(broom_events), 1)
+            self.assertEqual(broom_events[0]["phase"], "before_task")
+            self.assertEqual(broom_events[0]["taskId"], "TASK-BROOM-001")
+            self.assertEqual(broom_events[0]["visualTool"], "to-sweep-with-a-broom")
+            self.assertEqual(runtime.sessions[session.session_id].visual_event_count, 1)
+            self.assertFalse(is_material_project_path("runtime/artifacts/broom/latest.json"))
+            self.assertIn('"op": "broom_sweep"', session.event_file.read_text(encoding="utf-8"))
 
     def test_visual_events_file_is_consumed_and_control_plane_sync_is_filtered(self) -> None:
         with TemporaryDirectory() as tmpdir:

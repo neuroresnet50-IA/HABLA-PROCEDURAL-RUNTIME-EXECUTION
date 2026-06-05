@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { buildClosureCertificate, buildRuntimeClosureCertificate, formatAgentStatus } from "./agentClosureCertificate.js";
+import { buildClosureCertificate, buildClosureEvidenceText, buildClosureRepairPrompt, buildRuntimeClosureCertificate, formatAgentStatus, getClosureCertificateAutoPolicy, isSecurityClosureCertificate } from "./agentClosureCertificate.js";
 import LiveReviewerPanel from "./LiveReviewerPanel.jsx";
 
 import {
@@ -32,11 +32,102 @@ import {
   slugify,
 } from "./agentStudioUtils.js";
 
-export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean }) {
+const REVIEWER_AUTO_MINIMIZE_MS = 30000;
+
+function getBlockingCyberlaceDecision(session) {
+  if (!session || typeof session !== "object") return null;
+  const cyberlace = session.cyberlace && typeof session.cyberlace === "object" ? session.cyberlace : {};
+  const candidates = [
+    ...(Array.isArray(cyberlace.decisions) ? cyberlace.decisions : []),
+    ...(Array.isArray(session.cyberlaceDecisions) ? session.cyberlaceDecisions : []),
+  ].filter((item) => item && typeof item === "object");
+  const decision = candidates.find((item) => {
+    const action = String(item.runtimeAction || item.action || "").toUpperCase();
+    return item.blocked || item.blocksRuntime || ["BLOCK", "QUARANTINE", "HUMAN_REVIEW"].includes(action);
+  });
+  if (decision) return decision;
+  const errorCode = String(session.errorCode || "").toLowerCase();
+  if (session.status === "blocked" && errorCode.includes("cyberlace")) {
+    return {
+      action: "QUARANTINE",
+      runtimeAction: "QUARANTINE",
+      blocked: true,
+      blocksRuntime: true,
+      message: session.errorMessage || session.progressLabel || "CyberLACE bloqueo esta accion.",
+      reason: session.errorMessage || "CyberLACE nego esta accion antes de ejecutar Codex.",
+      evidence: [],
+      blockedPaths: [],
+    };
+  }
+  return null;
+}
+
+function parseCompactProjectTimestamp(value) {
+  const match = String(value || "").match(/(20\d{12})/);
+  if (!match) return 0;
+  const raw = match[1];
+  const year = Number(raw.slice(0, 4));
+  const month = Number(raw.slice(4, 6));
+  const day = Number(raw.slice(6, 8));
+  const hour = Number(raw.slice(8, 10));
+  const minute = Number(raw.slice(10, 12));
+  const second = Number(raw.slice(12, 14));
+  const timestamp = Date.UTC(year, month - 1, day, hour, minute, second);
+  return Number.isFinite(timestamp) ? timestamp : 0;
+}
+
+function getProjectSlugTimestamp(project) {
+  return parseCompactProjectTimestamp(project?.slug || project?.name);
+}
+
+function getProjectMetadataTimestamp(project) {
+  return parseTimestamp(project?.createdAt) || parseTimestamp(project?.updatedAt) || 0;
+}
+
+function compareProjectsByGeneratedAt(left, right) {
+  const leftSlugTimestamp = getProjectSlugTimestamp(left);
+  const rightSlugTimestamp = getProjectSlugTimestamp(right);
+  if (leftSlugTimestamp || rightSlugTimestamp) {
+    return rightSlugTimestamp - leftSlugTimestamp;
+  }
+  return getProjectMetadataTimestamp(right) - getProjectMetadataTimestamp(left);
+}
+
+function getProjectSearchText(project) {
+  return [
+    project?.name,
+    project?.slug,
+    project?.relativePath,
+    project?.description,
+    project?.status,
+  ].filter(Boolean).join(" ").toLowerCase();
+}
+
+async function copyTextToClipboard(body) {
+  const value = String(body || "");
+  if (!value.trim()) return false;
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return true;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+  return true;
+}
+
+export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean, onCyberlaceBlock, autonomousMode = false }) {
   const [projects, setProjects] = useState([]);
   const [launchMode, setLaunchMode] = useState("new");
   const [runtimeMode, setRuntimeMode] = useState(DEFAULT_AGENT_RUNTIME_MODE);
   const [selectedProject, setSelectedProject] = useState("");
+  const [projectFilter, setProjectFilter] = useState("");
   const [newProjectName, setNewProjectName] = useState("");
   const [requirement, setRequirement] = useState("");
   const [activeSessionId, setActiveSessionId] = useState(null);
@@ -76,6 +167,10 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   const [hablaRuntimeStatus, setHablaRuntimeStatus] = useState(null);
   const [hablaRuntimeError, setHablaRuntimeError] = useState("");
   const [dismissedClosureKey, setDismissedClosureKey] = useState("");
+  const [closureModalMinimized, setClosureModalMinimized] = useState(false);
+  const [closureAutoPolicy, setClosureAutoPolicy] = useState(null);
+  const [closureAutoDeadline, setClosureAutoDeadline] = useState(0);
+  const [closureEvidenceMessage, setClosureEvidenceMessage] = useState("");
   const [nowTick, setNowTick] = useState(Date.now());
   const [agentBursts, setAgentBursts] = useState([]);
   const [harReview, setHarReview] = useState(null);
@@ -97,16 +192,47 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   const latestBurstKeyRef = useRef("");
   const latestBurstAtRef = useRef(0);
   const heartbeatBurstAtRef = useRef(0);
+  const closureCertificateRef = useRef(null);
+  const closureHumanActionRef = useRef(false);
+  const closureAutoActionKeysRef = useRef(new Set());
+  const closureRepairSentKeysRef = useRef(new Set());
+  const closureAutoFallbackTimerRef = useRef(null);
+  const isSendingRef = useRef(false);
   const terminalRef = useRef(null);
 
   const selectedProjectMeta = useMemo(
     () => projects.find((project) => project.slug === selectedProject) || null,
     [projects, selectedProject]
   );
+  const latestGeneratedProject = useMemo(() => {
+    return [...projects]
+      .filter((project) => project?.slug && !project.systemDemo && !project.learningMode && !project.evaluatedProject)
+      .sort(compareProjectsByGeneratedAt)[0] || null;
+  }, [projects]);
+  const filteredProjects = useMemo(() => {
+    const query = projectFilter.trim().toLowerCase();
+    const baseProjects = query
+      ? projects.filter((project) => getProjectSearchText(project).includes(query))
+      : projects;
+    const sortedProjects = [...baseProjects].sort((left, right) => (
+      compareProjectsByGeneratedAt(left, right)
+      || String(left.name || left.slug || "").localeCompare(String(right.name || right.slug || ""))
+    ));
+    if (selectedProjectMeta && !sortedProjects.some((project) => project.slug === selectedProjectMeta.slug)) {
+      return [selectedProjectMeta, ...sortedProjects];
+    }
+    return sortedProjects;
+  }, [projects, projectFilter, selectedProjectMeta]);
+  const visibleProjects = filteredProjects.slice(0, 80);
+  const hiddenFilteredProjectCount = Math.max(filteredProjects.length - visibleProjects.length, 0);
   const habla = session?.habla || null;
   const hablaState = habla?.state || null;
   const hablaRuntimeState = hablaState || hablaRuntimeStatus || {};
   const hablaRuntimeAvailable = Boolean(habla?.available || hablaRuntimeStatus?.available);
+  const runtimeCommandReady = connected || hablaRuntimeAvailable;
+  const retryableTaskStatus = String(retryableTask?.status || "").toLowerCase();
+  const retryableTaskIsBlocked = retryableTaskStatus === "blocked";
+  const retryableTaskButtonLabel = retryableTaskIsBlocked ? "Relanzar tarea bloqueada" : "Relanzar orden recuperada";
   const lacePolicyLoaded = hablaRuntimeState?.lacePolicyLoaded ?? hablaRuntimeStatus?.lacePolicyLoaded;
   const lacePolicyPath = hablaRuntimeState?.lacePolicyPath || session?.lacePolicyPath || hablaRuntimeStatus?.agentRuntime?.lacePolicySource || "";
   const laceRuntimeLabel = hablaRuntimeState?.laceRuntime || "not_active";
@@ -114,12 +240,27 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   const visualNote = describeVisualState(visualState);
   const hablaConfidence = hablaState?.confidence || null;
   const laceCycles = Array.isArray(session?.laceCycles) ? session.laceCycles : [];
+  const laceStatus = session?.laceStatus || null;
+  const laceStatusActive = Boolean(laceStatus?.laceActive);
+  const laceRequiredCycles = Number(laceStatus?.requiredCycles || session?.laceRequiredCycles || 0);
+  const laceValidCycles = Number(laceStatus?.validCycles || session?.laceCompletedCycles || 0);
+  const laceMissingCycles = Number(laceStatus?.missingCycles ?? Math.max(0, laceRequiredCycles - laceValidCycles));
   const reviewerProjectSlug = session?.projectSlug || selectedProject || selectedProjectMeta?.slug || "";
   const liveStage = getLiveStage(session);
   const liveElapsedSeconds = getSessionElapsedSeconds(session, nowTick);
   const liveActive = isAgentActive(session);
   const closureCertificate = buildClosureCertificate(session) || buildRuntimeClosureCertificate(reviewerStatus, selectedProjectMeta || { projectSlug: reviewerProjectSlug });
-  const closureModalOpen = Boolean(closureCertificate && closureCertificate.key !== dismissedClosureKey);
+  const closureSecurityBlocked = isSecurityClosureCertificate(closureCertificate);
+  const closureEvidenceText = buildClosureEvidenceText(closureCertificate);
+  const closureRepairPrompt = buildClosureRepairPrompt(closureCertificate);
+  const closureCertificateVisible = Boolean(closureCertificate && closureCertificate.key !== dismissedClosureKey);
+  const closureAutoPolicyCandidate = useMemo(
+    () => getClosureCertificateAutoPolicy(closureCertificate, { autonomousMode }),
+    [closureCertificate?.key, closureCertificate?.completed, closureCertificate?.message, closureCertificate?.blockerLabel, autonomousMode]
+  );
+  const closureModalOpen = closureCertificateVisible && !closureModalMinimized;
+  const closureMinimizedOpen = closureCertificateVisible && closureModalMinimized;
+  const closureAutoSecondsRemaining = closureAutoDeadline ? Math.max(0, Math.ceil((closureAutoDeadline - nowTick) / 1000)) : 0;
   const harDetectedStack = harReview?.summary?.detected_stack || {};
   const harStackEntries = flattenDetectedStack(harDetectedStack);
   const harDecisionEntries = Array.isArray(harReview?.summary?.architecture_decisions)
@@ -143,10 +284,95 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   }, [session, reviewerProjectSlug]);
 
   useEffect(() => {
+    closureCertificateRef.current = closureCertificate;
+  }, [closureCertificate]);
+
+  useEffect(() => {
+    isSendingRef.current = isSending;
+  }, [isSending]);
+
+  useEffect(() => {
     if (ACTIVE_AGENT_STATUSES.has(session?.status)) {
       setDismissedClosureKey("");
     }
   }, [session?.sessionId, session?.status]);
+
+  useEffect(() => {
+    closureHumanActionRef.current = false;
+    if (closureAutoFallbackTimerRef.current) {
+      window.clearTimeout(closureAutoFallbackTimerRef.current);
+      closureAutoFallbackTimerRef.current = null;
+    }
+    setClosureEvidenceMessage("");
+    setClosureModalMinimized(false);
+    setClosureAutoPolicy(null);
+    setClosureAutoDeadline(0);
+  }, [closureCertificate?.key]);
+
+  useEffect(() => {
+    if (!closureCertificateVisible || !closureAutoPolicyCandidate || !closureCertificate?.key) {
+      setClosureAutoPolicy(null);
+      setClosureAutoDeadline(0);
+      return undefined;
+    }
+
+    const policy = closureAutoPolicyCandidate;
+    const certificateKey = closureCertificate.key;
+    const deadline = Date.now() + Number(policy.delayMs || 0);
+    setClosureAutoPolicy(policy);
+    setClosureAutoDeadline(deadline);
+
+    const releaseAfterAutonomyClick = (action, reason, fallback) => {
+      if (!autonomousMode || !requestClosureAutonomyClick(action, reason)) {
+        fallback();
+        return;
+      }
+      if (closureAutoFallbackTimerRef.current) {
+        window.clearTimeout(closureAutoFallbackTimerRef.current);
+      }
+      closureAutoFallbackTimerRef.current = window.setTimeout(() => {
+        closureAutoFallbackTimerRef.current = null;
+        const currentCertificate = closureCertificateRef.current;
+        if (!currentCertificate || currentCertificate.key !== certificateKey) return;
+        if (currentCertificate.key === dismissedClosureKey || closureHumanActionRef.current || isSendingRef.current) return;
+        fallback();
+      }, 3500);
+    };
+
+    const timer = window.setTimeout(() => {
+      const currentCertificate = closureCertificateRef.current;
+      if (!currentCertificate || currentCertificate.key !== certificateKey) return;
+      if (currentCertificate.key === dismissedClosureKey) return;
+
+      const actionKey = `${certificateKey}:${policy.action}`;
+      if (closureAutoActionKeysRef.current.has(actionKey)) {
+        if (!closureHumanActionRef.current && policy.action !== "dismiss") setClosureModalMinimized(true);
+        return;
+      }
+      closureAutoActionKeysRef.current.add(actionKey);
+
+      if (policy.action === "dismiss") {
+        releaseAfterAutonomyClick("close_certificate", "closure_auto_dismiss", () => setDismissedClosureKey(certificateKey));
+        return;
+      }
+
+      if (policy.action === "minimize") {
+        if (!closureHumanActionRef.current) {
+          releaseAfterAutonomyClick("minimize_certificate", "closure_auto_minimize", () => setClosureModalMinimized(true));
+        }
+        return;
+      }
+
+      if (policy.action === "repair" && !closureHumanActionRef.current && !isSendingRef.current) {
+        setClosureEvidenceMessage("Modo autonomo: enviando certificado al agente reparador.");
+        releaseAfterAutonomyClick("send_repair", "closure_auto_repair", () => {
+          void handleSendClosureRepairPrompt({ auto: true });
+        });
+      }
+    }, Math.max(0, Number(policy.delayMs || 0)));
+
+    return () => window.clearTimeout(timer);
+  }, [closureCertificateVisible, closureCertificate?.key, closureAutoPolicyCandidate?.action, closureAutoPolicyCandidate?.delayMs, dismissedClosureKey, autonomousMode]);
 
   useEffect(() => {
     const projectSlug = String(selectedProject || "").trim();
@@ -321,6 +547,26 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     }
   }
 
+  async function loadAgentProjectsSnapshot() {
+    try {
+      const projectsUrl = new URL("/api/agent/projects", socketUrl).toString();
+      const response = await fetch(projectsUrl, { cache: "no-store" });
+      const payload = await response.json();
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || "agent_projects_load_failed");
+      }
+      const nextProjects = Array.isArray(payload.projects) ? payload.projects : [];
+      setProjects(nextProjects);
+      setSelectedProject((current) => (
+        current && nextProjects.some((project) => project.slug === current)
+          ? current
+          : ""
+      ));
+    } catch (nextError) {
+      setError(`No fue posible cargar proyectos del runtime: ${humanizeRuntimeResetError(nextError)}`);
+    }
+  }
+
   async function saveEmailCommandConfig() {
     if (!emailConfig) return;
     setIsSavingEmailConfig(true);
@@ -357,6 +603,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
 
   useEffect(() => {
     loadHablaRuntimeStatus();
+    loadAgentProjectsSnapshot();
   }, [socketUrl]);
 
   useEffect(() => {
@@ -372,6 +619,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       socket.emit("agent:request");
       loadEmailCommandConfig();
       loadHablaRuntimeStatus();
+      loadAgentProjectsSnapshot();
     });
 
     socket.on("disconnect", () => {
@@ -423,7 +671,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
           return nextSession;
         }
 
-        if (!activeSessionRef.current || nextSession.status === "running" || nextSession.status === "starting") {
+        if (!activeSessionRef.current || ACTIVE_AGENT_STATUSES.has(nextSession.status)) {
           setActiveSessionId(nextSession.sessionId);
           setTerminalOutput(nextSession.output || "");
           if (nextSession.projectSlug) {
@@ -548,6 +796,37 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
   }, [terminalOutput, agentRoomEvents.length]);
 
   useEffect(() => {
+    function handleSafeAlternativeAccepted(event) {
+      const detail = event?.detail && typeof event.detail === "object" ? event.detail : {};
+      const safeRequirement = String(detail.requirement || "").trim();
+      if (!safeRequirement) return;
+      const sourceSlug = String(detail.projectSlug || "").trim();
+      const generatedName = sourceSlug
+        ? `${sourceSlug}-alternativa-segura`
+        : `alternativa-segura-${new Date().toISOString().slice(11, 19).replace(/:/g, "")}`;
+      setLaunchMode("new");
+      setSelectedProject("");
+      setNewProjectName(generatedName);
+      setRequirement([
+        "[CONTEXTO AUTORIZADO CYBERLACE]",
+        "La accion insegura anterior fue negada. Esta orden reemplaza el camino peligroso por una alternativa segura permitida.",
+        "",
+        safeRequirement,
+      ].join("\n"));
+      setError("Alternativa segura cargada como contexto autorizado. Revisa la orden y pulsa Iniciar proyecto nuevo si deseas ejecutarla.");
+      pushAgentBurst({
+        source: "CyberLACE",
+        message: "Alternativa segura cargada como contexto autorizado.",
+        tone: "final",
+        detail: sourceSlug || detail.sourceSessionId || "safe-alternative",
+      });
+    }
+
+    window.addEventListener("habla:safe-alternative-accepted", handleSafeAlternativeAccepted);
+    return () => window.removeEventListener("habla:safe-alternative-accepted", handleSafeAlternativeAccepted);
+  }, []);
+
+  useEffect(() => {
     if (!session?.sessionId || !ACTIVE_AGENT_STATUSES.has(session.status)) return undefined;
     let cancelled = false;
 
@@ -637,6 +916,24 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       setReviewerMinimized(false);
     }
   }, [session?.sessionId, session?.runtimeMode, session?.status]);
+
+  useEffect(() => {
+    if (!reviewerOpen || reviewerMinimized) return undefined;
+    const timer = window.setTimeout(() => {
+      reviewerUserMinimizedRef.current = true;
+      setReviewerMinimized(true);
+      appendAgentRoomEvent({
+        agentId: "A06",
+        agentName: "Live Reviewer",
+        kind: "auto_minimize",
+        message: "Supervisor minimizado automaticamente despues de 30 segundos visible.",
+        tone: "middle",
+        detail: reviewerProjectSlug || session?.sessionId || "supervisor",
+      });
+    }, REVIEWER_AUTO_MINIMIZE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [reviewerOpen, reviewerMinimized, reviewerProjectSlug, session?.sessionId]);
 
   useEffect(() => {
     if (!reviewerProjectSlug) {
@@ -782,18 +1079,200 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     }
   }
 
-  function handleCopyReviewerLog() {
+  async function handleCopyReviewerLog() {
     const body = reviewerEvents.map((event) => `[${event.timestamp}] ${event.severity} ${event.message}`).join("\n");
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(body);
+    await copyTextToClipboard(body);
+  }
+
+  function markClosureHumanAction() {
+    closureHumanActionRef.current = true;
+  }
+
+  function requestClosureAutonomyClick(action, reason = "closure_autonomy") {
+    if (typeof window === "undefined") return false;
+    const actionId = `closure-policy-${String(action || "auto").replace(/[^a-z0-9_-]/gi, "-")}-${Date.now()}`;
+    const detail = {
+      action,
+      actionId,
+      reason,
+      source: "agent-studio-closure-policy",
+      trigger: "autonomous_closure_policy",
+      certificateKey: closureCertificate?.key || "",
+      projectSlug: closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "",
+      requestedAt: new Date().toISOString(),
+    };
+    window.dispatchEvent(new CustomEvent("habla:section-menu-close", {
+      detail: { id: "all", reason, actionId },
+    }));
+    window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("habla:editor-autonomy-action", { detail }));
+    }, 160);
+    return true;
+  }
+
+  function buildClosureCyberlaceSafePrompt(projectSlug) {
+    const projectLabel = String(projectSlug || closureCertificate?.project || selectedProject || "proyecto activo").trim();
+    return [
+      "[PROMPT SEGURO GENERADO POR CYBERLACE]",
+      "No ejecutar el prompt original bloqueado.",
+      "Reglas de continuacion segura:",
+      "- Mantener bloqueada cualquier accion insegura detectada por CyberLACE.",
+      "- Retomar el cierre del runtime solo con datos sinteticos, evidencia redactada y controles auditables.",
+      "- Diagnosticar el certificado, limpiar bloqueos operativos y reparar el cierre sin reinyectar la orden original.",
+      "- Validar por filesystem, scanner, sandbox e integrity antes de permitir completed=true.",
+      `Proyecto objetivo: ${projectLabel}.`,
+    ].join("\n");
+  }
+
+  function requestCyberlaceSafeRoute({ auto = false } = {}) {
+    if (typeof window === "undefined") return false;
+    const projectSlug = String(closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "").trim();
+    if (!projectSlug) {
+      setClosureEvidenceMessage("CyberLACE no encontro proyecto activo para iniciar P_safe.");
+      return false;
+    }
+    const detail = {
+      projectSlug,
+      sourceSessionId: activeSessionId || session?.sessionId || "",
+      certificateKey: closureCertificate?.key || "",
+      certificateTaskId: closureCertificate?.taskId || "",
+      requestedAt: new Date().toISOString(),
+      source: "closure_certificate_cyberlace_safe_route",
+      autoRequested: Boolean(auto),
+      acceptanceType: "autonomous_safe_rewrite",
+      hardBlockStillEnforced: true,
+      safePrompt: buildClosureCyberlaceSafePrompt(projectSlug),
+    };
+    window.dispatchEvent(new CustomEvent("habla:cyberlace-safe-route-requested", { detail }));
+    setClosureEvidenceMessage(auto ? "Modo autonomo solicito P_safe y continuacion segura CyberLACE." : "CyberLACE solicito P_safe y continuacion segura sobre el mismo proyecto.");
+    setClosureModalMinimized(true);
+    appendAgentRoomEvent({
+      agentId: "S01",
+      agentName: "CyberLACE",
+      kind: "ruta_segura",
+      message: "Certificado de seguridad enviado a la ruta P_safe; el prompt original sigue bloqueado.",
+      tone: "repair",
+      detail: projectSlug,
+    });
+    return true;
+  }
+
+  async function handleCopyClosureEvidence() {
+    markClosureHumanAction();
+    try {
+      const ok = await copyTextToClipboard(closureEvidenceText);
+      setClosureEvidenceMessage(ok ? "Evidencia copiada al portapapeles." : "No hay evidencia para copiar.");
+    } catch (nextError) {
+      setClosureEvidenceMessage(nextError?.message || "No fue posible copiar la evidencia.");
+    }
+  }
+
+  async function handleSendClosureRepairPrompt({ auto = false } = {}) {
+    if (!auto) markClosureHumanAction();
+    const certificateKey = closureCertificate?.key || "";
+    if (isSecurityClosureCertificate(closureCertificate)) {
+      if (!requestCyberlaceSafeRoute({ auto })) {
+        setClosureModalMinimized(true);
+      }
       return;
     }
-    const textarea = document.createElement("textarea");
-    textarea.value = body;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    textarea.remove();
+    const repairPrompt = String(closureRepairPrompt || "").trim();
+    const projectSlug = String(closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "").trim();
+    const projectName = String(closureCertificate?.project || selectedProjectMeta?.name || projectSlug || "").trim();
+    const repairSendKey = certificateKey ? `${certificateKey}:repair` : "";
+    if (auto && repairSendKey) {
+      if (closureRepairSentKeysRef.current.has(repairSendKey)) {
+        setClosureModalMinimized(true);
+        return;
+      }
+      closureRepairSentKeysRef.current.add(repairSendKey);
+    }
+    if (!repairPrompt || !projectSlug || !projectName) {
+      setClosureEvidenceMessage("No hay evidencia suficiente para lanzar reparacion controlada.");
+      if (auto) setClosureModalMinimized(true);
+      return;
+    }
+    if (isSending) {
+      if (auto) setClosureModalMinimized(true);
+      return;
+    }
+
+    setLaunchMode("existing");
+    setSelectedProject(projectSlug);
+    setNewProjectName(projectName);
+    setRequirement(repairPrompt);
+    setIsSending(true);
+    setError("");
+    setClosureEvidenceMessage(auto ? "Modo autonomo: enviando evidencia al agente reparador..." : "Enviando evidencia al agente reparador...");
+
+    try {
+      onSceneFocus?.(projectSlug);
+      const sessionPayload = {
+        projectName,
+        projectSlug,
+        requirement: repairPrompt,
+        ensureNewProject: false,
+        bootstrapProject: false,
+        runtimeMode,
+        subagentPlan: null,
+        source: "closure_certificate_repair",
+        controlPlaneRepair: true,
+        autoTriggered: Boolean(auto),
+      };
+      const sessionUrl = new URL("/api/agent/session", socketUrl).toString();
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 45000);
+      let payload;
+      try {
+        const response = await fetch(sessionUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sessionPayload),
+          signal: controller.signal,
+        });
+        payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.error || payload?.message || "closure_repair_start_failed");
+        }
+      } catch (startError) {
+        if (startError?.name === "AbortError") {
+          throw new Error("closure_repair_start_timeout");
+        }
+        throw startError;
+      } finally {
+        window.clearTimeout(timeout);
+      }
+
+      if (payload.projects) {
+        setProjects(payload.projects);
+      }
+      if (payload.session) {
+        setActiveSessionId(payload.session.sessionId);
+        setSession(payload.session);
+        setTerminalOutput(payload.session.output || "");
+        if (payload.session.projectSlug) {
+          setSelectedProject(payload.session.projectSlug);
+          onSceneFocus?.(payload.session.projectSlug);
+        }
+      }
+      setAssignedSubagentPlan(null);
+      setDismissedClosureKey(certificateKey || closureCertificate.key);
+      setClosureEvidenceMessage(auto ? "Modo autonomo lanzo el agente reparador con evidencia del certificado." : "Agente reparador lanzado con evidencia del certificado.");
+      appendAgentRoomEvent({
+        agentId: "R01",
+        agentName: "Reparador de cierre",
+        kind: "reparacion",
+        message: auto ? "Modo autonomo envio evidencia del certificado como tarea controlada de reparacion." : "Evidencia del certificado enviada como tarea controlada de reparacion.",
+        tone: "repair",
+        detail: projectSlug,
+      });
+    } catch (nextError) {
+      setClosureEvidenceMessage(nextError?.message || "No fue posible lanzar el agente reparador.");
+      if (auto) setClosureModalMinimized(true);
+      setError(`No fue posible lanzar reparacion de cierre: ${humanizeAgentError(nextError)}`);
+    } finally {
+      setIsSending(false);
+    }
   }
 
   function handleExportReviewerLog() {
@@ -813,16 +1292,20 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
     setIsCreatingProject(true);
     setError("");
     try {
-      const payload = await emitWithAck(
-        socketRef.current,
-        "agent:project:create",
-        {
+      const createUrl = new URL("/api/agent/projects", socketUrl).toString();
+      const response = await fetch(createUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
           name: newProjectName || buildGeneratedProjectName(),
           ensureUnique: true,
           bootstrapProject: false,
-        },
-        60000
-      );
+        }),
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok || payload?.ok === false) {
+        throw new Error(payload?.error || "agent_project_create_failed");
+      }
       if (payload.projects) {
         setProjects(payload.projects);
       }
@@ -954,20 +1437,38 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       }
 
       onSceneFocus?.(desiredProjectSlug);
-      const payload = await emitWithAck(
-        socketRef.current,
-        "agent:session:start",
-        {
-          projectName: desiredProjectName,
-          projectSlug: desiredProjectSlug,
-          requirement: normalizedRequirement,
-          ensureNewProject: createFreshProject,
-          bootstrapProject: false,
-          runtimeMode,
-          subagentPlan: assignedSubagentPlan,
-        },
-        120000
-      );
+      const sessionPayload = {
+        projectName: desiredProjectName,
+        projectSlug: desiredProjectSlug,
+        requirement: normalizedRequirement,
+        ensureNewProject: createFreshProject,
+        bootstrapProject: false,
+        runtimeMode,
+        subagentPlan: assignedSubagentPlan,
+      };
+      const sessionUrl = new URL("/api/agent/session", socketUrl).toString();
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 45000);
+      let payload;
+      try {
+        const response = await fetch(sessionUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sessionPayload),
+          signal: controller.signal,
+        });
+        payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.error || payload?.message || "agent_session_start_failed");
+        }
+      } catch (startError) {
+        if (startError?.name === "AbortError") {
+          throw new Error("agent_session_start_timeout");
+        }
+        throw startError;
+      } finally {
+        window.clearTimeout(timeout);
+      }
 
       if (payload.projects) {
         setProjects(payload.projects);
@@ -977,6 +1478,25 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
         setActiveSessionId(payload.session.sessionId);
         setSession(payload.session);
         setTerminalOutput(payload.session.output || "");
+        const cyberlaceDecision = getBlockingCyberlaceDecision(payload.session);
+        if (cyberlaceDecision) {
+          const cyberlaceBlockPayload = {
+            op: "cyberlace_document_blocked",
+            errorCode: payload.session.errorCode,
+            message: payload.session.errorMessage || payload.session.progressLabel,
+            projectSlug: payload.session.projectSlug,
+            sessionId: payload.session.sessionId,
+            securityBlock: {
+              ...cyberlaceDecision,
+              projectSlug: payload.session.projectSlug,
+              sessionId: payload.session.sessionId,
+            },
+          };
+          if (typeof onCyberlaceBlock === "function") {
+            onCyberlaceBlock(cyberlaceBlockPayload);
+          }
+          window.dispatchEvent(new CustomEvent("habla:cyberlace-blocked", { detail: cyberlaceBlockPayload }));
+        }
         if (payload.session.projectSlug) {
           setSelectedProject(payload.session.projectSlug);
           onSceneFocus?.(payload.session.projectSlug);
@@ -1093,6 +1613,25 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
         setActiveSessionId(payload.session.sessionId);
         setSession(payload.session);
         setTerminalOutput(payload.session.output || "");
+        const cyberlaceDecision = getBlockingCyberlaceDecision(payload.session);
+        if (cyberlaceDecision) {
+          const cyberlaceBlockPayload = {
+            op: "cyberlace_document_blocked",
+            errorCode: payload.session.errorCode,
+            message: payload.session.errorMessage || payload.session.progressLabel,
+            projectSlug: payload.session.projectSlug,
+            sessionId: payload.session.sessionId,
+            securityBlock: {
+              ...cyberlaceDecision,
+              projectSlug: payload.session.projectSlug,
+              sessionId: payload.session.sessionId,
+            },
+          };
+          if (typeof onCyberlaceBlock === "function") {
+            onCyberlaceBlock(cyberlaceBlockPayload);
+          }
+          window.dispatchEvent(new CustomEvent("habla:cyberlace-blocked", { detail: cyberlaceBlockPayload }));
+        }
         if (payload.session.projectSlug) {
           setSelectedProject(payload.session.projectSlug);
           onSceneFocus?.(payload.session.projectSlug);
@@ -1252,7 +1791,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
           <span className={`socket-pill ${hablaRuntimeAvailable ? "is-online" : "is-offline"}`}>
             {hablaRuntimeLabel}
           </span>
-          <span className={`socket-pill ${session?.status === "running" || session?.status === "starting" ? "is-online" : "is-offline"}`}>
+          <span className={`socket-pill ${ACTIVE_AGENT_STATUSES.has(session?.status) ? "is-online" : "is-offline"}`}>
             {session ? formatAgentStatus(session.status) : "Sin sesion"}
           </span>
           <span className={`socket-pill ${visualState?.phase || visualState?.op ? "is-online" : "is-offline"}`}>
@@ -1381,32 +1920,75 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     placeholder="payments-orchestrator"
                   />
                 </label>
-                <button type="button" className="tool-button" onClick={handleCreateProject} disabled={isCreatingProject || !connected}>
+                <button type="button" className="tool-button" onClick={handleCreateProject} disabled={isCreatingProject || !runtimeCommandReady}>
                   {isCreatingProject ? "Preparando..." : "Preparar carpeta nueva"}
                 </button>
               </div>
             ) : (
-              <div className="toolbar-inline compact">
-                <label className="editor-field small grow">
-                  <span>Proyecto existente</span>
-                  <select
-                    value={selectedProject}
-                    onChange={(event) => {
-                      setSelectedProject(event.target.value);
-                      setError("");
-                    }}
-                  >
-                    <option value="">selecciona un proyecto</option>
-                    {projects.map((project) => (
-                      <option key={project.slug} value={project.slug}>
-                        {project.name} · {project.relativePath}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !connected}>
-                  Abrir proyecto
-                </button>
+              <div className="agent-project-selector">
+                <div className="agent-project-filter-panel">
+                  <label className="editor-field small grow">
+                    <span>Filtrar proyecto</span>
+                    <input
+                      value={projectFilter}
+                      onChange={(event) => setProjectFilter(event.target.value)}
+                      placeholder="buscar sesion-20260601004224, continuity, drone..."
+                    />
+                  </label>
+                  <div className="agent-project-filter-actions">
+                    {latestGeneratedProject ? (
+                      <button
+                        type="button"
+                        className="tool-button agent-latest-project-button"
+                        onClick={() => {
+                          setLaunchMode("existing");
+                          setSelectedProject(latestGeneratedProject.slug);
+                          setProjectFilter(latestGeneratedProject.slug);
+                          setError("");
+                          onSceneFocus?.(latestGeneratedProject.slug);
+                        }}
+                        title={`Seleccionar ultimo proyecto generado: ${latestGeneratedProject.slug}`}
+                      >
+                        Ultimo generado: {latestGeneratedProject.slug}
+                      </button>
+                    ) : null}
+                    {projectFilter ? (
+                      <button
+                        type="button"
+                        className="tool-button"
+                        onClick={() => setProjectFilter("")}
+                      >
+                        Limpiar filtro
+                      </button>
+                    ) : null}
+                  </div>
+                  <small className="agent-project-filter-meta">
+                    {projectFilter ? `${filteredProjects.length} coincidencias` : `${projects.length} proyectos`}
+                    {hiddenFilteredProjectCount ? ` · mostrando 80, oculta ${hiddenFilteredProjectCount} hasta filtrar mas` : ""}
+                  </small>
+                </div>
+                <div className="toolbar-inline compact">
+                  <label className="editor-field small grow">
+                    <span>Proyecto existente</span>
+                    <select
+                      value={selectedProject}
+                      onChange={(event) => {
+                        setSelectedProject(event.target.value);
+                        setError("");
+                      }}
+                    >
+                      <option value="">selecciona un proyecto</option>
+                      {visibleProjects.map((project) => (
+                        <option key={project.slug} value={project.slug}>
+                          {project.slug === latestGeneratedProject?.slug ? "ultimo · " : ""}{project.name} · {project.relativePath}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <button type="button" className="tool-button" onClick={handleOpenExistingProject} disabled={!selectedProject || !runtimeCommandReady}>
+                    Abrir proyecto
+                  </button>
+                </div>
               </div>
             )}
 
@@ -1430,31 +2012,32 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
               </small>
             </div>
 
-            {launchMode === "existing" && selectedProject ? (
-              <div className={`agent-retry-card ${retryableTask ? "is-ready" : "is-empty"}`}>
+            {selectedProject ? (
+              <div className={`agent-retry-card ${retryableTask ? "is-ready" : "is-empty"} ${retryableTaskIsBlocked ? "is-blocked" : ""}`}>
                 <div>
-                  <strong>{retryableTask ? "Ultima orden recuperada" : "Orden recuperable"}</strong>
+                  <strong>{retryableTaskIsBlocked ? "Tarea bloqueada recuperable" : retryableTask ? "Orden recuperada" : "Orden recuperable"}</strong>
                   <span>
                     {isLoadingRetryableTask
                       ? "buscando backups y cola del runtime..."
                       : retryableTask
-                        ? `${retryableTask.id} · ${retryableTask.status || "sin estado"}`
-                        : "no hay orden anterior lista para retomar"}
+                        ? `${retryableTask.id} · ${retryableTask.status || "sin estado"} · mismo workspace`
+                        : "no hay orden anterior lista para relanzar"}
                   </span>
                   <small>
                     {retryableTask?.goalPreview
                       ? retryableTask.goalPreview
-                      : "La accion trabaja sobre el mismo workspace; no crea proyecto nuevo ni blanquea archivos."}
+                      : "Cuando una tarea queda bloqueada o falla, este panel llama retryable-task/relaunch con limpieza de cola y sin crear proyecto nuevo."}
                   </small>
                 </div>
                 {retryableTask ? (
                   <button
                     type="button"
-                    className="tool-button primary"
+                    className="tool-button primary retry-launch-button"
                     onClick={handleRelaunchRetryableTask}
-                    disabled={!connected || isRelaunchingTask || isSending}
+                    disabled={!runtimeCommandReady || isRelaunchingTask || isSending}
+                    title="Relanza la tarea recuperada sobre el mismo proyecto con forceClean=true"
                   >
-                    {isRelaunchingTask ? "Retomando..." : "Retomar aqui"}
+                    {isRelaunchingTask ? "Relanzando..." : retryableTaskButtonLabel}
                   </button>
                 ) : null}
               </div>
@@ -1691,7 +2274,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                 type="button"
                 className="tool-button primary"
                 onClick={handleSendRequirement}
-                disabled={isSending || !requirement.trim() || !connected || (launchMode === "existing" && !selectedProjectMeta)}
+                disabled={isSending || !requirement.trim() || !runtimeCommandReady || (launchMode === "existing" && !selectedProjectMeta)}
               >
                 {isSending
                   ? "Abriendo Codex..."
@@ -1699,7 +2282,7 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                     ? "Iniciar proyecto nuevo"
                     : "Continuar proyecto existente"}
               </button>
-              <button type="button" className="tool-button danger" onClick={handleStopSession} disabled={!activeSessionId || session?.status !== "running"}>
+              <button type="button" className="tool-button danger" onClick={handleStopSession} disabled={!activeSessionId || !ACTIVE_AGENT_STATUSES.has(session?.status)}>
                 Detener sesion
               </button>
             </div>
@@ -1851,6 +2434,23 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
               </div>
             ) : null}
 
+            {laceStatus ? (
+              <div className="agent-cycle-grid">
+                <article className={`agent-cycle-card ${laceStatusActive ? "is-current" : "is-pending"}`}>
+                  <strong>Automejora LACE {laceStatusActive ? "activa" : "inactiva"}</strong>
+                  <span>{laceStatus?.closureGateStatus || "sin compuerta"}</span>
+                  <small>{laceStatus?.runtimeMode || session?.runtimeMode || "sin modo"}</small>
+                  <p>Ciclos {laceValidCycles}/{laceRequiredCycles}. Faltan {laceMissingCycles}.</p>
+                </article>
+                <article className={`agent-cycle-card is-${laceStatus?.closureGateStatus || "pending"}`}>
+                  <strong>Cierre LACE</strong>
+                  <span>{laceStatus?.closureGateReason || "sin razon"}</span>
+                  <small>Ciclo actual {laceStatus?.currentCycle || 0}</small>
+                  <p>Salida temprana: {laceStatus?.earlyExitAllowed ? "permitida" : "no permitida"}.</p>
+                </article>
+              </div>
+            ) : null}
+
             {laceCycles.length ? (
               <div className="agent-cycle-grid">
                 {laceCycles.map((cycle) => (
@@ -1902,8 +2502,8 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
       </div>
     </section>
     {closureModalOpen ? (
-      <div className="session-closure-overlay" role="dialog" aria-modal="true" aria-label={closureCertificate.title}>
-        <div className={`session-closure-modal ${closureCertificate.completed ? "is-success" : "is-failure"}`}>
+      <div className="session-closure-overlay" role="dialog" aria-modal="true" aria-label={closureCertificate.title} data-editor-autonomy-modal="closure-certificate">
+        <div className={["session-closure-modal", closureCertificate.completed ? "is-success" : "is-failure", closureAutoPolicy?.tone ? `is-auto-${closureAutoPolicy.tone}` : "", closureAutoPolicy ? "is-auto-timed" : ""].filter(Boolean).join(" ")}>
           <div className="session-closure-icon" aria-hidden="true">
             {closureCertificate.completed ? "✓" : "×"}
           </div>
@@ -1911,6 +2511,11 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
             <span className="toolbar-label">Certificado del runtime</span>
             <h2>{closureCertificate.title}</h2>
             <p>{closureCertificate.message}</p>
+            {closureAutoPolicy ? (
+              <small className={`session-closure-timer is-${closureAutoPolicy.tone || "neutral"}`}>
+                {closureAutoPolicy.message} {closureAutoSecondsRemaining ? `Tiempo restante: ${formatDuration(closureAutoSecondsRemaining)}.` : ""}
+              </small>
+            ) : null}
             <div className="session-closure-grid">
               <div>
                 <strong>Estado</strong>
@@ -1948,14 +2553,49 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
               ) : null}
             </div>
             <div className="reviewer-actions">
-              <button type="button" className="tool-button primary" onClick={() => setDismissedClosureKey(closureCertificate.key)}>
+              <button type="button" className="tool-button" data-editor-autonomy-action="copy_evidence" onClick={handleCopyClosureEvidence}>
+                Copiar evidencia
+              </button>
+              {!closureCertificate.completed ? (
+                <button
+                  type="button"
+                  className="tool-button primary"
+                  data-editor-autonomy-action="send_repair"
+                  disabled={isSending}
+                  onClick={(event) => handleSendClosureRepairPrompt({ auto: event.currentTarget?.dataset?.operationalAutoClick === "true" })}
+                >
+                  {closureSecurityBlocked ? "Usar ruta segura CyberLACE" : isSending ? "Enviando reparacion" : "Enviar a agente reparador"}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className="tool-button"
+                data-editor-autonomy-action="minimize_certificate"
+                onClick={() => {
+                  markClosureHumanAction();
+                  setClosureModalMinimized(true);
+                }}
+              >
+                Minimizar certificado
+              </button>
+              <button
+                type="button"
+                className="tool-button"
+                data-editor-autonomy-action="close_certificate"
+                onClick={() => {
+                  markClosureHumanAction();
+                  setDismissedClosureKey(closureCertificate.key);
+                }}
+              >
                 Cerrar certificado
               </button>
               {!closureCertificate.completed ? (
                 <button
                   type="button"
                   className="tool-button"
+                  data-editor-autonomy-action="open_supervisor"
                   onClick={() => {
+                    markClosureHumanAction();
                     reviewerUserMinimizedRef.current = false;
                     setReviewerOpen(true);
                     setReviewerMinimized(false);
@@ -1966,9 +2606,27 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean 
                 </button>
               ) : null}
             </div>
+            {closureEvidenceMessage ? (
+              <small className="session-closure-copy-status">{closureEvidenceMessage}</small>
+            ) : null}
           </div>
         </div>
       </div>
+    ) : null}
+    {closureMinimizedOpen ? (
+      <button
+        type="button"
+        className={["session-closure-minimized", closureCertificate.completed ? "is-success" : "is-failure"].join(" ")}
+        data-editor-autonomy-action="restore_certificate"
+        onClick={() => {
+          markClosureHumanAction();
+          setClosureModalMinimized(false);
+        }}
+        aria-label="Restaurar certificado del runtime"
+      >
+        <strong>{closureCertificate.completed ? "Certificado OK" : "Certificado pendiente"}</strong>
+        <span>{closureCertificate.project} · {closureCertificate.taskId}</span>
+      </button>
     ) : null}
     {emailConfigOpen ? (
       <div className="email-config-overlay" role="dialog" aria-label="Configurar correo entrante HABLA">

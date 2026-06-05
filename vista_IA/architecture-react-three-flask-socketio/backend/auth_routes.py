@@ -22,11 +22,16 @@ except Exception:  # pragma: no cover - surfaced through /api/health and 503 res
 
 
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+LOGIN_IDENTIFIER_PATTERN = re.compile(r"^[A-Za-z0-9_.@+-]{3,254}$")
 PHONE_PATTERN = re.compile(r"^[0-9+()\-\s.]{7,32}$")
 AUTH_SCHEMA_LOCK = threading.Lock()
 AUTH_SCHEMA_READY = False
 AUTH_SESSION_HOURS = int(os.environ.get("HABLA_AUTH_SESSION_HOURS", "24"))
 AUTH_PLATFORM_NAME = "Harness Engineering Platform"
+DEFAULT_ADMIN_ENABLED = os.environ.get("HABLA_DEFAULT_ADMIN_ENABLED", "1").strip().lower() not in {"0", "false", "no", "off"}
+DEFAULT_ADMIN_USER = os.environ.get("HABLA_DEFAULT_ADMIN_USER", "admin").strip() or "admin"
+DEFAULT_ADMIN_PASSWORD = os.environ.get("HABLA_DEFAULT_ADMIN_PASSWORD", "admin") or "admin"
+DEFAULT_ADMIN_NAME = os.environ.get("HABLA_DEFAULT_ADMIN_NAME", "GitHub Validation Admin").strip() or "GitHub Validation Admin"
 AUTH_ALLOWED_PAYMENT_FIELDS = {
     "payment_token",
     "last4",
@@ -139,6 +144,60 @@ def _connect_db():
     )
 
 
+def _ensure_default_admin(cur) -> None:
+    if not DEFAULT_ADMIN_ENABLED:
+        return
+    identifier = _normalize_email(DEFAULT_ADMIN_USER)
+    if not identifier:
+        return
+
+    now = _utc_now()
+    password_hash = generate_password_hash(DEFAULT_ADMIN_PASSWORD, method="pbkdf2:sha256:260000")
+    cur.execute("SELECT id FROM users WHERE lower(email) = %s", (identifier,))
+    user = cur.fetchone()
+    if user:
+        user_id = user["id"]
+        cur.execute(
+            """
+            UPDATE users
+            SET full_name = %s, password_hash = %s, role = 'admin', status = 'active', updated_at = %s
+            WHERE id = %s
+            """,
+            (DEFAULT_ADMIN_NAME, password_hash, now, user_id),
+        )
+    else:
+        user_id = str(uuid.uuid4())
+        cur.execute(
+            """
+            INSERT INTO users (id, full_name, email, phone, password_hash, role, status, created_at, updated_at)
+            VALUES (%s, %s, %s, '', %s, 'admin', 'active', %s, %s)
+            """,
+            (user_id, DEFAULT_ADMIN_NAME, identifier, password_hash, now, now),
+        )
+
+    cur.execute("SELECT id FROM user_profiles WHERE user_id = %s LIMIT 1", (user_id,))
+    if not cur.fetchone():
+        cur.execute(
+            """
+            INSERT INTO user_profiles (id, user_id, company_name, developer_level, harness_access_level, created_at, updated_at)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """,
+            (str(uuid.uuid4()), user_id, "GitHub validation", "validator", "demo", now, now),
+        )
+
+    cur.execute("SELECT id FROM payment_methods WHERE user_id = %s LIMIT 1", (user_id,))
+    if not cur.fetchone():
+        cur.execute(
+            """
+            INSERT INTO payment_methods (
+                id, user_id, payment_token, last4, brand, exp_month, exp_year, subscription_status, created_at, updated_at
+            )
+            VALUES (%s, %s, %s, '0000', 'demo', NULL, NULL, 'demo', %s, %s)
+            """,
+            (str(uuid.uuid4()), user_id, f"default_admin_{secrets.token_urlsafe(12)}", now, now),
+        )
+
+
 def _ensure_schema(conn) -> None:
     global AUTH_SCHEMA_READY
     if AUTH_SCHEMA_READY:
@@ -206,6 +265,7 @@ def _ensure_schema(conn) -> None:
             cur.execute("CREATE INDEX IF NOT EXISTS sessions_user_id_idx ON sessions(user_id)")
             cur.execute("CREATE INDEX IF NOT EXISTS user_profiles_user_id_idx ON user_profiles(user_id)")
             cur.execute("CREATE INDEX IF NOT EXISTS payment_methods_user_id_idx ON payment_methods(user_id)")
+            _ensure_default_admin(cur)
         conn.commit()
         AUTH_SCHEMA_READY = True
 
@@ -248,13 +308,13 @@ def _validate_registration(payload: dict[str, Any]) -> tuple[dict[str, str], dic
 
 def _validate_login(payload: dict[str, Any]) -> tuple[dict[str, str], dict[str, str]]:
     errors: dict[str, str] = {}
-    email = _normalize_email(payload.get("usuario_email") or payload.get("email"))
+    identifier = _normalize_email(payload.get("usuario_email") or payload.get("email") or payload.get("usuario") or payload.get("username"))
     password = str(payload.get("usuario_password") or payload.get("password") or "")
-    if not EMAIL_PATTERN.match(email):
-        errors["usuario_email"] = "Ingresa un email valido."
+    if not LOGIN_IDENTIFIER_PATTERN.match(identifier) or ("@" in identifier and not EMAIL_PATTERN.match(identifier)):
+        errors["usuario_email"] = "Ingresa un usuario o email valido."
     if not password:
         errors["usuario_password"] = "La contrasena es obligatoria."
-    return errors, {"email": email, "password": password}
+    return errors, {"identifier": identifier, "password": password}
 
 
 def _sanitize_payment_method(raw_payment: Any) -> tuple[dict[str, Any], dict[str, str]]:
@@ -391,6 +451,32 @@ def _require_auth(conn, secret_key: str) -> tuple[dict[str, Any] | None, Any | N
     return context, None
 
 
+def verify_current_user_password(secret_key: str, password: str) -> tuple[bool, dict[str, Any] | None, str, str, int]:
+    if not password:
+        return False, None, "password_required", "Ingresa la contrasena de tu cuenta para eliminar archivos.", 400
+    token = _extract_token()
+    if not token:
+        return False, None, "unauthorized", "Tu sesion expiro o no es valida. Inicia sesion nuevamente.", 401
+    try:
+        with _open_auth_connection() as conn:
+            context = _load_auth_context(conn, token, secret_key)
+            if context is None:
+                return False, None, "unauthorized", "Tu sesion expiro o no es valida. Inicia sesion nuevamente.", 401
+            user_id = context.get("user", {}).get("id")
+            with conn.cursor() as cur:
+                cur.execute("SELECT password_hash, status FROM users WHERE id = %s", (user_id,))
+                user = cur.fetchone()
+            if not user or not check_password_hash(user["password_hash"], password):
+                return False, context, "invalid_password", "Contrasena incorrecta. No se elimino ningun archivo.", 401
+            if (user.get("status") or "active") != "active":
+                return False, context, "account_inactive", "La cuenta no esta activa.", 403
+            return True, context, "", "", 200
+    except AuthDatabaseUnavailable as error:
+        return False, None, error.code, str(error), 503
+    except Exception:
+        return False, None, "password_verification_failed", "No fue posible validar la contrasena.", 500
+
+
 def register_auth_routes(app: Flask, *, secret_key: str) -> None:
     @app.get("/api/health")
     def auth_health():
@@ -503,8 +589,8 @@ def register_auth_routes(app: Flask, *, secret_key: str) -> None:
             with _open_auth_connection() as conn:
                 with conn.cursor() as cur:
                     cur.execute(
-                        "SELECT id, password_hash, status FROM users WHERE email = %s",
-                        (clean_login["email"],),
+                        "SELECT id, password_hash, status FROM users WHERE lower(email) = %s",
+                        (clean_login["identifier"],),
                     )
                     user = cur.fetchone()
                     if not user or not check_password_hash(user["password_hash"], clean_login["password"]):

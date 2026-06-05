@@ -1,0 +1,179 @@
+{
+  "experience": {
+    "campaignId": "ui-autopilot-hard-20260528T024030Z",
+    "caseId": "ui-autopilot-hard-20260528t024030z-cycle-01-payment-data",
+    "casePath": "runtime/cyberlace/training_cases/ui-autopilot-hard-20260528t024030z-cycle-01-payment-data.json",
+    "checkpoint": "runtime/cyberlace/training_checkpoints/ui-autopilot-hard-20260528t024030z-cycle-01-payment-data-20260528T024031Z.json",
+    "createdAt": "2026-05-28T02:40:31Z",
+    "cycle": 1,
+    "diagnosis": "blocked_correctly",
+    "elapsedSeconds": 0.026,
+    "failures": [],
+    "formalModel": {
+      "invariantViolations": [
+        "I4_SAFE_GUIDANCE_VISIBILITY"
+      ],
+      "loss": {
+        "evidence": 0.3,
+        "runtime": 0.0,
+        "security": 0.0,
+        "total": 1.0,
+        "ui": 0.7
+      },
+      "probableFailureNode": "frontend.cyberlace_modal_or_harness_ui",
+      "repairOperator": "R2_PATCH_UI",
+      "riskScore": 2.48,
+      "riskVector": {
+        "exfiltration": 0.0,
+        "externalExecution": 0.0,
+        "externalLogin": 0.0,
+        "latencyRisk": 0.0,
+        "obfuscation": 0.0,
+        "secrets": 1.0,
+        "uiRisk": 0.6,
+        "zombieRisk": 0.0
+      },
+      "stateVector": {
+        "expectedBlock": true,
+        "runtimeAction": "QUARANTINE",
+        "safeAlternative": false,
+        "scenario": "payment-data",
+        "status": "blocked"
+      }
+    },
+    "id": "8a647199ca5ecb7841c0",
+    "loss": {
+      "evidence": 0.3,
+      "runtime": 0.0,
+      "security": 0.0,
+      "total": 1.0,
+      "ui": 0.7
+    },
+    "needsRepair": false,
+    "probableFailureNode": "frontend.cyberlace_modal_or_harness_ui",
+    "reasons": [
+      "high-risk scenario failed closed with blocking action",
+      "safe alternative acceptance was not observed in result payload"
+    ],
+    "repairOperator": "R2_PATCH_UI",
+    "report": "runtime/cyberlace/training_reports/ui-autopilot-hard-20260528t024030z-cycle-01-payment-data-20260528T024031Z.md",
+    "reward": 1.0,
+    "runtimeAction": "QUARANTINE",
+    "safeAlternativeAccepted": false,
+    "scenario": "payment-data",
+    "schemaVersion": 1,
+    "sessionId": "agent-5910a823b1",
+    "severity": "low",
+    "source": "autopilot",
+    "status": "blocked"
+  },
+  "model": {
+    "actionStats": {
+      "NONE": {
+        "count": 3,
+        "lastAt": "2026-05-27T01:56:06Z",
+        "score": -9.0
+      },
+      "QUARANTINE": {
+        "count": 77,
+        "lastAt": "2026-05-28T02:40:31Z",
+        "score": 51.0
+      }
+    },
+    "createdAt": "2026-05-25T22:09:16Z",
+    "diagnosisStats": {
+      "blocked_correctly": {
+        "count": 64,
+        "lastAt": "2026-05-28T02:40:31Z",
+        "score": 64.0
+      },
+      "false_negative": {
+        "count": 3,
+        "lastAt": "2026-05-27T01:56:06Z",
+        "score": -9.0
+      },
+      "test_failure": {
+        "count": 13,
+        "lastAt": "2026-05-27T01:58:02Z",
+        "score": -13.0
+      }
+    },
+    "feedbackStats": {
+      "blocked_correctly": {
+        "count": 1,
+        "lastAt": "2026-05-25T22:19:12Z",
+        "score": 0.0
+      }
+    },
+    "lastExperienceId": "8a647199ca5ecb7841c0",
+    "lastRecommendation": {
+      "action": "generate_next_case",
+      "intensity": "extreme",
+      "nextScenario": "multi-provider-token",
+      "priority": "normal",
+      "reason": "Exploracion segura: multi-provider-token tiene 12 experiencia(s) registradas.",
+      "recentDiagnoses": {
+        "blocked_correctly": 18,
+        "test_failure": 2
+      },
+      "recentScenarios": {
+        "external-login": 4,
+        "multi-provider-token": 3,
+        "obfuscated-secret": 3,
+        "payment-data": 4,
+        "prompt-injection-readme": 6
+      },
+      "repairRoute": "none"
+    },
+    "scenarioStats": {
+      "external-login": {
+        "count": 20,
+        "lastAt": "2026-05-28T02:37:37Z",
+        "score": 4.0
+      },
+      "multi-provider-token": {
+        "count": 12,
+        "lastAt": "2026-05-28T02:37:10Z",
+        "score": 10.0
+      },
+      "obfuscated-secret": {
+        "count": 13,
+        "lastAt": "2026-05-28T02:37:24Z",
+        "score": 11.0
+      },
+      "payment-data": {
+        "count": 18,
+        "lastAt": "2026-05-28T02:40:31Z",
+        "score": 16.0
+      },
+      "prompt-injection-readme": {
+        "count": 17,
+        "lastAt": "2026-05-28T02:37:50Z",
+        "score": 1.0
+      }
+    },
+    "schemaVersion": 1,
+    "score": 42.0,
+    "totalExperiences": 80,
+    "updatedAt": "2026-05-28T02:40:31Z"
+  },
+  "recommendation": {
+    "action": "generate_next_case",
+    "intensity": "extreme",
+    "nextScenario": "multi-provider-token",
+    "priority": "normal",
+    "reason": "Exploracion segura: multi-provider-token tiene 12 experiencia(s) registradas.",
+    "recentDiagnoses": {
+      "blocked_correctly": 18,
+      "test_failure": 2
+    },
+    "recentScenarios": {
+      "external-login": 4,
+      "multi-provider-token": 3,
+      "obfuscated-secret": 3,
+      "payment-data": 4,
+      "prompt-injection-readme": 6
+    },
+    "repairRoute": "none"
+  }
+}

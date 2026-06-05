@@ -40,6 +40,18 @@ except ImportError:  # pragma: no cover - supports direct script execution durin
 
 DEFAULT_VALIDATION_TIMEOUT_SECONDS = 60
 VALIDATION_SECURITY_EVENTS_NAME = "validation_security_events.jsonl"
+TASK_RESULT_KEYS = frozenset(
+    {
+        "task_id",
+        "completed",
+        "files_created",
+        "files_modified",
+        "validation_ran",
+        "validation_passed",
+        "blockers",
+        "next_recommendation",
+    }
+)
 
 
 def default_validation_security_policy() -> dict[str, Any]:
@@ -110,6 +122,8 @@ def validate_task_execution(
 
     workspace_path = Path(workspace).resolve()
     blockers = list(incoming_result["blockers"])
+    if not validated_task["expected_files"]:
+        blockers.append("Task expected_files is empty; filesystem evidence is required before completed=true.")
     workspace_ready = workspace_path.exists() and workspace_path.is_dir()
     if not workspace_ready:
         blockers.append(f"Workspace does not exist or is not a directory: {workspace_path}")
@@ -132,7 +146,8 @@ def validate_task_execution(
 
     validation_ran = [result["command"] for result in command_results]
     validation_passed = not blockers
-    completed = bool(incoming_result["completed"] and validation_passed)
+    evidence_complete = bool(workspace_ready and validated_task["expected_files"] and not evidence["missing"])
+    completed = bool(validation_passed and evidence_complete)
     next_recommendation = (
         "Task evidence and validation commands passed."
         if validation_passed
@@ -190,6 +205,8 @@ def _extract_task_result(execution_result: dict[str, Any]) -> dict[str, Any]:
     candidate = execution_result.get("task_result", execution_result)
     if not isinstance(candidate, dict):
         raise ContractError("execution_result.task_result must be an object")
+    if TASK_RESULT_KEYS.issubset(candidate):
+        candidate = {key: candidate[key] for key in TASK_RESULT_KEYS}
     return validate_task_result_contract(candidate)
 
 
@@ -210,15 +227,18 @@ def _inspect_expected_files(
             exists = path.exists()
             size = path.stat().st_size if exists and path.is_file() else None
             is_file = path.is_file() if exists else False
+            resolved_path = str(path)
         except ContractError as exc:
             exists = False
             size = None
             is_file = False
+            resolved_path = None
             blockers.append(str(exc))
 
         records.append(
             {
                 "path": relative_path,
+                "resolved_path": resolved_path,
                 "exists": exists,
                 "is_file": is_file,
                 "size": size,
@@ -250,6 +270,7 @@ def _inspect_expected_files(
     missing = [record["path"] for record in records if not record["exists"]]
     return {
         "expected_files": records,
+        "records": records,
         "found": found,
         "missing": missing,
         "reported_created": sorted(reported_created),
@@ -396,9 +417,23 @@ def _coerce_output(value: str | bytes | None) -> str:
 
 
 def _resolve_under_workspace(workspace: Path, relative_path: str) -> Path:
-    path = (workspace / relative_path).resolve()
+    raw = str(relative_path or "")
+    candidate = Path(raw)
+    if not raw.strip():
+        raise ContractError("Expected file path is empty.")
+    if "\x00" in raw or "\\" in raw:
+        raise ContractError(f"Expected file path is unsafe: {relative_path}")
+    if candidate.is_absolute():
+        raise ContractError(f"Expected file must be relative: {relative_path}")
+    if any(part == ".." for part in candidate.parts):
+        raise ContractError(f"Expected file contains path traversal: {relative_path}")
+    if _is_forbidden_control_plane_path(raw):
+        raise ContractError(f"Expected file targets control-plane state: {relative_path}")
+
+    workspace_real = workspace.resolve()
+    path = (workspace_real / candidate).resolve()
     try:
-        path.relative_to(workspace)
+        path.relative_to(workspace_real)
     except ValueError as exc:
         raise ContractError(f"Expected file escapes workspace: {relative_path}") from exc
     return path

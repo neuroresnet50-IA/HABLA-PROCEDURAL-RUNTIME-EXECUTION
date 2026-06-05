@@ -2,8 +2,22 @@ import { useEffect, useMemo, useState } from "react";
 
 const AUTH_TOKEN_STORAGE_KEY = "hablaAuthToken";
 const AUTH_INTRO_STORAGE_KEY = "hablaAuthIntroCompleted";
-const DEFAULT_LOADING_MS = 30000;
-const AUTH_REQUEST_TIMEOUT_MS = 15000;
+const AUTH_SESSION_READY_KEY = "hablaAuthSessionReady";
+const UI_REFRESH_SUPPRESS_AUTH_KEY = "hablaUiRefreshSuppressAuthGate";
+const UI_REFRESH_SUPPRESS_MAX_MS = 120000;
+const AUTH_SESSION_READY_MAX_MS = 12 * 60 * 60 * 1000;
+const DEFAULT_LOADING_MS = 1200;
+const AUTH_REQUEST_TIMEOUT_MS = 45000;
+const AUTH_RETRY_DELAY_MS = 600;
+
+function envFlag(value, defaultValue = false) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  if (!normalized) return defaultValue;
+  return ["1", "true", "yes", "on"].includes(normalized);
+}
+
+const REMEMBER_SESSION_ENABLED = envFlag(import.meta.env.VITE_HABLA_REMEMBER_SESSION, false);
+const LOCAL_TEMPORARY_AUTH_ENABLED = envFlag(import.meta.env.VITE_HABLA_LOCAL_TEMP_AUTH, false);
 
 function storageGet(key) {
   try {
@@ -29,6 +43,40 @@ function storageRemove(key) {
   }
 }
 
+function sessionGet(key) {
+  try {
+    return window.sessionStorage.getItem(key) || "";
+  } catch {
+    return "";
+  }
+}
+
+function sessionSet(key, value) {
+  try {
+    window.sessionStorage.setItem(key, String(value));
+  } catch {
+    // Session storage can be blocked; keep the current in-memory flow.
+  }
+}
+
+function sessionRemove(key) {
+  try {
+    window.sessionStorage.removeItem(key);
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function uiRefreshCanSuppressAuthGate() {
+  const now = Date.now();
+  const suppressAt = Number(sessionGet(UI_REFRESH_SUPPRESS_AUTH_KEY) || 0);
+  const readyAt = Number(sessionGet(AUTH_SESSION_READY_KEY) || 0);
+  const suppressFresh = Number.isFinite(suppressAt) && suppressAt > 0 && now - suppressAt <= UI_REFRESH_SUPPRESS_MAX_MS;
+  const sessionFresh = Number.isFinite(readyAt) && readyAt > 0 && now - readyAt <= AUTH_SESSION_READY_MAX_MS;
+  if (!suppressFresh) sessionRemove(UI_REFRESH_SUPPRESS_AUTH_KEY);
+  return suppressFresh && sessionFresh;
+}
+
 function buildApiUrl(apiBaseUrl, path) {
   const base = String(apiBaseUrl || "").replace(/\/+$/, "");
   const normalizedPath = String(path || "").startsWith("/") ? path : `/${path}`;
@@ -39,25 +87,24 @@ function normalizeFieldErrors(fields) {
   return fields && typeof fields === "object" ? fields : {};
 }
 
-async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUEST_TIMEOUT_MS, ...options } = {}) {
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-  const requestUrl = buildApiUrl(apiBaseUrl, path);
+function isAbortLike(error) {
+  const rawMessage = String(error?.message || "");
+  return error?.name === "AbortError" || rawMessage === "auth_request_timeout" || rawMessage.includes("aborted");
+}
+
+function wait(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
+async function fetchWithAuthTimeout(requestUrl, options, timeoutMs) {
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(new Error("auth_request_timeout")), timeoutMs);
-  let response;
   try {
-    response = await fetch(requestUrl, { ...options, headers, signal: controller.signal });
+    return await fetch(requestUrl, { ...options, signal: controller.signal });
   } catch (error) {
-    const rawMessage = String(error?.message || "");
-    const aborted = error?.name === "AbortError" || rawMessage === "auth_request_timeout" || rawMessage.includes("aborted");
-    if (aborted) {
-      const timeoutError = new Error(`Tiempo de espera agotado al contactar autenticacion en ${requestUrl}.`);
+    if (isAbortLike(error)) {
+      const timeoutSeconds = Math.round(timeoutMs / 1000);
+      const timeoutError = new Error(`Tiempo de espera agotado al contactar autenticacion en ${requestUrl} despues de ${timeoutSeconds}s.`);
       timeoutError.code = "auth_request_timeout";
       timeoutError.cause = error;
       throw timeoutError;
@@ -68,6 +115,31 @@ async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUES
     throw networkError;
   } finally {
     window.clearTimeout(timeoutId);
+  }
+}
+
+async function authFetch(apiBaseUrl, path, { token = "", timeoutMs = AUTH_REQUEST_TIMEOUT_MS, retryOnTimeout = false, ...options } = {}) {
+  const headers = {
+    "Content-Type": "application/json",
+    ...(options.headers || {}),
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const requestUrl = buildApiUrl(apiBaseUrl, path);
+  const attempts = retryOnTimeout ? 2 : 1;
+  let response;
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      response = await fetchWithAuthTimeout(requestUrl, { ...options, headers }, timeoutMs);
+      break;
+    } catch (error) {
+      if (error?.code === "auth_request_timeout" && attempt + 1 < attempts) {
+        await wait(AUTH_RETRY_DELAY_MS);
+        continue;
+      }
+      throw error;
+    }
   }
   const payload = await response.json().catch(() => ({}));
   if (!response.ok || payload?.ok === false) {
@@ -108,7 +180,11 @@ function validateRegisterForm(form) {
 
 function validateLoginForm(form) {
   const errors = {};
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.usuario_email.trim())) errors.usuario_email = "Email invalido.";
+  const identifier = form.usuario_email.trim();
+  const looksLikeEmail = identifier.includes("@");
+  const validIdentifier = /^[A-Za-z0-9_.@+-]{3,254}$/.test(identifier);
+  const validEmail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(identifier);
+  if (!validIdentifier || (looksLikeEmail && !validEmail)) errors.usuario_email = "Usuario o email invalido.";
   if (!form.usuario_password) errors.usuario_password = "Contrasena requerida.";
   return errors;
 }
@@ -119,7 +195,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
     return Number.isFinite(rawValue) && rawValue >= 0 ? rawValue : DEFAULT_LOADING_MS;
   }, []);
   const [phase, setPhase] = useState("checking");
-  const [mode, setMode] = useState("register");
+  const [mode, setMode] = useState("login");
   const [progress, setProgress] = useState(0);
   const [sessionToken, setSessionToken] = useState("");
   const [profile, setProfile] = useState(null);
@@ -131,19 +207,35 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
 
   useEffect(() => {
     let cancelled = false;
-    const existingToken = storageGet(AUTH_TOKEN_STORAGE_KEY);
+    const refreshMaySkipIntro = uiRefreshCanSuppressAuthGate();
+    if (refreshMaySkipIntro) {
+      sessionRemove(UI_REFRESH_SUPPRESS_AUTH_KEY);
+      storageSet(AUTH_INTRO_STORAGE_KEY, "1");
+    }
+    const existingToken = REMEMBER_SESSION_ENABLED ? storageGet(AUTH_TOKEN_STORAGE_KEY) : sessionGet(AUTH_TOKEN_STORAGE_KEY);
+    if (!REMEMBER_SESSION_ENABLED) {
+      storageRemove(AUTH_TOKEN_STORAGE_KEY);
+    }
     async function checkAuthService() {
       try {
         const payload = await authFetch(apiBaseUrl, "/api/health");
         const postgres = payload?.auth?.postgres || {};
         if (!postgres.configured || postgres.driver === "missing" || postgres.ready === false) {
-          setMessage("PostgreSQL aun no esta configurado para autenticacion. Puedes entrar en modo local temporal.");
+          setMessage(
+            LOCAL_TEMPORARY_AUTH_ENABLED
+              ? "PostgreSQL no esta listo. El acceso local temporal solo esta habilitado por configuracion explicita de desarrollo."
+              : "PostgreSQL no esta listo. El acceso queda bloqueado hasta que el login real este disponible."
+          );
           setPhase("unavailable");
           return false;
         }
         return true;
       } catch (error) {
-        setMessage(error.message || "Autenticacion temporalmente no disponible. Puedes entrar en modo local.");
+        setMessage(
+          LOCAL_TEMPORARY_AUTH_ENABLED
+            ? (error.message || "Autenticacion temporalmente no disponible; acceso local temporal habilitado por configuracion explicita.")
+            : (error.message || "Autenticacion temporalmente no disponible. La aplicacion no permite saltar el login real.")
+        );
         setPhase("unavailable");
         return false;
       }
@@ -153,6 +245,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
       const authServiceReady = await checkAuthService();
       if (cancelled || !authServiceReady) return;
       if (!existingToken) {
+        sessionRemove(AUTH_SESSION_READY_KEY);
         if (storageGet(AUTH_INTRO_STORAGE_KEY) === "1") {
           setPhase("setup");
         } else {
@@ -168,6 +261,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
         setPhase("authenticated");
       } catch {
         storageRemove(AUTH_TOKEN_STORAGE_KEY);
+        sessionRemove(AUTH_TOKEN_STORAGE_KEY);
         if (cancelled) return;
         setSessionToken("");
         setProfile(null);
@@ -216,12 +310,24 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
 
   function completeAuth(payload) {
     if (payload.token) {
-      storageSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+      if (REMEMBER_SESSION_ENABLED) {
+        storageSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+        sessionRemove(AUTH_TOKEN_STORAGE_KEY);
+      } else {
+        storageRemove(AUTH_TOKEN_STORAGE_KEY);
+        sessionSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+      }
       setSessionToken(payload.token);
     }
     setProfile(payload.user || null);
+    sessionSet(AUTH_SESSION_READY_KEY, String(Date.now()));
     setMessage("");
     setFieldErrors({});
+    setPhase("authenticated");
+  }
+
+  function completeLocalTemporaryAuth() {
+    sessionSet(AUTH_SESSION_READY_KEY, String(Date.now()));
     setPhase("authenticated");
   }
 
@@ -266,6 +372,8 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
       const payload = await authFetch(apiBaseUrl, "/api/auth/login", {
         method: "POST",
         body: JSON.stringify(loginForm),
+        timeoutMs: 60000,
+        retryOnTimeout: true,
       });
       completeAuth(payload);
     } catch (error) {
@@ -316,19 +424,21 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
             </div>
             <div>
               <p className="welcome-auth-eyebrow">HABLA Observer IA</p>
-              <h2>Acceso local temporal</h2>
-              <span>PostgreSQL pendiente de configuracion</span>
+              <h2>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Acceso local temporal" : "Login requerido"}</h2>
+              <span>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Modo local habilitado explicitamente" : "PostgreSQL/auth requerido"}</span>
             </div>
           </div>
           <div className="welcome-auth-content">
             <p className="welcome-auth-message" role="alert">{message || "Servicio temporalmente no disponible."}</p>
             <div className="welcome-auth-demo-access">
-              <strong>La aplicacion principal no fue bloqueada</strong>
-              <span>El login real se activara cuando PostgreSQL quede configurado y disponible.</span>
+              <strong>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Acceso local temporal habilitado" : "Acceso bloqueado por seguridad"}</strong>
+              <span>{LOCAL_TEMPORARY_AUTH_ENABLED ? "Este modo solo debe usarse en desarrollo controlado." : "La aplicacion no permite saltar el login real."}</span>
             </div>
-            <button type="button" className="welcome-auth-submit" onClick={() => setPhase("authenticated")}>
-              Entrar al sistema local
-            </button>
+            {LOCAL_TEMPORARY_AUTH_ENABLED ? (
+              <button type="button" className="welcome-auth-submit" onClick={completeLocalTemporaryAuth}>
+                Entrar al sistema local
+              </button>
+            ) : null}
           </div>
         </div>
       </section>
@@ -401,8 +511,8 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
           ) : (
             <form className="welcome-auth-form" onSubmit={submitLogin}>
               <label>
-                <span>Email</span>
-                <input name="usuario_email" type="email" value={loginForm.usuario_email} onChange={handleLoginChange} autoComplete="email" required />
+                <span>Usuario o email</span>
+                <input name="usuario_email" type="text" value={loginForm.usuario_email} onChange={handleLoginChange} autoComplete="username" required />
                 {fieldErrors.usuario_email ? <small>{fieldErrors.usuario_email}</small> : null}
               </label>
               <label>
@@ -410,6 +520,10 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
                 <input name="usuario_password" type="password" value={loginForm.usuario_password} onChange={handleLoginChange} autoComplete="current-password" required />
                 {fieldErrors.usuario_password ? <small>{fieldErrors.usuario_password}</small> : null}
               </label>
+              <div className="welcome-auth-demo-access">
+                <strong>Acceso de validacion</strong>
+                <span>Usuario: admin / Contrasena: admin</span>
+              </div>
               <button type="submit" className="welcome-auth-submit" disabled={busy}>
                 {busy ? "Validando..." : "Iniciar sesion"}
               </button>

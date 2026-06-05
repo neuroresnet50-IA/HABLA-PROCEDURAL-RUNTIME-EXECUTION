@@ -1,0 +1,258 @@
+{
+  "directive_generator_inputs": {
+    "checkpoint": {
+      "available_checkpoint_keys": [
+        "continuity-continuity-20260527T025833Z",
+        "continuity-continuity-20260527T030026Z",
+        "continuity-continuity-20260527T030158Z",
+        "continuity-continuity-20260527T030336Z",
+        "continuity-continuity-20260527T031130Z",
+        "continuity-continuity-20260527T034324Z",
+        "continuity-continuity-local-debug",
+        "continuity-prompt-flight-20260527T033816Z-canary",
+        "continuity-prompt-flight-20260527T034342Z-canary",
+        "prompt-flight-prompt-flight-20260527T044433Z"
+      ],
+      "checkpoint_key": "prompt-flight-prompt-flight-20260527T044433Z",
+      "data": {
+        "checkpoint_key": "prompt-flight-prompt-flight-20260527T044433Z",
+        "created_at": "2026-05-27T04:44:33Z",
+        "payload": {
+          "mode": "real_session_guarded",
+          "promptHash": "8c490de0e703e0f24b5a05a1bddf924aeb34ca11b2fc345855853e096cd466a4",
+          "reportPath": "runtime/continuity_probe/prompt-flight-20260527T044433Z/prompt_flight_report.json",
+          "responseFile": "src/prompt_flight_response.json",
+          "stageLatenciesMs": {
+            "backend_health": 54.248,
+            "cyberlace_preflight": 3.601,
+            "directive_generated": 29.052,
+            "habla_basic_envelope": 0.881,
+            "harness_summary": 109.931,
+            "history_written": 1.993,
+            "observer_status": 2.626,
+            "plan_loaded": 12.491,
+            "policy_loaded": 1.973,
+            "prompt_classified": 0.553,
+            "prompt_received": 0.836,
+            "real_session_bootstrap": 4.956,
+            "safe_canary_continuity": 0.0,
+            "task_planned": 0.477,
+            "task_queue_persisted": 2.076,
+            "validator_passed": 62.895,
+            "worker_executed": 165.938
+          },
+          "taskId": "PROMPT-REAL-20260527T044433Z",
+          "traceId": "prompt-flight-20260527T044433Z",
+          "validationPassed": true
+        }
+      },
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T044433Z.json",
+      "source": "runtime/checkpoints",
+      "tried": [
+        {
+          "checkpoint_key": "prompt-flight-prompt-flight-20260527T044433Z",
+          "source": "runtime/checkpoints"
+        }
+      ]
+    },
+    "evidence": {
+      "blockers": [],
+      "expected_files": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+          "exists": true,
+          "is_file": true,
+          "path": "src/prompt_flight_response.json",
+          "size": 1167
+        }
+      ],
+      "found": [
+        "src/prompt_flight_response.json"
+      ],
+      "missing": [],
+      "validation_commands": [
+        "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050508Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+      ]
+    },
+    "policy_rules": {
+      "active_constraints": [
+        "El modo smoke no puede inferirse por palabras sueltas.",
+        "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+        "Deben existir modos expl\u00edcitos:",
+        "smoke",
+        "build",
+        "medium",
+        "long-run",
+        "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+        "Cada tarea debe lanzar un worker propio.",
+        "Cada tarea debe tener timeout propio.",
+        "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+        "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+        "long-run no puede comportarse igual que smoke.",
+        "El progreso solo vale si existe evidencia real.",
+        "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+        "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+        "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+        "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+        "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+        "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+        "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+        "Respect the selected sprint deliverables and do not advance future deliverables."
+      ],
+      "directive_policy": [
+        "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+        "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+        "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+        "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+        "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n."
+      ],
+      "implementation_policy": [
+        "prioriza claridad y trazabilidad,",
+        "deja comentarios \u00fatiles solo donde agreguen valor,",
+        "no inventes \u00e9xito si no hay validaci\u00f3n,",
+        "no cierres una tarea como completa sin evidencia real,",
+        "si falta algo, deja el estado expl\u00edcito en archivos de runtime."
+      ],
+      "runtime_hard_rules": [
+        "El modo smoke no puede inferirse por palabras sueltas.",
+        "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+        "Deben existir modos expl\u00edcitos:",
+        "smoke",
+        "build",
+        "medium",
+        "long-run",
+        "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+        "Cada tarea debe lanzar un worker propio.",
+        "Cada tarea debe tener timeout propio.",
+        "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+        "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+        "long-run no puede comportarse igual que smoke.",
+        "El progreso solo vale si existe evidencia real.",
+        "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+        "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea."
+      ],
+      "sprint_delivery_policy": [
+        "modificar solo el alcance asignado,",
+        "dejar artefactos persistidos,",
+        "dejar tests o validaciones asociadas,",
+        "registrar riesgos o pendientes,",
+        "no invadir sprints futuros salvo stubs m\u00ednimos necesarios."
+      ]
+    },
+    "repo_root": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+    "runtime_dir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime",
+    "runtime_errors": [],
+    "sprint": {
+      "acceptance": [],
+      "deliverables": [],
+      "number": null,
+      "objective": "",
+      "out_of_scope_deliverables": [],
+      "source": "not_inferred"
+    },
+    "task": {
+      "checkpoint_key": null,
+      "dependencies": [],
+      "expected_files": [
+        "src/prompt_flight_response.json"
+      ],
+      "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+      "id": "PROMPT-REAL-20260527T050508Z",
+      "max_retries": 0,
+      "mode": "build",
+      "priority": 80,
+      "status": "pending",
+      "timeout_seconds": 120,
+      "title": "Process guarded HABLA BASIC prompt",
+      "validation_commands": [
+        "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050508Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+      ]
+    }
+  },
+  "directive_generator_ready": true,
+  "guide_type": "habla_basic_procedure",
+  "objective": {
+    "operational_goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+    "sprint_objective": "",
+    "task_title": "Process guarded HABLA BASIC prompt"
+  },
+  "procedure": {
+    "alcance_controlado": {
+      "out_of_scope_deliverables": [],
+      "sprint_acceptance": [],
+      "sprint_deliverables": []
+    },
+    "checkpoint_de_partida": {
+      "available": true,
+      "checkpoint_key": "prompt-flight-prompt-flight-20260527T044433Z",
+      "path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/prompt-flight-prompt-flight-20260527T044433Z.json",
+      "source": "runtime/checkpoints"
+    },
+    "criterio_de_cierre": [
+      "TaskResult.completed can be true only with real disk evidence.",
+      "TaskResult.blockers must be empty before closing the task.",
+      "Every expected file must exist under the repository root.",
+      "Every declared validation command must run and return code 0.",
+      "Validation results must be represented in the task result history."
+    ],
+    "evidencia_requerida": {
+      "disk_records": [
+        {
+          "absolute_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/src/prompt_flight_response.json",
+          "exists": true,
+          "is_file": true,
+          "path": "src/prompt_flight_response.json",
+          "size": 1167
+        }
+      ],
+      "evidence_found": [
+        "src/prompt_flight_response.json"
+      ],
+      "evidence_missing": [],
+      "expected_files": [
+        "src/prompt_flight_response.json"
+      ]
+    },
+    "objetivo_operativo_actual": {
+      "goal": "Process one persisted prompt through task queue, directive generation, worker, validator, history and checkpoint.",
+      "mode": "build",
+      "task_id": "PROMPT-REAL-20260527T050508Z",
+      "timeout_seconds": 120
+    },
+    "restricciones_activas": [
+      "El modo smoke no puede inferirse por palabras sueltas.",
+      "El modo smoke solo puede venir de una se\u00f1al expl\u00edcita de configuraci\u00f3n.",
+      "Deben existir modos expl\u00edcitos:",
+      "smoke",
+      "build",
+      "medium",
+      "long-run",
+      "Una sesi\u00f3n debe contener m\u00faltiples tareas.",
+      "Cada tarea debe lanzar un worker propio.",
+      "Cada tarea debe tener timeout propio.",
+      "El retry debe ser por tarea, no por sesi\u00f3n completa.",
+      "Si un proceso no cierra con terminate(), debe cerrarse con kill().",
+      "long-run no puede comportarse igual que smoke.",
+      "El progreso solo vale si existe evidencia real.",
+      "Las instrucciones del worker deben derivarse de `AGENTS.md`, `PLANS.md`, el estado persistido y HABLA BASIC.",
+      "`PROMPT_SPRINT_*.txt` solo puede existir como artefacto humano o bootstrap; el sistema final debe generar directivas por tarea.",
+      "El runtime debe cargar `AGENTS.md` como constituci\u00f3n del repositorio.",
+      "El runtime debe cargar `PLANS.md` como roadmap ejecutable.",
+      "El runtime debe combinar pol\u00edtica, plan, estado, historial y checkpoint para construir la directiva de la tarea actual.",
+      "HABLA BASIC debe actuar como capa procedural para esa directiva, no como texto decorativo.",
+      "Cada directiva generada para un worker debe persistirse en disco para auditor\u00eda y reanudaci\u00f3n.",
+      "Respect the selected sprint deliverables and do not advance future deliverables."
+    ],
+    "riesgos_o_bloqueos_conocidos": [],
+    "validacion_esperada": {
+      "acceptance_criteria": [],
+      "validation_commands": [
+        "python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\"'\"'src/prompt_flight_response.json'\"'\"').read_text(encoding='\"'\"'utf-8'\"'\"')); assert d.get('\"'\"'traceId'\"'\"') == '\"'\"'prompt-flight-20260527T050508Z'\"'\"'; assert d.get('\"'\"'promptHash'\"'\"') == '\"'\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\"'\"'; assert d.get('\"'\"'processedBy'\"'\"') == '\"'\"'guarded_runtime_worker'\"'\"'; assert d.get('\"'\"'hablaBasic'\"'\"', {}).get('\"'\"'inputHash'\"'\"') == d.get('\"'\"'promptHash'\"'\"')'"
+      ],
+      "validation_ran_must_be_recorded": true
+    }
+  },
+  "schema_version": 1,
+  "sprint_number": null,
+  "task_id": "PROMPT-REAL-20260527T050508Z"
+}

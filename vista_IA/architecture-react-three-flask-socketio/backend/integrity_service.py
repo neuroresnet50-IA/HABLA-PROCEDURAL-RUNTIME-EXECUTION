@@ -13,6 +13,30 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List
 
 
+TRUSTED_RUNTIME_CONTROL_DOCUMENTS = {"LACE.md", "LACE_LOG.md"}
+TRUSTED_RUNTIME_CONTROL_PREFIXES = ("docs/lace_cycles/",)
+CYBERLACE_SAFE_PRELUDE_MARKERS = (
+    "[CONTEXTO AUTORIZADO CYBERLACE]",
+    "PROMPT SEGURO P_safe",
+    "[PROMPT SEGURO GENERADO POR CYBERLACE]",
+)
+
+
+def normalize_integrity_relative_path(value: Any) -> str:
+    return str(value or "").replace("\\", "/").lstrip("./")
+
+
+def is_trusted_runtime_control_document(relative_path: Any, content: str = "") -> bool:
+    normalized = normalize_integrity_relative_path(relative_path)
+    if normalized in TRUSTED_RUNTIME_CONTROL_DOCUMENTS:
+        return True
+    if any(normalized.startswith(prefix) for prefix in TRUSTED_RUNTIME_CONTROL_PREFIXES):
+        return True
+    if normalized == "docs/habla-session.md":
+        return any(marker in content for marker in CYBERLACE_SAFE_PRELUDE_MARKERS)
+    return False
+
+
 class IntegrityService:
     def __init__(
         self,
@@ -114,6 +138,8 @@ class IntegrityService:
                         baseline_content = resolved_file[1].read_text(encoding="utf-8")
                     except (UnicodeDecodeError, OSError):
                         baseline_content = ""
+            if is_trusted_runtime_control_document(relative_path, baseline_content):
+                continue
             files.append(
                 {
                     "path": relative_path,
@@ -688,6 +714,7 @@ class IntegrityService:
         ledger = self.read_file_write_ledger(project_dir)
         findings: List[Dict[str, Any]] = list(baseline_findings)
         registered_writes = 0
+        trusted_runtime_control_files = 0
 
         for relative_path, manifest_entry in manifest_files.items():
             if not relative_path:
@@ -695,6 +722,9 @@ class IntegrityService:
             current_entry = current_files.get(relative_path)
             expected_hash = str(manifest_entry.get("sha256") or "")
             if current_entry is None:
+                if is_trusted_runtime_control_document(relative_path, str(manifest_entry.get("content") or "")):
+                    trusted_runtime_control_files += 1
+                    continue
                 if self.registered_write_after_baseline(ledger, relative_path, baseline_at):
                     registered_writes += 1
                     continue
@@ -738,6 +768,9 @@ class IntegrityService:
             actual_hash = hashlib.sha256(actual_content.encode("utf-8")).hexdigest()
             if actual_hash == expected_hash:
                 continue
+            if is_trusted_runtime_control_document(relative_path, actual_content):
+                trusted_runtime_control_files += 1
+                continue
             if self.registered_write_after_baseline(ledger, relative_path, baseline_at):
                 registered_writes += 1
                 continue
@@ -776,12 +809,17 @@ class IntegrityService:
                 continue
             actual_hash = str(current_entry.get("sha256") or "")
             resolved_file = self.resolve_editor_file(project_dir, relative_path)
-            if not actual_hash and resolved_file is not None:
+            current_content = ""
+            if resolved_file is not None:
                 try:
                     current_content = resolved_file[1].read_text(encoding="utf-8")
-                    actual_hash = hashlib.sha256(current_content.encode("utf-8")).hexdigest()
+                    if not actual_hash:
+                        actual_hash = hashlib.sha256(current_content.encode("utf-8")).hexdigest()
                 except (UnicodeDecodeError, OSError):
                     actual_hash = ""
+            if is_trusted_runtime_control_document(relative_path, current_content):
+                trusted_runtime_control_files += 1
+                continue
             findings.append(
                 {
                     "id": f"{relative_path}:untracked_file",
@@ -811,6 +849,7 @@ class IntegrityService:
             "untrackedFiles": len([finding for finding in findings if finding.get("type") == "untracked_file"]),
             "baselineFindings": len(baseline_findings),
             "registeredWrites": registered_writes,
+            "trustedRuntimeControlFiles": trusted_runtime_control_files,
         }
         report = {
             "schema_version": 1,

@@ -14,9 +14,13 @@ from typing import Any
 
 try:
     from .contracts import ContractError, validate_task, validate_task_result
+    from .host_write_executor import should_use_host_write_executor
+    from .runtime_failure_classifier import classify_runtime_failure
     from .state_store import StateStore
 except ImportError:  # pragma: no cover - supports direct script execution during bootstraps.
     from contracts import ContractError, validate_task, validate_task_result  # type: ignore
+    from host_write_executor import should_use_host_write_executor  # type: ignore
+    from runtime_failure_classifier import classify_runtime_failure  # type: ignore
     from state_store import StateStore  # type: ignore
 
 
@@ -133,6 +137,45 @@ def decide_recovery(
 
     if _is_success(normalized_failure):
         return _decision("noop", "Task result already completed without blockers.", retry_count)
+
+    infrastructure = classify_runtime_failure(normalized_failure)
+    if infrastructure["infrastructureFailure"]:
+        host_write_allowed = should_use_host_write_executor(validated_task)
+        return _decision(
+            "block",
+            (
+                "Infrastructure failure detected in worker runtime; simple file-write task can be retried with HostWriteExecutor."
+                if host_write_allowed
+                else "Infrastructure failure detected in worker runtime; fix worker sandbox or use no-bwrap before retrying complex tasks."
+            ),
+            retry_count,
+            infrastructureFailure=True,
+            fatalInfrastructureFailure=bool(infrastructure.get("fatalInfrastructureFailure")),
+            markers=list(infrastructure.get("markers") or []),
+            fatalMarkers=list(infrastructure.get("fatalMarkers") or []),
+            retry=False,
+            split=False,
+            extendTimeout=False,
+            retryWithHostWriteExecutor=host_write_allowed,
+            nextRecommendation=(
+                "retry_with_host_write_executor"
+                if host_write_allowed
+                else "fix_worker_sandbox_or_use_no_bwrap"
+            ),
+        )
+
+    if _is_scanner_lock_contention(normalized_failure):
+        return _decision(
+            "block",
+            "Scanner is locked by the active agent session; defer scanner to control-plane postflight after the worker releases the project lock.",
+            retry_count,
+            scannerDeferred=True,
+            postflightLockContention=True,
+            retry=False,
+            split=False,
+            extendTimeout=False,
+            nextRecommendation="run_scanner_after_session_unlock",
+        )
 
     if allow_split and _suggests_split(normalized_failure) and _can_split_task(validated_task):
         split_tasks = split_task(validated_task, reason="Failure suggests timeout or oversized task.")
@@ -284,7 +327,7 @@ def normalize_failure(failure: dict[str, Any] | None) -> dict[str, Any]:
         "next_recommendation",
     }
     if task_result_keys.issubset(failure):
-        return {"task_result": validate_task_result(failure)}
+        return {"task_result": validate_task_result({key: failure[key] for key in task_result_keys})}
 
     return dict(failure)
 
@@ -315,7 +358,17 @@ def _is_success(failure: dict[str, Any]) -> bool:
     return bool(failure.get("completed") is True and failure.get("validation_passed") is True)
 
 
+def _is_scanner_lock_contention(failure: dict[str, Any]) -> bool:
+    text = _failure_text(failure)
+    has_project_lock = "project_locked" in text or "statuscode=423" in text or "statuscode 423" in text
+    has_scanner = "scanner" in text or "code-scanner" in text or "scanner canonico" in text
+    has_active_session = "agent_session_active" in text or "active agent session" in text or "sesion activa" in text
+    return bool(has_project_lock and has_scanner and has_active_session)
+
+
 def _suggests_split(failure: dict[str, Any]) -> bool:
+    if _is_scanner_lock_contention(failure):
+        return False
     text = _failure_text(failure)
     markers = (
         "timeout",
@@ -359,6 +412,8 @@ def _split_goal(goal: str) -> list[str]:
 
 def _can_split_task(task: dict[str, Any]) -> bool:
     task_id = str(task.get("id") or "")
+    if task_id.startswith("LACE-"):
+        return False
     if "-SPLIT-" in task_id:
         return False
     expected_files = list(task.get("expected_files") or [])

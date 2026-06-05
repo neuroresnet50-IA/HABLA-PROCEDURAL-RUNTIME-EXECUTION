@@ -1,0 +1,38 @@
+{
+  "backendPid": 1262189,
+  "backendUrl": "http://127.0.0.1:5001/",
+  "nextStep": "Hard refresh browser with Ctrl+Shift+R and retry AgentStudio project buttons.",
+  "status": "completed",
+  "task": "Restart server to accept UI/project unblock changes",
+  "timestamp": "2026-05-24T21:01:33Z",
+  "validation": [
+    {
+      "backendPid": 1262189,
+      "command": "OPEN_BROWSER=0 ./start.sh restart",
+      "ok": true
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/health",
+      "ok": true
+    },
+    {
+      "command": "curl --max-time 5 http://127.0.0.1:5001/api/agent/projects",
+      "httpCode": 200,
+      "ok": true,
+      "timeSeconds": 0.010936
+    },
+    {
+      "command": "curl http://127.0.0.1:5001/api/cyberlace/health",
+      "enabled": true,
+      "engineAvailable": true,
+      "mode": "monitor",
+      "ok": true
+    },
+    {
+      "bytes": 402,
+      "command": "curl http://127.0.0.1:5001/",
+      "httpCode": 200,
+      "ok": true
+    }
+  ]
+}

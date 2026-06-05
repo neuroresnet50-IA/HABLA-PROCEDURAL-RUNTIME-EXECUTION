@@ -1,0 +1,44 @@
+{
+  "checkpoint": "cyberlace-live-math-typewriter-20260526T021615Z.json",
+  "createdAt": "2026-05-26T02:16:15.404133+00:00",
+  "scope": "CyberLACE live mathematical blackboard with typewriter effect",
+  "changes": [
+    "Added cyberlaceMathWriter state and board ref.",
+    "Added live typewriter loop for CyberLACE math rows.",
+    "Moved math board to the top of the red CyberLACE modal.",
+    "Added fixed-height blackboard with internal scroll and blinking cursor.",
+    "Kept green safe-guidance modal and backend runtime unchanged."
+  ],
+  "visualBehavior": [
+    "Modal opens with Pizarra matematica en vivo.",
+    "Equations are typed one line at a time.",
+    "Board auto-scrolls internally without stretching the whole modal.",
+    "Cursor blinks while the current equation is being written."
+  ],
+  "validation": {
+    "frontendBuild": "passed",
+    "restart": "passed",
+    "health": "passed",
+    "socketIoPollingUpgrades": [],
+    "bundleContains": [
+      "Pizarra matematica en vivo",
+      "cyberlace-math-board",
+      "worker=DENIED"
+    ],
+    "realCase": {
+      "caseId": "math-board-live-typewriter-smoke",
+      "status": "blocked",
+      "runtimeAction": "QUARANTINE",
+      "diagnosis": "blocked_correctly",
+      "pid": null,
+      "report": "runtime/cyberlace/training_reports/math-board-live-typewriter-smoke-20260526T021512Z.md",
+      "checkpoint": "runtime/cyberlace/training_checkpoints/math-board-live-typewriter-smoke-20260526T021512Z.json"
+    },
+    "activeRuntimeSessionsAfterTest": 0,
+    "criticalBackendLogMatches": 0
+  },
+  "files": [
+    "frontend/src/App.jsx",
+    "frontend/src/App.css"
+  ]
+}

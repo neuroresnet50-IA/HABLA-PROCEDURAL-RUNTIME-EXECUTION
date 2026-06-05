@@ -1,0 +1,66 @@
+{
+  "timestamp": "2026-05-25T01:17:58.548576+00:00",
+  "type": "HABLA_RUNTIME_REPAIR_FINAL",
+  "status": "validated",
+  "backendPid": 2548213,
+  "uiUrl": "http://127.0.0.1:5001/",
+  "protectedProjectsPreserved": [
+    "workspace/projects/sesion-20260524210420",
+    "workspace/projects/sesion-20260524233805"
+  ],
+  "codeCheckpoint": "runtime/checkpoints/habla-runtime-repair-code-20260525T010640Z.json",
+  "stateBackups": [
+    "workspace/projects/sesion-20260524210420/runtime/backups/habla_runtime_repair/20260525T005750Z",
+    "workspace/projects/sesion-20260524233805/runtime/backups/habla_runtime_repair/20260525T005750Z",
+    "workspace/projects/sesion-20260524233805/runtime/backups/zombie_release/20260525T011351Z"
+  ],
+  "stateCheckpoints": [
+    "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-state-repair-20260525T005750Z.json",
+    "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-zombie-recovered-20260525T011351Z.json",
+    "workspace/projects/sesion-20260524210420/runtime/checkpoints/runtime-20260525010939-001-stopped.json"
+  ],
+  "validations": {
+    "py_compile": "passed: python3 -B -m py_compile backend/app.py backend/agent_runtime.py orchestrator/*.py",
+    "frontend_build": "passed: npm --prefix frontend run build",
+    "restart": "passed: OPEN_BROWSER=0 ./start.sh restart; backend PID 2548213",
+    "health": "HTTP 200 in 0.736s",
+    "sessions": "HTTP 200 in 0.034s; sessions=[] after final restart",
+    "projects": "HTTP 200 in 0.778s; both protected projects present with fileCount=4",
+    "cyberlace": "HTTP 200 in 0.337s; mode=monitor",
+    "runtime_truth_210420": "HTTP 200 in 0.540s; verdict=idle stale=false persistedRunning=false warnings=0",
+    "runtime_truth_33805": "HTTP 200 in 0.431s; verdict=idle stale=false persistedRunning=false warnings=0",
+    "socketio_polling": "HTTP 200 in 0.097s; upgrades=[]",
+    "ui_root": "HTTP 200 in 0.260s; served compiled assets index-CyrlRCi7.js/index-L78j9hAI.css",
+    "log_scan": "no agent_session_start_timeout, no HTTP 500, no traceback in final backend log"
+  },
+  "realSessions": [
+    {
+      "project": "sesion-20260524210420",
+      "sessionId": "agent-33161f4b63",
+      "startResponseSeconds": 0.05,
+      "observedRunningPid": 2518092,
+      "finalStatus": "stopped",
+      "finalErrorCode": "control_plane_stopped",
+      "note": "Started with real PID, then stopped cleanly; project runtime-truth is idle and non-zombie."
+    },
+    {
+      "project": "sesion-20260524233805",
+      "sessionId": "agent-d6ff031021",
+      "startResponseSeconds": 0.048,
+      "observedRunningPids": [
+        2521187,
+        2524159
+      ],
+      "finalStatus": "stopped_then_zombie_released",
+      "finalErrorCode": "manual_stop",
+      "zombieReleaseCheckpoint": "workspace/projects/sesion-20260524233805/runtime/checkpoints/runtime-zombie-recovered-20260525T011351Z.json",
+      "note": "Started with real PID; manual stop left an orphaned persisted running task, runtime-truth classified it as zombie and release requeued it with backup/checkpoint."
+    }
+  ],
+  "knownNotes": [
+    "Old browser tabs still attempted transport=websocket and received HTTP 400, not 500. Fresh Socket.IO polling returns upgrades=[].",
+    "CyberLACE stayed monitor; decisions were runtimeAction=ALLOW and did not block startup.",
+    "The hidden .agent-project.json files exist physically in both projects; the editor file API intentionally lists/opens visible project files."
+  ],
+  "destructiveActions": false
+}

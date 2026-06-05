@@ -2,32 +2,37 @@
 
 Prototipo funcional de un mapa conceptual donde cada archivo generado por un agente aparece como un módulo conectado.
 
-## Ejecutar backend
+## Ejecutar aplicacion local
 
 ```bash
-cd backend
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-python app.py
+./start.sh start
 ```
 
-Backend: http://localhost:5000
+Backend y frontend bundle: http://localhost:5001
 
-## Ejecutar frontend
+## Acceso de validacion
+
+Para validar el proyecto desde una instalacion local o clon de GitHub, el backend siembra un usuario por defecto cuando PostgreSQL esta disponible:
+
+```text
+usuario: admin
+contrasena: admin
+```
+
+Se puede desactivar con `HABLA_DEFAULT_ADMIN_ENABLED=0` o cambiar con `HABLA_DEFAULT_ADMIN_USER` y `HABLA_DEFAULT_ADMIN_PASSWORD`.
+
+## Frontend en modo desarrollo
 
 ```bash
-cd frontend
-npm install
-npm run dev
+./start.sh dev
 ```
 
-Frontend: http://localhost:5173
+Frontend dev: http://localhost:5173
 
 ## Enviar un grafo nuevo
 
 ```bash
-curl -X POST http://localhost:5000/api/architecture \
+curl -X POST http://localhost:5001/api/architecture \
   -H 'Content-Type: application/json' \
   -d '{"nodes":[],"edges":[],"metadata":{"projectName":"Nuevo turno"}}'
 ```

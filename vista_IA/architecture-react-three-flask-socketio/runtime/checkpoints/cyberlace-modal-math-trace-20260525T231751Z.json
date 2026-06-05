@@ -1,0 +1,45 @@
+{
+  "checkpoint": "cyberlace-modal-math-trace-20260525T231751Z.json",
+  "createdAt": "2026-05-25T23:17:51.113233+00:00",
+  "scope": "CyberLACE modal mathematical visualization",
+  "changes": [
+    "Added mathTrace generation in frontend CyberLACE blocking alert.",
+    "Red CyberLACE modal now displays risk vector, invariants, loss and repair operator equations.",
+    "Green safe-alternative modal now displays safe rewrite equation P -> P_safe.",
+    "Styles added for scroll-safe mathematical proof cards inside the modal."
+  ],
+  "equations": [
+    "S_t = (P, R, C, U, E, M)",
+    "r = [s,e,x,l,o,u,z,t]",
+    "Risk(P) = w · r",
+    "Risk(P) >= θ => action(C) ∈ {BLOCK, QUARANTINE, HUMAN_REVIEW, REDACT}",
+    "secret(x) => output(x) = REDACTED",
+    "L = αL_sec + βL_run + γL_ui + δL_evidence",
+    "R* = argmin_R L(apply(R,S_t)) + Cost(R)",
+    "rewrite(P) = P_safe; P_sensitive ∩ P_safe = ∅"
+  ],
+  "realSmoke": {
+    "scenario": "payment-data",
+    "status": "blocked",
+    "runtimeAction": "QUARANTINE",
+    "diagnosis": "blocked_correctly",
+    "latestPid": null,
+    "latestError": "cyberlace_sensitive_document_blocked"
+  },
+  "validations": [
+    "npm --prefix frontend run build",
+    "python3 -B -m py_compile backend/app.py backend/safety_learning_core.py tools/cyberlace_training_loop.py",
+    "OPEN_BROWSER=0 ./start.sh restart",
+    "GET /api/health ok",
+    "GET / returned 200",
+    "Socket.IO polling HTTP 200 upgrades=[]",
+    "dist bundle contains math modal strings",
+    "POST /api/harness/training/generate-run payment-data produced blocked/QUARANTINE without PID"
+  ],
+  "files": [
+    "frontend/src/App.jsx",
+    "frontend/src/App.css",
+    "backend/safety_learning_core.py",
+    "docs/security/cyberlace_self_repair_mathematical_architecture.md"
+  ]
+}

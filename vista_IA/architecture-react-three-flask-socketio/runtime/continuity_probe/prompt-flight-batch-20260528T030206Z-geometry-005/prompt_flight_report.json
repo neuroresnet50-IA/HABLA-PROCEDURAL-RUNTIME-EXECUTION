@@ -1,0 +1,801 @@
+{
+  "artifacts": {
+    "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_events.jsonl",
+    "markdownPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_report.md",
+    "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_report.json",
+    "runDir": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005"
+  },
+  "baseUrl": "http://127.0.0.1:5001",
+  "blockedStages": [],
+  "durationSeconds": 53.524497,
+  "eventsPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_events.jsonl",
+  "failedStages": [],
+  "finishedAt": "2026-05-28T03:05:18Z",
+  "mode": "ui_session_rest",
+  "project": "continuity-geom-pf-005",
+  "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+  "reportPath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_report.json",
+  "reportType": "prompt_flight_probe",
+  "result": "prompt_flight_ok",
+  "schemaVersion": 2,
+  "stageMap": {
+    "backend_health": {
+      "durationMs": 52.604,
+      "evidence": {
+        "durationMs": 52.604,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "cyberlace_preflight": {
+      "durationMs": 45.433,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 45.433,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "habla_basic_envelope": {
+      "durationMs": 7.822,
+      "evidence": {
+        "durationMs": 7.822,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "outputHash": "b0dfe72ed863fe3da2e5109467b930899d13b6a3e57b2a719b0dbadf2a2c12ff",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "harness_summary": {
+      "durationMs": 1856.869,
+      "evidence": {
+        "durationMs": 1856.869,
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T03:04:25Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    "observer_status": {
+      "durationMs": 19.991,
+      "evidence": {
+        "durationMs": 19.991,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "plan_loaded": {
+      "durationMs": 14.784,
+      "evidence": {
+        "durationMs": 14.784,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "policy_loaded": {
+      "durationMs": 15.611,
+      "evidence": {
+        "durationMs": 15.611,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "prompt_classified": {
+      "durationMs": 6.983,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 6.983,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_classification.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "intent": "general_runtime_request",
+        "promptChars": 192,
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "prompt_received": {
+      "durationMs": 2.25,
+      "evidence": {
+        "durationMs": 2.25,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/input_prompt.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "promptChars": 192,
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "response_synthesized": {
+      "durationMs": 16.103,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 16.103,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "mode": "ui_session_rest",
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "554648144e97465cdde51a3e37ba35a3c9e22d7700a90a837fc18795c0d45a75",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T03:05:18Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-005",
+        "traceId": "prompt-flight-batch-20260528T030206Z-geometry-005",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    },
+    "safe_canary_continuity": {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    "task_planned": {
+      "durationMs": 11.248,
+      "evidence": {
+        "durationMs": 11.248,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "taskHash": "e1c565950b7505ca508802eea4a7114e4fb8d8b5d4e5f7d45649e93e7387514b",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-005"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    "ui_agent_session_polled": {
+      "durationMs": 50123.342,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 50123.342,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T03:05:17Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 38,
+        "returncode": 0,
+        "sessionId": "agent-20716d80e4",
+        "startedAt": "2026-05-28T03:04:27Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/logs/agent-20716d80e4-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:17Z"
+    },
+    "ui_agent_session_posted": {
+      "durationMs": 154.541,
+      "evidence": {
+        "durationMs": 154.541,
+        "elapsedMs": 101.249,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-geom-pf-005",
+        "sessionId": "agent-20716d80e4",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T03:04:27Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    "ui_rest_payload_built": {
+      "durationMs": 4.599,
+      "evidence": {
+        "durationMs": 4.599,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "method": "POST",
+        "payloadHash": "3849a953362f007cbeeae0c8dc9157f34fc0bcc2b8eab6844a4c4d6d7ce8e065",
+        "projectSlug": "continuity-geom-pf-005",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T03:04:27Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    "ui_runtime_artifacts_read": {
+      "durationMs": 172.919,
+      "evidence": {
+        "durationMs": 172.919,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 447,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/checkpoints/runtime-20260528030427-001-checkpoint.json",
+          "sha256": "1e36d5f9091e94bbf92b5531808914f05425eb0684645220e53ed3ec415e9bb1",
+          "size": 16778,
+          "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/docs/geometry_case_005.md\",\n            \"size\": 477\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_005.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_005.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/docs/geometry_case_005.md\",\n            \"size\": 477\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_005.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528030427-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-28T03:04:28Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/directives/RUNTIME-20260528030427-001-20260528T030428Z-ad6f248bed94.json",
+          "sha256": "eb33eb82c3907984edb7eac6c63a98dfc86c29035f527a4500d7c5b1e489078b",
+          "size": 22918,
+          "tail": " archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030427-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Resolver un problema de semejanza de triangulos.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528030427-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"ad6f248bed947067b70f70f65e952b79a90d57bbcae2bab7121dbbd5bb99fe60\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-geom-pf-005",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/project_state.json",
+          "sha256": "7100bdd4d166f6622cb0232a47a9fd742a263b202cb695f74dbbfa3b10857603",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-20716d80e4\",\n    \"complexity-estimate\",\n    \"runtime-20260528030427-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528030427-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:04:27.653754+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:04:27.653754+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-20716d80e4\",\n  \"project_id\": \"continuity-geom-pf-005\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T03:05:11.505158+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T03:05:18Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/task_queue.json",
+          "sha256": "6fe818ac639480d0ea2329bd81f0d19522916d5e583c281fcfc9a680193adcfa",
+          "size": 797,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528030427-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_005.md\"\n    ],\n    \"goal\": \"Resolver un problema de semejanza de triangulos.; Escribe la solucion o plan en docs/geometry_case_005.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030427-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Resolver un problema de semejanza de triangulos.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_005.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 229,
+          "mtime": "2026-05-28T03:05:17Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/logs/agent-20716d80e4-terminal.log",
+          "sha256": "6af7b4b619f0a8438e412d03c67169e1bf95a58352860587b727488ef54e8f7e",
+          "size": 8191,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T030515Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    },
+    "ui_runtime_truth_read": {
+      "durationMs": 641.649,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528030427-001",
+        "durationMs": 641.649,
+        "elapsedMs": 614.391,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T03:05:17Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    }
+  },
+  "stages": [
+    {
+      "durationMs": 2.25,
+      "evidence": {
+        "durationMs": 2.25,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/input_prompt.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "promptChars": 192,
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "Prompt persisted with trace hash.",
+      "name": "prompt_received",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 7.822,
+      "evidence": {
+        "durationMs": 7.822,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/habla_basic_envelope.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "outputHash": "b0dfe72ed863fe3da2e5109467b930899d13b6a3e57b2a719b0dbadf2a2c12ff",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "HABLA BASIC envelope persisted.",
+      "name": "habla_basic_envelope",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 45.433,
+      "evidence": {
+        "blocked": false,
+        "durationMs": 45.433,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/cyberlace_preflight.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "riskScore": 0.0,
+        "runtimeAction": "ALLOW",
+        "safeAlternative": null,
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "CyberLACE preflight allowed diagnostic processing.",
+      "name": "cyberlace_preflight",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 15.611,
+      "evidence": {
+        "durationMs": 15.611,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "ruleCount": 11,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "AGENTS.md policy loaded.",
+      "name": "policy_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 14.784,
+      "evidence": {
+        "durationMs": 14.784,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "moduleCount": 14,
+        "source": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md",
+        "sprintCount": 10,
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "PLANS.md roadmap loaded.",
+      "name": "plan_loaded",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 6.983,
+      "evidence": {
+        "complexity": "small",
+        "durationMs": 6.983,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_classification.json",
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "intent": "general_runtime_request",
+        "promptChars": 192,
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "startedAt": "2026-05-28T03:04:25Z"
+      },
+      "message": "Prompt classified for diagnostic routing.",
+      "name": "prompt_classified",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 11.248,
+      "evidence": {
+        "durationMs": 11.248,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/planned_task.json",
+        "expectedFiles": [
+          "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/prompt_flight_report.json"
+        ],
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "taskHash": "e1c565950b7505ca508802eea4a7114e4fb8d8b5d4e5f7d45649e93e7387514b",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-005"
+      },
+      "message": "UI REST session payload planned; execution goes through /api/agent/session.",
+      "name": "task_planned",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 52.604,
+      "evidence": {
+        "durationMs": 52.604,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "service": "HABLA Observer IA",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "statusCode": 200
+      },
+      "message": "Backend health checked.",
+      "name": "backend_health",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 19.991,
+      "evidence": {
+        "durationMs": 19.991,
+        "finishedAt": "2026-05-28T03:04:25Z",
+        "observerEnabled": false,
+        "observerState": "idle",
+        "startedAt": "2026-05-28T03:04:25Z",
+        "statusCode": 200
+      },
+      "message": "Observer status checked without starting a mission.",
+      "name": "observer_status",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:25Z"
+    },
+    {
+      "durationMs": 1856.869,
+      "evidence": {
+        "durationMs": 1856.869,
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "harnessStatusCode": 200,
+        "hasRunsKey": true,
+        "safetyStatusCode": 200,
+        "startedAt": "2026-05-28T03:04:25Z",
+        "totalExperiences": 97
+      },
+      "message": "Harness and Safety Learning checked.",
+      "name": "harness_summary",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    {
+      "durationMs": 0.0,
+      "evidence": {
+        "durationMs": 0.0
+      },
+      "message": "Skipped because mode is ui_session_rest; runtime session follows.",
+      "name": "safe_canary_continuity",
+      "status": "skipped",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    {
+      "durationMs": 4.599,
+      "evidence": {
+        "durationMs": 4.599,
+        "endpoint": "/api/agent/session",
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_request.json",
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "method": "POST",
+        "payloadHash": "3849a953362f007cbeeae0c8dc9157f34fc0bcc2b8eab6844a4c4d6d7ce8e065",
+        "projectSlug": "continuity-geom-pf-005",
+        "runtimeMode": "build",
+        "startedAt": "2026-05-28T03:04:27Z"
+      },
+      "message": "Exact AgentStudio REST payload persisted for /api/agent/session.",
+      "name": "ui_rest_payload_built",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    {
+      "durationMs": 154.541,
+      "evidence": {
+        "durationMs": 154.541,
+        "elapsedMs": 101.249,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_response.json",
+        "finishedAt": "2026-05-28T03:04:27Z",
+        "progressLabel": "Preparando runtime, LACE y directiva del control plane",
+        "projectSlug": "continuity-geom-pf-005",
+        "sessionId": "agent-20716d80e4",
+        "sessionStatus": "preparing",
+        "startedAt": "2026-05-28T03:04:27Z",
+        "statusCode": 200
+      },
+      "message": "Real UI session accepted by /api/agent/session.",
+      "name": "ui_agent_session_posted",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:04:27Z"
+    },
+    {
+      "durationMs": 50123.342,
+      "evidence": {
+        "activeTaskTimeoutSeconds": 600,
+        "durationMs": 50123.342,
+        "errorCode": null,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_agent_session_polls.json",
+        "finalStatus": "completed",
+        "finishedAt": "2026-05-28T03:05:17Z",
+        "lastProgressLabel": "Cola completada: 1 tareas ejecutadas",
+        "lastProgressPercent": 100,
+        "monitorBudgetSeconds": 720,
+        "pid": null,
+        "pollCount": 38,
+        "returncode": 0,
+        "sessionId": "agent-20716d80e4",
+        "startedAt": "2026-05-28T03:04:27Z",
+        "stopConfirmedAfterTimeout": false,
+        "stopError": null,
+        "stopEvidencePath": null,
+        "stopRequestedAfterTimeout": false,
+        "stopStatusCode": null,
+        "terminalLogPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/logs/agent-20716d80e4-terminal.log"
+      },
+      "message": "Real UI session reached terminal status: completed.",
+      "name": "ui_agent_session_polled",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:17Z"
+    },
+    {
+      "durationMs": 641.649,
+      "evidence": {
+        "activeSessionCount": 0,
+        "currentTaskId": "RUNTIME-20260528030427-001",
+        "durationMs": 641.649,
+        "elapsedMs": 614.391,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_runtime_truth.json",
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "projectStatus": "completed",
+        "queueCounts": {
+          "blocked": 0,
+          "completed": 1,
+          "failed": 0,
+          "pending": 0,
+          "running": 0
+        },
+        "startedAt": "2026-05-28T03:05:17Z",
+        "statusCode": 200,
+        "verdict": "idle"
+      },
+      "message": "runtime-truth read after real UI session.",
+      "name": "ui_runtime_truth_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    },
+    {
+      "durationMs": 172.919,
+      "evidence": {
+        "durationMs": 172.919,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/ui_runtime_artifacts.json",
+        "fatalInfrastructureFailure": false,
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "infrastructureFailureMarkers": [],
+        "latestCheckpoint": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "checkpoint_key",
+            "created_at",
+            "payload"
+          ],
+          "lineCount": 447,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/checkpoints/runtime-20260528030427-001-checkpoint.json",
+          "sha256": "1e36d5f9091e94bbf92b5531808914f05425eb0684645220e53ed3ec415e9bb1",
+          "size": 16778,
+          "tail": "      \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/docs/geometry_case_005.md\",\n            \"size\": 477\n          }\n        ],\n        \"found\": [\n          \"docs/geometry_case_005.md\"\n        ],\n        \"missing\": [],\n        \"records\": [\n          {\n            \"exists\": true,\n            \"is_file\": true,\n            \"path\": \"docs/geometry_case_005.md\",\n            \"reported_created\": true,\n            \"reported_modified\": false,\n            \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/docs/geometry_case_005.md\",\n            \"size\": 477\n          }\n        ],\n        \"reported_created\": [\n          \"docs/geometry_case_005.md\"\n        ],\n        \"reported_modified\": [],\n        \"reported_outside_expected\": []\n      },\n      \"task_id\": \"RUNTIME-20260528030427-001\",\n      \"validation_passed\": true,\n      \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005\"\n    }\n  }\n}\n"
+        },
+        "latestDirective": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "directive_type",
+            "generated_at",
+            "operational_directive",
+            "persistence",
+            "rendered_instruction",
+            "repository",
+            "schema_version",
+            "sprint",
+            "task",
+            "task_id",
+            "traceability"
+          ],
+          "lineCount": 240,
+          "mtime": "2026-05-28T03:04:28Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/directives/RUNTIME-20260528030427-001-20260528T030428Z-ad6f248bed94.json",
+          "sha256": "eb33eb82c3907984edb7eac6c63a98dfc86c29035f527a4500d7c5b1e489078b",
+          "size": 22918,
+          "tail": " archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030427-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Resolver un problema de semejanza de triangulos.; Escribe\"\n  },\n  \"task_id\": \"RUNTIME-20260528030427-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"ad6f248bed947067b70f70f65e952b79a90d57bbcae2bab7121dbbd5bb99fe60\"\n  }\n}\n"
+        },
+        "latestTaskResultBlockers": [],
+        "projectDir": "workspace/projects/continuity-geom-pf-005",
+        "projectState": {
+          "exists": true,
+          "isFile": true,
+          "jsonKeys": [
+            "blocked_tasks",
+            "checkpoints",
+            "completed_tasks",
+            "created_at",
+            "current_task_id",
+            "failed_tasks",
+            "last_preparing_at",
+            "mode",
+            "preparing_session_id",
+            "project_id",
+            "schema_version",
+            "status",
+            "updated_at"
+          ],
+          "lineCount": 21,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/project_state.json",
+          "sha256": "7100bdd4d166f6622cb0232a47a9fd742a263b202cb695f74dbbfa3b10857603",
+          "size": 591,
+          "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"session-preparing-agent-20716d80e4\",\n    \"complexity-estimate\",\n    \"runtime-20260528030427-001-checkpoint\"\n  ],\n  \"completed_tasks\": [\n    \"RUNTIME-20260528030427-001\"\n  ],\n  \"created_at\": \"2026-05-28T03:04:27.653754+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-28T03:04:27.653754+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-20716d80e4\",\n  \"project_id\": \"continuity-geom-pf-005\",\n  \"schema_version\": 1,\n  \"status\": \"completed\",\n  \"updated_at\": \"2026-05-28T03:05:11.505158+00:00\"\n}\n"
+        },
+        "runtimeInfrastructureFailure": false,
+        "startedAt": "2026-05-28T03:05:18Z",
+        "taskQueue": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 20,
+          "mtime": "2026-05-28T03:05:11Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/task_queue.json",
+          "sha256": "6fe818ac639480d0ea2329bd81f0d19522916d5e583c281fcfc9a680193adcfa",
+          "size": 797,
+          "tail": "[\n  {\n    \"checkpoint_key\": \"runtime-20260528030427-001-checkpoint\",\n    \"dependencies\": [],\n    \"expected_files\": [\n      \"docs/geometry_case_005.md\"\n    ],\n    \"goal\": \"Resolver un problema de semejanza de triangulos.; Escribe la solucion o plan en docs/geometry_case_005.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260528030427-001\",\n    \"max_retries\": 2,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"completed\",\n    \"timeout_seconds\": 600,\n    \"title\": \"Resolver un problema de semejanza de triangulos.; Escribe\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/geometry_case_005.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+        },
+        "terminalLog": {
+          "exists": true,
+          "isFile": true,
+          "lineCount": 229,
+          "mtime": "2026-05-28T03:05:17Z",
+          "path": "workspace/projects/continuity-geom-pf-005/runtime/logs/agent-20716d80e4-terminal.log",
+          "sha256": "6af7b4b619f0a8438e412d03c67169e1bf95a58352860587b727488ef54e8f7e",
+          "size": 8191,
+          "tail": "\": 1,\n            \"bySeverity\": {\n              \"error\": 1\n            },\n            \"bySource\": {\n              \"scanner\": 1\n            },\n            \"observationScore\": 88,\n            \"resolvedFindings\": 0,\n            \"totalFindings\": 1\n          }\n        },\n        \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/artifacts/observer_findings.json\",\n        \"error\": null,\n        \"timedOut\": false\n      }\n    ],\n    \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-geom-pf-005/runtime/artifacts/tool_invocations/PROJECT-COMPLETION-project_completion_gate-20260528T030515Z.json\"\n  },\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"completed\",\n    \"event_op\": \"session_completed\",\n    \"event_status\": \"completed\",\n    \"phase\": \"complete\",\n    \"error_code\": null,\n    \"message\": \"La sesion termino segun estado canonico persistido: cola completa, sin fallos ni bloqueos activos.\",\n    \"completed\": true,\n    \"warnings\": []\n  }\n}\n"
+        }
+      },
+      "message": "Runtime artifacts sampled from the real UI session project.",
+      "name": "ui_runtime_artifacts_read",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    },
+    {
+      "durationMs": 16.103,
+      "evidence": {
+        "blockedStages": [],
+        "durationMs": 16.103,
+        "evidencePath": "runtime/continuity_probe/prompt-flight-batch-20260528T030206Z-geometry-005/response_summary.json",
+        "failedStages": [],
+        "finishedAt": "2026-05-28T03:05:18Z",
+        "mode": "ui_session_rest",
+        "promptHash": "5d67f4f1a887327db8498945e06d849a8a917353ec38c196ab4f2e08efc1f520",
+        "recommendation": "Prompt flight is connected.",
+        "responseHash": "554648144e97465cdde51a3e37ba35a3c9e22d7700a90a837fc18795c0d45a75",
+        "runtimeResponseHash": null,
+        "runtimeResponsePath": null,
+        "startedAt": "2026-05-28T03:05:18Z",
+        "taskId": "PROMPT-FLIGHT-batch-20260528T030206Z-geometry-005",
+        "traceId": "prompt-flight-batch-20260528T030206Z-geometry-005",
+        "validationPassed": null
+      },
+      "message": "Response synthesized from stage evidence and runtime output.",
+      "name": "response_synthesized",
+      "status": "ok",
+      "updatedAt": "2026-05-28T03:05:18Z"
+    }
+  ],
+  "startedAt": "2026-05-28T03:04:25Z",
+  "status": "completed",
+  "summary": {
+    "blocked": 0,
+    "failed": 0,
+    "ok": 16,
+    "skipped": 1,
+    "total": 17
+  },
+  "traceId": "prompt-flight-batch-20260528T030206Z-geometry-005"
+}

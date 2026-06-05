@@ -1,0 +1,161 @@
+{
+  "checkpoint_key": "session-cyberlace-document-blocked-20260605T182029Z",
+  "created_at": "2026-06-05T18:20:29Z",
+  "payload": {
+    "decision": {
+      "action": "QUARANTINE",
+      "agentId": "cyberlace-document-guard",
+      "allowed": false,
+      "blocked": true,
+      "blockedPaths": [
+        "workspace/projects/sesion-20260604162627/docs/closure_repairs/closure-repair-20260604222904.md",
+        "workspace/projects/sesion-20260604162627/recuperacioncontexto.md"
+      ],
+      "blocksRuntime": true,
+      "deniedAction": "Copiar, recolectar, almacenar o enviar PAN/CVV/PIN/tokens de pago por correo, archivos, APIs o canales inseguros.",
+      "evidence": [
+        {
+          "domain": "payment_security",
+          "line": 34,
+          "path": null,
+          "pattern": "payment_data_copy_store_or_send",
+          "sample": "[REDACTED]",
+          "source": "requirement",
+          "type": "unsafe_payment_data_handling_intent"
+        },
+        {
+          "domain": "private",
+          "line": 750,
+          "path": "workspace/projects/sesion-20260604162627/recuperacioncontexto.md",
+          "pattern": "fragmented_secret_reassembly",
+          "sample": "[REDACTED]",
+          "source": "workspace_document",
+          "type": "fragmented_sensitive_material"
+        },
+        {
+          "domain": "private",
+          "line": 115,
+          "path": "workspace/projects/sesion-20260604162627/docs/closure_repairs/closure-repair-20260604222904.md",
+          "pattern": "fragmented_secret_reassembly",
+          "sample": "[REDACTED]",
+          "source": "workspace_document",
+          "type": "fragmented_sensitive_material"
+        }
+      ],
+      "message": "PELIGRO: accion financiera insegura negada. HABLA puede ayudar con una alternativa segura basada en tokenizacion, recibos y arquitectura PCI-style.",
+      "mode": "hard-gate",
+      "ok": true,
+      "projectSlug": "sesion-20260604162627",
+      "reason": "CyberLACE blocked unsafe payment-data handling intent: copying, collecting, storing or sending card/CVV/PIN/token data is denied. A safe tokenized payment architecture can be designed instead.",
+      "recordType": "decision",
+      "redactsPayload": false,
+      "requiresHumanReview": false,
+      "riskScore": 100.0,
+      "runtimeAction": "QUARANTINE",
+      "safeAlternative": {
+        "allowedActions": [
+          "Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.",
+          "Usar enlaces seguros o checkout hospedado por el procesador de pagos.",
+          "Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.",
+          "Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.",
+          "Crear validaciones de arquitectura segura y pruebas con datos sinteticos."
+        ],
+        "suggestedRequirement": "Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.",
+        "summary": "HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.",
+        "title": "Alternativa segura permitida"
+      },
+      "safeNextSteps": [
+        "Reformular la tarea hacia tokenizacion y proveedor de pagos.",
+        "Eliminar cualquier solicitud de copiar, almacenar o enviar PAN/CVV/PIN.",
+        "Trabajar solo con datos sinteticos, ultimos 4 digitos y recibos."
+      ],
+      "scannedDocumentCount": 20,
+      "scannedDocuments": [
+        {
+          "blockedFindings": 1,
+          "bytes": 64030,
+          "path": "workspace/projects/sesion-20260604162627/recuperacioncontexto.md"
+        },
+        {
+          "blockedFindings": 1,
+          "bytes": 14983,
+          "path": "workspace/projects/sesion-20260604162627/docs/closure_repairs/closure-repair-20260604222904.md"
+        }
+      ],
+      "sessionId": "agent-1726b2e473",
+      "severity": "CRITICAL",
+      "stage": "document-preflight",
+      "workspaceScan": {
+        "bytes": 203935,
+        "documents": 16,
+        "incomplete": false,
+        "incompleteReason": null
+      }
+    },
+    "failure_event": {
+      "failure": {
+        "blockedPaths": [
+          "workspace/projects/sesion-20260604162627/docs/closure_repairs/closure-repair-20260604222904.md",
+          "workspace/projects/sesion-20260604162627/recuperacioncontexto.md"
+        ],
+        "deniedAction": "Copiar, recolectar, almacenar o enviar PAN/CVV/PIN/tokens de pago por correo, archivos, APIs o canales inseguros.",
+        "evidence": [
+          {
+            "domain": "payment_security",
+            "line": 34,
+            "path": null,
+            "pattern": "payment_data_copy_store_or_send",
+            "sample": "[REDACTED]",
+            "source": "requirement",
+            "type": "unsafe_payment_data_handling_intent"
+          },
+          {
+            "domain": "private",
+            "line": 750,
+            "path": "workspace/projects/sesion-20260604162627/recuperacioncontexto.md",
+            "pattern": "fragmented_secret_reassembly",
+            "sample": "[REDACTED]",
+            "source": "workspace_document",
+            "type": "fragmented_sensitive_material"
+          },
+          {
+            "domain": "private",
+            "line": 115,
+            "path": "workspace/projects/sesion-20260604162627/docs/closure_repairs/closure-repair-20260604222904.md",
+            "pattern": "fragmented_secret_reassembly",
+            "sample": "[REDACTED]",
+            "source": "workspace_document",
+            "type": "fragmented_sensitive_material"
+          }
+        ],
+        "kind": "cyberlace_sensitive_document_blocked",
+        "project_id": "sesion-20260604162627",
+        "reason": "CyberLACE blocked unsafe payment-data handling intent: copying, collecting, storing or sending card/CVV/PIN/token data is denied. A safe tokenized payment architecture can be designed instead.",
+        "riskScore": 100.0,
+        "safeAlternative": {
+          "allowedActions": [
+            "Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.",
+            "Usar enlaces seguros o checkout hospedado por el procesador de pagos.",
+            "Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.",
+            "Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.",
+            "Crear validaciones de arquitectura segura y pruebas con datos sinteticos."
+          ],
+          "suggestedRequirement": "Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.",
+          "summary": "HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.",
+          "title": "Alternativa segura permitida"
+        },
+        "safeNextSteps": [
+          "Reformular la tarea hacia tokenizacion y proveedor de pagos.",
+          "Eliminar cualquier solicitud de copiar, almacenar o enviar PAN/CVV/PIN.",
+          "Trabajar solo con datos sinteticos, ultimos 4 digitos y recibos."
+        ],
+        "severity": "CRITICAL",
+        "task_id": null
+      },
+      "recorded_at": "2026-06-05T18:20:29Z"
+    },
+    "project_id": "sesion-20260604162627",
+    "reason": "cyberlace_sensitive_document_blocked",
+    "task_id": null
+  }
+}

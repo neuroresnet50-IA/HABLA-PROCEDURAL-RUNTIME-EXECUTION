@@ -1,0 +1,146 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "bootstrap_tasks",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "estimate_type",
+        "generated_at",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 48,
+      "mtime": "2026-05-27T07:29:29Z",
+      "path": "workspace/projects/continuity-probe-canary/runtime/complexity_estimate.json",
+      "sha256": "4f5d33b094a82c53cca755bb71fe364f6a1d3d3610d56d3307ebd363ee9acd5c",
+      "size": 1206,
+      "tail": "chema_version\": 1,\n  \"estimate_type\": \"project_complexity_budget\",\n  \"generated_at\": \"2026-05-27T07:29:29.317390Z\",\n  \"runtime_mode\": \"build\",\n  \"launch_mode\": \"existing\",\n  \"project_slug\": \"continuity-probe-canary\",\n  \"project_file_count\": 9,\n  \"prompt_word_count\": 189,\n  \"score\": 69,\n  \"difficulty\": \"dificil\",\n  \"difficulty_label\": \"Dificil\",\n  \"min_lace_cycles\": 2,\n  \"max_lace_cycles\": 10,\n  \"recommended_lace_cycles\": 6,\n  \"recommended_agents\": 5,\n  \"max_agents\": 8,\n  \"bootstrap_tasks\": 6,\n  \"max_tasks\": 22,\n  \"timeout_seconds\": 1800,\n  \"recovery_budget\": 8,\n  \"max_retries\": 3,\n  \"required_tools\": [\n    \"findings\",\n    \"integrity\",\n    \"pytest\",\n    \"sandbox\",\n    \"scanner\"\n  ],\n  \"risk_flags\": [\n    \"estado_persistido\",\n    \"seguridad\"\n  ],\n  \"reasons\": [\n    \"modo runtime solicitado: build\",\n    \"prompt largo: 189 palabras\",\n    \"archivos estimados del proyecto: 9\",\n    \"marcadores de trabajo puntual/minimo\",\n    \"toca runtime/estado persistido\",\n    \"requiere evidencia auditable\",\n    \"declara pruebas o validacion\",\n    \"incluye capa visual/frontend\",\n    \"incluye backend/API\",\n    \"incluye seguridad/autenticacion\",\n    \"multiples capas tecnicas: 3\"\n  ],\n  \"confidence\": 88\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 0,
+      "mtime": "2026-05-27T06:04:57Z",
+      "path": "workspace/projects/continuity-probe-canary/runtime/failures.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "tail": ""
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-05-27T07:30:10Z",
+      "path": "workspace/projects/continuity-probe-canary/runtime/project_state.json",
+      "sha256": "82e1562f06735169d0327e8c8c71380932957071da3a22ec0b27ff2fab3e4408",
+      "size": 611,
+      "tail": "{\n  \"blocked_tasks\": [],\n  \"checkpoints\": [\n    \"prompt-flight-prompt-flight-20260527T060457Z\",\n    \"session-preparing-agent-efe67ccb8a\",\n    \"complexity-estimate\"\n  ],\n  \"completed_tasks\": [\n    \"PROMPT-REAL-20260527T060457Z\"\n  ],\n  \"created_at\": \"2026-05-27T06:04:57Z\",\n  \"current_task_id\": \"RUNTIME-20260527072929-001\",\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-05-27T07:29:28.758042+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-efe67ccb8a\",\n  \"project_id\": \"continuity-probe-canary\",\n  \"schema_version\": 1,\n  \"status\": \"running\",\n  \"updated_at\": \"2026-05-27T07:30:10.683625+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 21,
+      "mtime": "2026-05-27T06:04:58Z",
+      "path": "workspace/projects/continuity-probe-canary/runtime/task_history.jsonl",
+      "sha256": "d13c5169227f3387a22e15dd002a922b2b1acb52d0014a249e59714b8c9763f6",
+      "size": 14910,
+      "tail": "\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c 'from pathlib import Path; text=Path('\\\"'\\\"'src/continuity_probe.txt'\\\"'\\\"').read_text(encoding='\\\"'\\\"'utf-8'\\\"'\\\"'); assert '\\\"'\\\"'traceId=prompt-flight-20260527T051104Z-canary'\\\"'\\\"' in text; assert '\\\"'\\\"'status=worker_executed'\\\"'\\\"' in text'\"]}}\n{\"recorded_at\": \"2026-05-27T06:04:58Z\", \"result\": {\"blockers\": [], \"completed\": true, \"files_created\": [], \"files_modified\": [\"src/prompt_flight_response.json\"], \"next_recommendation\": \"Task evidence and validation commands passed.\", \"task_id\": \"PROMPT-REAL-20260527T060457Z\", \"validation_passed\": true, \"validation_ran\": [\"python3 -B -c 'from pathlib import Path; import json; d=json.loads(Path('\\\"'\\\"'src/prompt_flight_response.json'\\\"'\\\"').read_text(encoding='\\\"'\\\"'utf-8'\\\"'\\\"')); assert d.get('\\\"'\\\"'traceId'\\\"'\\\"') == '\\\"'\\\"'prompt-flight-20260527T060457Z'\\\"'\\\"'; assert d.get('\\\"'\\\"'promptHash'\\\"'\\\"') == '\\\"'\\\"'d1242a55bb0bb6a1495b2c613d689b07667c0c88534ba5d4208124e5958c4f44'\\\"'\\\"'; assert d.get('\\\"'\\\"'processedBy'\\\"'\\\"') == '\\\"'\\\"'guarded_runtime_worker'\\\"'\\\"'; assert d.get('\\\"'\\\"'hablaBasic'\\\"'\\\"', {}).get('\\\"'\\\"'inputHash'\\\"'\\\"') == d.get('\\\"'\\\"'promptHash'\\\"'\\\"')'\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 46,
+      "mtime": "2026-05-27T07:30:10Z",
+      "path": "workspace/projects/continuity-probe-canary/runtime/task_queue.json",
+      "sha256": "3243ee7cb22a4541b9bf3c5aa77c42d618e59e1f78e887d666bfca253503188f",
+      "size": 2699,
+      "tail": "     \"runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json\",\n      \"runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json\",\n      \"runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json\",\n      \"runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json\",\n      \"runtime/complexity_estimate.json\"\n    ],\n    \"goal\": \"Crear evidencia runtime.\",\n    \"id\": \"RUNTIME-20260527072929-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"running\",\n    \"timeout_seconds\": 1800,\n    \"title\": \"Crear evidencia runtime\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['README.md', 'runtime/artifacts/observer_findings.json', 'runtime/artifacts/prompt-flight-20260527T044433Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050508Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050815Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T050907Z-input_prompt.json', 'runtime/artifacts/prompt-flight-20260527T060457Z-input_prompt.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 55,
+    "mtime": "2026-05-27T07:29:29Z",
+    "path": "workspace/projects/continuity-probe-canary/runtime/checkpoints/complexity-estimate.json",
+    "sha256": "3874594e48c06351bde33945a814436e052d35f484d76ae65ade9541c5793889",
+    "size": 1561,
+    "tail": "\": \"existing\",\n      \"max_agents\": 8,\n      \"max_lace_cycles\": 10,\n      \"max_retries\": 3,\n      \"max_tasks\": 22,\n      \"min_lace_cycles\": 2,\n      \"project_file_count\": 9,\n      \"project_slug\": \"continuity-probe-canary\",\n      \"prompt_word_count\": 189,\n      \"reasons\": [\n        \"modo runtime solicitado: build\",\n        \"prompt largo: 189 palabras\",\n        \"archivos estimados del proyecto: 9\",\n        \"marcadores de trabajo puntual/minimo\",\n        \"toca runtime/estado persistido\",\n        \"requiere evidencia auditable\",\n        \"declara pruebas o validacion\",\n        \"incluye capa visual/frontend\",\n        \"incluye backend/API\",\n        \"incluye seguridad/autenticacion\",\n        \"multiples capas tecnicas: 3\"\n      ],\n      \"recommended_agents\": 5,\n      \"recommended_lace_cycles\": 6,\n      \"recovery_budget\": 8,\n      \"required_tools\": [\n        \"findings\",\n        \"integrity\",\n        \"pytest\",\n        \"sandbox\",\n        \"scanner\"\n      ],\n      \"risk_flags\": [\n        \"estado_persistido\",\n        \"seguridad\"\n      ],\n      \"runtime_mode\": \"build\",\n      \"schema_version\": 1,\n      \"score\": 69,\n      \"timeout_seconds\": 1800\n    },\n    \"reason\": \"complexity_estimate_created\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 334,
+    "mtime": "2026-05-27T07:29:29Z",
+    "path": "workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527072929-001-20260527T072929Z-39e38e1bfd55.json",
+    "sha256": "1ae8fe4884cdcbf6fd24e8f2f6f13190c749164638bcc5469becfec671f79c81",
+    "size": 29947,
+    "tail": "29-001-checkpoint\",\n    \"goal\": \"Crear evidencia runtime.\",\n    \"id\": \"RUNTIME-20260527072929-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 1800,\n    \"title\": \"Crear evidencia runtime\"\n  },\n  \"task_id\": \"RUNTIME-20260527072929-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"39e38e1bfd551b585237dd7e8ca663b3691e31cebc7a79b92d5f9f72b946cd66\"\n  }\n}\n"
+  },
+  "projectDir": "workspace/projects/continuity-probe-canary",
+  "runtimeDir": "workspace/projects/continuity-probe-canary/runtime",
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 22,
+    "mtime": "2026-05-27T07:30:10Z",
+    "path": "workspace/projects/continuity-probe-canary/runtime/logs/agent-efe67ccb8a-terminal.log",
+    "sha256": "5deb6beae60da777ccb93f92812cbeb438f9ee3e7dbcd1c09dbd1340a171f444",
+    "size": 1169,
+    "tail": "[control-plane] Sesion registrada; la preparacion pesada continua en background.\n[control-plane] Preparando runtime y directiva; preflight interno no bloqueante.\n[control-plane] Preflight interno opcional para RUNTIME-20260527072929-001; si observer-status expira se continua.\n[control-plane] Herramientas internas (preflight):\n{\n  \"phase\": \"preflight\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/artifacts/tool_invocations/RUNTIME-20260527072929-001-preflight-20260527T073010Z.json\",\n  \"invocations\": [\n    {\n      \"tool\": \"observer-status\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n[control-plane] Ejecutando tarea RUNTIME-20260527072929-001 con timeout 1800s y directiva /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-probe-canary/runtime/directives/RUNTIME-20260527072929-001-20260527T072929Z-39e38e1bfd55.json.\n"
+  }
+}

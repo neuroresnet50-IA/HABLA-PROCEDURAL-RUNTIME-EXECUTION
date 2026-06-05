@@ -1,0 +1,154 @@
+{
+  "checkpoint": "cyberlace-integration-inspection",
+  "createdAt": "2026-05-24T18:35:41Z",
+  "workspaceRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio",
+  "cyberlaceSource": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/HABLA_CyberLACE_Security_Engine(1)/HABLA_CyberLACE_Security_Engine",
+  "filesInspected": [
+    "backend/app.py",
+    "backend/agent_runtime.py",
+    "backend/agent_worker_adapters.py",
+    "backend/sandbox_service.py",
+    "backend/sandbox_routes.py",
+    "backend/runtime_admin_service.py",
+    "backend/runtime_admin_routes.py",
+    "backend/editor_routes.py",
+    "backend/human_alignment_routes.py",
+    "backend/integrity_routes.py",
+    "backend/integrity_service.py",
+    "orchestrator/security_policy.py",
+    "orchestrator/validator.py",
+    "orchestrator/state_store.py",
+    "PLANS.md",
+    "AGENTS.md",
+    "ULTIMO_CONTEXTO_CODEX.md",
+    "recuperacioncontexto.md",
+    "backend/cyberlace_integration.py",
+    "backend/cyberlace_routes.py",
+    "backend/cyberlace_policy_bridge.py"
+  ],
+  "currentRestRoutesDetected": [
+    "GET /api/architecture",
+    "GET /api/runtime/habla-status",
+    "GET /api/observer/status",
+    "POST /api/observer/enabled",
+    "POST /api/observer/behavior",
+    "POST /api/observer/observe-once",
+    "POST /api/observer/action",
+    "GET /api/email-commands/status",
+    "GET /api/email-commands/config",
+    "PUT /api/email-commands/config",
+    "POST /api/email-commands/inbound",
+    "POST /api/email-commands/dispatch",
+    "POST /api/email-commands/poll",
+    "GET /",
+    "GET /assets/<path:asset_path>",
+    "GET /<path:frontend_path>",
+    "GET /api/reverse-engineering/sessions",
+    "POST /api/reverse-engineering/analyze",
+    "DELETE /api/reverse-engineering/session/<analysis_id>",
+    "GET /api/architecture/lint",
+    "POST /api/architecture",
+    "POST /api/architecture/rescan",
+    "POST /api/architecture/reset-view",
+    "POST /api/architecture/demo/habla",
+    "GET /api/agent/projects",
+    "POST /api/projects/<project_id>/typewriter-final",
+    "GET /api/projects/<project_id>/reviewer-events",
+    "GET /api/projects/<project_id>/reviewer-status",
+    "GET /api/projects/<project_id>/runtime-truth",
+    "POST /api/projects/<project_id>/runtime-monitor/ask",
+    "POST /api/projects/<project_id>/runtime-zombie/release",
+    "POST /api/agent/subagents/plan",
+    "POST /api/agent/projects",
+    "POST /api/agent/projects/<project_id>/pending-queue/clear",
+    "GET /api/agent/projects/<project_id>/retryable-task",
+    "POST /api/agent/projects/<project_id>/retryable-task/relaunch",
+    "GET /api/agent/sessions",
+    "GET /api/agent/session/<session_id>",
+    "POST /api/agent/session",
+    "POST /api/agent/session/<session_id>/stop"
+  ],
+  "socketsDetected": [
+    "connect",
+    "architecture:request",
+    "architecture:reset-view",
+    "architecture:demo-habla",
+    "reverse:request",
+    "reverse:analyze",
+    "reverse:remove",
+    "reverse:agent-transcribe",
+    "architecture:patch",
+    "agent:request",
+    "email:command:inbound",
+    "email:command:dispatch",
+    "observer:enabled",
+    "observer:behavior",
+    "observer:action",
+    "observer:observe-once",
+    "agent:project:create",
+    "agent:session:start",
+    "agent:session:stop",
+    "agent:architecture:rescan"
+  ],
+  "hookPointsDetected": [
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "start_session"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_start_control_plane_session"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_prepare_control_plane_directive"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_build_control_plane_worker_command"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_execute_prepared_control_plane_task"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_run_control_plane_session"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_run_legacy_pty_session"
+    },
+    {
+      "file": "backend/agent_runtime.py",
+      "function": "_append_output"
+    }
+  ],
+  "currentCyberLACEState": {
+    "packageParityChecked": true,
+    "packageAlreadyInstalled": true,
+    "appRouteRegistrationPresent": true,
+    "agentRuntimeHooksPresentBeforeThisSprint": false,
+    "frontendPanelPresentBeforeThisSprint": false
+  },
+  "recommendedIntegrationServices": [
+    "backend/agent_runtime.py for prompt/directive/tool/output hooks",
+    "frontend/src/components/CyberLACEPanel.jsx for health and evidence visibility",
+    "backend/test_cyberlace_*.py for off/monitor/enforce contracts",
+    "scripts/run_cyberlace_api.sh and scripts/test_cyberlace_integration.sh",
+    "docs/CYBERLACE_INTEGRATION.md"
+  ],
+  "breakageRisks": [
+    "agent_runtime.py is large and has both control-plane and legacy PTY paths; hooks must default to no-op/off.",
+    "Enforce must block only by explicit CyberLACE decision, not by monitor risk.",
+    "Tool security_policy remains authoritative for shell/validation commands; CyberLACE should add cognitive context only.",
+    "Frontend is dense; panel must be isolated and mounted near Observer without redesign."
+  ],
+  "minimalChangePlan": [
+    "Keep existing CyberLACE package, adapter, routes and policy bridge.",
+    "Add AgentRuntime guard helpers and call them at prompt/directive/tool/output boundaries.",
+    "Persist CyberLACE decisions through existing adapter evidence JSONL.",
+    "Add isolated frontend panel polling health/evidence endpoints.",
+    "Add focused unittest coverage plus scripts/docs/checkpoint."
+  ]
+}
