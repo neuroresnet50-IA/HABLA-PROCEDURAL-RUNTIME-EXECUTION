@@ -54,6 +54,27 @@ import {
 } from "./codeWorkbenchUtils.js";
 
 const BROOM_SWEEP_VISIBLE_MS = 4600;
+const EDITOR_HEIGHT_STORAGE_KEY = "hablaCodeWorkbenchEditorHeightPx";
+const DEFAULT_EDITOR_HEIGHT_PX = 420;
+const MIN_EDITOR_HEIGHT_PX = 180;
+const MAX_EDITOR_HEIGHT_PX = 2400;
+
+function readStoredEditorHeight() {
+  try {
+    const value = Number(window.localStorage.getItem(EDITOR_HEIGHT_STORAGE_KEY));
+    return Number.isFinite(value) && value > 0 ? value : DEFAULT_EDITOR_HEIGHT_PX;
+  } catch {
+    return DEFAULT_EDITOR_HEIGHT_PX;
+  }
+}
+
+function persistEditorHeight(value) {
+  try {
+    window.localStorage.setItem(EDITOR_HEIGHT_STORAGE_KEY, String(Math.round(value)));
+  } catch {
+    // The live drag still works when storage is blocked.
+  }
+}
 
 function formatTruthAge(seconds) {
   const value = Number(seconds);
@@ -163,8 +184,11 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
   const [agentChangedPaths, setAgentChangedPaths] = useState(new Set());
   const [agentChangeTrace, setAgentChangeTrace] = useState({ active: false, path: "", line: null, message: "" });
   const [sidebarWidth, setSidebarWidth] = useState(340);
+  const [editorHeight, setEditorHeight] = useState(readStoredEditorHeight);
   const gutterRef = useRef(null);
   const editorRef = useRef(null);
+  const workbenchMainRef = useRef(null);
+  const editorFrameRef = useRef(null);
   const writerTimerRef = useRef(null);
   const writerFrameRef = useRef(null);
   const writerDoneTimerRef = useRef(null);
@@ -569,6 +593,45 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
 
   function clampSidebarWidth(value) {
     return Math.min(620, Math.max(260, Number(value) || 340));
+  }
+
+  function clampEditorHeight(value) {
+    const rawValue = Number(value) || DEFAULT_EDITOR_HEIGHT_PX;
+    return Math.round(Math.min(MAX_EDITOR_HEIGHT_PX, Math.max(MIN_EDITOR_HEIGHT_PX, rawValue)));
+  }
+
+  function setClampedEditorHeight(value) {
+    setEditorHeight(() => {
+      const nextHeight = clampEditorHeight(value);
+      persistEditorHeight(nextHeight);
+      return nextHeight;
+    });
+  }
+
+  function startEditorResize(event) {
+    event.preventDefault();
+    const startY = event.clientY;
+    const startHeight = editorFrameRef.current?.getBoundingClientRect?.().height || editorHeight;
+    document.body.classList.add("is-workbench-row-resizing");
+    function handleMove(moveEvent) {
+      setClampedEditorHeight(startHeight + moveEvent.clientY - startY);
+    }
+    function handleDone() {
+      document.body.classList.remove("is-workbench-row-resizing");
+      window.removeEventListener("pointermove", handleMove);
+      window.removeEventListener("pointerup", handleDone);
+      window.removeEventListener("pointercancel", handleDone);
+    }
+    window.addEventListener("pointermove", handleMove);
+    window.addEventListener("pointerup", handleDone);
+    window.addEventListener("pointercancel", handleDone);
+  }
+
+  function handleEditorResizeKey(event) {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    const delta = event.key === "ArrowDown" ? 24 : -24;
+    setClampedEditorHeight(editorHeight + delta);
   }
 
   function startSidebarResize(event) {
@@ -2343,7 +2406,13 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
         onStopSandbox={stopSandbox}
       />
 
-      <div className="code-workbench-shell" style={{ "--workbench-sidebar-width": `${sidebarWidth}px` }}>
+      <div
+        className="code-workbench-shell"
+        style={{
+          "--workbench-sidebar-width": `${sidebarWidth}px`,
+          "--workbench-editor-height": `${editorHeight}px`,
+        }}
+      >
         <CodeWorkbenchActivityBar
           activePane={activePane}
           onPaneChange={setActivePane}
@@ -2403,7 +2472,11 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
           onKeyDown={handleSidebarResizeKey}
         />
 
-        <main className="code-workbench-main">
+        <main
+          ref={workbenchMainRef}
+          className="code-workbench-main"
+          style={{ "--workbench-editor-height": `${editorHeight}px` }}
+        >
           <CodeWorkbenchEditorHeader
             selectedProject={selectedProject}
             selectedPath={selectedPath}
@@ -2426,6 +2499,7 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
           />
 
           <div
+            ref={editorFrameRef}
             className={`code-workbench-editor ${lock.locked ? "is-locked" : ""} ${liveWriter.active ? "is-writing" : ""} ${codeScanner.active ? "is-scanning" : ""} ${broomSweep.active ? "is-sweeping" : ""} ${visibleIntegrityFindings.length ? "has-integrity-findings" : ""} ${visibleAgentChangeMarker ? "has-agent-change" : ""}`}
             style={{
               "--scanner-x": `${Math.min(720, Math.max(0, codeScanner.column) * CODE_SCANNER_CHAR_WIDTH_PX)}px`,
@@ -2466,6 +2540,21 @@ export default function CodeWorkbench({ socketUrl, focusedProject, jumpTarget, e
                 onResetPrompt={() => setRepairInstruction("Repara este error en esta linea y valida que el punto rojo desaparezca.")}
               />
             ) : null}
+          </div>
+
+          <div
+            className="code-workbench-editor-resizer"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label="Ajustar altura del area de codigo"
+            aria-valuemin={MIN_EDITOR_HEIGHT_PX}
+            aria-valuenow={editorHeight}
+            tabIndex="0"
+            title="Arrastra hacia abajo para agrandar el codigo o hacia arriba para recogerlo"
+            onPointerDown={startEditorResize}
+            onKeyDown={handleEditorResizeKey}
+          >
+            <span />
           </div>
 
           <CodeWorkbenchActions

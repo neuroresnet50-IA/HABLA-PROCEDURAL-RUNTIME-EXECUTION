@@ -1140,5 +1140,79 @@ class AgentRuntimeHablaTest(unittest.TestCase):
             self.assertIn("HostWriteExecutor", session.output)
 
 
+    def test_control_plane_repair_enqueues_ready_task_when_lace_queue_is_blocked(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            project_dir = app_root / "workspace" / "projects" / "blocked-project"
+            runtime_dir = project_dir / "runtime"
+            runtime_dir.mkdir(parents=True)
+            store = StateStore(runtime_dir)
+            now = "2026-06-03T00:00:00+00:00"
+            store.save_project_state(
+                {
+                    "schema_version": 1,
+                    "project_id": "blocked-project",
+                    "status": "blocked",
+                    "mode": "build",
+                    "current_task_id": None,
+                    "completed_tasks": ["RUNTIME-001"],
+                    "failed_tasks": [],
+                    "blocked_tasks": ["LACE-001"],
+                    "checkpoints": [],
+                    "created_at": now,
+                    "updated_at": now,
+                }
+            )
+
+            def fixture_task(task_id: str, status: str, dependencies: list[str] | None = None) -> dict:
+                return {
+                    "id": task_id,
+                    "title": task_id,
+                    "goal": f"Fixture {task_id}",
+                    "status": status,
+                    "priority": 1,
+                    "dependencies": dependencies or [],
+                    "expected_files": [f"docs/{task_id.lower()}.md"],
+                    "validation_commands": [],
+                    "timeout_seconds": 120,
+                    "max_retries": 0,
+                    "mode": "build",
+                    "checkpoint_key": None,
+                }
+
+            store.save_task_queue(
+                [
+                    fixture_task("RUNTIME-001", "completed"),
+                    fixture_task("LACE-001", "blocked", ["RUNTIME-001"]),
+                    fixture_task("LACE-002", "pending", ["LACE-001"]),
+                ]
+            )
+            queue = TaskQueue(store, bootstrap_empty=True)
+            self.assertIsNone(queue.next_ready_task())
+
+            runtime = self.build_runtime(app_root, [])
+            created = runtime._enqueue_control_plane_repair_task_if_needed(
+                store,
+                queue,
+                "REPARACION_CONTROLADA_DE_CIERRE_RUNTIME\nEvidencia resumida",
+                runtime_mode="build",
+                timeout_seconds=120,
+                max_retries=0,
+            )
+            queue = TaskQueue(store, bootstrap_empty=True)
+            ready = queue.next_ready_task()
+
+            self.assertTrue(created["id"].startswith("CLOSURE-REPAIR-"))
+            self.assertIsNotNone(ready)
+            self.assertEqual(ready["id"], created["id"])
+            self.assertEqual(ready["dependencies"], [])
+            self.assertEqual(ready["kind"], "closure_repair")
+            self.assertEqual(ready["execution_strategy"], "codex_worker")
+            self.assertEqual(
+                store.load_project_state().get("last_runtime_repair_reason"),
+                "closure_certificate_repair_task_enqueued",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()

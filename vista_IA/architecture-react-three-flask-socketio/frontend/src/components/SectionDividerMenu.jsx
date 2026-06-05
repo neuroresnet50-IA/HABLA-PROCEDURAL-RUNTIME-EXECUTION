@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const SECTION_MENU_ITEMS = {
   runtime: ["Estado del runtime", "Modo autonomo", "Escenas activas", "Reiniciar vista"],
@@ -7,7 +7,7 @@ export const SECTION_MENU_ITEMS = {
   input: ["Analizar ruta", "Transcribir con agente", "Escenas cargadas", "Limpiar entrada"],
   toolbox: ["Mapa conceptual", "Nuevo programa", "Bloque manual", "Persistencia"],
   agents: ["Crear tarea", "Continuar sesion", "Borrar colas pendientes", "Revisar locks"],
-  editor: ["Explorador de archivos", "Editor expandido", "Problemas", "Sandbox"],
+  editor: ["Explorador de archivos", "Editor expandido", "Problemas", "Sandbox", "Autonomia de modales"],
   map: ["Seleccionar nodos", "Conectar bloques", "Centrar escena", "Ver dependencias"],
   flow: ["Iniciar secuencia", "Mover pasos", "Conectar flujo", "Sandbox interno"],
   layers: ["Vista por capa", "Filtrar capa", "Seleccionar bloque", "Orden visual"],
@@ -37,6 +37,16 @@ export default function SectionDividerMenu({
   const [open, setOpen] = useState(false);
   const items = useMemo(() => menuItems || SECTION_MENU_ITEMS[id] || [], [id, menuItems]);
   const summary = SECTION_MENU_COPY[id] || "Menu contextual de la seccion.";
+
+  useEffect(() => {
+    function handleExternalClose(event) {
+      const targetId = String(event?.detail?.id || event?.detail?.sectionId || "").trim();
+      if (!targetId || targetId === "all" || targetId === id) setOpen(false);
+    }
+
+    window.addEventListener("habla:section-menu-close", handleExternalClose);
+    return () => window.removeEventListener("habla:section-menu-close", handleExternalClose);
+  }, [id]);
 
   return (
     <div id={`section-${id}`} className={`gemini-section-divider ${open ? "is-open" : ""} align-${align}`} onMouseLeave={() => setOpen(false)}>

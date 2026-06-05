@@ -234,7 +234,7 @@ export default function RuntimeDashboardSidebar({
           ) : (
             <form className="runtime-delete-form" onSubmit={submitDeletePassword}>
               <label>
-                <span>Password eliminador de archivos</span>
+                <span>Contrasena de tu cuenta actual</span>
                 <input
                   type="password"
                   value={deleteModal.password}
@@ -242,6 +242,7 @@ export default function RuntimeDashboardSidebar({
                   autoFocus
                   autoComplete="current-password"
                 />
+                <small className="runtime-delete-help">No es el PIN de CyberLACE ni la clave de PostgreSQL. Si ves sesion expirada, vuelve a iniciar sesion y reintenta.</small>
               </label>
               {deleteModal.error ? <p className="runtime-delete-error">{deleteModal.error}</p> : null}
               <div className="runtime-delete-actions">

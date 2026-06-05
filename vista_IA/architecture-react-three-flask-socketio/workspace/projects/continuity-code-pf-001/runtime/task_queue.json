@@ -1,34 +1,13 @@
 [
   {
-    "checkpoint_key": "post-blanqueo-recovery-checkpoint",
+    "checkpoint_key": "runtime-20260604014622-001-checkpoint",
     "dependencies": [],
     "expected_files": [
-      "lessons_learned/blanqueo-2026-05-27.md"
-    ],
-    "goal": "Analizar causa raiz, validar workspace limpio y ajustar politicas preventivas.",
-    "id": "POST-BLANQUEO-RECOVERY",
-    "max_retries": 0,
-    "mode": "build",
-    "priority": 100,
-    "status": "completed",
-    "timeout_seconds": 300,
-    "title": "POST-BLANQUEO-RECOVERY",
-    "validation_commands": [
-      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md'] if not Path(p).is_file()]; assert not missing, missing\"",
-      "python3 -B -c \"from pathlib import Path; assert Path('lessons_learned/blanqueo-2026-05-27.md').is_file()\""
-    ]
-  },
-  {
-    "checkpoint_key": "runtime-20260527221822-001-checkpoint",
-    "dependencies": [],
-    "expected_files": [
-      "lessons_learned/blanqueo-2026-05-27.md",
-      "runtime/artifacts/file_integrity_report.json",
-      "runtime/artifacts/observer_findings.json",
+      "runtime/complexity_audit.json",
       "runtime/complexity_estimate.json"
     ],
     "goal": "Disenar una cola FIFO persistente con estados pending, running, completed y failed.",
-    "id": "RUNTIME-20260527221822-001",
+    "id": "RUNTIME-20260604014622-001",
     "max_retries": 3,
     "mode": "build",
     "priority": 20,
@@ -36,19 +15,19 @@
     "timeout_seconds": 900,
     "title": "Disenar una cola FIFO persistente con estados pending",
     "validation_commands": [
-      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['lessons_learned/blanqueo-2026-05-27.md', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
     ]
   },
   {
-    "checkpoint_key": "runtime-20260527221822-002-checkpoint",
+    "checkpoint_key": "runtime-20260604014622-002-checkpoint",
     "dependencies": [
-      "RUNTIME-20260527221822-001"
+      "RUNTIME-20260604014622-001"
     ],
     "expected_files": [
       "docs/advanced_programming_case_001.md"
     ],
     "goal": "Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
-    "id": "RUNTIME-20260527221822-002",
+    "id": "RUNTIME-20260604014622-002",
     "max_retries": 3,
     "mode": "build",
     "priority": 10,
@@ -60,48 +39,67 @@
     ]
   },
   {
-    "checkpoint_key": "runtime-20260528155229-001-checkpoint",
+    "checkpoint_key": "runtime-20260604014622-001-split-001-checkpoint",
     "dependencies": [],
     "expected_files": [
-      "docs/advanced_programming_case_001.md",
-      "lessons_learned/blanqueo-2026-05-27.md",
-      "runtime/artifacts/agent_file_manifest.json",
-      "runtime/artifacts/agent_file_manifest.seal.json",
-      "runtime/artifacts/file_integrity_report.json",
-      "runtime/artifacts/final_code_scanner_report.json",
-      "runtime/artifacts/final_typewriter_report.json",
-      "runtime/artifacts/frozen_sniper_recovery_report.json"
+      "runtime/complexity_audit.json"
     ],
-    "goal": "Disenar una cola FIFO persistente con estados pending, running, completed y failed.",
-    "id": "RUNTIME-20260528155229-001",
+    "goal": "Produce expected file runtime/complexity_audit.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260604014622-001-SPLIT-001",
     "max_retries": 3,
     "mode": "build",
-    "priority": 20,
+    "priority": 19,
     "status": "completed",
-    "timeout_seconds": 1200,
-    "title": "Disenar una cola FIFO persistente con estados pending",
+    "timeout_seconds": 900,
+    "title": "Disenar una cola FIFO persistente con estados pending split 1",
     "validation_commands": [
-      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md', 'lessons_learned/blanqueo-2026-05-27.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/artifacts/frozen_sniper_recovery_report.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json'] if not Path(p).is_file()]; assert not missing, missing\""
     ]
   },
   {
-    "checkpoint_key": "runtime-20260528155229-002-checkpoint",
-    "dependencies": [
-      "RUNTIME-20260528155229-001"
-    ],
+    "checkpoint_key": "runtime-20260604014622-001-split-002-checkpoint",
+    "dependencies": [],
     "expected_files": [
-      "docs/advanced_programming_case_001.md"
+      "runtime/complexity_estimate.json"
     ],
-    "goal": "Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.",
-    "id": "RUNTIME-20260528155229-002",
+    "goal": "Produce expected file runtime/complexity_estimate.json. Reason: Failure suggests timeout or oversized task.",
+    "id": "RUNTIME-20260604014622-001-SPLIT-002",
     "max_retries": 3,
     "mode": "build",
-    "priority": 10,
+    "priority": 18,
     "status": "completed",
-    "timeout_seconds": 1200,
-    "title": "Escribe la solucion o plan en docs/advanced_programming_case_001.md, manten",
+    "timeout_seconds": 900,
+    "title": "Disenar una cola FIFO persistente con estados pending split 2",
     "validation_commands": [
-      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\""
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+    ]
+  },
+  {
+    "checkpoint_key": "lace-cycle-001-checkpoint",
+    "dependencies": [
+      "RUNTIME-20260604014622-001-SPLIT-002"
+    ],
+    "expected_files": [
+      "ULTIMO_CONTEXTO_CODEX.md",
+      "docs/advanced_programming_case_001.md",
+      "recuperacioncontexto.md",
+      "runtime/artifacts/file_integrity_report.json",
+      "runtime/artifacts/observer_findings.json",
+      "runtime/complexity_audit.json",
+      "runtime/complexity_estimate.json",
+      "runtime/lace_budget.json"
+    ],
+    "goal": "Completar el ciclo LACE 01 como micro-tarea acotada. Actualizar LACE_LOG.md con PROBLEMAS, MEJORA y COMPLETADO usando evidencia real; sin convertir LACE en una tarea monolitica ni modificar producto salvo mejora verificable.",
+    "id": "LACE-20260604-001",
+    "max_retries": 2,
+    "mode": "build",
+    "priority": 99,
+    "status": "blocked",
+    "timeout_seconds": 900,
+    "title": "Completar ciclo LACE 01",
+    "validation_commands": [
+      "python3 -B -c \"from pathlib import Path; missing=[p for p in ['ULTIMO_CONTEXTO_CODEX.md', 'docs/advanced_programming_case_001.md', 'recuperacioncontexto.md', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/observer_findings.json', 'runtime/complexity_audit.json', 'runtime/complexity_estimate.json', 'runtime/lace_budget.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+      "python3 -B -c \"from pathlib import Path; doc=Path('docs/lace_cycles/ciclo-01.md'); log=Path('LACE_LOG.md'); assert log.exists(), 'missing LACE_LOG.md'; assert doc.exists(), 'missing cycle doc'; text=doc.read_text(encoding='utf-8'); lower=text.lower(); assert 'valido para cierre lace: si' in lower or 'v\u00e1lido para cierre lace: si' in lower, 'cycle is not valid for LACE closure'; assert '[CICLO-1 PROBLEMAS]' in text, 'missing problemas marker'; assert '[CICLO-1 MEJORA]' in text, 'missing mejora marker'; assert '[CICLO-1 COMPLETADO]' in text, 'missing completado marker'\""
     ]
   }
 ]

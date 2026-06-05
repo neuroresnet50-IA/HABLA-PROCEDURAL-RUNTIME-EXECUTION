@@ -10,24 +10,22 @@
 ## Resumen
 Ciclo 01 cerró observaciones pero todavía no supera toda la validación LACE.
 
-## PROBLEMAS
+[CICLO-1 PROBLEMAS]
 Pendiente.
 
-## MEJORA
+[CICLO-1 MEJORA]
 Pendiente.
 
-## COMPLETADO
-```text
-OBSERVATION real: el documento ahora define modelo de datos, transiciones, operaciones FIFO, persistencia atomica, invariantes y criterios de aceptacion.
-Coincide con OBSERVATION esperada: SI.
-Problemas resueltos: placeholder reemplazado por diseno tecnico verificable.
-Estado ahora vs antes: antes habia una nota materializada; ahora hay contrato de comportamiento y persistencia.
-El proyecto mejoro objetivamente: SI.
+[CICLO-1 COMPLETADO]
+OBSERVATION real: los dos artefactos fueron reescritos y sincronizados via bridge visual; JSON valido y validacion de existencia pasaron; findings e integrity respondieron ok=true; scanner respondio statusCode=423, error=project_locked, con Observer indicando rootCause=active_worker_running.
+Coincide con OBSERVATION esperada: parcialmente; los entregables y validaciones locales pasaron, pero el scanner canonico quedo bloqueado por lock del proyecto activo.
+Problemas resueltos: auditoria alineada; diseno FIFO persistente incorporado; limites del worker documentados.
+Estado ahora vs antes: antes habia estimacion generica; ahora hay contrato de estados, transiciones, seleccion FIFO, retry y evidencia requerida.
+Proyecto mejoro objetivamente: SI para el alcance de artefactos; cierre tecnico completo depende de scanner posterior cuando el control plane libere el lock.
 
 MEMORIA EPISODICA:
-- Que funciono: mantener el alcance en documentacion y no editar `runtime/task_queue.json`.
-- Que no funciono: el scanner interno inicial devolvio `project_locked` durante la sesion activa.
-- Que evitar en el proximo ciclo: declarar cierre sin que el control plane ejecute o acepte scanner final.
+- Que funciono: limitar la edicion a los entregables declarados y no tocar la cola viva del control plane.
+- Que no funciono: el CLI canonico orchestrator/agent_tools.py no esta presente en el workspace.
+- Que evitar en el proximo ciclo: cerrar como completa una herramienta interna que no pudo invocarse realmente.
 
-Proximo ciclo - que atacare: el control plane debe convertir este diseno en codigo de cola y pruebas focalizadas.
-```
+Proximo ciclo: debe ejecutarlo el control plane o la tarea correspondiente; este worker no consume silenciosamente los ciclos restantes.

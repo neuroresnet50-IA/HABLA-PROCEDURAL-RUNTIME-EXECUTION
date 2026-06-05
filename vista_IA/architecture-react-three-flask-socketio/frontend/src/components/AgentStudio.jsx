@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
-import { buildClosureCertificate, buildRuntimeClosureCertificate, formatAgentStatus } from "./agentClosureCertificate.js";
+import { buildClosureCertificate, buildClosureEvidenceText, buildClosureRepairPrompt, buildRuntimeClosureCertificate, formatAgentStatus, getClosureCertificateAutoPolicy } from "./agentClosureCertificate.js";
 import LiveReviewerPanel from "./LiveReviewerPanel.jsx";
 
 import {
@@ -31,6 +31,8 @@ import {
   sameReviewerScope,
   slugify,
 } from "./agentStudioUtils.js";
+
+const REVIEWER_AUTO_MINIMIZE_MS = 120000;
 
 function getBlockingCyberlaceDecision(session) {
   if (!session || typeof session !== "object") return null;
@@ -101,7 +103,26 @@ function getProjectSearchText(project) {
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
-export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean, onCyberlaceBlock }) {
+async function copyTextToClipboard(body) {
+  const value = String(body || "");
+  if (!value.trim()) return false;
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(value);
+    return true;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = value;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+  return true;
+}
+
+export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean, onCyberlaceBlock, autonomousMode = false }) {
   const [projects, setProjects] = useState([]);
   const [launchMode, setLaunchMode] = useState("new");
   const [runtimeMode, setRuntimeMode] = useState(DEFAULT_AGENT_RUNTIME_MODE);
@@ -146,6 +167,10 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const [hablaRuntimeStatus, setHablaRuntimeStatus] = useState(null);
   const [hablaRuntimeError, setHablaRuntimeError] = useState("");
   const [dismissedClosureKey, setDismissedClosureKey] = useState("");
+  const [closureModalMinimized, setClosureModalMinimized] = useState(false);
+  const [closureAutoPolicy, setClosureAutoPolicy] = useState(null);
+  const [closureAutoDeadline, setClosureAutoDeadline] = useState(0);
+  const [closureEvidenceMessage, setClosureEvidenceMessage] = useState("");
   const [nowTick, setNowTick] = useState(Date.now());
   const [agentBursts, setAgentBursts] = useState([]);
   const [harReview, setHarReview] = useState(null);
@@ -167,6 +192,9 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const latestBurstKeyRef = useRef("");
   const latestBurstAtRef = useRef(0);
   const heartbeatBurstAtRef = useRef(0);
+  const closureCertificateRef = useRef(null);
+  const closureHumanActionRef = useRef(false);
+  const isSendingRef = useRef(false);
   const terminalRef = useRef(null);
 
   const selectedProjectMeta = useMemo(
@@ -219,7 +247,16 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   const liveElapsedSeconds = getSessionElapsedSeconds(session, nowTick);
   const liveActive = isAgentActive(session);
   const closureCertificate = buildClosureCertificate(session) || buildRuntimeClosureCertificate(reviewerStatus, selectedProjectMeta || { projectSlug: reviewerProjectSlug });
-  const closureModalOpen = Boolean(closureCertificate && closureCertificate.key !== dismissedClosureKey);
+  const closureEvidenceText = buildClosureEvidenceText(closureCertificate);
+  const closureRepairPrompt = buildClosureRepairPrompt(closureCertificate);
+  const closureCertificateVisible = Boolean(closureCertificate && closureCertificate.key !== dismissedClosureKey);
+  const closureAutoPolicyCandidate = useMemo(
+    () => getClosureCertificateAutoPolicy(closureCertificate, { autonomousMode }),
+    [closureCertificate?.key, closureCertificate?.completed, closureCertificate?.message, closureCertificate?.blockerLabel, autonomousMode]
+  );
+  const closureModalOpen = closureCertificateVisible && !closureModalMinimized;
+  const closureMinimizedOpen = closureCertificateVisible && closureModalMinimized;
+  const closureAutoSecondsRemaining = closureAutoDeadline ? Math.max(0, Math.ceil((closureAutoDeadline - nowTick) / 1000)) : 0;
   const harDetectedStack = harReview?.summary?.detected_stack || {};
   const harStackEntries = flattenDetectedStack(harDetectedStack);
   const harDecisionEntries = Array.isArray(harReview?.summary?.architecture_decisions)
@@ -243,10 +280,68 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   }, [session, reviewerProjectSlug]);
 
   useEffect(() => {
+    closureCertificateRef.current = closureCertificate;
+  }, [closureCertificate]);
+
+  useEffect(() => {
+    isSendingRef.current = isSending;
+  }, [isSending]);
+
+  useEffect(() => {
     if (ACTIVE_AGENT_STATUSES.has(session?.status)) {
       setDismissedClosureKey("");
     }
   }, [session?.sessionId, session?.status]);
+
+  useEffect(() => {
+    closureHumanActionRef.current = false;
+    setClosureEvidenceMessage("");
+    setClosureModalMinimized(false);
+    setClosureAutoPolicy(null);
+    setClosureAutoDeadline(0);
+  }, [closureCertificate?.key]);
+
+  useEffect(() => {
+    if (!closureCertificateVisible || !closureAutoPolicyCandidate || !closureCertificate?.key) {
+      setClosureAutoPolicy(null);
+      setClosureAutoDeadline(0);
+      return undefined;
+    }
+
+    const policy = closureAutoPolicyCandidate;
+    const certificateKey = closureCertificate.key;
+    const deadline = Date.now() + Number(policy.delayMs || 0);
+    setClosureAutoPolicy(policy);
+    setClosureAutoDeadline(deadline);
+
+    const timer = window.setTimeout(() => {
+      const currentCertificate = closureCertificateRef.current;
+      if (!currentCertificate || currentCertificate.key !== certificateKey) return;
+      if (currentCertificate.key === dismissedClosureKey) return;
+
+      if (policy.action === "dismiss") {
+        if (autonomousMode && requestClosureAutonomyClick("close_certificate", "closure_auto_dismiss")) return;
+        setDismissedClosureKey(certificateKey);
+        return;
+      }
+
+      if (policy.action === "minimize") {
+        if (!closureHumanActionRef.current) {
+          if (autonomousMode && requestClosureAutonomyClick("minimize_certificate", "closure_auto_minimize")) return;
+          setClosureModalMinimized(true);
+        }
+        return;
+      }
+
+      if (policy.action === "repair" && !closureHumanActionRef.current && !isSendingRef.current) {
+        setClosureEvidenceMessage("Modo autonomo: enviando certificado al agente reparador.");
+        if (autonomousMode && requestClosureAutonomyClick("send_repair", "closure_auto_repair")) return;
+        void handleSendClosureRepairPrompt({ auto: true });
+      }
+    }, Math.max(0, Number(policy.delayMs || 0)));
+
+    return () => window.clearTimeout(timer);
+  }, [closureCertificateVisible, closureCertificate?.key, closureAutoPolicyCandidate?.action, closureAutoPolicyCandidate?.delayMs, dismissedClosureKey]);
 
   useEffect(() => {
     const projectSlug = String(selectedProject || "").trim();
@@ -792,6 +887,24 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
   }, [session?.sessionId, session?.runtimeMode, session?.status]);
 
   useEffect(() => {
+    if (!reviewerOpen || reviewerMinimized) return undefined;
+    const timer = window.setTimeout(() => {
+      reviewerUserMinimizedRef.current = true;
+      setReviewerMinimized(true);
+      appendAgentRoomEvent({
+        agentId: "A06",
+        agentName: "Live Reviewer",
+        kind: "auto_minimize",
+        message: "Supervisor minimizado automaticamente despues de 2 minutos visible.",
+        tone: "middle",
+        detail: reviewerProjectSlug || session?.sessionId || "supervisor",
+      });
+    }, REVIEWER_AUTO_MINIMIZE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [reviewerOpen, reviewerMinimized, reviewerProjectSlug, session?.sessionId]);
+
+  useEffect(() => {
     if (!reviewerProjectSlug) {
       setHarReview(null);
       setHarReviews([]);
@@ -935,18 +1048,133 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
     }
   }
 
-  function handleCopyReviewerLog() {
+  async function handleCopyReviewerLog() {
     const body = reviewerEvents.map((event) => `[${event.timestamp}] ${event.severity} ${event.message}`).join("\n");
-    if (navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(body);
+    await copyTextToClipboard(body);
+  }
+
+  function markClosureHumanAction() {
+    closureHumanActionRef.current = true;
+  }
+
+  function requestClosureAutonomyClick(action, reason = "closure_autonomy") {
+    if (typeof window === "undefined") return false;
+    const actionId = `closure-policy-${String(action || "auto").replace(/[^a-z0-9_-]/gi, "-")}-${Date.now()}`;
+    const detail = {
+      action,
+      actionId,
+      reason,
+      source: "agent-studio-closure-policy",
+      trigger: "autonomous_closure_policy",
+      certificateKey: closureCertificate?.key || "",
+      projectSlug: closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "",
+      requestedAt: new Date().toISOString(),
+    };
+    window.dispatchEvent(new CustomEvent("habla:section-menu-close", {
+      detail: { id: "all", reason, actionId },
+    }));
+    window.setTimeout(() => {
+      window.dispatchEvent(new CustomEvent("habla:editor-autonomy-action", { detail }));
+    }, 160);
+    return true;
+  }
+
+  async function handleCopyClosureEvidence() {
+    markClosureHumanAction();
+    try {
+      const ok = await copyTextToClipboard(closureEvidenceText);
+      setClosureEvidenceMessage(ok ? "Evidencia copiada al portapapeles." : "No hay evidencia para copiar.");
+    } catch (nextError) {
+      setClosureEvidenceMessage(nextError?.message || "No fue posible copiar la evidencia.");
+    }
+  }
+
+  async function handleSendClosureRepairPrompt({ auto = false } = {}) {
+    if (!auto) markClosureHumanAction();
+    const repairPrompt = String(closureRepairPrompt || "").trim();
+    const projectSlug = String(closureCertificate?.projectSlug || reviewerProjectSlug || selectedProject || "").trim();
+    const projectName = String(closureCertificate?.project || selectedProjectMeta?.name || projectSlug || "").trim();
+    if (!repairPrompt || !projectSlug || !projectName) {
+      setClosureEvidenceMessage("No hay evidencia suficiente para lanzar reparacion controlada.");
       return;
     }
-    const textarea = document.createElement("textarea");
-    textarea.value = body;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    textarea.remove();
+    if (isSending) return;
+
+    setLaunchMode("existing");
+    setSelectedProject(projectSlug);
+    setNewProjectName(projectName);
+    setRequirement(repairPrompt);
+    setIsSending(true);
+    setError("");
+    setClosureEvidenceMessage(auto ? "Modo autonomo: enviando evidencia al agente reparador..." : "Enviando evidencia al agente reparador...");
+
+    try {
+      onSceneFocus?.(projectSlug);
+      const sessionPayload = {
+        projectName,
+        projectSlug,
+        requirement: repairPrompt,
+        ensureNewProject: false,
+        bootstrapProject: false,
+        runtimeMode,
+        subagentPlan: null,
+        source: "closure_certificate_repair",
+        controlPlaneRepair: true,
+        autoTriggered: Boolean(auto),
+      };
+      const sessionUrl = new URL("/api/agent/session", socketUrl).toString();
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 45000);
+      let payload;
+      try {
+        const response = await fetch(sessionUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(sessionPayload),
+          signal: controller.signal,
+        });
+        payload = await response.json().catch(() => null);
+        if (!response.ok || payload?.ok === false) {
+          throw new Error(payload?.error || payload?.message || "closure_repair_start_failed");
+        }
+      } catch (startError) {
+        if (startError?.name === "AbortError") {
+          throw new Error("closure_repair_start_timeout");
+        }
+        throw startError;
+      } finally {
+        window.clearTimeout(timeout);
+      }
+
+      if (payload.projects) {
+        setProjects(payload.projects);
+      }
+      if (payload.session) {
+        setActiveSessionId(payload.session.sessionId);
+        setSession(payload.session);
+        setTerminalOutput(payload.session.output || "");
+        if (payload.session.projectSlug) {
+          setSelectedProject(payload.session.projectSlug);
+          onSceneFocus?.(payload.session.projectSlug);
+        }
+      }
+      setAssignedSubagentPlan(null);
+      setDismissedClosureKey(closureCertificate.key);
+      setClosureEvidenceMessage(auto ? "Modo autonomo lanzo el agente reparador con evidencia del certificado." : "Agente reparador lanzado con evidencia del certificado.");
+      appendAgentRoomEvent({
+        agentId: "R01",
+        agentName: "Reparador de cierre",
+        kind: "reparacion",
+        message: auto ? "Modo autonomo envio evidencia del certificado como tarea controlada de reparacion." : "Evidencia del certificado enviada como tarea controlada de reparacion.",
+        tone: "repair",
+        detail: projectSlug,
+      });
+    } catch (nextError) {
+      setClosureEvidenceMessage(nextError?.message || "No fue posible lanzar el agente reparador.");
+      setError(`No fue posible lanzar reparacion de cierre: ${humanizeAgentError(nextError)}`);
+    } finally {
+      setIsSending(false);
+    }
   }
 
   function handleExportReviewerLog() {
@@ -2176,8 +2404,8 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
       </div>
     </section>
     {closureModalOpen ? (
-      <div className="session-closure-overlay" role="dialog" aria-modal="true" aria-label={closureCertificate.title}>
-        <div className={`session-closure-modal ${closureCertificate.completed ? "is-success" : "is-failure"}`}>
+      <div className="session-closure-overlay" role="dialog" aria-modal="true" aria-label={closureCertificate.title} data-editor-autonomy-modal="closure-certificate">
+        <div className={["session-closure-modal", closureCertificate.completed ? "is-success" : "is-failure", closureAutoPolicy?.tone ? `is-auto-${closureAutoPolicy.tone}` : "", closureAutoPolicy ? "is-auto-timed" : ""].filter(Boolean).join(" ")}>
           <div className="session-closure-icon" aria-hidden="true">
             {closureCertificate.completed ? "✓" : "×"}
           </div>
@@ -2185,6 +2413,11 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
             <span className="toolbar-label">Certificado del runtime</span>
             <h2>{closureCertificate.title}</h2>
             <p>{closureCertificate.message}</p>
+            {closureAutoPolicy ? (
+              <small className={`session-closure-timer is-${closureAutoPolicy.tone || "neutral"}`}>
+                {closureAutoPolicy.message} {closureAutoSecondsRemaining ? `Tiempo restante: ${formatDuration(closureAutoSecondsRemaining)}.` : ""}
+              </small>
+            ) : null}
             <div className="session-closure-grid">
               <div>
                 <strong>Estado</strong>
@@ -2222,14 +2455,49 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
               ) : null}
             </div>
             <div className="reviewer-actions">
-              <button type="button" className="tool-button primary" onClick={() => setDismissedClosureKey(closureCertificate.key)}>
+              <button type="button" className="tool-button" data-editor-autonomy-action="copy_evidence" onClick={handleCopyClosureEvidence}>
+                Copiar evidencia
+              </button>
+              {!closureCertificate.completed ? (
+                <button
+                  type="button"
+                  className="tool-button primary"
+                  data-editor-autonomy-action="send_repair"
+                  disabled={isSending}
+                  onClick={(event) => handleSendClosureRepairPrompt({ auto: event.currentTarget?.dataset?.operationalAutoClick === "true" })}
+                >
+                  {isSending ? "Enviando reparacion" : "Enviar a agente reparador"}
+                </button>
+              ) : null}
+              <button
+                type="button"
+                className="tool-button"
+                data-editor-autonomy-action="minimize_certificate"
+                onClick={() => {
+                  markClosureHumanAction();
+                  setClosureModalMinimized(true);
+                }}
+              >
+                Minimizar certificado
+              </button>
+              <button
+                type="button"
+                className="tool-button"
+                data-editor-autonomy-action="close_certificate"
+                onClick={() => {
+                  markClosureHumanAction();
+                  setDismissedClosureKey(closureCertificate.key);
+                }}
+              >
                 Cerrar certificado
               </button>
               {!closureCertificate.completed ? (
                 <button
                   type="button"
                   className="tool-button"
+                  data-editor-autonomy-action="open_supervisor"
                   onClick={() => {
+                    markClosureHumanAction();
                     reviewerUserMinimizedRef.current = false;
                     setReviewerOpen(true);
                     setReviewerMinimized(false);
@@ -2240,9 +2508,27 @@ export default function AgentStudio({ socketUrl, onSceneFocus, onWorkspaceClean,
                 </button>
               ) : null}
             </div>
+            {closureEvidenceMessage ? (
+              <small className="session-closure-copy-status">{closureEvidenceMessage}</small>
+            ) : null}
           </div>
         </div>
       </div>
+    ) : null}
+    {closureMinimizedOpen ? (
+      <button
+        type="button"
+        className={["session-closure-minimized", closureCertificate.completed ? "is-success" : "is-failure"].join(" ")}
+        data-editor-autonomy-action="restore_certificate"
+        onClick={() => {
+          markClosureHumanAction();
+          setClosureModalMinimized(false);
+        }}
+        aria-label="Restaurar certificado del runtime"
+      >
+        <strong>{closureCertificate.completed ? "Certificado OK" : "Certificado pendiente"}</strong>
+        <span>{closureCertificate.project} · {closureCertificate.taskId}</span>
+      </button>
     ) : null}
     {emailConfigOpen ? (
       <div className="email-config-overlay" role="dialog" aria-label="Configurar correo entrante HABLA">

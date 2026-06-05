@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "audit_version": "fifo-persistent-queue-design-audit-v1",
+  "generated_at": "2026-06-04T01:49:21Z",
+  "task_id": "RUNTIME-20260604014622-001",
+  "runtime_mode": "build",
+  "launch_mode": "existing",
+  "project_slug": "continuity-code-pf-001",
+  "goal": "Disenar una cola FIFO persistente con estados pending, running, completed y failed.",
+  "difficulty": "medio",
+  "difficulty_label": "Medio",
+  "complexity_score": 34,
+  "confidence": 88,
+  "estimated_minutes": 45,
+  "recommended_agents": 2,
+  "max_agents": 8,
+  "lace_min_cycles": 2,
+  "lace_target_cycles": 4,
+  "lace_max_cycles": 10,
+  "early_exit_allowed": false,
+  "early_exit_mode": "blocked_until_declared_evidence_exists",
+  "required_tools": [
+    "findings",
+    "integrity",
+    "scanner"
+  ],
+  "risk_flags": [
+    "estado_persistido",
+    "fifo_ordering",
+    "task_retries",
+    "worker_isolation"
+  ],
+  "queue_design_audit": {
+    "queue_contract": "La cola persistente debe ordenar tareas por insercion y exponer solo transiciones verificables de estado.",
+    "allowed_states": [
+      "pending",
+      "running",
+      "completed",
+      "failed"
+    ],
+    "fifo_ordering": {
+      "primary_key": "sequence",
+      "fallback_key": "created_at",
+      "selection_rule": "Seleccionar la tarea pending mas antigua con dependencias completadas; no saltar tareas listas salvo bloqueo declarado.",
+      "stability_requirement": "El orden no cambia entre reinicios porque sequence y created_at viven en disco."
+    },
+    "persistence_contract": {
+      "storage_file": "runtime/task_queue.json",
+      "writer_owner": "control_plane",
+      "worker_permission": "read_only_for_context",
+      "atomicity_requirement": "Las escrituras del control plane deben ser atomicas: escribir temporal, fsync cuando aplique y reemplazar.",
+      "resume_requirement": "Al reiniciar, pending permanece pending; running debe reconciliarse por timeout, lease o recovery antes de relanzar worker."
+    },
+    "state_transitions": [
+      {
+        "from": "pending",
+        "to": "running",
+        "allowed_by": "executor",
+        "evidence": "worker_id, started_at, attempt_number, timeout_seconds"
+      },
+      {
+        "from": "running",
+        "to": "completed",
+        "allowed_by": "validator",
+        "evidence": "TaskResult.completed=true, expected_files existen, validation_commands return code 0"
+      },
+      {
+        "from": "running",
+        "to": "failed",
+        "allowed_by": "executor_or_validator",
+        "evidence": "blockers, failed command, timeout, retry cause"
+      },
+      {
+        "from": "failed",
+        "to": "pending",
+        "allowed_by": "recovery",
+        "evidence": "retry cause registrada y attempts < max_retries"
+      }
+    ],
+    "invalid_transitions": [
+      "pending->completed",
+      "pending->failed without worker attempt",
+      "completed->running",
+      "completed->failed",
+      "running->pending without recovery record"
+    ],
+    "verification_gates": [
+      "Cada tarea declara expected_files.",
+      "Cada tarea declara validation_commands.",
+      "El retry se calcula por tarea, no por sesion completa.",
+      "El progreso solo cuenta con evidencia real en disco.",
+      "El worker devuelve TaskResult y no modifica archivos internos de estado del control plane."
+    ]
+  },
+  "reasoning": [
+    "La tarea toca runtime y estado persistido, por lo que el riesgo operativo es medio aunque los entregables sean dos JSON.",
+    "La cola requiere estados explicitos y transiciones auditables para evitar progreso inventado.",
+    "FIFO debe depender de claves persistidas, no del orden accidental de lectura en memoria.",
+    "El worker actual no debe editar runtime/task_queue.json; solo entrega el diseno en los artefactos declarados.",
+    "La tarea dependiente RUNTIME-20260604014622-002 queda bloqueada hasta que estos artefactos existan y validen."
+  ],
+  "layer_scores": {
+    "prompt": 30,
+    "project": 4,
+    "operational_risk": 12,
+    "blast_radius": 16,
+    "evidence": 10,
+    "history": 0,
+    "uncertainty": 2
+  },
+  "layers": {
+    "prompt": {
+      "score": 30,
+      "reasons": [
+        "runtime solicitado en modo build",
+        "cola persistente con estados explicitos",
+        "herramientas requeridas: findings, integrity, scanner"
+      ],
+      "required_tools": [
+        "findings",
+        "integrity",
+        "scanner"
+      ],
+      "risk_flags": [
+        "estado_persistido"
+      ]
+    },
+    "project": {
+      "score": 4,
+      "reasons": [
+        "entregables declarados ya existen y requieren alineacion",
+        "la implementacion de documentacion detallada pertenece a una tarea dependiente"
+      ],
+      "required_tools": [],
+      "risk_flags": [],
+      "observed": true,
+      "file_count": 2
+    },
+    "operational_risk": {
+      "score": 12,
+      "reasons": [
+        "task_queue.json pertenece al control plane y no debe modificarse desde el worker",
+        "running requiere reconciliacion para reanudacion segura"
+      ],
+      "required_tools": [
+        "integrity"
+      ],
+      "risk_flags": [
+        "control_plane_ownership"
+      ]
+    },
+    "blast_radius": {
+      "score": 16,
+      "reasons": [
+        "la cola desbloquea tareas posteriores",
+        "errores en orden FIFO afectan retries y dependencias"
+      ],
+      "required_tools": [],
+      "risk_flags": [
+        "dependency_order"
+      ]
+    },
+    "evidence": {
+      "score": 10,
+      "reasons": [
+        "dos archivos esperados bajo runtime deben existir",
+        "la validacion declarada comprueba existencia de ambos entregables"
+      ],
+      "required_tools": [
+        "scanner"
+      ],
+      "risk_flags": []
+    },
+    "history": {
+      "score": 0,
+      "reasons": [
+        "sin fallos historicos activos en observer_findings"
+      ],
+      "required_tools": [],
+      "risk_flags": []
+    },
+    "uncertainty": {
+      "score": 2,
+      "reasons": [
+        "orchestrator/agent_tools.py no existe en el workspace; se debe registrar blocker de herramienta si el backend local no ofrece CLI canonico"
+      ],
+      "required_tools": [],
+      "risk_flags": [
+        "tooling_gap"
+      ]
+    }
+  }
+}

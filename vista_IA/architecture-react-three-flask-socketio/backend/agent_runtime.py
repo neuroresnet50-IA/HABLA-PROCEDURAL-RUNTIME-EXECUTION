@@ -25,6 +25,11 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 try:
+    from orchestrator.complexity_audit_kernel import (
+        audit_complexity,
+        extract_lace_policy_ceiling,
+        resolve_lace_budget_from_sources,
+    )
     from orchestrator.complexity_estimator import estimate_complexity
     from orchestrator.contracts import ContractError as RuntimeContractError
     from orchestrator.control_plane_artifact_executor import should_use_control_plane_artifact_executor
@@ -53,6 +58,9 @@ try:
         record_blanqueo_decision,
     )
 except Exception as error:  # pragma: no cover - surfaced clearly when control plane is used.
+    audit_complexity = None  # type: ignore[assignment]
+    extract_lace_policy_ceiling = None  # type: ignore[assignment]
+    resolve_lace_budget_from_sources = None  # type: ignore[assignment]
     estimate_complexity = None  # type: ignore[assignment]
     RuntimeContractError = ValueError  # type: ignore[assignment]
     should_use_control_plane_artifact_executor = None  # type: ignore[assignment]
@@ -1000,15 +1008,22 @@ def get_lace_required_cycles(
     if runtime_path.name != "runtime":
         candidates.append(runtime_path / "runtime" / "complexity_estimate.json")
 
-    for candidate in candidates:
+    audit_candidates = [runtime_path / "complexity_audit.json"]
+    if runtime_path.name != "runtime":
+        audit_candidates.append(runtime_path / "runtime" / "complexity_audit.json")
+    for candidate in [*audit_candidates, *candidates]:
         try:
             payload = json.loads(candidate.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             continue
         if not isinstance(payload, dict):
             continue
-        for key in ("lace_required_cycles", "recommended_lace_cycles"):
-            required = max(required, clamp_lace_required_cycles(payload.get(key) or 0))
+        embedded_audit = payload.get("complexity_audit") if isinstance(payload.get("complexity_audit"), dict) else None
+        for source in ([embedded_audit] if embedded_audit else []) + [payload]:
+            if not isinstance(source, dict):
+                continue
+            for key in ("lace_max_cycles", "lace_target_cycles", "lace_required_cycles", "recommended_lace_cycles"):
+                required = max(required, clamp_lace_required_cycles(source.get(key) or 0))
     return required
 
 
@@ -1025,7 +1040,7 @@ def detect_lace_required_cycles(text: str) -> int:
         match = re.search(pattern, text, flags=re.IGNORECASE)
         if match:
             return clamp_lace_required_cycles(int(match.group(1)))
-    return LACE_MAX_REQUIRED_CYCLES
+    return 0
 
 
 def is_observational_smoke_requirement(requirement: str) -> bool:
@@ -1625,6 +1640,8 @@ class AgentSession:
     recovery_result: Dict[str, Any] = field(default_factory=dict, repr=False)
     checkpoint_result: Dict[str, Any] = field(default_factory=dict, repr=False)
     cyberlace_decisions: List[Dict[str, Any]] = field(default_factory=list, repr=False)
+    control_plane_repair: bool = False
+    control_plane_repair_source: str = ""
     event_offset: int = field(default=0, repr=False)
     habla_state: Dict[str, Any] = field(default_factory=dict, repr=False)
     lace_cycle_states: List[Dict[str, Any]] = field(default_factory=list, repr=False)
@@ -1713,6 +1730,10 @@ class AgentSession:
                 "validation": self.validation_result or None,
                 "recovery": self.recovery_result or None,
                 "checkpoint": self.checkpoint_result or None,
+                "repair": {
+                    "enabled": self.control_plane_repair,
+                    "source": self.control_plane_repair_source or None,
+                },
             },
             "cyberlace": {
                 "decisions": self.cyberlace_decisions[-12:],
@@ -2293,6 +2314,8 @@ class AgentRuntime:
         runtime_mode: str,
         bootstrap: bool,
         ensure_new_project: bool,
+        control_plane_repair: bool = False,
+        control_plane_repair_source: str = "",
     ) -> Dict[str, Any]:
         requested_slug = slugify(str(project_slug or "").strip()) if str(project_slug or "").strip() else slugify(project_name)
         if not ensure_new_project:
@@ -2340,6 +2363,8 @@ class AgentRuntime:
             control_plane_enabled=True,
             control_plane_runtime_dir=str(session_runtime_dir),
             reviewer_log_path=str(session_runtime_dir / "logs" / f"{session_id}-reviewer.jsonl"),
+            control_plane_repair=bool(control_plane_repair),
+            control_plane_repair_source=str(control_plane_repair_source or ""),
         )
         with self.lock:
             self.sessions[session.session_id] = session
@@ -2377,6 +2402,8 @@ class AgentRuntime:
         bootstrap: bool = True,
         ensure_new_project: bool = False,
         mode: str | None = None,
+        control_plane_repair: bool = False,
+        control_plane_repair_source: str = "",
     ) -> Dict[str, Any]:
         runtime_mode = normalize_agent_runtime_mode(mode)
         if self.control_plane_enabled:
@@ -2387,6 +2414,8 @@ class AgentRuntime:
                 runtime_mode=runtime_mode,
                 bootstrap=bootstrap,
                 ensure_new_project=ensure_new_project,
+                control_plane_repair=control_plane_repair,
+                control_plane_repair_source=control_plane_repair_source,
             )
 
         normalized_requested_slug = str(project_slug or "").strip()
@@ -2741,6 +2770,7 @@ class AgentRuntime:
             project_file_count=self._count_material_project_files(project_dir),
             launch_mode="existing" if project_dir.exists() else "new",
             project_slug=project_dir.name,
+            project_root=str(project_dir),
         )
 
     def _load_complexity_estimate(self, runtime_dir: str | Path | None) -> Dict[str, Any]:
@@ -2760,6 +2790,12 @@ class AgentRuntime:
         runtime_path.mkdir(parents=True, exist_ok=True)
         estimate_path = runtime_path / "complexity_estimate.json"
         estimate_path.write_text(json.dumps(estimate, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+        audit_payload = estimate.get("complexity_audit") if isinstance(estimate.get("complexity_audit"), dict) else None
+        if audit_payload:
+            (runtime_path / "complexity_audit.json").write_text(
+                json.dumps(audit_payload, ensure_ascii=True, indent=2) + "\n",
+                encoding="utf-8",
+            )
         try:
             store = StateStore(runtime_path)  # type: ignore[operator]
             checkpoint_key = "complexity-estimate"
@@ -2951,6 +2987,80 @@ class AgentRuntime:
             )
         )
 
+    def _find_pending_control_plane_repair_task(self, queue: Any) -> Dict[str, Any] | None:
+        for task in queue.list():
+            task_id = str(task.get("id") or "")
+            if task_id.startswith("CLOSURE-REPAIR-") and task.get("status") in {"pending", "running"}:
+                return dict(task)
+        return None
+
+    def _build_control_plane_repair_task(
+        self,
+        requirement: str,
+        *,
+        runtime_mode: str,
+        timeout_seconds: int,
+        max_retries: int,
+    ) -> Dict[str, Any]:
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+        task_id = f"CLOSURE-REPAIR-{stamp}"
+        evidence_path = f"docs/closure_repairs/{task_id.lower()}.md"
+        return {
+            "id": task_id,
+            "title": "Reparar cierre bloqueado desde certificado runtime",
+            "goal": (
+                "Crear una reparacion controlada del cierre usando la evidencia del certificado runtime. "
+                "Diagnosticar locks, scanner, integrity, sandbox, validator y LACE. Reparar solo cambios seguros; "
+                "si no se puede cerrar, persistir diagnostico y siguiente accion sin forzar completed.\n\n"
+                f"Evidencia de entrada:\n{str(requirement).strip()}"
+            ),
+            "status": "pending",
+            "priority": 10000,
+            "dependencies": [],
+            "expected_files": [evidence_path],
+            "validation_commands": [self._expected_files_are_files_command([evidence_path])],
+            "timeout_seconds": max(120, int(timeout_seconds or 900)),
+            "max_retries": max(0, int(max_retries or 0)),
+            "mode": runtime_mode,
+            "checkpoint_key": f"{task_id.lower()}-checkpoint",
+            "kind": "closure_repair",
+            "execution_strategy": "codex_worker",
+            "selector_reason": "control_plane_repair_from_runtime_certificate",
+        }
+
+    def _enqueue_control_plane_repair_task_if_needed(
+        self,
+        store: Any,
+        queue: Any,
+        requirement: str,
+        *,
+        runtime_mode: str,
+        timeout_seconds: int,
+        max_retries: int,
+    ) -> Dict[str, Any] | None:
+        existing = self._find_pending_control_plane_repair_task(queue)
+        if existing:
+            return existing
+        task = self._build_control_plane_repair_task(
+            requirement,
+            runtime_mode=runtime_mode,
+            timeout_seconds=timeout_seconds,
+            max_retries=max_retries,
+        )
+        queue.enqueue(task)
+        try:
+            state = store.load_project_state()
+            now = utc_now()
+            state["status"] = "preparing"
+            state["current_task_id"] = None
+            state["last_runtime_repair_at"] = now
+            state["last_runtime_repair_reason"] = "closure_certificate_repair_task_enqueued"
+            state["updated_at"] = now
+            store.save_project_state(state)
+        except Exception:
+            pass
+        return task
+
     def _prepare_control_plane_directive(
         self,
         requirement: str,
@@ -2962,6 +3072,7 @@ class AgentRuntime:
         task_workspace_root: str | Path | None = None,
         directives_dir: str | Path | None = None,
         complexity_estimate: Dict[str, Any] | None = None,
+        control_plane_repair: bool = False,
     ) -> Dict[str, Any]:
         self._require_control_plane_imports()
         store = StateStore(self._resolve_control_plane_runtime_dir(runtime_dir))  # type: ignore[operator]
@@ -3038,12 +3149,25 @@ class AgentRuntime:
                 task = queue.next_ready_task()
                 existing_tasks = queue.list()
             elif existing_tasks:
-                blocked_tasks = queue.blocked_tasks()
-                raise AgentRuntimeControlPlaneError(
-                    "control_plane_no_ready_task",
-                    "La cola persistida existe, pero no hay tarea ejecutable. "
-                    f"Tareas bloqueadas: {blocked_tasks}",
-                )
+                if control_plane_repair:
+                    self._enqueue_control_plane_repair_task_if_needed(
+                        store,
+                        queue,
+                        requirement,
+                        runtime_mode=runtime_mode,
+                        timeout_seconds=task_timeout_seconds,
+                        max_retries=task_max_retries,
+                    )
+                    queue = TaskQueue(store, bootstrap_empty=True)  # type: ignore[operator]
+                    task = queue.next_ready_task()
+                    existing_tasks = queue.list()
+                if task is None:
+                    blocked_tasks = queue.blocked_tasks()
+                    raise AgentRuntimeControlPlaneError(
+                        "control_plane_no_ready_task",
+                        "La cola persistida existe, pero no hay tarea ejecutable. "
+                        f"Tareas bloqueadas: {blocked_tasks}",
+                    )
             if task is None and not existing_tasks:
                 task_prefix = "RUNTIME-" + datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
                 planned_tasks = plan_project(  # type: ignore[misc]
@@ -3509,20 +3633,41 @@ class AgentRuntime:
         store = StateStore(runtime_dir)  # type: ignore[operator]
         queue = TaskQueue(store, bootstrap_empty=True)  # type: ignore[operator]
         queue_tasks = queue.list()
-        if not queue_tasks or any(task.get("status") != "completed" for task in queue_tasks):
-            return {"status": "not_ready", "reason": "queue_not_fully_completed"}
+        if not queue_tasks:
+            return {"status": "not_ready", "reason": "queue_empty"}
+
+        non_lace_active_tasks = [
+            task
+            for task in queue_tasks
+            if self._lace_cycle_from_task_id(str(task.get("id") or "")) is None
+            and str(task.get("status") or "") not in {"completed", "deferred"}
+        ]
+        running_lace_tasks = [
+            task
+            for task in queue_tasks
+            if self._lace_cycle_from_task_id(str(task.get("id") or "")) is not None
+            and str(task.get("status") or "") == "running"
+        ]
+        if non_lace_active_tasks or running_lace_tasks:
+            return {
+                "status": "not_ready",
+                "reason": "queue_not_fully_completed",
+                "active_task_ids": [task.get("id") for task in non_lace_active_tasks + running_lace_tasks],
+            }
 
         if session_id:
             self._sync_lace_runtime(session_id)
 
-        configured_required_cycles = self._resolve_lace_required_cycles(
+        lace_budget = self._resolve_lace_budget(
             session_id=session_id,
             workspace=workspace_path,
             runtime_dir=runtime_dir,
             runtime_mode=normalized_runtime_mode,
         )
+        configured_required_cycles = int(lace_budget.get("max_cycles") or 0)
         if configured_required_cycles <= 0:
-            return {"status": "not_required", "reason": "lace_not_active", "required_cycles": 0}
+            self._persist_lace_budget(runtime_dir, {**lace_budget, "closure_status": "not_required"})
+            return {"status": "not_required", "reason": "lace_not_active", "required_cycles": 0, "lace_budget": lace_budget}
 
         preliminary_evidence = self._inspect_lace_closure_evidence(
             workspace_path,
@@ -3532,7 +3677,7 @@ class AgentRuntime:
         )
         quality_gates = self._inspect_lace_quality_gates(workspace_path, queue_tasks)
         adaptive_lace = self._resolve_adaptive_lace_target(
-            configured_required_cycles=configured_required_cycles,
+            lace_budget=lace_budget,
             preliminary_evidence=preliminary_evidence,
             quality_gates=quality_gates,
         )
@@ -3546,13 +3691,40 @@ class AgentRuntime:
                 queue_tasks=queue_tasks,
             )
         evidence["configured_required_cycles"] = configured_required_cycles
+        evidence["lace_budget"] = lace_budget
         evidence["adaptive_lace"] = adaptive_lace
         evidence["quality_gates"] = quality_gates
+        evidence["required_cycles"] = required_cycles
+        evidence["target_cycles"] = int(lace_budget.get("target_cycles") or required_cycles)
+        evidence["max_cycles"] = configured_required_cycles
+        evidence["min_cycles"] = int(lace_budget.get("min_cycles") or 0)
+
         if evidence["completed_cycles"] >= required_cycles and not evidence["missing_cycles"]:
+            if adaptive_lace.get("requires_human_review"):
+                self._persist_lace_budget(runtime_dir, {**lace_budget, **evidence, "closure_status": "blocked_human_review"})
+                return self._block_lace_closure(store, evidence, reason="lace_findings_blocking_requires_human_review")
+            if quality_gates.get("passed") is not True and required_cycles >= configured_required_cycles:
+                self._persist_lace_budget(runtime_dir, {**lace_budget, **evidence, "closure_status": "blocked_findings"})
+                return self._block_lace_closure(store, evidence, reason="lace_findings_blocking")
+            deferred_task_ids: List[str] = []
+            if adaptive_lace.get("early_exit"):
+                deferred_task_ids = self._defer_surplus_lace_tasks(
+                    queue,
+                    queue_tasks,
+                    completed_cycle_numbers=evidence.get("completed_cycle_numbers") or [],
+                    reason="deferred_by_quality_gate",
+                )
+                if deferred_task_ids:
+                    queue_tasks = queue.list()
+                    evidence["deferred_task_ids"] = deferred_task_ids
+                    evidence["deferred_cycles"] = len(deferred_task_ids)
+            evidence["early_exit_used"] = bool(adaptive_lace.get("early_exit"))
+            self._persist_lace_budget(runtime_dir, {**lace_budget, **evidence, "closure_status": "ok_early_exit" if adaptive_lace.get("early_exit") else "ok"})
             return self._complete_lace_closure(store, evidence)
 
         if allow_enqueue:
-            pending_tasks = self._build_lace_cycle_tasks(queue_tasks, evidence["missing_cycles"], normalized_runtime_mode)
+            next_missing = list(evidence.get("missing_cycles") or [])[:1]
+            pending_tasks = self._build_lace_cycle_tasks(queue_tasks, next_missing, normalized_runtime_mode)
             existing_ids = {task["id"] for task in queue_tasks}
             existing_lace_cycles = {
                 cycle
@@ -3576,6 +3748,7 @@ class AgentRuntime:
                         "configured_required_cycles": evidence.get("configured_required_cycles"),
                         "completed_cycles": evidence["completed_cycles"],
                         "missing_cycles": evidence["missing_cycles"],
+                        "lace_budget": lace_budget,
                         "adaptive_lace": evidence.get("adaptive_lace"),
                         "quality_gates": evidence.get("quality_gates"),
                         "enqueued_task_ids": [task["id"] for task in new_tasks],
@@ -3591,8 +3764,10 @@ class AgentRuntime:
                 missing_cycles = evidence.get("missing_cycles") or []
                 message = (
                     f"Cierre bloqueado por LACE: {evidence.get('completed_cycles')}/"
-                    f"{required_cycles} ciclos canonicos validos; faltan {missing_cycles}."
+                    f"{required_cycles} ciclos canonicos validos; faltan {missing_cycles}. "
+                    "Se encolo solo el siguiente ciclo requerido para recalcular despues."
                 )
+                self._persist_lace_budget(runtime_dir, {**lace_budget, **evidence, "closure_status": "blocked_next_cycle_enqueued", "enqueued_task_ids": [task["id"] for task in new_tasks]})
                 return {
                     "status": "enqueued",
                     "closure_status": "blocked",
@@ -3604,6 +3779,7 @@ class AgentRuntime:
                     "enqueued_task_ids": [task["id"] for task in new_tasks],
                 }
 
+        self._persist_lace_budget(runtime_dir, {**lace_budget, **evidence, "closure_status": "blocked"})
         return self._block_lace_closure(store, evidence, reason="lace_cycles_pending")
 
     def _resolve_lace_required_cycles(
@@ -3614,39 +3790,146 @@ class AgentRuntime:
         runtime_dir: str | Path | None = None,
         runtime_mode: str | None = None,
     ) -> int:
+        budget = self._resolve_lace_budget(
+            session_id=session_id,
+            workspace=workspace,
+            runtime_dir=runtime_dir,
+            runtime_mode=runtime_mode,
+        )
+        return int(budget.get("max_cycles") or 0)
+
+    def _resolve_lace_budget(
+        self,
+        *,
+        session_id: str | None,
+        workspace: Path,
+        runtime_dir: str | Path | None = None,
+        runtime_mode: str | None = None,
+    ) -> Dict[str, Any]:
         normalized_mode = normalize_agent_runtime_mode(runtime_mode)
         if normalized_mode == "smoke":
-            return 0
+            return {
+                "min_cycles": 0,
+                "target_cycles": 0,
+                "max_cycles": 0,
+                "source": "smoke_mode",
+                "early_exit_allowed": True,
+                "quality_threshold": 85,
+            }
 
-        required = get_lace_required_cycles(runtime_dir or (workspace / "runtime"), runtime_mode=normalized_mode)
+        runtime_path = Path(runtime_dir or (workspace / "runtime"))
+        complexity_estimate = self._load_complexity_estimate(runtime_path)
+        complexity_audit: Dict[str, Any] = {}
+        audit_path = runtime_path / "complexity_audit.json"
+        if audit_path.exists():
+            complexity_audit, _audit_error = self._read_runtime_json_dict(audit_path)
+        if not complexity_audit and isinstance(complexity_estimate.get("complexity_audit"), dict):
+            complexity_audit = dict(complexity_estimate.get("complexity_audit") or {})
+
+        session_cycles = 0
         with self.lock:
             session = self.sessions.get(session_id or "") if session_id else None
             if session is not None and session.lace_required_cycles:
-                required = max(required, clamp_lace_required_cycles(int(session.lace_required_cycles)))
+                session_cycles = clamp_lace_required_cycles(int(session.lace_required_cycles))
 
-        candidates = [workspace / "LACE_LOG.md", workspace / "LACE.md"]
-        docs_dir = workspace / LACE_VISUAL_DIR
-        if docs_dir.exists():
-            candidates.extend(sorted(docs_dir.glob("ciclo-*.md")))
-
-        for candidate in candidates:
-            if not candidate.exists() or not candidate.is_file():
-                continue
+        if not complexity_estimate and not complexity_audit and session_cycles:
+            difficulty = "extradificil" if session_cycles >= 8 else "dificil" if session_cycles >= 5 else "medio"
+            complexity_estimate = {
+                "difficulty": difficulty,
+                "recommended_lace_cycles": session_cycles,
+                "confidence": 40,
+                "source": "legacy_session_lace_required_cycles",
+            }
+        elif not complexity_estimate and not complexity_audit and audit_complexity is not None:
             try:
-                text = candidate.read_text(encoding="utf-8")
-            except OSError:
-                continue
-            explicit = re.search(r"ciclos\s+requeridos\s*:\s*(\d+)", text, flags=re.IGNORECASE)
-            if explicit:
-                required = max(required, clamp_lace_required_cycles(int(explicit.group(1))))
-            active = re.search(r"Regla activa:\s*(\d+)\s+ciclos", text, flags=re.IGNORECASE)
-            if active:
-                required = max(required, clamp_lace_required_cycles(int(active.group(1))))
-            if candidate.name == "LACE.md":
-                detected = detect_lace_required_cycles(text)
-                if detected:
-                    required = max(required, clamp_lace_required_cycles(detected))
-        return required
+                queue_snapshot = TaskQueue(StateStore(runtime_path), bootstrap_empty=True).list()  # type: ignore[operator]
+            except Exception:
+                queue_snapshot = []
+            material_tasks = [
+                task
+                for task in queue_snapshot
+                if self._lace_cycle_from_task_id(str(task.get("id") or "")) is None
+            ]
+            if material_tasks:
+                prompt = "\n".join(str(task.get("goal") or task.get("title") or "") for task in material_tasks)
+                aggregate_task = {
+                    "expected_files": [
+                        path
+                        for task in material_tasks
+                        for path in (task.get("expected_files") or [])
+                    ],
+                    "validation_commands": [
+                        command
+                        for task in material_tasks
+                        for command in (task.get("validation_commands") or [])
+                    ],
+                }
+                try:
+                    complexity_audit = audit_complexity(  # type: ignore[misc]
+                        prompt,
+                        project_root=workspace,
+                        task=aggregate_task,
+                        runtime_mode=normalized_mode,
+                        launch_mode="existing",
+                        project_slug=workspace.name,
+                        project_file_count=self._count_material_project_files(workspace),
+                    )
+                except Exception:
+                    complexity_audit = {}
+
+        lace_log_text = self._read_text_if_exists(workspace / "LACE_LOG.md")
+        lace_policy_text = self._read_text_if_exists(workspace / "LACE.md")
+        explicit_config = None
+        for key in ("explicit_lace_budget", "lace_budget_override"):
+            candidate = complexity_estimate.get(key) if isinstance(complexity_estimate, dict) else None
+            if isinstance(candidate, dict):
+                explicit_config = candidate
+                break
+
+        if resolve_lace_budget_from_sources is not None:
+            budget = resolve_lace_budget_from_sources(  # type: ignore[misc]
+                runtime_mode=normalized_mode,
+                explicit_config=explicit_config,
+                complexity_audit=complexity_audit or None,
+                complexity_estimate=complexity_estimate or None,
+                lace_log_text=lace_log_text,
+                lace_policy_text=lace_policy_text,
+            )
+        else:
+            required = get_lace_required_cycles(runtime_path, runtime_mode=normalized_mode)
+            if required <= 0:
+                required = clamp_lace_required_cycles(session_cycles) or 3
+            budget = {
+                "min_cycles": min(LACE_MIN_REQUIRED_CYCLES, required),
+                "target_cycles": required,
+                "max_cycles": required,
+                "source": "legacy_required_cycles_fallback",
+                "early_exit_allowed": True,
+                "quality_threshold": 85,
+            }
+
+        budget = dict(budget)
+        budget.setdefault("runtime_mode", normalized_mode)
+        budget.setdefault("policy_ceiling", extract_lace_policy_ceiling(lace_policy_text) if extract_lace_policy_ceiling is not None else LACE_MAX_REQUIRED_CYCLES)  # type: ignore[misc]
+        budget["legacy_session_required_cycles"] = session_cycles
+        return budget
+
+    def _read_text_if_exists(self, path: Path) -> str:
+        try:
+            return path.read_text(encoding="utf-8") if path.exists() and path.is_file() else ""
+        except OSError:
+            return ""
+
+    def _persist_lace_budget(self, runtime_dir: str | Path, budget: Dict[str, Any]) -> None:
+        try:
+            runtime_path = Path(runtime_dir)
+            runtime_path.mkdir(parents=True, exist_ok=True)
+            (runtime_path / "lace_budget.json").write_text(
+                json.dumps(budget, ensure_ascii=True, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            return
 
     def _read_runtime_json_dict(self, path: Path) -> tuple[Dict[str, Any], str | None]:
         if not path.exists():
@@ -3666,10 +3949,18 @@ class AgentRuntime:
         artifacts_dir = runtime_dir / "artifacts"
 
         task_status_counts: Dict[str, int] = {}
+        non_lace_active_task_ids: List[str] = []
+        running_lace_task_ids: List[str] = []
         for task in queue_tasks:
             status = str(task.get("status") or "unknown")
             task_status_counts[status] = task_status_counts.get(status, 0) + 1
-        queue_idle = bool(queue_tasks) and task_status_counts == {"completed": len(queue_tasks)}
+            task_id = str(task.get("id") or "")
+            is_lace_task = self._lace_cycle_from_task_id(task_id) is not None
+            if is_lace_task and status == "running":
+                running_lace_task_ids.append(task_id)
+            elif not is_lace_task and status not in {"completed", "deferred"}:
+                non_lace_active_task_ids.append(task_id)
+        queue_idle = bool(queue_tasks) and not non_lace_active_task_ids and not running_lace_task_ids
 
         scanner_path = artifacts_dir / "final_code_scanner_report.json"
         scanner_report, scanner_error = self._read_runtime_json_dict(scanner_path)
@@ -3733,6 +4024,8 @@ class AgentRuntime:
             "issues": issues,
             "details": {
                 "task_status_counts": task_status_counts,
+                "non_lace_active_task_ids": non_lace_active_task_ids,
+                "running_lace_task_ids": running_lace_task_ids,
                 "scanner": {
                     "path": str(scanner_path),
                     "error": scanner_error,
@@ -3768,16 +4061,20 @@ class AgentRuntime:
     def _resolve_adaptive_lace_target(
         self,
         *,
-        configured_required_cycles: int,
         preliminary_evidence: Dict[str, Any],
         quality_gates: Dict[str, Any],
+        lace_budget: Dict[str, Any] | None = None,
+        configured_required_cycles: int | None = None,
     ) -> Dict[str, Any]:
-        configured = clamp_lace_required_cycles(configured_required_cycles)
+        budget = dict(lace_budget or {})
+        configured = int(budget.get("max_cycles") or configured_required_cycles or 0)
+        configured = clamp_lace_required_cycles(configured) if configured else 0
         completed = int(preliminary_evidence.get("completed_cycles") or 0)
         if configured <= 0:
             return {
                 "min_required_cycles": 0,
-                "max_required_cycles": LACE_MAX_REQUIRED_CYCLES,
+                "target_required_cycles": 0,
+                "max_required_cycles": 0,
                 "configured_required_cycles": 0,
                 "effective_required_cycles": 0,
                 "completed_cycles_observed": completed,
@@ -3785,31 +4082,64 @@ class AgentRuntime:
                 "reason": "lace_not_active",
             }
 
-        min_required = min(LACE_MIN_REQUIRED_CYCLES, configured)
-        if quality_gates.get("passed") is True:
-            if completed >= min_required:
-                effective = min(configured, max(min_required, completed))
-                early_exit = effective < configured
-                reason = "quality_gates_clear_early_exit" if early_exit else "quality_gates_clear_at_configured_max"
-            else:
-                effective = min_required
-                early_exit = False
-                reason = "quality_gates_clear_minimum_pending"
-        else:
-            effective = configured
+        min_required = max(0, int(budget.get("min_cycles") if "min_cycles" in budget else min(LACE_MIN_REQUIRED_CYCLES, configured)))
+        target_required = max(min_required, int(budget.get("target_cycles") or configured))
+        max_required = max(target_required, configured)
+        max_required = min(LACE_MAX_REQUIRED_CYCLES, max_required)
+        target_required = min(target_required, max_required)
+        min_required = min(min_required, target_required)
+        quality_threshold = int(budget.get("quality_threshold") or 85)
+        quality_score = 100 if quality_gates.get("passed") is True else 0
+        quality_clean = quality_score >= quality_threshold and quality_gates.get("passed") is True
+        early_exit_allowed = budget.get("early_exit_allowed") is not False
+
+        requires_human_review = False
+        if min_required <= 0 and completed <= 0:
+            effective = 0
+            early_exit = True
+            reason = "minimum_zero_early_exit"
+        elif completed < min_required:
+            effective = min_required
             early_exit = False
-            reason = "quality_gates_not_clear"
+            reason = "quality_gates_clear_minimum_pending" if quality_clean else "minimum_cycles_pending"
+        elif quality_clean and early_exit_allowed:
+            effective = max(min_required, min(completed, max_required))
+            early_exit = effective < target_required or effective < max_required
+            reason = "quality_gates_clear_early_exit" if early_exit else "quality_gates_clear_at_target"
+        elif quality_clean and completed < target_required:
+            effective = target_required
+            early_exit = False
+            reason = "quality_gates_clear_target_pending"
+        elif not quality_clean and completed < max_required:
+            effective = min(max_required, max(min_required, completed + 1))
+            early_exit = False
+            reason = "quality_gates_not_clear_next_cycle"
+        elif not quality_clean:
+            effective = max_required
+            early_exit = False
+            requires_human_review = True
+            reason = "quality_gates_blocking_at_max"
+        else:
+            effective = min(max_required, max(target_required, completed))
+            early_exit = False
+            reason = "target_cycles_satisfied"
 
         return {
             "min_required_cycles": min_required,
-            "max_required_cycles": LACE_MAX_REQUIRED_CYCLES,
-            "configured_required_cycles": configured,
+            "target_required_cycles": target_required,
+            "max_required_cycles": max_required,
+            "configured_required_cycles": max_required,
             "effective_required_cycles": effective,
             "completed_cycles_observed": completed,
             "early_exit": early_exit,
+            "early_exit_allowed": early_exit_allowed,
+            "quality_score": quality_score,
+            "quality_threshold": quality_threshold,
+            "requires_human_review": requires_human_review,
             "reason": reason,
             "quality_gates_passed": quality_gates.get("passed") is True,
             "quality_gate_issues": quality_gates.get("issues", []),
+            "budget_source": budget.get("source"),
         }
 
     def _inspect_lace_closure_evidence(
@@ -4002,6 +4332,30 @@ class AgentRuntime:
             "checkpoint": {"checkpoint_key": checkpoint_key, "path": str(checkpoint_path)},
         }
 
+    def _defer_surplus_lace_tasks(
+        self,
+        queue: Any,
+        queue_tasks: List[Dict[str, Any]],
+        *,
+        completed_cycle_numbers: List[int],
+        reason: str,
+    ) -> List[str]:
+        completed_cycles = {int(cycle) for cycle in completed_cycle_numbers}
+        deferred: List[str] = []
+        for task in queue_tasks:
+            task_id = str(task.get("id") or "")
+            cycle_number = self._lace_cycle_from_task_id(task_id)
+            if cycle_number is None or cycle_number in completed_cycles:
+                continue
+            if str(task.get("status") or "") not in {"pending", "blocked", "failed"}:
+                continue
+            try:
+                queue.mark_task_status(task_id, "deferred")
+            except Exception:
+                continue
+            deferred.append(task_id)
+        return deferred
+
     def _build_lace_cycle_tasks(
         self,
         existing_tasks: List[Dict[str, Any]],
@@ -4009,11 +4363,21 @@ class AgentRuntime:
         runtime_mode: str,
     ) -> List[Dict[str, Any]]:
         date_token = datetime.now(timezone.utc).strftime("%Y%m%d")
-        previous_dependency = existing_tasks[-1]["id"] if existing_tasks else None
+        tasks_by_cycle: Dict[int, Dict[str, Any]] = {}
+        last_non_lace_task_id: str | None = None
+        for existing in existing_tasks:
+            existing_id = str(existing.get("id") or "")
+            cycle = self._lace_cycle_from_task_id(existing_id)
+            if cycle is None:
+                last_non_lace_task_id = existing_id or last_non_lace_task_id
+            else:
+                tasks_by_cycle.setdefault(cycle, existing)
         tasks: List[Dict[str, Any]] = []
         for cycle_number in missing_cycles:
             task_id = f"LACE-{date_token}-{cycle_number:03d}"
             cycle_doc = lace_cycle_visual_relative_path(cycle_number)
+            previous_cycle_task = tasks_by_cycle.get(cycle_number - 1)
+            previous_dependency = str(previous_cycle_task.get("id")) if previous_cycle_task else last_non_lace_task_id if cycle_number == 1 else None
             dependencies = [previous_dependency] if previous_dependency else []
             task = {
                 "id": task_id,
@@ -4047,7 +4411,7 @@ class AgentRuntime:
                 "checkpoint_key": f"lace-cycle-{cycle_number:03d}-checkpoint",
             }
             tasks.append(task)
-            previous_dependency = task_id
+            tasks_by_cycle[cycle_number] = task
         return tasks
 
     def _block_lace_closure(self, store: Any, evidence: Dict[str, Any], *, reason: str) -> Dict[str, Any]:
@@ -4124,7 +4488,7 @@ class AgentRuntime:
         blocked_tasks = list(state.get("blocked_tasks") or [])
         queue_failed = [task["id"] for task in queue_tasks if task.get("status") == "failed"]
         queue_blocked = [task["id"] for task in queue_tasks if task.get("status") == "blocked"]
-        queue_unfinished = [task["id"] for task in queue_tasks if task.get("status") != "completed"]
+        queue_unfinished = [task["id"] for task in queue_tasks if task.get("status") not in {"completed", "deferred"}]
         state_completed = (
             state.get("status") == "completed"
             and state.get("current_task_id") is None
@@ -4324,6 +4688,10 @@ class AgentRuntime:
         changed = False
         reconciled_ids: List[str] = []
         workspace_path = Path(workspace).resolve()
+        direct_reconciled_ids = self._reconcile_blocked_tasks_with_current_evidence(store, queue, workspace_path)
+        if direct_reconciled_ids:
+            changed = True
+            reconciled_ids.extend(direct_reconciled_ids)
         for _ in range(max(1, len(queue.list()))):
             tasks = queue.list()
             completed_descendants = self._completed_split_descendants(tasks, store.load_task_history())
@@ -4365,6 +4733,63 @@ class AgentRuntime:
         if changed:
             self._refresh_project_state_after_reconciliation(store, queue, reconciled_ids)
         return changed
+
+    def _reconcile_blocked_tasks_with_current_evidence(
+        self,
+        store: Any,
+        queue: Any,
+        workspace: Path,
+    ) -> List[str]:
+        """Complete narrowly allowed blocked tasks only when current validator evidence passes."""
+
+        reconciled_ids: List[str] = []
+        for task in queue.list():
+            task_id = str(task.get("id") or "")
+            if task.get("status") not in {"blocked", "failed"}:
+                continue
+            if not self._can_reconcile_blocked_task_from_current_evidence(task):
+                continue
+            validation = self._validate_recovered_task_evidence(task, workspace)
+            task_result = validation.get("task_result") if isinstance(validation, dict) else None
+            if not isinstance(task_result, dict):
+                continue
+            if not task_result.get("completed") or not task_result.get("validation_passed"):
+                continue
+
+            queue.mark_task_status(task_id, "completed")
+            checkpoint_key = self._reconciled_task_checkpoint_key(task)
+            checkpoint_path = store.save_checkpoint(
+                checkpoint_key,
+                {
+                    "task": task,
+                    "task_result": task_result,
+                    "validation": validation.get("validation"),
+                    "reason": "current_evidence_validator_ok",
+                    "reconciled_from_current_evidence": True,
+                },
+            )
+            if not self._history_has_completed_task(store, task_id):
+                store.append_task_history(task_result)
+            self._save_project_state_transition(store, task, "completed", checkpoint_key=checkpoint_key)
+            reconciled_ids.append(task_id)
+        return reconciled_ids
+
+    def _can_reconcile_blocked_task_from_current_evidence(self, task: Dict[str, Any]) -> bool:
+        task_id = str(task.get("id") or "")
+        if self._lace_cycle_from_task_id(task_id) is not None:
+            return True
+        kind = str(task.get("kind") or "")
+        expected_files = [str(item or "") for item in task.get("expected_files") or []]
+        return kind == "closure_repair" and bool(expected_files) and all(
+            item.startswith("docs/closure_repairs/") and item.endswith(".md") for item in expected_files
+        )
+
+    def _reconciled_task_checkpoint_key(self, task: Dict[str, Any]) -> str:
+        task_id = str(task.get("id") or "")
+        cycle_number = self._lace_cycle_from_task_id(task_id)
+        if cycle_number is not None:
+            return f"lace-cycle-{cycle_number:03d}-checkpoint"
+        return str(task.get("checkpoint_key") or f"{task_id.lower()}-completed")
 
     def _completed_split_descendants(
         self,
@@ -6943,6 +7368,7 @@ class AgentRuntime:
                     directive_repo_root=self.repo_root,
                     task_workspace_root=project_dir,
                     complexity_estimate=complexity_estimate,
+                    control_plane_repair=session_ref.control_plane_repair,
                 )
                 task = prepared["task"]
                 directive = prepared["directive"]
@@ -7547,10 +7973,28 @@ class AgentRuntime:
         estimated_cycles = 0
         if isinstance(complexity_estimate, dict):
             try:
-                estimated_cycles = int(complexity_estimate.get("recommended_lace_cycles") or 0)
+                estimated_cycles = int(
+                    complexity_estimate.get("lace_max_cycles")
+                    or complexity_estimate.get("recommended_lace_cycles")
+                    or 0
+                )
             except (TypeError, ValueError):
                 estimated_cycles = 0
-        required_cycles = clamp_lace_required_cycles(estimated_cycles) if estimated_cycles else detect_lace_required_cycles(policy_text)
+        required_cycles = clamp_lace_required_cycles(estimated_cycles)
+        if resolve_lace_budget_from_sources is not None and isinstance(complexity_estimate, dict):
+            audit_payload = complexity_estimate.get("complexity_audit") if isinstance(complexity_estimate.get("complexity_audit"), dict) else None
+            try:
+                lace_budget = resolve_lace_budget_from_sources(  # type: ignore[misc]
+                    runtime_mode=str(complexity_estimate.get("runtime_mode") or "build"),
+                    complexity_audit=audit_payload,
+                    complexity_estimate=complexity_estimate,
+                    lace_policy_text=policy_text,
+                )
+            except Exception:
+                lace_budget = {}
+            required_cycles = int(lace_budget.get("max_cycles") or required_cycles or 0)
+        if required_cycles <= 0:
+            required_cycles = detect_lace_required_cycles(policy_text) or LACE_MIN_REQUIRED_CYCLES
         project_policy_path = project_dir / "LACE.md"
         project_policy_path.parent.mkdir(parents=True, exist_ok=True)
 

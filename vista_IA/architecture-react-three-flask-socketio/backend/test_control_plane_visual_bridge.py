@@ -747,12 +747,9 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             state = store.load_project_state()
             lace_tasks = [task for task in queue if task["id"].startswith("LACE-") and task["status"] == "pending"]
             self.assertEqual(gate["status"], "enqueued")
-            self.assertEqual(gate["missing_cycles"], [7, 8, 9, 10])
+            self.assertEqual(gate["missing_cycles"], [7])
             self.assertEqual([task["expected_files"][1] for task in lace_tasks], [
                 "docs/lace_cycles/ciclo-07.md",
-                "docs/lace_cycles/ciclo-08.md",
-                "docs/lace_cycles/ciclo-09.md",
-                "docs/lace_cycles/ciclo-10.md",
             ])
             self.assertTrue(all(task["timeout_seconds"] == 3600 for task in lace_tasks))
             self.assertNotEqual(state["status"], "completed")
@@ -766,6 +763,10 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=2, completed_cycles=2)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 3))
+            (project_dir / "runtime" / "complexity_estimate.json").write_text(
+                json.dumps({"difficulty": "medio", "recommended_lace_cycles": 4}),
+                encoding="utf-8",
+            )
             seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "blocked"
@@ -781,7 +782,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             )
 
             self.assertEqual(gate["status"], "clear")
-            self.assertEqual(gate["configured_required_cycles"], 10)
+            self.assertEqual(gate["configured_required_cycles"], 4)
             self.assertEqual(gate["required_cycles"], 2)
             self.assertEqual(gate["completed_cycles"], 2)
             self.assertEqual(gate["missing_cycles"], [])
@@ -801,6 +802,10 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=1)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 2))
+            (project_dir / "runtime" / "complexity_estimate.json").write_text(
+                json.dumps({"difficulty": "medio", "recommended_lace_cycles": 4}),
+                encoding="utf-8",
+            )
             seed_clean_lace_quality_gates(project_dir)
 
             gate = runtime._apply_lace_closure_gate(
@@ -812,7 +817,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             )
 
             self.assertEqual(gate["status"], "enqueued")
-            self.assertEqual(gate["configured_required_cycles"], 10)
+            self.assertEqual(gate["configured_required_cycles"], 4)
             self.assertEqual(gate["required_cycles"], 2)
             self.assertEqual(gate["completed_cycles"], 1)
             self.assertEqual(gate["missing_cycles"], [2])
@@ -961,6 +966,111 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
                 )
             )
 
+    def test_reconciles_blocked_lace_cycle_from_current_validator_evidence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "lace-direct-evidence"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, _session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=1)
+            cycle_doc = project_dir / "docs" / "lace_cycles" / "ciclo-01.md"
+            cycle_doc.parent.mkdir(parents=True, exist_ok=True)
+            cycle_doc.write_text(
+                "# Ciclo 01\n\n- Estado: validated\n- Valido para cierre LACE: si\n\n"
+                + build_valid_lace_cycle(1)
+                + "\n",
+                encoding="utf-8",
+            )
+            queue = TaskQueue(store)
+            queue.enqueue(
+                {
+                    "id": "LACE-20260513-001",
+                    "title": "Completar ciclo LACE 01",
+                    "goal": "Completar ciclo LACE 01 con evidencia canonica.",
+                    "status": "blocked",
+                    "priority": 99,
+                    "dependencies": ["RUNTIME-20260513-001"],
+                    "expected_files": ["LACE_LOG.md", "docs/lace_cycles/ciclo-01.md"],
+                    "validation_commands": [
+                        'python3 -B -c "from pathlib import Path; doc=Path(\'docs/lace_cycles/ciclo-01.md\'); log=Path(\'LACE_LOG.md\'); assert log.exists(); assert doc.exists(); text=doc.read_text(encoding=\'utf-8\'); assert \'valido para cierre lace: si\' in text.lower(); assert \'[CICLO-1 COMPLETADO]\' in text"'
+                    ],
+                    "timeout_seconds": 3600,
+                    "max_retries": 2,
+                    "mode": "long-run",
+                    "checkpoint_key": "lace-cycle-001-checkpoint",
+                }
+            )
+            state = store.load_project_state()
+            state["status"] = "blocked"
+            state["blocked_tasks"] = ["LACE-20260513-001"]
+            store.save_project_state(state)
+
+            reconciled = runtime._reconcile_recovered_split_tasks(store, TaskQueue(store), project_dir)
+
+            self.assertTrue(reconciled)
+            queue = TaskQueue(store)
+            statuses = {task["id"]: task["status"] for task in queue.list()}
+            self.assertEqual(statuses["LACE-20260513-001"], "completed")
+            self.assertTrue((project_dir / "runtime" / "checkpoints" / "lace-cycle-001-checkpoint.json").exists())
+            state = store.load_project_state()
+            self.assertNotIn("LACE-20260513-001", state["blocked_tasks"])
+            self.assertIn("LACE-20260513-001", state["completed_tasks"])
+            self.assertTrue(
+                any(
+                    event.get("result", {}).get("task_id") == "LACE-20260513-001"
+                    and event.get("result", {}).get("validation_passed") is True
+                    for event in store.load_task_history()
+                )
+            )
+
+    def test_reconciles_blocked_closure_repair_artifact_from_current_validator_evidence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            app_root = Path(tmpdir) / "app"
+            visual_events: list[dict] = []
+            runtime = build_runtime(app_root, visual_events)
+            project_dir = app_root / "workspace" / "projects" / "closure-repair-direct-evidence"
+            project_dir.mkdir(parents=True, exist_ok=True)
+            store, _session = seed_completed_runtime(runtime, project_dir, task_count=1, completed_cycles=0)
+            report = project_dir / "docs" / "closure_repairs" / "closure-repair-test.md"
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text("# Reparacion controlada\n\nEvidencia persistida sin forzar cierre.\n", encoding="utf-8")
+            queue = TaskQueue(store)
+            queue.enqueue(
+                {
+                    "id": "CLOSURE-REPAIR-TEST",
+                    "title": "Reparar cierre bloqueado desde certificado runtime",
+                    "goal": "Persistir diagnostico controlado sin forzar completed.",
+                    "status": "blocked",
+                    "priority": 10000,
+                    "dependencies": [],
+                    "expected_files": ["docs/closure_repairs/closure-repair-test.md"],
+                    "validation_commands": [
+                        'python3 -B -c "from pathlib import Path; assert Path(\'docs/closure_repairs/closure-repair-test.md\').is_file()"'
+                    ],
+                    "timeout_seconds": 1200,
+                    "max_retries": 3,
+                    "mode": "long-run",
+                    "checkpoint_key": "closure-repair-test-checkpoint",
+                    "kind": "closure_repair",
+                }
+            )
+            state = store.load_project_state()
+            state["status"] = "blocked"
+            state["blocked_tasks"] = ["CLOSURE-REPAIR-TEST"]
+            store.save_project_state(state)
+
+            reconciled = runtime._reconcile_recovered_split_tasks(store, TaskQueue(store), project_dir)
+
+            self.assertTrue(reconciled)
+            queue = TaskQueue(store)
+            statuses = {task["id"]: task["status"] for task in queue.list()}
+            self.assertEqual(statuses["CLOSURE-REPAIR-TEST"], "completed")
+            self.assertTrue((project_dir / "runtime" / "checkpoints" / "closure-repair-test-checkpoint.json").exists())
+            state = store.load_project_state()
+            self.assertNotIn("CLOSURE-REPAIR-TEST", state["blocked_tasks"])
+            self.assertIn("CLOSURE-REPAIR-TEST", state["completed_tasks"])
+
     def test_completed_queue_accepts_incremental_work_on_same_project(self) -> None:
         with TemporaryDirectory() as tmpdir:
             app_root = Path(tmpdir) / "app"
@@ -997,6 +1107,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "blocked"
             state["blocked_tasks"] = ["lace_cycles_pending"]
@@ -1037,6 +1148,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, _session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "completed"
             state["current_task_id"] = None
@@ -1065,6 +1177,7 @@ class ControlPlaneVisualBridgeTest(unittest.TestCase):
             project_dir.mkdir(parents=True, exist_ok=True)
             store, _session = seed_completed_runtime(runtime, project_dir, task_count=6, completed_cycles=0)
             seed_canonical_lace_cycle_evidence(store, project_dir, range(1, 11))
+            seed_clean_lace_quality_gates(project_dir)
             state = store.load_project_state()
             state["status"] = "completed"
             state["current_task_id"] = None

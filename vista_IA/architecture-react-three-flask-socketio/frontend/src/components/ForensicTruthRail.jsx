@@ -2,11 +2,10 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { io } from "socket.io-client";
 
 const UI_REFRESH_SUPPRESS_AUTH_KEY = "hablaUiRefreshSuppressAuthGate";
-const UI_REFRESH_AUTH_READY_KEY = "hablaAuthSessionReady";
 const UI_REFRESH_LAST_KEY = "hablaRuntimeUiRefreshLast";
 const LACE_GATE_AUTO_PREFIX = "hablaLaceGateAutoQueuedAt:";
 const UI_REFRESH_COOLDOWN_MS = 120000;
-const LACE_GATE_AUTO_COOLDOWN_MS = 180000;
+const LACE_GATE_AUTO_COOLDOWN_MS = 1800000;
 
 const GATE_LABELS = {
   mouse: "Mouse",
@@ -92,7 +91,22 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
   const [gates, setGates] = useState({});
   const [laceDependencyStatus, setLaceDependencyStatus] = useState(null);
   const [laceGateActionStatus, setLaceGateActionStatus] = useState("");
+  const [autoRevealActive, setAutoRevealActive] = useState(false);
   const refreshScheduledRef = useRef(false);
+  const revealTimerRef = useRef(null);
+
+  const revealRailTemporarily = useCallback(() => {
+    setAutoRevealActive(true);
+    if (revealTimerRef.current) window.clearTimeout(revealTimerRef.current);
+    revealTimerRef.current = window.setTimeout(() => {
+      setAutoRevealActive(false);
+      revealTimerRef.current = null;
+    }, 6500);
+  }, []);
+
+  useEffect(() => () => {
+    if (revealTimerRef.current) window.clearTimeout(revealTimerRef.current);
+  }, []);
 
   const scheduleRuntimeUiRefresh = useCallback((event) => {
     if (!autonomousMode || refreshScheduledRef.current) return;
@@ -105,7 +119,6 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
     refreshScheduledRef.current = true;
     sessionSet(UI_REFRESH_LAST_KEY, String(now));
     sessionSet(UI_REFRESH_SUPPRESS_AUTH_KEY, String(now));
-    sessionSet(UI_REFRESH_AUTH_READY_KEY, String(now));
     sessionSet('hablaRuntimeUiRefreshReason', `${event.gate || 'runtime'}:${event.message || status}`.slice(0, 240));
     window.setTimeout(() => {
       window.location.reload();
@@ -115,6 +128,7 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
   const queueLaceGateAction = useCallback(async (reason = "LACE closure bloqueado; abrir gate visual para diagnostico.") => {
     const project = String(selectedProject || "").trim();
     if (!autonomousMode || !project) return null;
+    revealRailTemporarily();
     setLaceGateActionStatus("encolando");
     try {
       const response = await fetch(`${apiBase}/api/ui-actions/enqueue`, {
@@ -137,7 +151,7 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
       setLaceGateActionStatus("fallo");
       return null;
     }
-  }, [apiBase, autonomousMode, selectedProject]);
+  }, [apiBase, autonomousMode, revealRailTemporarily, selectedProject]);
 
   useEffect(() => {
     if (!autonomousMode) return undefined;
@@ -151,6 +165,7 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
           ...current,
           [item.gate]: item,
         }));
+        revealRailTemporarily();
         scheduleRuntimeUiRefresh(item);
       };
     }
@@ -158,7 +173,7 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
     socket.on("agent:observer", push("observer"));
     socket.on("ui:mouse-action", push("mouse"));
     return () => socket.disconnect();
-  }, [apiBase, autonomousMode, scheduleRuntimeUiRefresh]);
+  }, [apiBase, autonomousMode, revealRailTemporarily, scheduleRuntimeUiRefresh]);
 
   useEffect(() => {
     const project = String(selectedProject || "").trim();
@@ -187,11 +202,25 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
   useEffect(() => {
     const project = String(selectedProject || "").trim();
     if (!autonomousMode || !project || !laceDependencyStatus?.lace?.closureBlocked) return;
+    const lace = laceDependencyStatus.lace || {};
+    const signature = [
+      project,
+      lace.requiredCycles || 0,
+      lace.validCycleEvidenceCount || 0,
+      lace.missingCycles || 0,
+      ...(laceDependencyStatus.dependencyFindings || []).map((finding) => `${finding.taskId}:${(finding.missingDependencies || []).join("+")}`),
+    ].join("|");
     const key = `${LACE_GATE_AUTO_PREFIX}${project}`;
+    const previous = sessionGet(key);
+    if (previous === signature) {
+      setLaceGateActionStatus("ya diagnosticado");
+      return;
+    }
     const now = Date.now();
-    const lastQueuedAt = Number(sessionGet(key) || 0);
+    const lastQueuedAt = Number(sessionGet(`${key}:at`) || 0);
     if (Number.isFinite(lastQueuedAt) && now - lastQueuedAt < LACE_GATE_AUTO_COOLDOWN_MS) return;
-    sessionSet(key, String(now));
+    sessionSet(key, signature);
+    sessionSet(`${key}:at`, String(now));
     void queueLaceGateAction("Linea de Verdad detecto LACE closure bloqueado; abrir diagnostico visual no destructivo.");
   }, [autonomousMode, laceDependencyStatus, queueLaceGateAction, selectedProject]);
 
@@ -212,10 +241,20 @@ export default function ForensicTruthRail({ socketUrl = "", autonomousMode = fal
     });
   }, [gates, laceDependencyStatus]);
 
+  const railAutoVisible = Boolean(
+    autoRevealActive
+    || ["encolando"].includes(String(laceGateActionStatus || "").toLowerCase())
+  );
+  const railClassName = [
+    "forensic-truth-rail",
+    railAutoVisible ? "is-auto-visible" : "is-idle",
+  ].join(" ");
+
   if (!autonomousMode) return null;
 
   return (
-    <aside className="forensic-truth-rail" aria-label="Linea de verdad forense">
+    <aside className={railClassName} aria-label="Linea de verdad forense">
+      <span className="forensic-truth-rail__tab" aria-hidden="true">Verdad</span>
       <header className="forensic-truth-rail__header">
         <strong>Linea de Verdad</strong>
         <span>evidencia viva</span>

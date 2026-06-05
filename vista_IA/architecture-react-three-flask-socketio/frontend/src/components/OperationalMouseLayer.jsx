@@ -41,6 +41,36 @@ const TOOLS = [
 ];
 
 const TOOL_LOOKUP = new Map(TOOLS.map((tool) => [tool.id, tool]));
+const EDITOR_AUTONOMY_TARGETS = {
+  copy_evidence: { selector: '[data-editor-autonomy-action="copy_evidence"]', label: "copiar evidencia" },
+  send_repair: { selector: '[data-editor-autonomy-action="send_repair"]', label: "enviar reparador" },
+  minimize_certificate: { selector: '[data-editor-autonomy-action="minimize_certificate"]', label: "minimizar certificado" },
+  close_certificate: { selector: '[data-editor-autonomy-action="close_certificate"]', label: "cerrar certificado" },
+  open_supervisor: { selector: '[data-editor-autonomy-action="open_supervisor"]', label: "ver supervisor" },
+  restore_certificate: { selector: '[data-editor-autonomy-action="restore_certificate"]', label: "restaurar certificado" },
+};
+
+function normalizeEditorAutonomyAction(action) {
+  return String(action || "auto_closure").trim().toLowerCase().replace(/[\s-]+/g, "_");
+}
+
+function findEditorAutonomyTarget(action) {
+  const normalized = normalizeEditorAutonomyAction(action);
+  if (normalized === "auto" || normalized === "auto_closure" || normalized === "closure") {
+    const ordered = ["send_repair", "open_supervisor", "minimize_certificate", "close_certificate"];
+    for (const key of ordered) {
+      const candidate = EDITOR_AUTONOMY_TARGETS[key];
+      const element = document.querySelector(candidate.selector);
+      if (clickableElementReady(element)) return { key, ...candidate, element };
+    }
+    return null;
+  }
+  const target = EDITOR_AUTONOMY_TARGETS[normalized];
+  if (!target) return null;
+  const element = document.querySelector(target.selector);
+  if (!clickableElementReady(element)) return null;
+  return { key: normalized, ...target, element };
+}
 
 function compactPayload(payload) {
   if (!payload || typeof payload !== "object") return String(payload || "");
@@ -553,6 +583,83 @@ export default function OperationalMouseLayer({ socketUrl = "", selectedProject 
     void runTool(toolId, { actionId: pending.actionId || "", projectIdOverride: pending.projectId || "" });
   }, [pushActionTrace, runTool]);
 
+  const runEditorAutonomyAction = useCallback(async (detail = {}) => {
+    const actionName = normalizeEditorAutonomyAction(detail?.action || "auto_closure");
+    const actionId = String(detail?.actionId || `editor-${actionName}-${Date.now()}`);
+    const projectSlug = String(detail?.projectSlug || selectedProject || projectIdRef.current || "").trim();
+    const source = String(detail?.source || "section-06-editor");
+    const isAutonomousPolicy = source === "agent-studio-closure-policy" || detail?.trigger === "autonomous_closure_policy";
+    setActiveAction({
+      actionId,
+      toolId: isAutonomousPolicy ? "certificado-runtime" : "06-editor",
+      projectSlug,
+      reason: String(detail?.reason || (isAutonomousPolicy ? "closure_policy_autonomy" : "editor_modal_autonomy")),
+      treeId: isAutonomousPolicy ? "BT-closure-policy-autonomy" : "BT-editor-modal-autonomy",
+      treeSource: source,
+      startedAt: new Date().toISOString(),
+    });
+    setActionTrace([]);
+    pushActionTrace(
+      isAutonomousPolicy ? "politica autonoma" : "editor autonomia",
+      "running",
+      isAutonomousPolicy ? `El sistema decidio ejecutar click real: ${actionName}.` : `Solicitud de click real: ${actionName}.`,
+      projectSlug || "sin proyecto",
+    );
+
+    let target = findEditorAutonomyTarget(actionName);
+    if (!target?.element && actionName !== "restore_certificate") {
+      const restoreTarget = findEditorAutonomyTarget("restore_certificate");
+      if (restoreTarget?.element) {
+        const restoreRect = restoreTarget.element.getBoundingClientRect();
+        const restoreHit = pointHitsElement(restoreTarget.element, restoreRect);
+        if (restoreHit.ok) {
+          setCursor({ x: restoreRect.left + restoreRect.width / 2, y: restoreRect.top + restoreRect.height / 2, label: restoreTarget.label, active: true });
+          pushActionTrace("restaurar modal", "running", "Certificado estaba minimizado; restaurando antes del click objetivo.", restoreTarget.selector);
+          await wait(300);
+          const restoreClick = await clickRealElement(restoreTarget.element, { actionId, selector: restoreTarget.selector, label: "editor:restore_certificate" });
+          pushActionTrace("restaurar modal", restoreClick.ok ? "completed" : "blocked", restoreClick.ok ? "Certificado restaurado con click real." : "No se pudo restaurar el certificado minimizado.", restoreClick.text || restoreClick.error || restoreTarget.selector);
+          if (restoreClick.ok) {
+            await waitForCondition(() => document.querySelector('[data-editor-autonomy-modal="closure-certificate"]'), { timeoutMs: 1800, intervalMs: 60 });
+            target = findEditorAutonomyTarget(actionName);
+          }
+        } else {
+          pushActionTrace("restaurar modal", "blocked", "La tarjeta minimizada esta cubierta por otra capa.", `${restoreTarget.selector} hit=${restoreHit.hitTag}`);
+        }
+      }
+    }
+
+    if (!target?.element) {
+      pushActionTrace("buscar boton", "blocked", "No hay modal de cierre clickeable para esta accion.", actionName);
+      setCursor((current) => ({ ...current, active: false }));
+      return;
+    }
+
+    const rect = target.element.getBoundingClientRect();
+    const hit = pointHitsElement(target.element, rect);
+    if (!hit.ok) {
+      pushActionTrace("foco boton", "blocked", "El boton objetivo esta cubierto por otra capa.", `${target.selector} hit=${hit.hitTag}`);
+      setCursor((current) => ({ ...current, active: false }));
+      return;
+    }
+
+    setCursor({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, label: target.label, active: true });
+    pushActionTrace("foco boton", "completed", "Cursor ubicado sobre boton real del certificado.", target.selector);
+    await wait(420);
+
+    const click = await clickRealElement(target.element, { actionId, selector: target.selector, label: `editor:${target.key}` });
+    pushActionTrace("click real", click.ok ? "completed" : "blocked", click.ok ? `Click aceptado: ${target.label}.` : "El boton no acepto el click real.", click.text || click.error || target.selector);
+    window.setTimeout(() => setCursor((current) => ({ ...current, active: false })), 360);
+  }, [pushActionTrace, selectedProject]);
+
+  useEffect(() => {
+    if (!autonomousMode) return undefined;
+    const handler = (event) => {
+      void runEditorAutonomyAction(event?.detail || {});
+    };
+    window.addEventListener("habla:editor-autonomy-action", handler);
+    return () => window.removeEventListener("habla:editor-autonomy-action", handler);
+  }, [autonomousMode, runEditorAutonomyAction]);
+
   const runBehaviorTreeAction = useCallback(async (action) => {
     const toolId = String(action?.targetTool || "").replace(/-/g, "_");
     if (!TOOL_LOOKUP.has(toolId)) return;
@@ -765,11 +872,13 @@ export default function OperationalMouseLayer({ socketUrl = "", selectedProject 
   const resultText = useMemo(() => compactPayload(toolResult?.payload), [toolResult]);
   const laceGraph = useMemo(() => getLaceGraph(toolResult?.payload), [toolResult]);
   const minimizedToolList = useMemo(() => Object.values(minimizedTools).sort((a, b) => String(a.createdAt || "").localeCompare(String(b.createdAt || ""))), [minimizedTools]);
+  const dockAutoVisible = Boolean(cursor.active || busyTool || laceRepairBusy || activeTool);
   const layerClassName = [
     "operational-mouse-layer",
-    cursor.active || busyTool || laceRepairBusy ? "is-engaged" : "is-clear",
+    dockAutoVisible ? "is-engaged" : "is-clear",
     activeTool ? "has-modal" : "",
     minimizedToolList.length ? "has-tray" : "",
+    dockAutoVisible ? "is-auto-visible" : "",
   ].filter(Boolean).join(" ");
 
   function consumePendingAction(toolId) {

@@ -9554,3 +9554,1045 @@ Blockers o riesgos:
 
 Punto de reanudacion:
 - Si el usuario quiere que `main` muestre todo directamente, fusionar PR #1 o cambiar la rama por defecto despues de revisar. Para continuar desarrollo, crear un siguiente corte con los deltas runtime posteriores al push.
+
+
+## 2026-06-03T00:23:10Z - CERTIFICADO-RUNTIME-EVIDENCIA-REPARADOR
+
+Solicitud recibida:
+- Agregar al modal `Certificado del runtime` un boton para copiar la evidencia del cierre bloqueado.
+- Permitir pasar esa evidencia al runtime/agente interno como prompt automatico de reparacion controlada para acelerar el cierre, sin forzar `completed` ni saltar validator/scanner/sandbox.
+
+Acciones realizadas:
+- Se agrego texto exportable del certificado con estado, proyecto, project slug, tarea final, validacion, evidencia encontrada, evidencia faltante, checkpoint y bloqueos completos.
+- Se agrego prompt seguro `REPARACION_CONTROLADA_DE_CIERRE_RUNTIME` construido desde la evidencia del certificado.
+- En `AgentStudio` se agregaron botones `Copiar evidencia` y `Enviar a agente reparador` dentro del modal de certificado.
+- `Enviar a agente reparador` lanza una nueva sesion sobre el proyecto existente con `ensureNewProject=false`, `source=closure_certificate_repair` y `controlPlaneRepair=true`; tambien carga el prompt en el textbox para trazabilidad visual.
+- Se mantiene el contrato: el reparador no puede declarar cierre si faltan validator OK, scanner OK, sandbox OK, integridad limpia o checkpoint persistido.
+
+Archivos creados o modificados:
+- `frontend/src/components/agentClosureCertificate.js`
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/src/App.css`
+- `frontend/src/components/agentClosureCertificate.test.js`
+
+Validacion corta ejecutada:
+- `npm run test` en `frontend/`: OK, `agentClosureCertificate tests passed`.
+- `npm run build` en `frontend/`: OK, Vite compilo 80 modulos y genero bundle. Advertencia no bloqueante: chunk JS mayor a 500 kB.
+
+Resultado real de la validacion:
+- El modulo del certificado genera evidencia copiable y prompt de reparacion.
+- La UI compila con los botones nuevos.
+- La prueba cubre evidencia copiable y prompt de reparacion controlada.
+
+Blockers o riesgos:
+- El sandbox de herramientas local sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`; por eso las lecturas/escrituras y validaciones se ejecutaron con permiso escalado dentro del repo autorizado.
+- El runtime vivo genero muchos cambios en `workspace/projects/continuity-mixed-pf-002-2` y logs runtime mientras se trabajaba; no se revirtieron porque son evidencia operativa externa a este cambio.
+- El boton de reparacion lanza sesion real; el cierre final sigue dependiendo del control-plane y sus validaciones reales.
+
+Punto de reanudacion:
+- Probar desde la UI el modal `Certificado del runtime`: primero `Copiar evidencia`; luego `Enviar a agente reparador` sobre `continuity-mixed-pf-002-2` y verificar que aparezca una nueva sesion/tarea de reparacion controlada con la evidencia del certificado.
+
+
+## 2026-06-03T02:15:34.049164+00:00 - Reparacion boton agente reparador y restauracion auth PostgreSQL
+- Solicitud recibida: el boton "Enviar a agente reparador" parecia enviar pero repetia/no procesaba; luego la UI quedo bloqueada porque PostgreSQL no estaba listo tras un reinicio manual del backend.
+- Acciones realizadas: se corrigio sanitizacion del prompt de certificado, se agrego encolado control-plane `CLOSURE-REPAIR-*` cuando la cola LACE no tiene tarea ejecutable, se agrego dedupe/cooldown al LACE gate visual y se reinicio backend con `backend/.env` usando `./start_prompt_flight_tkinter.sh --backend-only --local-worker-no-bwrap`.
+- Archivos tocados: `backend/agent_runtime.py`, `backend/app.py`, `backend/test_agent_runtime_habla.py`, `frontend/src/components/agentClosureCertificate.js`, `frontend/src/components/AgentStudio.jsx`, `frontend/src/components/ForensicTruthRail.jsx`, `frontend/src/components/agentClosureCertificate.test.js`, `frontend/dist/*`.
+- Evidencia runtime: se creo tarea `CLOSURE-REPAIR-20260603020337`; archivo real `workspace/projects/continuity-mixed-pf-002-2/docs/closure_repairs/closure-repair-20260603020337.md` existe con 8144 bytes.
+- Validacion ejecutada: `python3 -B -m py_compile backend/agent_runtime.py backend/app.py backend/test_agent_runtime_habla.py` OK; unittest especifico `test_control_plane_repair_enqueues_ready_task_when_lace_queue_is_blocked` OK; `npm run test` OK; `npm run build` OK; `/api/health` OK con PostgreSQL configured=true ready=true; login real admin/admin retorno HTTP 200 y token presente sin imprimir token.
+- Resultado real: autenticacion PostgreSQL restaurada en backend PID 3706521; worker no-bwrap efectivo; CyberLACE volvio a modo monitor; la cola visual no repite acciones LACE.
+- Blockers/riesgos: `CLOSURE-REPAIR-20260603020337` quedo `blocked` por cierre/validacion LACE pendiente aunque ya tiene evidencia en disco; no se declara completed final.
+- Punto de reanudacion: revisar por que el validator/control-plane mantiene bloqueada `CLOSURE-REPAIR-20260603020337` pese a existir el archivo esperado, y luego continuar con cierre LACE canonical.
+
+## 2026-06-03T07:45:21-07:00 - Inspeccion de estado runtime pendiente
+
+Solicitud recibida:
+- Ver si hay algo pendiente en el sistema, si ya acabo o en que quedo.
+
+Acciones realizadas:
+- Se verifico backend local, procesos vivos, estado persistido del proyecto `continuity-mixed-pf-002-2`, cola de tareas, historial reciente, checkpoints, artefactos finales y herramientas internas del Observer.
+- Se ejecuto scanner canonico, integrity con timeout largo y findings para actualizar evidencia actual.
+- Se valido documentalmente `LACE-20260603-001` contra `docs/lace_cycles/ciclo-01.md` y `LACE_LOG.md`.
+
+Archivos creados o modificados:
+- Solo memoria operativa: `recuperacioncontexto.md` y `ULTIMO_CONTEXTO_CODEX.md`.
+- No se edito `runtime/project_state.json`, `runtime/task_queue.json` ni se marco ninguna tarea como completada.
+
+Validacion corta ejecutada:
+- `/api/health`: OK, PostgreSQL configured=true ready=true.
+- `python3 orchestrator/agent_tools.py health`: OK, `statusCode=200`.
+- `python3 orchestrator/agent_tools.py scanner continuity-mixed-pf-002-2`: OK, `statusCode=200`, reporte en `runtime/artifacts/final_code_scanner_report.json`.
+- `python3 orchestrator/agent_tools.py --timeout-seconds 180 integrity continuity-mixed-pf-002-2`: OK, `totalFindings=0`.
+- `python3 orchestrator/agent_tools.py findings continuity-mixed-pf-002-2`: OK, `activeFindings=0`.
+- Validacion documental de `docs/lace_cycles/ciclo-01.md`: OK para marcadores y texto `valido para cierre lace: si`.
+
+Resultado real de la validacion:
+- Backend vivo en PID `3724263`; no se detecto worker del runtime ejecutando una tarea del proyecto.
+- `project_state.status` sigue `blocked`, `current_task_id=null`, `blocked_tasks=["LACE-20260603-001","CLOSURE-REPAIR-20260603020337"]`.
+- `CLOSURE-REPAIR-20260603020337` creo evidencia real en `docs/closure_repairs/closure-repair-20260603020337.md`, pero sigue `blocked`.
+- `LACE-20260603-001` sigue `blocked`; `LACE-20260603-002` a `LACE-20260603-010` estan `pending` encadenadas a LACE 001.
+- Scanner, integrity y findings actuales ya estan limpios, pero `runtime/sandbox.json` no existe.
+- No hay checkpoint canonico `lace-cycle-001*` o `lace-cycle-01*`; solo checkpoints de bloqueo/recovery y `lace-closure-gate-pending.json`.
+
+Blockers o riesgos:
+- El cierre no termino. El sistema esta correctamente bloqueado, no colgado.
+- Falta evidencia de sandbox real: `runtime/sandbox.json` con `running=true`, `ready=true`, URL local y healthcheck.
+- Falta checkpoint canonico del ciclo LACE 1; el documento existe y valida, pero el checkpoint LACE canonico no aparece.
+- La cola no avanzo automaticamente despues de limpiar scanner/integrity/findings; sigue con tareas marcadas `blocked`.
+
+Punto de reanudacion:
+- Reparar o activar la ruta de postflight que, con scanner/integrity/findings limpios, cree/persista el sandbox real y genere el checkpoint canonico de `LACE-20260603-001`; despues reintentar closure gate sin forzar `completed`.
+
+## 2026-06-03T08:01:23-07:00 - Reparacion postflight LACE sandbox y reconciliacion
+
+Solicitud recibida:
+- Ejecutar el siguiente paso: crear/persistir sandbox real, generar checkpoint canonico de LACE 1 y reintentar closure gate sin forzar completed.
+
+Acciones realizadas:
+- Se agrego reconciliacion acotada en `backend/agent_runtime.py` para tareas `LACE-*` bloqueadas/fallidas y tareas `closure_repair` solo cuando el validator actual confirma evidencia real en disco.
+- Se agregaron tests en `backend/test_control_plane_visual_bridge.py` para LACE bloqueado con evidencia valida y cierre controlado con artefacto valido.
+- Se reinicio backend con `./start_prompt_flight_tkinter.sh --backend-only --local-worker-no-bwrap` para cargar el parche.
+- Se inicio sandbox real del proyecto `continuity-mixed-pf-002-2` por endpoint `/api/projects/<id>/sandbox/start`.
+- Se ejecuto reconciliador interno sobre el proyecto vivo; no se edito manualmente `completed=true`.
+
+Archivos creados o modificados:
+- `backend/agent_runtime.py`
+- `backend/test_control_plane_visual_bridge.py`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/sandbox.json`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/lace-cycle-001-checkpoint.json`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/checkpoints/closure-repair-20260603020337-checkpoint.json`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/project_state.json`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/task_queue.json`
+- `workspace/projects/continuity-mixed-pf-002-2/runtime/task_history.jsonl`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/agent_runtime.py backend/test_control_plane_visual_bridge.py backend/sandbox_service.py backend/sandbox_routes.py`: OK.
+- `python3 -m unittest backend.test_control_plane_visual_bridge.ControlPlaneVisualBridgeTest.test_reconciles_blocked_lace_cycle_from_current_validator_evidence backend.test_control_plane_visual_bridge.ControlPlaneVisualBridgeTest.test_reconciles_blocked_closure_repair_artifact_from_current_validator_evidence`: OK.
+- `python3 -m unittest backend.test_runtime_sandbox.RuntimeSandboxEndpointTest.test_starts_static_project_sandbox_and_persists_state`: OK.
+- `python3 -m unittest backend.test_lace_automejora_kernel`: OK, 14 tests.
+- `python3 orchestrator/agent_tools.py health`: OK, `statusCode=200`.
+- `python3 orchestrator/agent_tools.py scanner continuity-mixed-pf-002-2`: OK, `statusCode=200`, 12 archivos, 2024 lineas.
+- `python3 orchestrator/agent_tools.py integrity continuity-mixed-pf-002-2`: OK, `totalFindings=0`.
+- `python3 orchestrator/agent_tools.py findings continuity-mixed-pf-002-2`: OK, `activeFindings=0`.
+- HTTP sandbox `http://127.0.0.1:5635/`: OK, respondio HTML.
+
+Resultado real de validacion:
+- Backend reiniciado y saludable con PostgreSQL ready; PID nuevo `3884351`.
+- Sandbox real persistido: `runtime/sandbox.json` con `running=true`, `ready=true`, `url=http://127.0.0.1:5635/`, healthcheck `statusCode=200`.
+- `LACE-20260603-001` paso de `blocked` a `completed` por validator real y checkpoint `lace-cycle-001-checkpoint`.
+- `CLOSURE-REPAIR-20260603020337` paso de `blocked` a `completed` por validator real y checkpoint `closure-repair-20260603020337-checkpoint`.
+- `project_state.status` quedo `initialized`, `blocked_tasks=[]`, `current_task_id=null`.
+- Runtime truth reporta `currentTaskId=LACE-20260603-002`, `currentTaskStatus=pending`, `queueCounts.completed=13`, `pending=9`, `blocked=0`, `failed=0`, `sandbox.running=true`, `sandbox.ready=true`.
+- Closure gate devuelve `not_ready` por `queue_not_fully_completed`, que es correcto porque faltan ciclos LACE 2-10.
+
+Blockers o riesgos:
+- El proyecto no esta completed final todavia; ahora esta desbloqueado y listo para continuar por `LACE-20260603-002`.
+- El Observer reporto un incidente separado en `sesion-20260601004224`; no bloquea `continuity-mixed-pf-002-2`.
+
+Punto de reanudacion:
+- Lanzar/continuar el runtime sobre `continuity-mixed-pf-002-2` para ejecutar `LACE-20260603-002`. Cuando los ciclos pendientes validen y la cola quede completa, reintentar closure gate para permitir cierre final.
+
+## 2026-06-03T08:09:00-07:00 - Investigacion LACE adaptativo y estimador avanzado
+
+Solicitud recibida:
+- Reinvestigar profundamente por que LACE de 10 ciclos desestabilizo el runtime y disenar un plan mas inteligente, especialmente para un calculador avanzado de complejidad que mida tiempo, mano de obra, subagentes y ciclos reales.
+
+Acciones realizadas:
+- Se reviso `orchestrator/complexity_estimator.py`, `backend/agent_runtime.py`, `backend/app.py`, contratos de tarea y la cola viva de `continuity-mixed-pf-002-2`.
+- Se comparo `runtime/complexity_estimate.json` de `continuity-mixed-pf-002-2` y `sesion-20260601004224`.
+- Se verifico la resolucion real de `_resolve_lace_required_cycles()` para build/medium/smoke.
+
+Archivos creados o modificados:
+- Solo memoria operativa: `recuperacioncontexto.md` y `ULTIMO_CONTEXTO_CODEX.md`.
+
+Validacion corta ejecutada:
+- Lectura estatica de estimator/gate/contratos.
+- Calculo local de required cycles: `resolved_build=10`, `resolved_medium=10`, `resolved_smoke=0` para `continuity-mixed-pf-002-2`.
+
+Resultado real de la investigacion:
+- `complexity_estimate.json` del proyecto afectado recomienda `recommended_lace_cycles=4`, dificultad `medio`, score 40.
+- La cola viva tenia `LACE-20260603-001` a `LACE-20260603-010`; eso confirma sobre-encolado frente al estimate real.
+- `LACE_LOG.md` declara regla activa de 3 ciclos maximos/minimo 2, pero `LACE.md` hardcodea 10 ciclos.
+- `_resolve_lace_required_cycles()` usa `max(...)` contra policy/docs, y `detect_lace_required_cycles()` devuelve 10 como fallback; por eso build/medium terminan resolviendo 10 aunque el estimate sea 4.
+- Los estados validos de task son solo pending/running/completed/failed/blocked; no existe todavia estado `deferred`, por lo que ciclos sobrantes deben manejarse como metadata/control-plane o ampliando contrato con tests.
+
+Blockers o riesgos:
+- Si se mantiene `max(policy, estimate)`, LACE seguira empujando proyectos medianos/faciles a 10 ciclos.
+- Si se encolan todos los ciclos de una vez, el sistema crea deuda artificial y bloqueos largos.
+- El estimador actual es deterministico y auditable, pero necesita evolucionar a un auditor multi-senal con incertidumbre, memoria historica y presupuestos progresivos.
+
+Punto de reanudacion:
+- Disenar e implementar `ComplexityAuditKernel`: extractor de senales del prompt/proyecto/runtime, matriz de riesgos, estimador de esfuerzo, asignador de subagentes, ciclos LACE adaptativos, presupuesto por fases, calibracion por historial y reporte auditable.
+
+
+
+## 2026-06-03T09:52:44-07:00 - ComplexityAuditKernel y LACE adaptativo
+
+Solicitud recibida:
+- Implementar una capa avanzada de auditoria de complejidad para que LACE deje de usar 10 ciclos como regla fija y gobierne con presupuesto adaptativo min/target/max.
+
+Acciones realizadas:
+- Cree/integré `orchestrator/complexity_audit_kernel.py` como kernel deterministico de 7 capas: prompt, proyecto, riesgo operativo, blast radius, evidencia, historial e incertidumbre.
+- Conecté `orchestrator/complexity_estimator.py` para anexar `complexity_audit`, `lace_min_cycles`, `lace_target_cycles`, `lace_max_cycles`, `early_exit_allowed` y `quality_threshold` sin romper los campos legacy.
+- Reparé `backend/agent_runtime.py` para resolver LACE desde presupuesto adaptativo; `LACE.md` ahora funciona como techo de politica (`policy_ceiling`) y no como `required=10`.
+- Cambié el closure gate para encolar solo el siguiente ciclo faltante, no todos los ciclos pendientes.
+- Permití early exit para presupuesto minimo 0 y para compuertas limpias despues del minimo.
+- Agregué estado `deferred` en `orchestrator/contracts.py` para ciclos LACE sobrantes cuando el quality gate permite salida temprana.
+- Persistí `runtime/complexity_audit.json` cuando existe audit en el estimate y `runtime/lace_budget.json` durante el gate.
+- Agregué `backend/test_complexity_audit_kernel.py` y actualicé tests LACE/control-plane al contrato adaptativo.
+
+Archivos creados o modificados:
+- `orchestrator/complexity_audit_kernel.py`
+- `backend/test_complexity_audit_kernel.py`
+- `orchestrator/complexity_estimator.py`
+- `backend/agent_runtime.py`
+- `orchestrator/contracts.py`
+- `backend/test_lace_automejora_kernel.py`
+- `backend/test_control_plane_visual_bridge.py`
+- Evidencia runtime generada: `workspace/projects/continuity-mixed-pf-002-2/runtime/lace_budget.json`
+
+Validacion corta ejecutada:
+- `python3 -B -m py_compile backend/agent_runtime.py orchestrator/complexity_audit_kernel.py orchestrator/complexity_estimator.py orchestrator/contracts.py backend/test_complexity_audit_kernel.py backend/test_lace_automejora_kernel.py backend/test_control_plane_visual_bridge.py backend/test_complexity_estimator.py` -> OK.
+- `python3 -m unittest backend.test_complexity_estimator backend.test_complexity_audit_kernel backend.test_lace_automejora_kernel backend.test_control_plane_visual_bridge` -> OK, 59 tests.
+- `python3 -m unittest backend.test_agent_runtime_habla backend.test_continuity_probe` -> OK, 69 tests.
+- `python3 -m unittest backend.test_host_write_executor` -> OK, 9 tests.
+- `python3 orchestrator/agent_tools.py health` -> statusCode=200, ok=true.
+
+Resultado real de validacion manual:
+- Proyecto `continuity-mixed-pf-002-2`: `_resolve_lace_budget` devuelve `min_cycles=2`, `target_cycles=3`, `max_cycles=4`, `source=complexity_estimate+lace_log_active`, `policy_ceiling=10`, `policy_ceiling_applied=false`.
+- Closure gate real sin encolar queda bloqueado correctamente con `required_cycles=2`, `configured_required_cycles=4`, `completed_cycles=0`, `missing_cycles=[1, 2]`, quality gates limpios.
+
+Blockers o riesgos:
+- El proyecto real sigue bloqueado por falta de ciclos canonicos validos; ahora el bloqueo es calibrado y no infla a 10.
+- La validacion manual del gate con `allow_enqueue=False` persistio `lace_budget.json` y estado de cierre bloqueado como evidencia real.
+
+Punto de reanudacion:
+- Siguiente paso recomendado: ejecutar el siguiente ciclo LACE canonico del proyecto real o dejar que el control plane encole/ejecute solo el siguiente ciclo faltante; no reactivar reglas fijas de 10 ciclos.
+
+### 2026-06-03T09:54:41-07:00 - Reinicio backend post-integracion LACE
+
+Accion adicional:
+- Se detuvo backend antiguo PID 3884351 y se inicio `./start_prompt_flight_tkinter.sh --backend-only --local-worker-no-bwrap`.
+
+Validacion:
+- Health backend OK en `http://127.0.0.1:5001/api/health`.
+- PostgreSQL listo: configured=true, driver=psycopg, ready=true.
+- Worker diagnostics OK: `effectiveSandboxMode=danger-full-access`, `usesDangerBypass=true`, `usesWorkspaceWrite=false`.
+- UI servida por backend: `http://127.0.0.1:5001/`.
+
+Punto de reanudacion actualizado:
+- Probar desde la UI con el backend ya recargado; LACE adaptativo debe resolver `continuity-mixed-pf-002-2` como max 4, no 10.
+
+
+## 2026-06-03T10:15:51-07:00 - Limpieza selectiva de proyectos
+
+Solicitud recibida:
+- Eliminar todos los proyectos excepto los juegos 3D, el proyecto de drones y el proyecto Mario Bros.
+
+Acciones realizadas:
+- Se inspecciono `workspace/projects`.
+- Se conservaron los proyectos con evidencia material de juego 3D/WebGL/drones/Mario.
+- Se movieron a backup todos los demas proyectos del workspace activo.
+- Se registro decision auditable en `runtime/logs/` y evento `BLANQUEO_DECISION` en `runtime/failures.jsonl` y `runtime/task_history.jsonl`.
+
+Proyectos conservados:
+-
+continuity-mixed-pf-002-2- sesion-20260518014728-jeego-en-3d- sesion-20260524210420- sesion-20260601004224- sesion-20260601004224-alternativa-segura- sesion-20260601004224-alternativa-segura-2
+
+Backup:
+- Directorio: `/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backups/project_prune/20260603T171512Z`
+- Manifest: `/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/backups/project_prune/20260603T171512Z/manifest.json`
+- Proyectos movidos: 532
+
+Validacion corta ejecutada:
+- `find workspace/projects -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | sort` -> solo aparecen los 6 proyectos conservados.
+- `python3 orchestrator/agent_tools.py health` -> statusCode=200, ok=true.
+
+Blockers o riesgos:
+- No se hizo borrado irreversible; los proyectos retirados quedan restaurables desde el backup.
+- Si la UI tenia lista cacheada, refrescar la vista para que lea `workspace/projects` actualizado.
+
+Punto de reanudacion:
+- Workspace activo limpio con 6 proyectos conservados; restaurar desde `backups/project_prune/20260603T171512Z/projects/` si algun proyecto fue retirado y debe volver.
+
+---
+## 2026-06-03 18:01 UTC - Monitoreo runtime CyberLACE/P_safe
+
+Ultima solicitud del usuario: monitorear que esta pasando ahora mismo con la tarea desbloqueada por CyberLACE/P_safe.
+
+Estado real observado: backend activo y proyecto `continuity-mixed-pf-002` en `running`, con cola `4 completed / 1 running / 0 blocked / 0 failed`. No hay proceso `workers.codex_worker` vivo para la tarea `RUNTIME-20260603174449-001`, pero `runtime-truth` mantiene una sesion activa `agent-0f9bf7c633` en estado `preparing`, con `pid=null` y lock `agent_session_active`.
+
+Evidencia real encontrada: existen `frontend/index.html`, `frontend/styles.css`, `frontend/app.js`, `docs/lace_cycles/ciclo-01.md`, `LACE_LOG.md`, `runtime/artifacts/browser_render_smoke.json` y `runtime/artifacts/browser_render_smoke.png`. El smoke reporta `ok=true`, render mode `webgl`, HUD con telemetria y screenshot no negro.
+
+Validacion ejecutada: `python3 orchestrator/agent_tools.py health` OK; consulta HTTP local `/api/projects/continuity-mixed-pf-002/runtime-truth` OK; validacion filesystem de entregables OK; lectura de `browser_render_smoke.json` OK.
+
+Riesgo/bloqueador: posible cierre no reconciliado. La tarea tiene evidencia y el worker ya no esta vivo, pero `task_queue.json` sigue marcando `RUNTIME-20260603174449-001` como `running` y no aparece entrada final en `task_history.jsonl`.
+
+Siguiente paso exacto: si el usuario pide reparar, revisar la ruta de cierre/reconciliacion de sesiones `preparing` con `pid=null` y decidir si usar el endpoint `runtime-zombie/release` o corregir el bug que impide que TaskResult final actualice cola e historial.
+
+---
+## 2026-06-03 19:08 UTC - Certificado runtime con parpadeo, timers y auto-reparacion autonoma
+
+Solicitud recibida: hacer que el modal `Certificado del runtime` parpadee por color y no bloquee la continuidad visual. OK debe parpadear verde 2 minutos y cerrarse si el usuario no lo cierra. Cierre no certificado debe parpadear rojo 3 minutos y minimizarse/cerrarse para dejar pasar la siguiente tarea. Caso particular `La UI tenia una sesion viva, pero el backend ya no tiene worker activo`: en modo autonomo debe esperar 4 minutos y, si el usuario no selecciono copiar evidencia, enviar a agente reparador, cerrar o ver supervisor, disparar automaticamente `Enviar a agente reparador`.
+
+Acciones realizadas:
+- Agregada politica testeable en `frontend/src/components/agentClosureCertificate.js` con tiempos `successDismiss=120000`, `failureMinimize=180000`, `autonomousRepair=240000`.
+- Agregada deteccion `isZombieClosureCertificate()` para mensajes tipo backend sin worker activo, `pid=null`, `runtime_zombie` o session reported running.
+- `AgentStudio` ahora recibe `autonomousMode`, muestra contador, parpadea por estado, minimiza certificados rojos no atendidos y autoenvia reparacion del certificado zombie solo en modo autonomo.
+- La auto-reparacion reutiliza el handler existente `handleSendClosureRepairPrompt` con `source=closure_certificate_repair`, `controlPlaneRepair=true` y `autoTriggered=true`; no fuerza completed ni toca validator.
+- `App.jsx` y `AppRuntimeWorkbenches.jsx` pasan `autonomousMode` hacia `AgentStudio`.
+- `App.css` agrega animaciones verde/roja/reparacion, temporizador visible, pastilla minimizada y guardia reduced-motion.
+- `agentClosureCertificate.test.js` cubre politica 2m/3m/4m y que el caso backend-sin-worker solo auto-repara con modo autonomo activo.
+
+Archivos modificados:
+- `frontend/src/components/agentClosureCertificate.js`
+- `frontend/src/components/agentClosureCertificate.test.js`
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/src/components/AppRuntimeWorkbenches.jsx`
+- `frontend/src/App.jsx`
+- `frontend/src/App.css`
+
+Validacion ejecutada:
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+- `npm run build` en `frontend`: OK, Vite compilo 80 modulos y genero build. Advertencia residual: chunk JS mayor a 500 kB, no bloqueante y ya propio del bundle.
+
+Resultado real:
+- Integracion frontend compilada.
+- No se declaro ningun proyecto completed ni se modifico runtime de proyectos para fingir cierre.
+
+Blockers/riesgos:
+- El entorno normal de herramientas sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`, por eso las lecturas/escrituras y validaciones se ejecutaron con permiso escalado.
+- El arbol git contiene muchas modificaciones previas y proyectos archivados de solicitudes anteriores; no se revirtieron cambios ajenos.
+
+Punto de reanudacion:
+- Si se quiere probar visualmente con tiempos cortos, agregar override temporal solo para desarrollo o lanzar un certificado zombie en modo autonomo y observar que el boton reparador se dispare tras 4 minutos sin interaccion humana.
+
+---
+## 2026-06-03 19:18 UTC - Auto-minimizado del supervisor en vivo
+
+Solicitud recibida: aplicar al modal del supervisor la misma politica visual de continuidad: debe estar visible en pantalla 2 minutos y despues minimizarse abajo.
+
+Acciones realizadas:
+- `frontend/src/components/AgentStudio.jsx` agrega `REVIEWER_AUTO_MINIMIZE_MS = 120000`.
+- Cuando `LiveReviewerPanel` esta abierto y no minimizado, se inicia un timer de 2 minutos.
+- Al vencer el timer, no se cierra el supervisor ni se toca runtime: se marca `reviewerMinimized=true` y queda en la minibarra inferior existente.
+- La accion registra evento publico en la sala interna: `Supervisor minimizado automaticamente despues de 2 minutos visible.`
+- En sesiones nuevas el supervisor vuelve a abrirse normal porque la logica existente reinicia `reviewerUserMinimizedRef` para el nuevo `sessionId`.
+
+Archivos modificados:
+- `frontend/src/components/AgentStudio.jsx`
+
+Validacion ejecutada:
+- `npm run build` en `frontend`: OK, Vite compilo 80 modulos.
+
+Resultado real:
+- Integracion compilada. El cambio es visual y no declara cierres ni modifica estados internos de runtime.
+
+Blockers/riesgos:
+- El entorno normal sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`, por eso las lecturas/escrituras/validacion se hicieron con permiso escalado.
+
+Punto de reanudacion:
+- Probar manualmente abriendo `Supervisor en vivo`; tras 2 minutos debe aparecer como `reviewer-minibar` abajo sin cerrar la sesion ni perder eventos.
+
+
+
+---
+## 2026-06-03 20:04 UTC - Reinicio runtime y relanzamiento de cola zombie
+
+Solicitud recibida: reiniciar todo y echar a andar el sistema porque parecia haber procesos encolados.
+
+Acciones realizadas:
+- Se detuvieron procesos del runtime del repo: backend, launcher Tkinter, worker Codex y procesos Codex asociados al proyecto activo.
+- Se levanto backend con `./start_prompt_flight_tkinter.sh --backend-only --local-worker-no-bwrap`.
+- Se confirmo health OK en `http://127.0.0.1:5001/api/health`.
+- Se intento abrir Tkinter con `--tk-only --local-worker-no-bwrap`; no quedo proceso Tkinter vivo, pero la UI web quedo servida por backend en `http://127.0.0.1:5001/`.
+- Se escanearon colas persistidas en `workspace/projects`.
+- Se detecto `continuity-alert-antihack-pf-001` en estado zombie: tarea `CLOSURE-REPAIR-20260603195114` marcada `running` sin sesion ni worker vivo.
+- Se ejecuto `POST /api/projects/continuity-alert-antihack-pf-001/runtime-zombie/release`.
+- El endpoint creo backup y checkpoint:
+  - `workspace/projects/continuity-alert-antihack-pf-001/runtime/backups/zombie_release/20260603T200257Z`
+  - `workspace/projects/continuity-alert-antihack-pf-001/runtime/checkpoints/runtime-zombie-recovered-20260603T200257Z.json`
+- Se relanzo la tarea bloqueada raiz con `POST /api/agent/projects/continuity-alert-antihack-pf-001/retryable-task/relaunch`.
+
+Archivos modificados:
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion corta ejecutada:
+- `python3 orchestrator/agent_tools.py health`: OK, statusCode 200.
+- `GET /api/projects/continuity-alert-antihack-pf-001/runtime-truth`: OK, `verdict=live`.
+- `pgrep` confirmo backend PID `869195`, worker PID `890015`, Codex node PID `890024` y binario Codex PID `890033`.
+
+Resultado real:
+- Backend vivo en `http://127.0.0.1:5001/`.
+- CyberLACE health OK en modo monitor.
+- Worker interno usa `codex --dangerously-bypass-approvals-and-sandbox`; no usa `workspace-write`.
+- Sesion activa: `agent-b1544b713f`.
+- Proyecto activo relanzado: `continuity-alert-antihack-pf-001`.
+- Tarea activa: `RUNTIME-20260603200327-001`.
+- Estado canonical observado por runtime-truth: `live`, no zombie.
+
+Blockers/riesgos:
+- El arranque Tkinter por `nohup --tk-only` no quedo vivo; el backend y la UI web si estan activos.
+- La tarea relanzada aun esta en ejecucion; no se debe declarar completada hasta que cierre con evidencia y validator.
+- `runtime-truth` reporta `integrity.findings=183`; eso puede bloquear cierre posterior si quedan findings activos.
+- El entorno normal de comandos sigue fallando con `bwrap: loopback: Failed RTM_NEWADDR`, por eso las verificaciones se ejecutaron con permiso escalado.
+
+Punto de reanudacion:
+- Monitorear `workspace/projects/continuity-alert-antihack-pf-001/runtime/logs/agent-b1544b713f-terminal.log` y `GET /api/projects/continuity-alert-antihack-pf-001/runtime-truth`.
+- Si vuelve a quedar stale/zombie, usar el endpoint `POST /api/projects/continuity-alert-antihack-pf-001/runtime-zombie/release` antes de relanzar.
+
+
+---
+## 2026-06-03 21:00 UTC - Diagnostico CyberLACE tras recuperacion P_safe
+
+Solicitud recibida: revisar si CyberLACE bloqueo varias veces pero finalmente valido y acepto lo correcto.
+
+Acciones realizadas:
+- Se consulto `runtime-truth` del proyecto `continuity-alert-antihack-pf-001`.
+- Se consultaron sesiones del runtime y procesos activos.
+- Se ejecuto `python3 orchestrator/agent_tools.py findings continuity-alert-antihack-pf-001`.
+- Se listaron checkpoints `*cyberlace-document-blocked*.json`.
+- Se reviso `runtime/task_queue.json`, `runtime/project_state.json` y evidencia real en disco.
+
+Resultado real:
+- Backend sigue vivo en `http://127.0.0.1:5001/`.
+- No hay worker activo ni sesion activa para este proyecto.
+- `scanner` ya paso y existe `runtime/artifacts/final_code_scanner_report.json` con 13 archivos y 2246 lineas escaneadas.
+- `integrity` quedo limpio: `totalFindings=0`, `untrackedFiles=0`.
+- `findings` quedo limpio: `activeFindings=0`, `resolvedFindings=359`.
+- La evidencia de frontend existe: `frontend/index.html`, `frontend/styles.css`, `frontend/app.js`.
+- El proyecto NO esta aceptado como completed: `project_state.status=blocked`.
+- La cola solo contiene tres tareas `CLOSURE-REPAIR-*` completadas; no hay pending/running/blocked, por eso runtime-truth reporta `blocked_state_without_blocked_queue`.
+
+Causa del bloqueo actual:
+- CyberLACE documento hard-gate bloqueo 10 checkpoints recientes sobre el mismo archivo: `workspace/projects/continuity-alert-antihack-pf-001/frontend/app.js`.
+- Patrones detectados: `password` y `api_key`.
+- Las lineas marcadas usan placeholders sinteticos tipo `not-written-to-log`; no se observaron secretos reales en la salida leida, pero el guard actual bloquea por nombre de campo/patron.
+- P_safe fue confirmado en sesiones posteriores, pero P_safe no funciona como bypass: el document-preflight vuelve a escanear el workspace y bloquea de nuevo si el archivo conserva esos patrones.
+
+Blockers/riesgos:
+- El sistema recupero scanner/integrity/findings, pero no recupero el cierre canonico.
+- El bloqueo es de politica CyberLACE/document guard, no de worker vivo ni de bwrap.
+- Corregirlo editando solo el archivo generado seria fragil; la reparacion estable es ensenar a CyberLACE a diferenciar placeholders sinteticos/redactados de secretos reales, con tests que sigan bloqueando secretos verdaderos.
+
+Punto de reanudacion:
+- Siguiente cambio recomendado: ajustar `backend/cyberlace_document_guard.py` para permitir valores explicitamente sinteticos/redactados como `not-written-to-log`, `[REDACTED]`, `placeholder`, `example`, `demo`, sin permitir tokens/secretos reales.
+- Agregar tests en `backend/test_cyberlace_agent_runtime_hooks.py` o test CyberLACE equivalente.
+- Luego relanzar P_safe/retry y verificar `runtime-truth` hasta que no quede `blocked_state_without_blocked_queue`.
+
+
+---
+## 2026-06-03 22:24 UTC - CyberLACE placeholders sinteticos y password de eliminacion
+
+Solicitud recibida:
+- Implementar la reparacion para que CyberLACE no bloquee placeholders sinteticos/redactados como secretos reales.
+- Aclarar que password pide el sistema para eliminar proyectos autorizados por password.
+
+Acciones realizadas:
+- Se modifico `backend/cyberlace_document_guard.py`.
+- Se agrego deteccion de placeholders sinteticos/redactados para patrones `password` y `api_key`.
+- Se agregaron tests en `backend/test_cyberlace_agent_runtime_hooks.py`:
+  - permite `password: "not-written-to-log"` y `api_key: "not-written-to-log"` en documentos del workspace.
+  - sigue bloqueando `password: "Secret123"` y `api_key: "sk_live_..."`.
+- Se reinicio backend con `./start_prompt_flight_tkinter.sh --backend-only --local-worker-no-bwrap` para cargar el guard nuevo.
+- Se relanzo el retry seguro de `continuity-alert-antihack-pf-001`.
+
+Archivos modificados:
+- `backend/cyberlace_document_guard.py`
+- `backend/test_cyberlace_agent_runtime_hooks.py`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `python3 -B -m py_compile backend/cyberlace_document_guard.py backend/test_cyberlace_agent_runtime_hooks.py`: OK.
+- `python3 -m unittest backend.test_cyberlace_agent_runtime_hooks`: OK, 15 tests.
+- Validacion directa del proyecto real con `inspect_runtime_document_inputs`: `blocked=false`, `blockedPaths=[]`, `scannedDocumentCount=14`.
+- Backend reiniciado OK, health OK.
+- Runtime relanzado: `runtime-truth` reporta `verdict=live`, worker alive PID `1530572`, tarea `RUNTIME-20260603222439-001` running.
+
+Resultado real:
+- La reparacion del falso positivo CyberLACE quedo validada.
+- El proyecto ya no queda bloqueado en preflight por `frontend/app.js` con placeholders sinteticos.
+- El retry seguro quedo corriendo; no se declaro completed.
+
+Aclaracion password eliminacion:
+- El endpoint `/api/agent/projects/<project_id>/delete` no usa el PIN de CyberLACE.
+- Verifica la contrasena del usuario logueado mediante `verify_current_user_password` y el hash guardado en PostgreSQL.
+- Si la contrasena se olvido, la ruta correcta es resetear la cuenta, no imprimir hashes ni secretos.
+
+Blockers/riesgos:
+- El worker sigue corriendo; hay que monitorear cierre con `runtime-truth`.
+- No se debe declarar el proyecto completado hasta que validator, scanner, integrity y cierre canonico pasen.
+
+Punto de reanudacion:
+- Monitorear `workspace/projects/continuity-alert-antihack-pf-001/runtime/logs/agent-ba087f23de-terminal.log`.
+- Consultar `GET /api/projects/continuity-alert-antihack-pf-001/runtime-truth`.
+
+
+---
+## 2026-06-03 22:37 UTC - Fix token de sesion para eliminar proyectos
+
+Solicitud recibida:
+- El usuario reporto que el password del modal de eliminar proyecto no funcionaba y mostro el error: "Tu sesion expiro o no es valida. Inicia sesion nuevamente."
+- Se pidio determinar si habia confusion de contrasena o un problema de codificacion.
+
+Diagnostico real:
+- El endpoint `POST /api/agent/projects/<project_id>/delete` usa `verify_current_user_password`, por tanto pide la contrasena del usuario logueado.
+- No usa el PIN de CyberLACE y no usa la clave de PostgreSQL.
+- La UI guardaba el token de login solo en memoria cuando `VITE_HABLA_REMEMBER_SESSION` estaba apagado.
+- `App.jsx` leia el token solo desde `localStorage`, asi que el boton de eliminar enviaba la peticion sin `Authorization` y el backend respondia `unauthorized` antes de comparar password.
+
+Acciones realizadas:
+- `frontend/src/components/WelcomeAuthGate.jsx`: cuando no se recuerda sesion, ahora conserva el token en `sessionStorage` durante la pestana y lo borra si `/api/auth/me` falla.
+- `frontend/src/App.jsx`: `readHablaAuthToken()` ahora lee `localStorage` o `sessionStorage`.
+- `frontend/src/components/RuntimeDashboardSidebar.jsx`: el modal ahora dice `Contrasena de tu cuenta actual` y aclara que no es PIN de CyberLACE ni clave de PostgreSQL.
+- `frontend/src/App.css`: se agrego estilo para la ayuda del modal.
+
+Archivos modificados:
+- `frontend/src/App.jsx`
+- `frontend/src/components/WelcomeAuthGate.jsx`
+- `frontend/src/components/RuntimeDashboardSidebar.jsx`
+- `frontend/src/App.css`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build`: OK, Vite compilo el frontend.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+- Prueba backend local sin imprimir token: login `admin` de desarrollo OK, `/api/auth/me` con token OK.
+- Health auth local: PostgreSQL configurado y listo.
+
+Resultado real:
+- El error observado correspondia a sesion/token invalido o ausente, no a password incorrecto.
+- Con la correccion, una sesion no persistente conserva token en `sessionStorage` y el boton de eliminar puede autenticar la accion.
+- La contrasena esperada para borrar es la de la cuenta actualmente logueada; para el usuario de desarrollo `admin`, el backend valido login correctamente.
+- No se elimino ningun proyecto durante esta intervencion.
+
+Blockers/riesgos:
+- Si la UI ya estaba abierta antes del cambio, el usuario debe refrescar o volver a iniciar sesion para que la nueva logica tenga token en `sessionStorage`.
+- El worktree sigue muy sucio por cambios/proyectos/runtime previos; no se revirtio nada ajeno.
+- Hay worker LACE activo observado en `continuity-alert-antihack-pf-001`; no se detuvo.
+
+Punto de reanudacion:
+- Recargar la UI, iniciar sesion si el gate lo pide, y volver a probar eliminar el proyecto.
+- Si vuelve a fallar, capturar el nuevo mensaje: `unauthorized` indicaria token; `invalid_password` indicaria password de cuenta incorrecto.
+
+
+---
+## 2026-06-04 01:07 UTC - Separador horizontal arrastrable del editor
+
+Solicitud recibida:
+- El usuario aclaro que el separador debe estar justo encima de los botones `Guardar archivo`, `Generar archivo`/acciones y `Scanner final`.
+- Necesita agarrarlo con el mouse y moverlo hacia abajo o arriba para agrandar o recoger el espacio interno del codigo.
+
+Acciones realizadas:
+- Se modifico `frontend/src/components/CodeWorkbench.jsx`.
+- Se agrego altura persistente del editor en `localStorage` con clave `hablaCodeWorkbenchEditorHeightPx`.
+- Se agrego `workbenchMainRef` y `editorFrameRef` para medir el espacio real disponible.
+- Se agregaron funciones `clampEditorHeight`, `setClampedEditorHeight`, `startEditorResize` y `handleEditorResizeKey`.
+- Se inserto un separador real `code-workbench-editor-resizer` entre `.code-workbench-editor` y `CodeWorkbenchActions`.
+- Se modifico `frontend/src/App.css` para agregar una fila nueva de 12px entre editor y acciones, cursor `row-resize`, hover/focus visual y limites del grid.
+
+Archivos modificados:
+- `frontend/src/components/CodeWorkbench.jsx`
+- `frontend/src/App.css`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build`: OK, Vite compilo el frontend.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- El editor ahora tiene una barra agarrable justo encima de los botones de acciones.
+- Arrastrar hacia abajo aumenta el area visible del codigo.
+- Arrastrar hacia arriba recoge el area del codigo.
+- La posicion se conserva en el navegador.
+- El control tambien responde a teclado con flechas arriba/abajo cuando recibe foco.
+
+Blockers/riesgos:
+- No se hizo prueba visual con navegador porque la solicitud se resolvio por codigo y build/test; la UI debe refrescarse para cargar el bundle nuevo.
+- `frontend/src/App.css` ya tenia cambios previos no relacionados; no se revirtieron.
+
+Punto de reanudacion:
+- Refrescar la UI, ir al editor, agarrar la barra encima de los botones y arrastrarla.
+- Si el espacio inferior debe comprimirse mas, ajustar `MIN_TERMINAL_HEIGHT_PX` o los limites CSS del terminal.
+
+
+---
+## 2026-06-04 01:14 UTC - Recorrido amplio del separador del editor
+
+Solicitud recibida:
+- El usuario reporto que el separador agregado si se movia, pero solo unos milimetros, y pidio poder jalarlo mucho mas hacia abajo o arriba.
+
+Diagnostico real:
+- El separador estaba limitado por `clampEditorHeight()` porque el maximo restaba la altura completa del monitor verde/chat y del terminal.
+- El CSS tambien reservaba filas inferiores con minimos altos, reduciendo el recorrido visible del editor.
+
+Acciones realizadas:
+- `frontend/src/components/CodeWorkbench.jsx`: se reemplazo la reserva inferior estricta por `MIN_BOTTOM_WORKBENCH_HEIGHT_PX = 8`.
+- `clampEditorHeight()` ahora calcula el maximo restando solo cabecera, botones, resizer y margen minimo, dejando que el editor crezca hasta casi el fondo sin perder la fila de botones.
+- `frontend/src/App.css`: las filas inferiores del grid ahora usan `minmax(0, ...)` y el monitor verde usa `height: min(..., 100%)` para poder comprimirse cuando el editor crece.
+
+Archivos modificados:
+- `frontend/src/components/CodeWorkbench.jsx`
+- `frontend/src/App.css`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build`: OK.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- El control ya no queda limitado por la altura del monitor verde/terminal.
+- Arrastrar hacia abajo debe mover el separador con recorrido amplio hasta dejar el editor casi al fondo, conservando visibles los botones.
+- Los paneles inferiores son los que se comprimen o quedan recortados cuando el editor crece.
+
+Blockers/riesgos:
+- No se hizo prueba visual con navegador en esta respuesta; requiere refrescar la UI para cargar el bundle nuevo.
+- Si el navegador conserva una altura antigua muy baja en `localStorage`, arrastrar de nuevo la actualiza; tambien puede borrarse `hablaCodeWorkbenchEditorHeightPx` si se quiere reset.
+
+Punto de reanudacion:
+- Refrescar la UI, probar arrastrar el separador; si aun falta recorrido, el siguiente ajuste seria permitir que la fila de botones sea sticky abajo mientras terminal/chat quedan ocultos.
+
+
+---
+## 2026-06-04 01:19 UTC - Separador del editor ahora agranda el contenedor completo
+
+Solicitud recibida:
+- El usuario reporto que el separador seguia moviendose solo pocos centimetros y recalco que debe poder jalarse hasta abajo donde quiera, agrandando todo el bloque del editor.
+
+Diagnostico real:
+- El ajuste anterior liberaba parte del grid interno, pero el contenedor `.code-workbench-shell` seguia limitado por una altura fija de viewport (`clamp(720px, 82vh, 980px)`).
+- Por eso el separador seguia enjaulado: el area interna cambiaba, pero el bloque completo no crecia suficientemente.
+
+Acciones realizadas:
+- `frontend/src/components/CodeWorkbench.jsx`: `clampEditorHeight()` ya no calcula maximo desde el rectangulo visible; ahora permite altura entre 180px y 2400px.
+- `frontend/src/components/CodeWorkbench.jsx`: se confirmo que `--workbench-editor-height` se entrega al contenedor `.code-workbench-shell` y a `.code-workbench-main`.
+- `frontend/src/App.css`: `.code-workbench-shell` ahora crece con `calc(var(--workbench-editor-height) + 360px)` hasta 2800px.
+- `frontend/src/App.css`: en modo expandido crece con `calc(var(--workbench-editor-height) + 420px)` hasta 3000px.
+- Se mantiene la fila de botones visible y el resto del bloque puede crecer, permitiendo scroll de pagina si el editor queda muy grande.
+
+Archivos modificados:
+- `frontend/src/components/CodeWorkbench.jsx`
+- `frontend/src/App.css`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build`: OK.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- El separador ya no queda limitado por la altura fija del workbench.
+- Arrastrar hacia abajo debe agrandar el bloque completo del editor con recorrido amplio, hasta un maximo de 2400px de area de codigo.
+- El contenedor completo puede crecer hasta 2800px/3000px segun modo.
+
+Blockers/riesgos:
+- No se hizo prueba visual con navegador; debe refrescarse la UI para cargar el bundle nuevo.
+- Si el navegador conserva `hablaCodeWorkbenchEditorHeightPx` anterior, el nuevo arrastre lo actualiza; si molesta, borrar esa clave reinicia a 420px.
+
+Punto de reanudacion:
+- Refrescar la UI, agarrar la barra encima de los botones y jalar hacia abajo. Si el usuario quiere recorrido literalmente sin maximo, subir `MAX_EDITOR_HEIGHT_PX` y el maximo del shell CSS.
+
+
+---
+## 2026-06-04 01:38 UTC - Autonomia de clicks desde 06 Editor para modales de cierre
+
+Solicitud recibida:
+- El usuario confirmo que quiere que el boton/seccion `06 Editor` active autonomia visual de clicks reales sobre modales de cierre/certificado/supervisor/reparador, parecido al mouse operativo de herramientas.
+
+Acciones realizadas:
+- `frontend/src/components/AppRuntimeWorkbenches.jsx`: se agrego panel `Autonomia de modales` dentro de `06 Editor`.
+- El panel emite `habla:editor-autonomy-action` con acciones: `auto_closure`, `send_repair`, `minimize_certificate`, `open_supervisor`.
+- Los botones quedan deshabilitados si `autonomousMode` no esta activo.
+- `frontend/src/components/AgentStudio.jsx`: el certificado runtime ahora expone botones con `data-editor-autonomy-action` para copiar evidencia, enviar reparador, minimizar certificado, cerrar certificado, ver supervisor y restaurar certificado minimizado.
+- `AgentStudio` cambio su auto-politica para que en modo autonomo solicite click visual al mouse operativo antes de hacer fallback interno.
+- `frontend/src/components/OperationalMouseLayer.jsx`: se agrego busqueda de botones del editor/certificado, foco del cursor, verificacion de oclusion y click real usando la misma secuencia pointer/mouse/click del mouse operativo.
+- `frontend/src/components/SectionDividerMenu.jsx`: el menu `editor` ahora incluye `Autonomia de modales`.
+- `frontend/src/App.css`: se agrego estilo para el panel verde de autonomia en `06 Editor`.
+
+Archivos modificados:
+- `frontend/src/components/AppRuntimeWorkbenches.jsx`
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/src/components/OperationalMouseLayer.jsx`
+- `frontend/src/components/SectionDividerMenu.jsx`
+- `frontend/src/App.css`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build`: OK.
+- `npm test`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- Desde `06 Editor`, en modo autonomo, el usuario puede pedir click real sobre el modal de cierre pendiente.
+- El mouse operativo busca el boton real, mueve el cursor visual al centro, verifica que no este cubierto y dispara eventos reales.
+- La accion automatica de cierre/reparacion del certificado tambien usa esta ruta visual cuando el modo autonomo esta activo.
+- Si no hay modal/boton clickeable, el trace muestra bloqueo en vez de fingir exito.
+
+Blockers/riesgos:
+- No se hizo prueba visual manual con navegador; requiere UI refrescada y un modal de cierre visible para observar el cursor y click.
+- El cambio esta acotado a UI/frontend; no toca backend ni runtime.
+
+Punto de reanudacion:
+- Activar modo autonomo, abrir `06 Editor`, usar `Autoclick cierre pendiente` con un certificado visible.
+- Confirmar que el cursor del mouse operativo se posiciona sobre `Enviar a agente reparador`, `Ver supervisor`, `Minimizar certificado` o `Cerrar certificado` segun la accion elegida.
+
+
+---
+## 2026-06-04 01:54 UTC - Correccion 06 Editor, modales transparentes y clicks reales persistentes
+
+Solicitud recibida:
+- El usuario confirmo que los modales transparentes y clicks reales del mouse operativo ya se ven, pero reporto que los botones de `06 Editor` no estaban haciendo clicks.
+
+Acciones realizadas:
+- `frontend/src/App.jsx`: el modo autonomo ahora se persiste en `localStorage` con `hablaAutonomousMode` y se restaura tras refresh/Ctrl+F5.
+- `frontend/src/App.jsx`: al reconectar socket, si el humano dejo modo autonomo activo, se reemite `observer:enabled` para que el Observer no apague la capa visual.
+- `frontend/src/App.jsx`: eventos tardios de Observer disabled ya no desmontan el mouse operativo cuando la activacion humana sigue activa.
+- `frontend/src/App.css`: se subio la capa del mouse operativo por encima del certificado runtime y por debajo del login real; el dock queda transparente pero visible/clickeable.
+- `frontend/src/App.css`: los modales operativos quedaron glass/transparentes con eventos en el modal, no en el backdrop.
+- `frontend/src/components/SectionDividerMenu.jsx`: se agrego evento `habla:section-menu-close` para cerrar `06 Editor` antes de ejecutar una accion autonoma.
+- `frontend/src/components/AppRuntimeWorkbenches.jsx`: los botones de `06 Editor` cierran el popover y despachan la accion con retardo corto para no cubrir el objetivo.
+- `frontend/src/components/OperationalMouseLayer.jsx`: si el certificado esta minimizado, el mouse primero lo restaura con click real, espera el modal y luego hace el click real objetivo.
+- `frontend/src/components/OperationalMouseLayer.jsx`: `auto_closure` ya no se queda solo en restaurar; despues busca `send_repair`, `open_supervisor`, `minimize_certificate` o `close_certificate`.
+
+Archivos modificados:
+- `frontend/src/App.jsx`
+- `frontend/src/App.css`
+- `frontend/src/components/SectionDividerMenu.jsx`
+- `frontend/src/components/AppRuntimeWorkbenches.jsx`
+- `frontend/src/components/OperationalMouseLayer.jsx`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- En modo autonomo, el mouse operativo se mantiene visible tras refresh si el usuario lo habia activado.
+- El dock y los modales operativos son transparentes pero siguen clickeables.
+- `06 Editor` ya no deja el menu encima del certificado antes de actuar.
+- Si el certificado esta minimizado, `06 Editor` lo restaura y luego ejecuta el click real sobre el boton final.
+
+Blockers/riesgos:
+- No se ejecuto prueba visual con navegador desde esta terminal; el usuario ya confirmo visualmente que modales transparentes y clicks reales funcionan para el mouse operativo.
+- Para ver los cambios cargados puede requerirse refrescar el frontend o reiniciar el dev server si estaba sirviendo un bundle anterior.
+
+Punto de reanudacion:
+- Activar modo autonomo, abrir `06 Editor`, ejecutar `Autoclick cierre pendiente` con certificado visible o minimizado y observar la traza `restaurar modal` seguida de `click real`.
+
+
+---
+## 2026-06-04 01:58 UTC - Autonomia real del certificado sin pulsar 06 Editor
+
+Solicitud recibida:
+- El usuario aclaro que no queria tener que abrir `06 Editor` ni pulsar `Autoclick cierre pendiente`; queria que el sistema decidiera automaticamente cuando usar esa herramienta.
+
+Acciones realizadas:
+- `frontend/src/components/AgentStudio.jsx`: la politica automatica del certificado ahora despacha una accion con `source=agent-studio-closure-policy`, `trigger=autonomous_closure_policy` y `actionId` propio.
+- `AgentStudio` cierra cualquier menu abierto antes de disparar la accion autonoma para que ningun popover tape el boton objetivo.
+- `frontend/src/components/OperationalMouseLayer.jsx`: la traza diferencia entre accion manual de `06 Editor` y decision autonoma del certificado.
+- Cuando la accion viene de politica automatica, el panel muestra `certificado-runtime`, arbol `BT-closure-policy-autonomy` y paso `politica autonoma`.
+- Se mantiene `06 Editor` como override/manual de prueba, no como flujo principal.
+
+Archivos modificados:
+- `frontend/src/components/AgentStudio.jsx`
+- `frontend/src/components/OperationalMouseLayer.jsx`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- El sistema decide solo segun la politica del certificado: cierre verde, cierre rojo/minimizado o reparacion zombie.
+- La accion visual ya no aparece como si fuera `06 Editor`; aparece como decision autonoma del certificado runtime.
+- `06 Editor` queda solo para forzar/probar la accion manualmente cuando el humano quiera intervenir.
+
+Blockers/riesgos:
+- No se hizo prueba visual con navegador desde esta terminal.
+- Los tiempos siguen gobernados por la politica actual: verde 2 min, rojo/minimizar 3 min, zombie/reparador 4 min.
+
+Punto de reanudacion:
+- Lanzar una tarea hasta que aparezca un certificado runtime y dejar `Modo autonomo` activo. El sistema debe decidir solo; la traza debe iniciar con `politica autonoma` sin tocar `06 Editor`.
+
+
+---
+## 2026-06-04 15:53 UTC - Autonomous Recovery Kernel para bloqueos CyberLACE P_safe
+
+Solicitud recibida:
+- El usuario pregunto por que, cuando CyberLACE bloquea una accion financiera insegura, el sistema queda parado consumiendo tiempo/tokens en vez de desbloquearse autonomamente con las herramientas disponibles.
+
+Diagnostico real:
+- La UI ya generaba `P_safe` automaticamente con `/api/cyberlace/rescue/rewrite`.
+- La continuacion segura solo se autoaceptaba en `Harness Autopilot`.
+- En modo autonomo normal, el flujo seguia esperando PIN/boton humano, aunque el prompt original permaneciera bloqueado y existiera una alternativa segura.
+
+Acciones realizadas:
+- `backend/cyberlace_safe_rescue.py`: se agrego confirmacion `AUTONOMOUS_SAFE_REWRITE` y contrato `autonomous_safe_rewrite`.
+- `backend/cyberlace_safe_rescue.py`: la ruta autonoma solo se acepta si el texto contiene marcadores canonicos de CyberLACE: `[PROMPT SEGURO GENERADO POR CYBERLACE]`, `no ejecutar el prompt original bloqueado` y `reglas de continuacion segura`.
+- `backend/cyberlace_safe_rescue.py`: si falta contrato P_safe, la ruta autonoma sigue bloqueada y cae en `context_pin_required`.
+- `backend/app.py`: `/api/agent/projects/<project_id>/cyberlace-safe-continue` permite continuar sin PIN solo cuando `autonomousSafeRewrite=true`, `hardBlockStillEnforced=true` y el contrato P_safe canonico esta presente.
+- `frontend/src/App.jsx`: con `Modo autonomo` activo, cuando CyberLACE ya genero `safeRewrite.rescueId`, la UI dispara `acceptCyberlaceSafeAlternative` con `acceptanceType=autonomous_safe_rewrite` sin esperar boton/PIN.
+- `frontend/src/App.jsx`: el estado visible reporta `Autonomous Recovery Kernel` cuando inicia continuacion segura con P_safe.
+- `backend/test_cyberlace_routes.py`: se agrego test para aceptar P_safe autonomo solo con contrato CyberLACE y bloquear texto inseguro sin contrato.
+
+Archivos modificados:
+- `backend/cyberlace_safe_rescue.py`
+- `backend/app.py`
+- `backend/test_cyberlace_routes.py`
+- `frontend/src/App.jsx`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
+
+Validacion ejecutada:
+- `python3 -B -m py_compile backend/cyberlace_safe_rescue.py backend/cyberlace_routes.py backend/app.py`: OK.
+- `python3 -m unittest backend.test_cyberlace_routes`: OK, 6 tests.
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- Un bloqueo financiero CyberLACE ya no debe quedarse parado en modo autonomo si existe P_safe canonico.
+- El prompt original sigue bloqueado; solo se lanza la version segura generada por CyberLACE.
+- La aceptacion manual con PIN sigue existiendo para botones humanos.
+- Si no hay P_safe canonico, no hay auto-desbloqueo.
+
+Blockers/riesgos:
+- La UI actualmente abierta necesita refrescar o cargar el nuevo bundle para tomar esta logica.
+- No se ejecuto prueba E2E visual en navegador sobre el bloqueo vivo actual.
+- Si el backend/proyecto no existe o esta locked por otro motivo, la continuacion segura puede seguir bloqueada con evidencia.
+
+Punto de reanudacion:
+- Con `Modo autonomo` activo, disparar un bloqueo CyberLACE financiero controlado. Esperado: genera P_safe, muestra estado Autonomous Recovery Kernel, limpia la espera y lanza continuacion segura sin tocar el prompt original.
+
+
+## 2026-06-04T09:16:26-07:00 - Rieles laterales autonomos para modales visuales
+Solicitud recibida:
+- Codificar que Linea de Verdad y Mouse operativo se oculten automaticamente hacia izquierda/derecha, dejando pestana visible, y salgan al centro/posicion normal por hover o cuando el modo autonomo los necesite.
+
+Acciones realizadas:
+- `frontend/src/components/ForensicTruthRail.jsx`: agregado estado temporal de auto-revelado, clase `is-idle/is-auto-visible` y pestana lateral `Verdad`; se revela ante eventos runtime, acciones LACE y bloqueo de closure gate.
+- `frontend/src/components/OperationalMouseLayer.jsx`: el dock ahora usa `dockAutoVisible` para salir cuando hay cursor activo, herramienta ocupada, modal activo, traza real, tarjeta minimizada o accion autonoma.
+- `frontend/src/App.css`: agregado bloque `Autonomous side rails` para esconder Mouse operativo a la derecha y Linea de Verdad a la izquierda; hover/focus o actividad autonoma los devuelve a su posicion visible.
+
+Validacion corta ejecutada:
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- Frontend compila y la prueba corta pasa.
+- No se modifico backend ni control-plane.
+
+Blockers o riesgos:
+- La comprobacion visual en navegador queda pendiente; por codigo, el comportamiento solo se activa con `autonomousMode=true` porque los componentes siguen retornando `null` fuera de ese modo.
+
+Punto de reanudacion:
+- Abrir la UI en modo autonomo y verificar hover en borde izquierdo/derecho; luego disparar una accion `ui:mouse-action` o bloqueo LACE para confirmar auto-revelado.
+
+
+## 2026-06-04T09:20:38-07:00 - Fix auto-ocultamiento real de rieles autonomos
+Solicitud recibida:
+- El usuario reporto que los modales/riles no se escondian automaticamente.
+
+Diagnostico:
+- `ForensicTruthRail` mantenia `is-auto-visible` mientras `laceDependencyStatus.lace.closureBlocked` fuera true. Eso dejaba Linea de Verdad abierta de forma permanente ante bloqueos LACE.
+- `OperationalMouseLayer` mantenia `is-auto-visible` con `activeAction`, `actionTrace.length` y `minimizedToolList.length`; esas evidencias quedan persistidas en UI y no representan una interaccion viva.
+- `operational-action-trace` seguia visible aunque el dock quedara sin accion viva.
+
+Acciones realizadas:
+- `frontend/src/components/ForensicTruthRail.jsx`: `closureBlocked` ya no fija el panel abierto; solo `autoRevealActive` o `encolando` lo revelan temporalmente.
+- `frontend/src/components/OperationalMouseLayer.jsx`: `dockAutoVisible` ahora depende solo de interaccion viva: cursor activo, herramienta ocupada, reparacion LACE ocupada o modal activo.
+- `frontend/src/App.css`: agregado ocultamiento lateral de `operational-action-trace` cuando no hay `is-auto-visible`.
+
+Validacion corta ejecutada:
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- Los rieles ya no quedan abiertos por evidencias viejas o bloqueos persistentes; vuelven al borde cuando termina la interaccion viva.
+
+Blockers o riesgos:
+- La UI que ya estaba cargada debe refrescar para tomar el nuevo bundle.
+
+Punto de reanudacion:
+- Probar en navegador: activar modo autonomo, observar que Linea de Verdad y Mouse operativo quedan en los bordes; por hover salen, y durante click/autonomia salen temporalmente.
+
+
+## 2026-06-04T09:24:19-07:00 - Reparacion login global no debe ser autenticado por refresh visual
+Solicitud recibida:
+- El usuario reporto que el sistema ya no entraba inicialmente por el sistema global de autenticacion/login y pregunto por que se habia desactivado.
+
+Diagnostico:
+- `frontend/src/components/ForensicTruthRail.jsx` escribia `hablaAuthSessionReady` durante `scheduleRuntimeUiRefresh`. Esa marca pertenece al login real, no al refresh automatico de UI.
+- `frontend/src/components/WelcomeAuthGate.jsx` usaba `uiRefreshCanSuppressAuthGate()` para ejecutar `setPhase("authenticated")`. Eso permitia que un refresh visual saltara el login inicial durante la ventana de supresion.
+
+Acciones realizadas:
+- `ForensicTruthRail.jsx`: eliminado el uso de `hablaAuthSessionReady`; el refresh solo marca `hablaUiRefreshSuppressAuthGate` y razon de refresh.
+- `WelcomeAuthGate.jsx`: el refresh visual ya no autentica. Solo puede saltar la intro visual y luego exige token real validado en `/api/auth/me`, o login/register/local-temp explicito.
+- Si no hay token real, se elimina `hablaAuthSessionReady` y se muestra el flujo de login/setup normal.
+
+Validacion corta ejecutada:
+- `npm run build` en `frontend`: OK.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+
+Resultado real:
+- El login global ya no esta desactivado por refresh automatico. La autenticacion vuelve a depender de token real/backend o modo temporal local explicito.
+
+Blockers o riesgos:
+- La UI ya abierta puede estar ejecutando el bundle viejo; necesita refrescar/cargar el nuevo bundle para tomar la correccion.
+
+Punto de reanudacion:
+- Refrescar la UI. Esperado: si no hay sesion/token valido, aparece login/setup global; si hay token valido, `/api/auth/me` autentica sin mostrar login.
+
+
+## 2026-06-04T10:16:03-07:00 - Monitoreo en vivo del test sesion-20260604162627
+Solicitud recibida:
+- El usuario indico que el test de prueba esta corriendo y pidio revisar en vivo que hace el sistema.
+
+Acciones realizadas:
+- Lectura de `python3 orchestrator/agent_tools.py health`: OK, backend/HABLA responde.
+- Lectura de `python3 orchestrator/agent_tools.py observer-status`: Observer habilitado, estado `waiting_worker`, modo `human-pinned`.
+- Revision de procesos: backend `backend/app.py` vivo; worker del proyecto estuvo vivo durante la lectura inicial y luego ya no aparece.
+- Revision del proyecto activo `workspace/projects/sesion-20260604162627`.
+- Lectura de `project_state.json`, `task_queue.json`, `task_history.jsonl`, `failures.jsonl`, `lace_budget.json`, checkpoints LACE, doc de ciclo 01, findings e integrity.
+
+Resultado real observado:
+- Proyecto activo: `sesion-20260604162627`.
+- Estado final actual: `blocked`.
+- Tarea base `RUNTIME-20260604165443-001`: `completed`, creo `frontend/index.html`, `frontend/styles.css`, `frontend/app.js` y paso validaciones.
+- Tarea `LACE-20260604-001`: aparece `completed` en queue/history con validacion pasada.
+- Findings: OK, `activeFindings=0`.
+- Integrity: OK, `totalFindings=0`.
+- Closure gate LACE: bloqueado con `lace_cycles_pending`, `required_cycles=5`, `completed_cycles=0`, `missing_cycles=[1,2,3,4,5]`.
+
+Diagnostico:
+- `docs/lace_cycles/ciclo-01.md` existe y tiene marcadores, pero el encabezado declara `Valido para cierre LACE: no`; por eso el closure gate lo descarta como ciclo canonico.
+- La validacion de la tarea fue demasiado laxa: encontro `Valido para cierre LACE: SI` dentro del texto como observacion esperada, no como estado canonico real.
+- Tambien faltan `runtime/artifacts/final_code_scanner_report.json` y `runtime/sandbox.json`; por eso los quality gates `scanner_ok` y `sandbox_ok` estan falsos.
+
+Validacion corta ejecutada:
+- Lecturas de estado y herramientas internas compactas. No se modifico codigo.
+
+Blockers o riesgos:
+- El sistema no esta avanzando ahora: no queda worker vivo para `sesion-20260604162627` y el estado permanece bloqueado.
+- Requiere correccion de ciclo LACE canonico y/o nueva tarea reparadora para scanner/sandbox antes de cierre verde.
+
+Punto de reanudacion:
+- Crear/reparar tarea LACE siguiente para convertir ciclo 01 en canonico real o generar ciclo 02, ejecutar scanner final y sandbox real, y reintentar closure gate.
+
+
+## 2026-06-04T11:29:20-07:00 - Monitoreo en vivo continuo sesion-20260604162627
+Solicitud recibida:
+- El usuario pidio seguir verificando en vivo porque el sistema siguio trabajando.
+
+Acciones realizadas:
+- Se monitorearon procesos `workers.codex_worker`, Codex, sandbox local y herramientas internas.
+- Se revisaron `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/artifacts/observer_findings.json`, `runtime/artifacts/file_integrity_report.json`, `runtime/artifacts/final_code_scanner_report.json`, `runtime/sandbox.json` y logs de los agentes `agent-c70fa6f2da` y `agent-872488475d`.
+- Se leyeron los reportes escritos por el worker en `workspace/projects/sesion-20260604162627/ULTIMO_CONTEXTO_CODEX.md` y `workspace/projects/sesion-20260604162627/recuperacioncontexto.md`.
+
+Resultado real observado:
+- La tarea reparadora `RUNTIME-20260604171608-001` dejo evidencia y luego cerro bloqueada correctamente, no como completed falso.
+- El sandbox real quedo vivo con `running=true`, `ready=true`, `healthcheck.statusCode=200` y `embedUrl=http://127.0.0.1:5618/`.
+- `runtime/artifacts/final_code_scanner_report.json` ya existe; el scanner final reporta `filesScanned=10`, `linesScanned=1675`, `charactersScanned=76920`.
+- `CLOSURE-REPAIR-20260604172851` completo y creo `docs/closure_repairs/closure-repair-20260604172851.md`.
+- El runtime lanzo una nueva reparacion automatica `CLOSURE-REPAIR-20260604182205`; el worker `3221195` esta vivo.
+- La nueva reparacion aun no crea su evidencia esperada `docs/closure_repairs/closure-repair-20260604182205.md`.
+
+Validacion corta ejecutada:
+- Lectura de procesos con `pgrep`: worker `3221195` vivo para `CLOSURE-REPAIR-20260604182205`.
+- Lectura de artifacts: scanner final existe; sandbox existe; typewriter final no existe.
+- Lectura de findings/integrity: `observer_findings` reporta hallazgos activos y `file_integrity_report` reporta `totalFindings=58`.
+
+Blockers o riesgos:
+- El bloqueo actual ya no es scanner ni sandbox; el bloqueo fuerte es Integrity sobre `docs/habla-session.md`, marcado como modificacion externa sin escritura interna registrada.
+- `observer_findings.json` reporta hallazgos activos por integridad/lint.
+- `runtime/artifacts/final_typewriter_report.json` sigue ausente.
+- Quedan ciclos LACE pendientes y `RUNTIME-20260604171608-001` permanece en `blocked_tasks`.
+
+Punto de reanudacion:
+- Seguir monitoreando `CLOSURE-REPAIR-20260604182205` hasta que cree `docs/closure_repairs/closure-repair-20260604182205.md` o cierre con blocker estructurado. Si termina bloqueada, revisar si `docs/habla-session.md` debe registrarse como escritura interna valida, restaurarse desde baseline, o convertirse en tarea de reparacion controlada.
+
+
+## 2026-06-04T13:11:00-07:00 - Diagnostico de por que no cerro sesion-20260604162627
+Solicitud recibida:
+- El usuario pidio seguir monitoreando y verificar por que el sistema no ha cerrado.
+
+Acciones realizadas:
+- Se revisaron procesos vivos del proyecto; no queda worker activo para `sesion-20260604162627`.
+- Se leyeron `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/lace_budget.json`, `runtime/artifacts/final_code_scanner_report.json`, `runtime/artifacts/file_integrity_report.json`, `runtime/artifacts/observer_findings.json`, `runtime/sandbox.json`, checkpoints y logs de `agent-872488475d`.
+- Se leyo `docs/closure_repairs/closure-repair-20260604182205.md`, reporte generado por la ultima reparacion.
+
+Resultado real observado:
+- `project_state.status` aparece como `completed` y `current_task_id=null`, pero el cierre canonico sigue bloqueado.
+- `runtime/task_queue.json` tiene 4 tareas `completed` y 1 tarea `blocked`: `RUNTIME-20260604171608-001`.
+- `runtime/project_state.json.blocked_tasks` tambien conserva `RUNTIME-20260604171608-001`.
+- `CLOSURE-REPAIR-20260604182205` completo y creo `docs/closure_repairs/closure-repair-20260604182205.md`.
+- `runtime/artifacts/final_code_scanner_report.json` existe y paso validacion: 11 archivos, 1884 lineas, 91704 caracteres.
+- `runtime/sandbox.json` esta listo: `running=true`, `ready=true`, healthcheck 200 y URL embebible.
+
+Validacion corta ejecutada:
+- Comprobacion de gates: scanner OK y sandbox OK.
+- Typewriter final: falta `runtime/artifacts/final_typewriter_report.json`.
+- Integrity: `validation.passed=false`, `summary.totalFindings=136`, con cambios no registrados en `docs/habla-session.md`, `ULTIMO_CONTEXTO_CODEX.md`, `recuperacioncontexto.md` y warning sobre `docs/closure_repairs/closure-repair-20260604182205.md`.
+- Observer: `activeFindings=4`, dos errores en reportes de cierre y dos warnings en `LACE_LOG.md`/`frontend/app.js`.
+- LACE budget: sigue `closure_status=blocked`, `completed_cycles=0`, `missing_cycles=[1,2,3,4,5]`, aunque `docs/lace_cycles/ciclo-01.md` ahora dice `Valido para cierre LACE: si`; el gate no fue recalculado de forma efectiva.
+
+Blockers o riesgos:
+- Causa principal del certificado rojo: `RUNTIME-20260604171608-001` permanece en `blocked_tasks` y en la cola como `blocked`; el cierre canonico prioriza eso sobre `project_state.status=completed`.
+- Causas adicionales: falta typewriter final, integrity no limpio, observer findings activos y LACE closure no OK.
+- Hay contradiccion de estado: project_state dice `completed`, pero cola/canonical outcome siguen bloqueados.
+
+Punto de reanudacion:
+- No editar estado manualmente. Encolar o ejecutar reparacion controlada para: limpiar/decidir el blocked stale de `RUNTIME-20260604171608-001` solo si sus blockers ya fueron resueltos, registrar o restaurar cambios de integrity, generar `final_typewriter_report.json`, resolver findings activos, recalcular LACE closure y reintentar cierre canonico.
+
+
+## 2026-06-04T20:36:54+00:00 - PUBLICACION-GITHUB-HARNESS-ENGINEERING-INTERNO
+
+Solicitud recibida:
+- El usuario pidio revisar nuevamente porque se realizaron modificaciones en el codigo del harness engineering interno y subir nuevamente todo el repositorio.
+
+Acciones realizadas:
+- Se leyo `ULTIMO_CONTEXTO_CODEX.md` y las entradas recientes de `recuperacioncontexto.md`.
+- Se reviso `git status`, `git diff --stat` y archivos nuevos no versionados.
+- Se preparo un nuevo corte grande del subrepo `vista_IA/architecture-react-three-flask-socketio`, incluyendo codigo, pruebas, frontend, runtime versionado, evidencias Prompt Flight y poda masiva de proyectos `workspace/projects` que ya estaba reflejada en disco.
+- Se dejo fuera el directorio externo no perteneciente al subrepo `../../conector MCP/`.
+- Se normalizo whitespace en textos staged/directivas generadas para que `git diff --cached --check` pasara.
+
+Archivos creados o modificados:
+- `orchestrator/complexity_audit_kernel.py` creado.
+- `backend/test_complexity_audit_kernel.py` creado.
+- Cambios en `backend/agent_runtime.py`, `backend/app.py`, `backend/cyberlace_document_guard.py`, `backend/cyberlace_safe_rescue.py` y pruebas backend relacionadas.
+- Cambios en `frontend/src/App.jsx`, `frontend/src/App.css`, componentes de rieles/Workbench/login/sidebar y `agentClosureCertificate`.
+- Cambios en `orchestrator/complexity_estimator.py`, `orchestrator/contracts.py`.
+- Nuevas evidencias bajo `runtime/continuity_probe/` y nuevos proyectos `workspace/projects/sesion-20260604000030`, `workspace/projects/sesion-20260604162627`.
+- Eliminacion/poda versionada de muchos proyectos antiguos de `workspace/projects`.
+
+Validacion corta ejecutada:
+- `python3 orchestrator/agent_tools.py health`: OK, `statusCode=200`, `ok=true`, `service=HABLA Observer IA`.
+- Escaneo de archivos >95MB excluyendo `.git`, `.venv`, `frontend/node_modules` y `backups`: OK, sin resultados.
+- Escaneo estricto de secretos con `rg --pcre2` excluyendo artefactos locales: OK, sin coincidencias.
+- `find backend orchestrator workers tools -name '*.py' | xargs python3 -B -m py_compile`: OK.
+- `python3 -m pytest backend/test_complexity_audit_kernel.py backend/test_agent_runtime_habla.py backend/test_control_plane_visual_bridge.py backend/test_cyberlace_agent_runtime_hooks.py backend/test_cyberlace_routes.py backend/test_lace_automejora_kernel.py -q`: OK, `110 passed in 4.96s`.
+- `npm run build` en `frontend`: OK, Vite genero `dist/assets/index-XTKc4aFm.css` y `dist/assets/index-CnZ3H-sL.js`, con advertencia no fatal de chunk >500 kB.
+- `npm test` en `frontend`: OK, `agentClosureCertificate tests passed`.
+- `git diff --cached --check`: OK despues de normalizar whitespace.
+
+Resultado real de validacion:
+- El nuevo codigo del harness engineering interno compila.
+- Las pruebas enfocadas de backend/orquestador y frontend pasan.
+- No hay secretos estrictos ni archivos grandes bloqueantes en el alcance candidato.
+- El commit preparado contiene un corte grande con aproximadamente 10.677 archivos staged antes de la memoria final.
+
+Blockers o riesgos:
+- El corte incluye una poda masiva de proyectos antiguos en `workspace/projects`; no se revirtio porque el usuario pidio subir todo lo que ya estaba modificado en disco.
+- El repositorio raiz muestra un directorio externo no versionado `../../conector MCP/`; no se incluye porque esta fuera del subrepo solicitado.
+- El runtime puede seguir generando deltas locales despues del commit; si aparece algo posterior, queda como siguiente corte.
+
+Punto de reanudacion:
+- Crear commit `Publish latest harness engineering updates`, hacer push a `codex/publish-complete-runtime-project`, verificar PR #1 y reportar hash/URL.

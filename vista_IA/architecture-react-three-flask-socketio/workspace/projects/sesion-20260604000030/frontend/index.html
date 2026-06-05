@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Neural Road 3D</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Juego de carros 3D con inteligencia artificial">
+      <canvas id="world" data-render-mode="booting" aria-label="Circuito 3D Neural Road"></canvas>
+
+      <section class="hud" aria-label="Estado de carrera">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <h1>Neural Road 3D</h1>
+            <p>IA rival activa</p>
+          </div>
+        </div>
+
+        <div class="metrics" aria-label="Metrica de carrera">
+          <article>
+            <span>Velocidad</span>
+            <strong id="speed-value">48 m/s</strong>
+          </article>
+          <article>
+            <span>Distancia</span>
+            <strong id="distance-value">0 m</strong>
+          </article>
+          <article>
+            <span>Evento</span>
+            <strong id="event-value" aria-live="polite">piloto neural listo</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="control-dock" aria-label="Controles de conduccion">
+        <button class="steer-btn" id="left-control" type="button" aria-label="Mover a la izquierda">A</button>
+        <button class="steer-btn primary" id="boost-control" type="button" aria-label="Acelerar">W</button>
+        <button class="steer-btn" id="right-control" type="button" aria-label="Mover a la derecha">D</button>
+        <button class="steer-btn" id="brake-control" type="button" aria-label="Frenar">S</button>
+      </section>
+
+      <aside class="race-panel" aria-label="Panel tactico">
+        <div>
+          <span class="status-dot"></span>
+          <span>Autopiloto asistido</span>
+        </div>
+        <meter id="ai-pressure" min="0" max="100" value="34">34</meter>
+      </aside>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>

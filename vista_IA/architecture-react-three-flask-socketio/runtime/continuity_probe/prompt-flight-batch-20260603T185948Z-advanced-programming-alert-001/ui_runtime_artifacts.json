@@ -1,0 +1,781 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "audit_version",
+        "bootstrap_tasks",
+        "complexity_audit",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "early_exit_allowed",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "lace_max_cycles",
+        "lace_min_cycles",
+        "lace_target_cycles",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "quality_threshold",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "strategy_deliverable",
+        "timeout_seconds"
+      ],
+      "lineCount": 206,
+      "mtime": "2026-06-03T19:04:16Z",
+      "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_estimate.json",
+      "sha256": "5be664f9fcab1b2f27295d121c7a27808dbc9c6f5d16a7b18282c76f9c1d77a2",
+      "size": 5668,
+      "tail": ": [\n      \"smoke\",\n      \"build\",\n      \"medium\",\n      \"long-run\"\n    ],\n    \"mode_policy\": \"El modo smoke solo puede venir de configuracion explicita; ninguna palabra suelta del prompt activa smoke.\",\n    \"test_budget\": {\n      \"unit_tests\": [\n        \"sanitizer redacts key and value patterns\",\n        \"request middleware emits request_id and duration_ms\",\n        \"error handlers emit error_id for 400, 404 and 500\",\n        \"200 logs success without raw body\"\n      ],\n      \"integration_tests\": [\n        \"API returns sanitized client body for 400\",\n        \"API returns sanitized client body for 404\",\n        \"API returns sanitized client body for 500\",\n        \"captured logs contain no password, token, cookie or api_key sample\"\n      ]\n    },\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\",\n      \"python3 -m json.tool runtime/complexity_audit.json\",\n      \"python3 -m json.tool runtime/complexity_estimate.json\",\n      \"python3 -m pytest -q\"\n    ]\n  },\n  \"quality_threshold\": 85,\n  \"estimated_minutes\": 45\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-03T19:10:52Z",
+      "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/failures.jsonl",
+      "sha256": "637770d31e63653b95a3b8de37434c04633d88a4f0f79490393aa8dec17f57a6",
+      "size": 118165,
+      "tail": "ds\": [{\"exists\": true, \"is_file\": true, \"path\": \"runtime/complexity_audit.json\", \"reported_created\": false, \"reported_modified\": true, \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_audit.json\", \"size\": 10078}, {\"exists\": true, \"is_file\": true, \"path\": \"runtime/complexity_estimate.json\", \"reported_created\": false, \"reported_modified\": true, \"resolved_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_estimate.json\", \"size\": 5668}], \"reported_created\": [], \"reported_modified\": [\"runtime/complexity_audit.json\", \"runtime/complexity_estimate.json\"], \"reported_outside_expected\": []}, \"task_id\": \"RUNTIME-20260603185948-001\", \"validation_passed\": false, \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\"}}, \"max_retries\": 3, \"retry_count\": 0, \"task_id\": \"RUNTIME-20260603185948-001\"}, \"recorded_at\": \"2026-06-03T19:10:52Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-06-03T19:10:52Z",
+      "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/project_state.json",
+      "sha256": "1efbe9b4af175b9123c9f0614d5ecc2fe59ff4a201bab52a8f12ae607153860f",
+      "size": 605,
+      "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260603185948-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-8255a9fb94\",\n    \"complexity-estimate\",\n    \"runtime-20260603185948-001-retry-0-recovery\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-06-03T18:59:48.627208+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-03T18:59:48.627208+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-8255a9fb94\",\n  \"project_id\": \"continuity-alert-antihack-pf-001\",\n  \"schema_version\": 1,\n  \"status\": \"blocked\",\n  \"updated_at\": \"2026-06-03T19:10:52.554585+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-03T19:10:52Z",
+      "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/task_history.jsonl",
+      "sha256": "a151039683636b2be3baa6b86719b97d0ffc162d72ef16c86df3116293131479",
+      "size": 715,
+      "tail": "{\"recorded_at\": \"2026-06-03T19:10:52Z\", \"result\": {\"blockers\": [\"Worker reported blocker: Scanner canonico bloqueado por project_locked mientras el runtime mantiene active_worker_running para esta tarea.\"], \"completed\": false, \"files_created\": [], \"files_modified\": [\"runtime/complexity_audit.json\", \"runtime/complexity_estimate.json\"], \"next_recommendation\": \"Fix blockers, rerun the isolated task if needed, then validate again.\", \"task_id\": \"RUNTIME-20260603185948-001\", \"validation_passed\": false, \"validation_ran\": [\"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"]}}\n"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 41,
+      "mtime": "2026-06-03T19:10:52Z",
+      "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/task_queue.json",
+      "sha256": "10c84eae6c74d3714c45aebaef400acdad0fe127179d598d4906fa60afacb973",
+      "size": 1754,
+      "tail": "    \"title\": \"Crear una estrategia defensiva de auditoria y logging\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260603185948-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260603185948-001\"\n    ],\n    \"expected_files\": [\n      \"docs/advanced_programming_alert_antihack_case_001.md\"\n    ],\n    \"goal\": \"Escribe la solucion en docs/advanced_programming_alert_antihack_case_001.md, manten el cambio pequeno, registra evidencia y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260603185948-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion en docs/advanced_programming_alert_antihack_case_001.md, manten el cambio\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/advanced_programming_alert_antihack_case_001.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 645,
+    "mtime": "2026-06-03T19:10:52Z",
+    "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/checkpoints/runtime-20260603185948-001-retry-0-recovery.json",
+    "sha256": "bf49136ec9d755a65cedf2814d5100e7207c2064699ce375d9b174fb5e07cefd",
+    "size": 126737,
+    "tail": "     \"task_id\": \"RUNTIME-20260603185948-001\",\n        \"validation_passed\": false,\n        \"workspace\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\"\n      }\n    },\n    \"retry_count\": 0,\n    \"task\": {\n      \"checkpoint_key\": \"runtime-20260603185948-001-checkpoint\",\n      \"dependencies\": [],\n      \"expected_files\": [\n        \"runtime/complexity_audit.json\",\n        \"runtime/complexity_estimate.json\"\n      ],\n      \"goal\": \"Crear una estrategia defensiva de auditoria y logging seguro para una API REST, con redaccion de secretos, trazabilidad de errores y validacion de respuestas 200, 400, 404 y 500.\",\n      \"id\": \"RUNTIME-20260603185948-001\",\n      \"max_retries\": 3,\n      \"mode\": \"build\",\n      \"priority\": 20,\n      \"status\": \"pending\",\n      \"timeout_seconds\": 900,\n      \"title\": \"Crear una estrategia defensiva de auditoria y logging\",\n      \"validation_commands\": [\n        \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n      ]\n    }\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 378,
+    "mtime": "2026-06-03T18:59:48Z",
+    "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/directives/RUNTIME-20260603185948-001-20260603T185948Z-65fd53a80420.json",
+    "sha256": "50332e60344b48338ccef38c78cfd25107e13cdbf2782c7df1b350f599a8ef5e",
+    "size": 27577,
+    "tail": "404 y 500.\",\n    \"id\": \"RUNTIME-20260603185948-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear una estrategia defensiva de auditoria y logging\"\n  },\n  \"task_id\": \"RUNTIME-20260603185948-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"65fd53a804207c10641fccee2a8a0711a3425d6c6606667cc5f5edcc30c665e2\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "decision": {
+        "action": "block",
+        "extendTimeout": false,
+        "fatalInfrastructureFailure": true,
+        "fatalMarkers": [
+          "bwrap: loopback",
+          "failed rtm_newaddr",
+          "codex's linux sandbox uses bubblewrap"
+        ],
+        "infrastructureFailure": true,
+        "markers": [
+          "bwrap: loopback",
+          "failed rtm_newaddr",
+          "operation not permitted",
+          "codex's linux sandbox uses bubblewrap",
+          "bubblewrap"
+        ],
+        "nextRecommendation": "fix_worker_sandbox_or_use_no_bwrap",
+        "reason": "Infrastructure failure detected in worker runtime; fix worker sandbox or use no-bwrap before retrying complex tasks.",
+        "retry": false,
+        "retryWithHostWriteExecutor": false,
+        "retry_count": 0,
+        "split": false
+      },
+      "failure": {
+        "execution": {
+          "approval_policy": "never",
+          "child_pid": 569808,
+          "command": [
+            "/home/neurodriver/.npm-global/bin/codex",
+            "--dangerously-bypass-approvals-and-sandbox",
+            "-C",
+            "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001",
+            "exec",
+            "--skip-git-repo-check",
+            "Task: RUNTIME-20260603185948-001 - Crear una estrategia defensiva de auditoria y logging\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/* except /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\nControl-plane ownership:\n- No edites run..."
+          ],
+          "command_text": "/home/neurodriver/.npm-global/bin/codex --dangerously-bypass-approvals-and-sandbox -C /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001 exec --skip-git-repo-check Task: RUNTIME-20260603185948-001 - Crear una estrategia defensiva de auditoria y logging\nSystem root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio\nTask workspace root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\nMandatory write root: /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001\nForbidden paths:\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/runtime_orquestador_codex_pack\n- /home/neurodriver/BASE _METACOGNICION_COLOMBIA/vist...",
+          "deferred_postflight_blockers": [],
+          "duration_seconds": 642.270139,
+          "execution_strategy": "codex_worker",
+          "expected_files": [
+            "runtime/complexity_audit.json",
+            "runtime/complexity_estimate.json"
+          ],
+          "fatal_infrastructure_markers": [],
+          "ignored_infrastructure_markers": [
+            "bwrap: loopback",
+            "failed rtm_newaddr",
+            "operation not permitted",
+            "codex's linux sandbox uses bubblewrap",
+            "bubblewrap",
+            "user namespaces"
+          ],
+          "infrastructure_failure": false,
+          "infrastructure_failure_type": null,
+          "infrastructure_ignored_reason": "process_succeeded_expected_evidence_present",
+          "infrastructure_markers": [],
+          "returncode": 0,
+          "sandbox_mode": "danger-full-access",
+          "selector_reason": "host_write_not_applicable",
+          "shell": false,
+          "stderr": "[output truncated; omitted 3337669 chars]\n: 2026-06-03T19:01:38Z\n+\n+ANALIZAR:\n+- Interpretacion: la tarea no pide una API nueva; pide una estrategia auditable para logging seguro de una API REST.\n+- Clasificacion: seguridad, manejo de errores, backend/API, documentacion operativa y evidencia runtime.\n+- Evidencia leida: runtime/complexity_audit.json, runtime/complexity_estimate.json, docs/habla-session.md y directiva persistida.\n+- Riesgo principal: declarar logging seguro sin contrato verificable o permitir filtracion de secretos en cuerpos, headers o excepciones.\n+\n+CRITICAR:\n+- Triangulacion tecnica: faltaba una matriz explicita para 200, 400, 404 y 500 dentro de los artefactos declarados.\n+- Triangulacion funcional: los archivos existian, pero antes eran estimaciones de complejidad y no una estrategia defensiva ejecutable.\n+- Triangulacion humana: un operador necesita request_id/error_id y reglas de redaccion claras para investigar sin exponer datos.\n+- Confianza seguridad: medi...",
+          "stdout": "Implement\u00e9 la estrategia defensiva en los artefactos declarados y agregu\u00e9 una prueba enfocada para que `pytest` valide evidencia real.\n\nArchivos principales:\n- [runtime/complexity_audit.json](</home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_audit.json>)\n- [runtime/complexity_estimate.json](</home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_estimate.json>)\n- [tests/test_audit_logging_strategy_artifacts.py](</home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/tests/test_audit_logging_strategy_artifacts.py>)\n- [LACE_LOG.md](</home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antih..."
+        },
+        "task_result": {
+          "blockers": [
+            "Worker reported blocker: Scanner canonico bloqueado por project_locked mientras el runtime mantiene active_worker_running para esta tarea."
+          ],
+          "completed": false,
+          "files_created": [],
+          "files_modified": [
+            "runtime/complexity_audit.json",
+            "runtime/complexity_estimate.json"
+          ],
+          "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+          "task_id": "RUNTIME-20260603185948-001",
+          "validation_passed": false,
+          "validation_ran": [
+            "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+          ]
+        },
+        "tool_invocations": {
+          "broom_before": {
+            "actions": [
+              {
+                "action": "clear_stale_current_task_id",
+                "after": null,
+                "before": "RUNTIME-20260603185948-001"
+              }
+            ],
+            "createdAt": "2026-06-03T19:00:06.009378Z",
+            "dryRun": false,
+            "ignoredResidue": [],
+            "latestPath": "runtime/artifacts/broom/latest.json",
+            "ok": true,
+            "phase": "before_task",
+            "projectRoot": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001",
+            "queueStatus": {
+              "RUNTIME-20260603185948-001": "pending",
+              "RUNTIME-20260603185948-002": "pending"
+            },
+            "reason": "control_plane_before_task",
+            "reportPath": "runtime/artifacts/broom/20260603T190006.014332Z-RUNTIME-20260603185948-001-before_task.json",
+            "runtimeDir": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime",
+            "taskId": "RUNTIME-20260603185948-001",
+            "tool": "to-sweep-with-a-broom",
+            "warnings": []
+          },
+          "cyberlace_output": {
+            "action": "MONITOR",
+            "agentId": "control-plane-worker",
+            "allowed": true,
+            "blocksRuntime": false,
+            "enabled": true,
+            "error": null,
+            "eventId": "cyberlace_374fda14f85c4b8e8b4ae5278468db26",
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 51,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 37,
+                "type": "sensitive_output"
+              },
+              {
+                "domain": "financial",
+                "end": 730,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 716,
+                "type": "sensitive_output"
+              }
+            ],
+            "mode": "monitor",
+            "modified_payload": null,
+            "ok": true,
+            "policyMatches": [],
+            "rawDecision": {
+              "action": "MONITOR",
+              "allowed": true,
+              "category": "semantic_firewall",
+              "confidence": 0.75,
+              "evidence": [
+                {
+                  "domain": "financial",
+                  "end": 51,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 37,
+                  "type": "sensitive_output"
+                },
+                {
+                  "domain": "financial",
+                  "end": 730,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 716,
+                  "type": "sensitive_output"
+                }
+              ],
+              "modified_payload": null,
+              "policy_matches": [],
+              "reason": "Modo monitor: se registra riesgo sin bloquear",
+              "risk_score": 50,
+              "severity": "MEDIUM"
+            },
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "recommendedAction": "MONITOR",
+            "recordType": "decision",
+            "redactsPayload": false,
+            "requiresHumanReview": false,
+            "riskScore": 50.0,
+            "runtimeAction": "ALLOW"
+          },
+          "cyberlace_tool": {
+            "action": "MONITOR",
+            "agentId": "control-plane-worker",
+            "allowed": true,
+            "blocksRuntime": false,
+            "enabled": true,
+            "error": null,
+            "eventId": "cyberlace_1b31de81decf4cd8b802b54a1d5084ff",
+            "evidence": [
+              {
+                "domain": "financial",
+                "end": 321,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 307,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7928,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 7914,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 7977,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 7963,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8705,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 8691,
+                "type": "sensitive_data_in_tool_args"
+              },
+              {
+                "domain": "financial",
+                "end": 8781,
+                "pattern": "credit_card_like",
+                "sample": "20260603185948",
+                "start": 8767,
+                "type": "sensitive_data_in_tool_args"
+              }
+            ],
+            "mode": "monitor",
+            "modified_payload": null,
+            "ok": true,
+            "policyMatches": [],
+            "rawDecision": {
+              "action": "MONITOR",
+              "allowed": true,
+              "category": "semantic_firewall",
+              "confidence": 0.75,
+              "evidence": [
+                {
+                  "domain": "financial",
+                  "end": 321,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 307,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 7928,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 7914,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 7977,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 7963,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 8705,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 8691,
+                  "type": "sensitive_data_in_tool_args"
+                },
+                {
+                  "domain": "financial",
+                  "end": 8781,
+                  "pattern": "credit_card_like",
+                  "sample": "20260603185948",
+                  "start": 8767,
+                  "type": "sensitive_data_in_tool_args"
+                }
+              ],
+              "modified_payload": null,
+              "policy_matches": [],
+              "reason": "Modo monitor: se registra riesgo sin bloquear",
+              "risk_score": 50,
+              "severity": "MEDIUM"
+            },
+            "reason": "Modo monitor: se registra riesgo sin bloquear",
+            "recommendedAction": "MONITOR",
+            "recordType": "decision",
+            "redactsPayload": false,
+            "requiresHumanReview": false,
+            "riskScore": 50.0,
+            "runtimeAction": "ALLOW"
+          },
+          "postflight": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260603185948-001-postflight-20260603T191051Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": null,
+                "dryRun": false,
+                "error": "timeout",
+                "ok": false,
+                "phase": "postflight",
+                "projectSlug": "continuity-alert-antihack-pf-001",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 0,
+                "summary": {
+                  "error": "timeout",
+                  "message": "timed out",
+                  "ok": false,
+                  "statusCode": 0
+                },
+                "taskId": "RUNTIME-20260603185948-001",
+                "timedOut": true,
+                "timestamp": "2026-06-03T19:10:50Z",
+                "tool": "integrity"
+              },
+              {
+                "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/observer_findings.json",
+                "dryRun": false,
+                "error": null,
+                "ok": true,
+                "phase": "postflight",
+                "projectSlug": "continuity-alert-antihack-pf-001",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 200,
+                "summary": {
+                  "ok": true,
+                  "projectId": "continuity-alert-antihack-pf-001",
+                  "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/observer_findings.json",
+                  "statusCode": 200,
+                  "summary": {
+                    "activeFindings": 0,
+                    "bySeverity": {},
+                    "bySource": {},
+                    "observationScore": 0,
+                    "resolvedFindings": 8,
+                    "totalFindings": 8
+                  }
+                },
+                "taskId": "RUNTIME-20260603185948-001",
+                "timedOut": false,
+                "timestamp": "2026-06-03T19:10:51Z",
+                "tool": "findings"
+              }
+            ],
+            "phase": "postflight",
+            "projectSlug": "continuity-alert-antihack-pf-001",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260603185948-001",
+            "taskResult": {
+              "blocker_count": 1,
+              "completed": false,
+              "validation_passed": false
+            },
+            "timestamp": "2026-06-03T19:10:51Z",
+            "warnings": [
+              "postflight:integrity timed out; continuing"
+            ]
+          },
+          "preflight": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260603185948-001-preflight-20260603T190007Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": null,
+                "dryRun": false,
+                "error": null,
+                "ok": true,
+                "phase": "preflight",
+                "projectSlug": "continuity-alert-antihack-pf-001",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 200,
+                "summary": {
+                  "observer": {
+                    "activeProjectSlug": "",
+                    "enabled": true,
+                    "incident": {
+                      "counters": {
+                        "repeatedEvents": 0,
+                        "ticks": 5,
+                        "timeouts": 0
+                      },
+                      "deadlineAt": "2026-06-03T19:01:19.508014Z",
+                      "incidentId": "OBS-20260603-185819-29079f05",
+                      "phase": "inspecting",
+                      "projectSlug": "continuity-mixed-pf-010",
+                      "rootCause": "project_completed_without_sandbox",
+                      "status": "open",
+                      "stopReason": "",
+                      "trigger": "observer_tick"
+                    },
+                    "state": "verifying_sandbox"
+                  },
+                  "ok": true,
+                  "statusCode": 200
+                },
+                "taskId": "RUNTIME-20260603185948-001",
+                "timedOut": false,
+                "timestamp": "2026-06-03T19:00:07Z",
+                "tool": "observer-status"
+              }
+            ],
+            "phase": "preflight",
+            "projectSlug": "continuity-alert-antihack-pf-001",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260603185948-001",
+            "timestamp": "2026-06-03T19:00:07Z",
+            "warnings": []
+          },
+          "recovery_preview": {
+            "activeFindings": 0,
+            "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/tool_invocations/RUNTIME-20260603185948-001-recovery_preview-20260603T191052Z.json",
+            "blockers": [],
+            "closureAllowed": true,
+            "invocations": [
+              {
+                "artifactPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/observer_findings.json",
+                "dryRun": false,
+                "error": null,
+                "ok": true,
+                "phase": "recovery_preview",
+                "projectSlug": "continuity-alert-antihack-pf-001",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 200,
+                "summary": {
+                  "ok": true,
+                  "projectId": "continuity-alert-antihack-pf-001",
+                  "reportPath": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/artifacts/observer_findings.json",
+                  "statusCode": 200,
+                  "summary": {
+                    "activeFindings": 0,
+                    "bySeverity": {},
+                    "bySource": {},
+                    "observationScore": 0,
+                    "resolvedFindings": 8,
+                    "totalFindings": 8
+                  }
+                },
+                "taskId": "RUNTIME-20260603185948-001",
+                "timedOut": false,
+                "timestamp": "2026-06-03T19:10:51Z",
+                "tool": "findings"
+              },
+              {
+                "artifactPath": null,
+                "dryRun": true,
+                "error": "timeout",
+                "ok": false,
+                "phase": "recovery_preview",
+                "projectSlug": "continuity-alert-antihack-pf-001",
+                "required": false,
+                "schema_version": 1,
+                "statusCode": 0,
+                "summary": {
+                  "error": "timeout",
+                  "message": "timed out",
+                  "ok": false,
+                  "statusCode": 0
+                },
+                "taskId": "RUNTIME-20260603185948-001",
+                "timedOut": true,
+                "timestamp": "2026-06-03T19:10:51Z",
+                "tool": "sniper"
+              }
+            ],
+            "phase": "recovery_preview",
+            "projectSlug": "continuity-alert-antihack-pf-001",
+            "schema_version": 1,
+            "taskId": "RUNTIME-20260603185948-001",
+            "taskResult": {
+              "blocker_count": 1,
+              "completed": false,
+              "validation_passed": false
+            },
+            "timestamp": "2026-06-03T19:10:52Z",
+            "warnings": [
+              "recovery_preview:sniper timed out; continuing"
+            ]
+          },
+          "task_completion_gate": null
+        },
+        "validation": {
+          "commands": [
+            {
+              "command": "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\"",
+              "duration_seconds": 0.025965,
+              "normalized_command": [
+                "python3",
+                "-B",
+                "-c",
+                "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+              ],
+              "returncode": 0,
+              "security_blocked": false,
+              "security_decision": {
+                "category": "test_or_build",
+                "command": [
+                  "python3",
+                  "-B",
+                  "-c",
+                  "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"
+                ],
+                "cwd": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001",
+                "decision": "allow",
+                "reason": "Matched risk category: test_or_build",
+                "recorded_at": "2026-06-03T19:10:50Z",
+                "risk_level": "low",
+                "schema_version": 1,
+                "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001"
+              },
+              "stderr": "",
+              "stdout": "",
+              "timed_out": false
+            }
+          ],
+          "evidence": {
+            "blockers": [],
+            "expected_files": [
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_audit.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_audit.json",
+                "size": 10078
+              },
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_estimate.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_estimate.json",
+                "size": 5668
+              }
+            ],
+            "found": [
+              "runtime/complexity_audit.json",
+              "runtime/complexity_estimate.json"
+            ],
+            "missing": [],
+            "records": [
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_audit.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_audit.json",
+                "size": 10078
+              },
+              {
+                "exists": true,
+                "is_file": true,
+                "path": "runtime/complexity_estimate.json",
+                "reported_created": false,
+                "reported_modified": true,
+                "resolved_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001/runtime/complexity_estimate.json",
+                "size": 5668
+              }
+            ],
+            "reported_created": [],
+            "reported_modified": [
+              "runtime/complexity_audit.json",
+              "runtime/complexity_estimate.json"
+            ],
+            "reported_outside_expected": []
+          },
+          "task_id": "RUNTIME-20260603185948-001",
+          "validation_passed": false,
+          "workspace": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-alert-antihack-pf-001"
+        }
+      },
+      "max_retries": 3,
+      "retry_count": 0,
+      "task_id": "RUNTIME-20260603185948-001"
+    },
+    "recorded_at": "2026-06-03T19:10:52Z"
+  },
+  "latestFailureIncludedInClassification": true,
+  "latestHistory": {
+    "recorded_at": "2026-06-03T19:10:52Z",
+    "result": {
+      "blockers": [
+        "Worker reported blocker: Scanner canonico bloqueado por project_locked mientras el runtime mantiene active_worker_running para esta tarea."
+      ],
+      "completed": false,
+      "files_created": [],
+      "files_modified": [
+        "runtime/complexity_audit.json",
+        "runtime/complexity_estimate.json"
+      ],
+      "next_recommendation": "Fix blockers, rerun the isolated task if needed, then validate again.",
+      "task_id": "RUNTIME-20260603185948-001",
+      "validation_passed": false,
+      "validation_ran": [
+        "python3 -B -c \"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\""
+      ]
+    }
+  },
+  "projectDir": "workspace/projects/continuity-alert-antihack-pf-001",
+  "runtimeDir": "workspace/projects/continuity-alert-antihack-pf-001/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": true,
+    "fatalMarkers": [
+      "bwrap: loopback",
+      "failed rtm_newaddr",
+      "codex's linux sandbox uses bubblewrap"
+    ],
+    "infrastructureFailure": true,
+    "markers": [
+      "bwrap: loopback",
+      "failed rtm_newaddr",
+      "operation not permitted",
+      "codex's linux sandbox uses bubblewrap",
+      "bubblewrap"
+    ]
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 153,
+    "mtime": "2026-06-03T19:10:52Z",
+    "path": "workspace/projects/continuity-alert-antihack-pf-001/runtime/logs/agent-8255a9fb94-terminal.log",
+    "sha256": "0724ff3ed147f713485b08c810e823e1c14d2b73c912fbbc5c828960788c347e",
+    "size": 5195,
+    "tail": "closureAllowed\": null,\n  \"activeFindings\": null,\n  \"warnings\": [],\n  \"blockers\": null,\n  \"artifactPath\": null,\n  \"reportPath\": \"runtime/artifacts/broom/20260603T191052.560655Z-RUNTIME-20260603185948-001-after_task.json\",\n  \"tool\": \"to-sweep-with-a-broom\",\n  \"actions\": [],\n  \"ignoredResidue\": [],\n  \"invocations\": []\n}\n[control-plane] Resumen de cola:\n{\n  \"status\": \"failed\",\n  \"stopped_reason\": \"queue_idle\",\n  \"tasks_executed\": 1,\n  \"ready_task_ids\": [],\n  \"lace_gate\": {\n    \"status\": \"not_ready\",\n    \"reason\": \"queue_not_fully_completed\",\n    \"active_task_ids\": [\n      \"RUNTIME-20260603185948-001\",\n      \"RUNTIME-20260603185948-002\"\n    ]\n  },\n  \"tool_policy_final\": null,\n  \"blanqueo\": null,\n  \"human_alignment_review\": null,\n  \"canonical_outcome\": {\n    \"session_status\": \"blocked\",\n    \"event_op\": \"session_blocked\",\n    \"event_status\": \"blocked\",\n    \"phase\": \"blocked\",\n    \"outcome\": \"blocked_control_plane\",\n    \"error_code\": \"control_plane_blocked\",\n    \"message\": \"El estado canonico mantiene bloqueos activos: blocked_tasks=['RUNTIME-20260603185948-001'], queue_blocked=['RUNTIME-20260603185948-001'].\",\n    \"completed\": false,\n    \"warnings\": [\n      \"failure_events=1\"\n    ]\n  }\n}\n"
+  }
+}

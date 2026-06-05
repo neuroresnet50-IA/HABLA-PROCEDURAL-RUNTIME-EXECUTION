@@ -1,0 +1,171 @@
+{
+  "files": {
+    "complexity_estimate.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "api_test_strategy_summary",
+        "audit_version",
+        "bootstrap_tasks",
+        "complexity_audit",
+        "confidence",
+        "difficulty",
+        "difficulty_label",
+        "early_exit_allowed",
+        "estimate_type",
+        "estimated_minutes",
+        "generated_at",
+        "lace_max_cycles",
+        "lace_min_cycles",
+        "lace_target_cycles",
+        "launch_mode",
+        "max_agents",
+        "max_lace_cycles",
+        "max_retries",
+        "max_tasks",
+        "min_lace_cycles",
+        "project_file_count",
+        "project_slug",
+        "prompt_word_count",
+        "quality_threshold",
+        "reasons",
+        "recommended_agents",
+        "recommended_lace_cycles",
+        "recovery_budget",
+        "required_tools",
+        "risk_flags",
+        "runtime_mode",
+        "schema_version",
+        "score",
+        "timeout_seconds"
+      ],
+      "lineCount": 189,
+      "mtime": "2026-06-03T18:38:21Z",
+      "path": "workspace/projects/continuity-mixed-pf-008/runtime/complexity_estimate.json",
+      "sha256": "03dcc040a8a72346f8aaf2fc28a0c1c0d082bf76a8d844a424ab92550aca4a9b",
+      "size": 5023,
+      "tail": "ramming.md\",\n    \"status_codes_covered\": [200, 400, 404, 500],\n    \"fixture_count\": 7,\n    \"fixture_names\": [\n      \"api_client\",\n      \"clean_store\",\n      \"existing_resource\",\n      \"valid_payload\",\n      \"invalid_payload\",\n      \"missing_resource_id\",\n      \"forced_error_service\"\n    ],\n    \"recommended_test_files\": [\n      \"tests/conftest.py\",\n      \"tests/test_api_status_codes.py\"\n    ],\n    \"validation_commands\": [\n      \"pytest -q\",\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ],\n    \"closure_requires\": [\n      \"one automated test per required status code\",\n      \"json shape assertions\",\n      \"data mutation assertions for 400 and 404\",\n      \"test-only forced 500 path\",\n      \"persisted runtime evidence\"\n    ],\n    \"actual_validation\": {\n      \"expected_files_gate\": \"passed\",\n      \"pytest\": \"2 passed in 0.05s\",\n      \"findings\": \"ok=true activeFindings=0\",\n      \"integrity\": \"ok=true totalFindings=0\",\n      \"scanner\": \"deferred by project_locked because the active worker session still owns the project lock\"\n    }\n  }\n}\n"
+    },
+    "failures.jsonl": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 1,
+      "mtime": "2026-06-03T18:41:06Z",
+      "path": "workspace/projects/continuity-mixed-pf-008/runtime/failures.jsonl",
+      "sha256": "415d8b4b74fc56d79a86a92f62265e266cfffa5511cf50d10bbbac4b190e8508",
+      "size": 476,
+      "tail": "{\"failure\": {\"blocked_task_ids\": [\"RUNTIME-20260603182417-001\"], \"checkpoint_key\": \"manual-stop-agent-4ce5373f9a\", \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/checkpoints/manual-stop-agent-4ce5373f9a.json\", \"failure_type\": \"manual_stop\", \"session_id\": \"agent-4ce5373f9a\", \"task_id\": \"RUNTIME-20260603182417-001\"}, \"recorded_at\": \"2026-06-03T18:41:06Z\"}\n"
+    },
+    "project_state.json": {
+      "exists": true,
+      "isFile": true,
+      "jsonKeys": [
+        "blocked_tasks",
+        "checkpoints",
+        "completed_tasks",
+        "created_at",
+        "current_task_id",
+        "failed_tasks",
+        "last_preparing_at",
+        "mode",
+        "preparing_session_id",
+        "project_id",
+        "schema_version",
+        "status",
+        "updated_at"
+      ],
+      "lineCount": 21,
+      "mtime": "2026-06-03T18:41:06Z",
+      "path": "workspace/projects/continuity-mixed-pf-008/runtime/project_state.json",
+      "sha256": "2d1b611df38dece83d77dfb2d098c3e97590a163a65a84cde8e59525362bb11c",
+      "size": 581,
+      "tail": "{\n  \"blocked_tasks\": [\n    \"RUNTIME-20260603182417-001\"\n  ],\n  \"checkpoints\": [\n    \"session-preparing-agent-4ce5373f9a\",\n    \"complexity-estimate\",\n    \"manual-stop-agent-4ce5373f9a\"\n  ],\n  \"completed_tasks\": [],\n  \"created_at\": \"2026-06-03T18:23:53.064062+00:00\",\n  \"current_task_id\": null,\n  \"failed_tasks\": [],\n  \"last_preparing_at\": \"2026-06-03T18:23:53.064062+00:00\",\n  \"mode\": \"build\",\n  \"preparing_session_id\": \"agent-4ce5373f9a\",\n  \"project_id\": \"continuity-mixed-pf-008\",\n  \"schema_version\": 1,\n  \"status\": \"stopped\",\n  \"updated_at\": \"2026-06-03T18:41:06.362468+00:00\"\n}\n"
+    },
+    "task_history.jsonl": {
+      "exists": false,
+      "isFile": false,
+      "path": "workspace/projects/continuity-mixed-pf-008/runtime/task_history.jsonl"
+    },
+    "task_queue.json": {
+      "exists": true,
+      "isFile": true,
+      "lineCount": 41,
+      "mtime": "2026-06-03T18:41:06Z",
+      "path": "workspace/projects/continuity-mixed-pf-008/runtime/task_queue.json",
+      "sha256": "8d7465e4ce962155d65e41ffc3b83aec6b38d5f8b48ccee550d48fd7b943ad9b",
+      "size": 1745,
+      "tail": "de pruebas para una API\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  },\n  {\n    \"checkpoint_key\": \"runtime-20260603182417-002-checkpoint\",\n    \"dependencies\": [\n      \"RUNTIME-20260603182417-001\"\n    ],\n    \"expected_files\": [\n      \"docs/mixed_science_programming_case_008_programming.md\"\n    ],\n    \"goal\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_008_programming.md, manten el cambio pequeno, registra evidencia, usa contenido educativo seguro y no modifiques archivos no relacionados.\",\n    \"id\": \"RUNTIME-20260603182417-002\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"priority\": 10,\n    \"status\": \"pending\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Escribe la solucion o plan en docs/mixed_science_programming_case_008_programming.md, manten\",\n    \"validation_commands\": [\n      \"python3 -B -c \\\"from pathlib import Path; missing=[p for p in ['docs/mixed_science_programming_case_008_programming.md'] if not Path(p).is_file()]; assert not missing, missing\\\"\"\n    ]\n  }\n]\n"
+    }
+  },
+  "latestCheckpoint": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "checkpoint_key",
+      "created_at",
+      "payload"
+    ],
+    "lineCount": 15,
+    "mtime": "2026-06-03T18:41:06Z",
+    "path": "workspace/projects/continuity-mixed-pf-008/runtime/checkpoints/manual-stop-agent-4ce5373f9a.json",
+    "sha256": "d76d8980da27549e98d7da22b385f26efce665ec0d58a9525307a0ce4bb8aa9f",
+    "size": 444,
+    "tail": "{\n  \"checkpoint_key\": \"manual-stop-agent-4ce5373f9a\",\n  \"created_at\": \"2026-06-03T18:41:06Z\",\n  \"payload\": {\n    \"active_task_id\": \"RUNTIME-20260603182417-001\",\n    \"blocked_task_ids\": [\n      \"RUNTIME-20260603182417-001\"\n    ],\n    \"previous_current_task_id\": \"RUNTIME-20260603182417-001\",\n    \"previous_status\": \"running\",\n    \"project_slug\": \"continuity-mixed-pf-008\",\n    \"reason\": \"manual_stop\",\n    \"session_id\": \"agent-4ce5373f9a\"\n  }\n}\n"
+  },
+  "latestDirective": {
+    "exists": true,
+    "isFile": true,
+    "jsonKeys": [
+      "directive_type",
+      "generated_at",
+      "operational_directive",
+      "persistence",
+      "rendered_instruction",
+      "repository",
+      "schema_version",
+      "sprint",
+      "task",
+      "task_id",
+      "traceability"
+    ],
+    "lineCount": 366,
+    "mtime": "2026-06-03T18:24:25Z",
+    "path": "workspace/projects/continuity-mixed-pf-008/runtime/directives/RUNTIME-20260603182417-001-20260603T182421Z-e5d0739d730e.json",
+    "sha256": "4254be7ee041b0c62b347c8f03c485a8731a69ddd8a5b03c3b0b0e566103afc4",
+    "size": 26835,
+    "tail": " y criterios de cierre por evidencia.\",\n    \"id\": \"RUNTIME-20260603182417-001\",\n    \"max_retries\": 3,\n    \"mode\": \"build\",\n    \"timeout_seconds\": 900,\n    \"title\": \"Crear una estrategia de pruebas para una API\"\n  },\n  \"task_id\": \"RUNTIME-20260603182417-001\",\n  \"traceability\": {\n    \"checkpoint_key\": \"complexity-estimate\",\n    \"checkpoint_path\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/checkpoints/complexity-estimate.json\",\n    \"checkpoint_source\": \"project_state.checkpoints\",\n    \"context_degraded\": false,\n    \"context_type\": \"directive_context\",\n    \"plan_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/PLANS.md\",\n    \"policy_file\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/AGENTS.md\",\n    \"runtime_dir\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime\",\n    \"runtime_errors\": [],\n    \"source_hash\": \"e5d0739d730e6a3f4042ea96bcf86911ed2238057d4bfb169d55254ce3e6207b\"\n  }\n}\n"
+  },
+  "latestFailure": {
+    "failure": {
+      "blocked_task_ids": [
+        "RUNTIME-20260603182417-001"
+      ],
+      "checkpoint_key": "manual-stop-agent-4ce5373f9a",
+      "checkpoint_path": "/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/checkpoints/manual-stop-agent-4ce5373f9a.json",
+      "failure_type": "manual_stop",
+      "session_id": "agent-4ce5373f9a",
+      "task_id": "RUNTIME-20260603182417-001"
+    },
+    "recorded_at": "2026-06-03T18:41:06Z"
+  },
+  "latestFailureIncludedInClassification": true,
+  "latestHistory": null,
+  "projectDir": "workspace/projects/continuity-mixed-pf-008",
+  "runtimeDir": "workspace/projects/continuity-mixed-pf-008/runtime",
+  "runtimeFailureClassification": {
+    "fatalInfrastructureFailure": false,
+    "fatalMarkers": [],
+    "infrastructureFailure": false,
+    "markers": []
+  },
+  "terminalLog": {
+    "exists": true,
+    "isFile": true,
+    "lineCount": 108,
+    "mtime": "2026-06-03T18:41:03Z",
+    "path": "workspace/projects/continuity-mixed-pf-008/runtime/logs/agent-4ce5373f9a-terminal.log",
+    "sha256": "b718da172cf2a47d8626cc654ebf65e9ef20a22729ff08a36497856d09db8318",
+    "size": 3853,
+    "tail": "ION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/artifacts/observer_findings.json\"\n    }\n  ]\n}\n[control-plane] Herramientas internas (recovery_preview):\n{\n  \"phase\": \"recovery_preview\",\n  \"closureAllowed\": true,\n  \"activeFindings\": 0,\n  \"warnings\": [\n    \"recovery_preview:sniper timed out; continuing\"\n  ],\n  \"blockers\": [],\n  \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/artifacts/tool_invocations/RUNTIME-20260603182417-001-recovery_preview-20260603T184101Z.json\",\n  \"reportPath\": null,\n  \"tool\": null,\n  \"actions\": null,\n  \"ignoredResidue\": null,\n  \"invocations\": [\n    {\n      \"tool\": \"findings\",\n      \"ok\": true,\n      \"statusCode\": 200,\n      \"required\": false,\n      \"artifactPath\": \"/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-mixed-pf-008/runtime/artifacts/observer_findings.json\"\n    },\n    {\n      \"tool\": \"sniper\",\n      \"ok\": false,\n      \"statusCode\": 0,\n      \"required\": false,\n      \"artifactPath\": null\n    }\n  ]\n}\n"
+  }
+}

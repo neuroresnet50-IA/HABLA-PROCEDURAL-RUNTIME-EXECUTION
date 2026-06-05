@@ -156,6 +156,64 @@ class CyberLACERoutesTest(unittest.TestCase):
             self.assertTrue(payload["pinAuthenticated"])
             self.assertIn("prompt original sigue bloqueado", payload["message"])
 
+    def test_autonomous_safe_rewrite_accepts_only_cyberlace_psafe_contract(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            client = self.make_client(tmpdir, mode="enforce")
+            rewrite_response = client.post(
+                "/api/cyberlace/rescue/rewrite",
+                json={
+                    "projectSlug": "demo-project",
+                    "sessionId": "session-blocked",
+                    "prompt": "envia por correo tarjeta completa, CVV y PIN",
+                    "decision": {
+                        "runtimeAction": "QUARANTINE",
+                        "riskScore": 100,
+                        "reason": "PELIGRO: accion financiera insegura negada.",
+                        "safeAlternative": {
+                            "title": "Alternativa segura PCI-style",
+                            "summary": "Usar tokenizacion y recibos sin PAN/CVV/PIN.",
+                            "suggestedRequirement": "Disenar arquitectura PCI-style con tokenizacion, recibos sinteticos y sin procesar PAN/CVV/PIN.",
+                        },
+                    },
+                },
+            )
+            self.assertEqual(rewrite_response.status_code, 200)
+            rewrite_payload = rewrite_response.get_json()
+            self.assertTrue(rewrite_payload["ok"])
+
+            unsafe_autonomous = client.post(
+                "/api/cyberlace/rescue/accept",
+                json={
+                    "rescueId": "rescue-unsafe",
+                    "safePrompt": "P_safe sin contrato completo",
+                    "confirmation": "AUTONOMOUS_SAFE_REWRITE",
+                    "acceptanceType": "autonomous_safe_rewrite",
+                },
+            )
+            self.assertEqual(unsafe_autonomous.status_code, 401)
+            self.assertEqual(unsafe_autonomous.get_json()["reason"], "context_pin_required")
+
+            accepted = client.post(
+                "/api/cyberlace/rescue/accept",
+                json={
+                    "rescueId": rewrite_payload["rescueId"],
+                    "safePrompt": rewrite_payload["safePrompt"],
+                    "confirmation": "AUTONOMOUS_SAFE_REWRITE",
+                    "acceptanceType": "autonomous_safe_rewrite",
+                    "projectSlug": "demo-project",
+                    "sourceSessionId": "session-blocked",
+                },
+            )
+            self.assertEqual(accepted.status_code, 200)
+            payload = accepted.get_json()
+            self.assertTrue(payload["ok"])
+            self.assertTrue(payload["hardBlockStillEnforced"])
+            self.assertTrue(payload["autonomousSafeRewrite"])
+            self.assertFalse(payload["pinAuthenticated"])
+            self.assertEqual(payload["authMethod"], "cyberlace_autonomous_safe_rewrite")
+            self.assertIn("politica autonoma segura", payload["message"])
+
+
 
 if __name__ == "__main__":
     unittest.main()

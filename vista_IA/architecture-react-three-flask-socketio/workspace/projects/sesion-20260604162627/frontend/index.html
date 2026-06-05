@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Astro Laberinto 3D</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="game-shell" aria-label="Astro Laberinto 3D">
+      <section class="hud" aria-label="Panel de estado">
+        <div>
+          <span class="label">Tiempo</span>
+          <strong id="time">00:00</strong>
+        </div>
+        <div>
+          <span class="label">Energia</span>
+          <strong id="energy">100</strong>
+        </div>
+        <div>
+          <span class="label">Velocidad</span>
+          <strong id="speed-value">0</strong>
+        </div>
+        <div>
+          <span class="label">Distancia</span>
+          <strong id="distance-value">0 m</strong>
+        </div>
+        <div>
+          <span class="label">Checkpoints</span>
+          <strong id="checkpoints">0/3</strong>
+        </div>
+        <div>
+          <span class="label">Estado</span>
+          <strong id="status">Explorando</strong>
+        </div>
+        <div>
+          <span class="label">Evento</span>
+          <strong id="event-value">Inicio</strong>
+        </div>
+      </section>
+
+      <canvas
+        id="world"
+        width="1280"
+        height="720"
+        data-render-mode="fallback-2d"
+        aria-label="Escena jugable de laberinto espacial"
+      ></canvas>
+
+      <section class="control-dock" aria-label="Controles">
+        <div class="mission">
+          <h1>Astro Laberinto 3D</h1>
+          <p>Conduce la esfera hasta el portal final, activa checkpoints y conserva energia.</p>
+        </div>
+        <div class="keys" aria-label="Teclas disponibles">
+          <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>
+          <span>o</span>
+          <kbd>↑</kbd><kbd>←</kbd><kbd>↓</kbd><kbd>→</kbd>
+          <button id="restart" type="button">Reiniciar</button>
+        </div>
+      </section>
+    </main>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

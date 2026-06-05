@@ -7700,8 +7700,17 @@ def continue_agent_project_with_cyberlace_safe_prompt(project_id: str):
     safe_prompt = str(payload.get("safePrompt") or payload.get("safe_prompt") or payload.get("requirement") or "").strip()
     if not safe_prompt:
         return jsonify({"ok": False, "error": "safe_prompt_required", "message": "P_safe es obligatorio para continuar."}), 400
-    if not bool(payload.get("pinAuthenticated")):
-        return jsonify({"ok": False, "error": "pin_authentication_required", "message": "CyberLACE requiere PIN autenticado antes de continuar."}), 401
+    autonomous_safe_rewrite = bool(payload.get("autonomousSafeRewrite") or payload.get("autonomous_safe_rewrite"))
+    safe_prompt_has_contract = all(
+        marker in safe_prompt.lower()
+        for marker in (
+            "[prompt seguro generado por cyberlace]",
+            "no ejecutar el prompt original bloqueado",
+            "reglas de continuacion segura",
+        )
+    )
+    if not bool(payload.get("pinAuthenticated")) and not (autonomous_safe_rewrite and bool(payload.get("hardBlockStillEnforced")) and safe_prompt_has_contract):
+        return jsonify({"ok": False, "error": "pin_authentication_required", "message": "CyberLACE requiere PIN autenticado o politica autonoma P_safe antes de continuar."}), 401
 
     try:
         runtime_mode = normalize_agent_runtime_mode(payload.get("runtimeMode") or payload.get("mode") or "build")
@@ -7747,7 +7756,7 @@ def continue_agent_project_with_cyberlace_safe_prompt(project_id: str):
             "status": "running",
             "projectSlug": project_slug,
             "sessionId": session.get("sessionId"),
-            "message": "P_safe autenticado con PIN; continuacion segura iniciada sobre el mismo proyecto.",
+            "message": "P_safe autorizado por politica autonoma segura; continuacion segura iniciada sobre el mismo proyecto." if autonomous_safe_rewrite else "P_safe autenticado con PIN; continuacion segura iniciada sobre el mismo proyecto.",
             "rescueId": str(payload.get("rescueId") or payload.get("rescue_id") or ""),
             "retryableTaskId": retryable_task.get("id") if isinstance(retryable_task, dict) else "",
         },
@@ -7761,7 +7770,8 @@ def continue_agent_project_with_cyberlace_safe_prompt(project_id: str):
             "cleanup": cleanup_result,
             "projects": projects,
             "hardBlockStillEnforced": True,
-            "pinAuthenticated": True,
+            "pinAuthenticated": not autonomous_safe_rewrite,
+            "autonomousSafeRewrite": autonomous_safe_rewrite,
         }
     )
 
@@ -7838,6 +7848,8 @@ def start_agent_session():
 
     subagent_plan = normalize_subagent_plan(payload.get("subagentPlan") or payload.get("subagents"))
     prepared_requirement = attach_subagent_plan_to_requirement(requirement, subagent_plan)
+    source = str(payload.get("source") or "").strip()
+    control_plane_repair = bool(payload.get("controlPlaneRepair")) or source == "closure_certificate_repair"
     session = agent_runtime.start_session(
         requirement=prepared_requirement,
         project_name=project_name,
@@ -7845,6 +7857,8 @@ def start_agent_session():
         bootstrap=bootstrap,
         ensure_new_project=ensure_new_project,
         mode=runtime_mode,
+        control_plane_repair=control_plane_repair,
+        control_plane_repair_source=source,
     )
     if subagent_plan:
         socketio.emit(

@@ -1,44 +1,199 @@
 {
   "checkpoint_key": "complexity-estimate",
-  "created_at": "2026-05-28T16:08:54Z",
+  "created_at": "2026-06-04T02:06:48Z",
   "payload": {
     "estimate": {
-      "bootstrap_tasks": 4,
+      "audit_version": "complexity-audit-kernel-v1",
+      "bootstrap_tasks": 6,
+      "complexity_audit": {
+        "audit_version": "complexity-audit-kernel-v1",
+        "complexity_score": 62,
+        "confidence": 92,
+        "difficulty": "dificil",
+        "difficulty_label": "Dificil",
+        "early_exit_allowed": true,
+        "early_exit_mode": "allowed",
+        "estimated_minutes": 120,
+        "generated_at": "2026-06-04T02:06:47.761849Z",
+        "lace_max_cycles": 7,
+        "lace_min_cycles": 3,
+        "lace_target_cycles": 5,
+        "launch_mode": "existing",
+        "layer_scores": {
+          "blast_radius": 24,
+          "evidence": 28,
+          "history": 0,
+          "operational_risk": 20,
+          "project": 4,
+          "prompt": 74,
+          "uncertainty": 0
+        },
+        "layers": {
+          "blast_radius": {
+            "reasons": [
+              "expected_files=0"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 24
+          },
+          "evidence": {
+            "reasons": [
+              "validation_commands=0",
+              "evidencia requerida: sandbox, scanner"
+            ],
+            "required_tools": [
+              "sandbox",
+              "scanner"
+            ],
+            "risk_flags": [
+              "requires_sandbox",
+              "requires_scanner"
+            ],
+            "score": 28
+          },
+          "history": {
+            "reasons": [
+              "sin fallos historicos relevantes"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          },
+          "operational_risk": {
+            "reasons": [
+              "riesgo operativo: lace, runtime"
+            ],
+            "required_tools": [
+              "findings",
+              "integrity"
+            ],
+            "risk_flags": [
+              "lace",
+              "runtime"
+            ],
+            "score": 20
+          },
+          "project": {
+            "file_count": 4,
+            "observed": true,
+            "reasons": [
+              "archivos materiales estimados=4",
+              "LACE.md presente"
+            ],
+            "required_tools": [],
+            "risk_flags": [
+              "lace_policy"
+            ],
+            "score": 4
+          },
+          "prompt": {
+            "reasons": [
+              "prompt palabras=247",
+              "capas detectadas en prompt: frontend, runtime, lace, scanner, sandbox, three_d, tests, refactor"
+            ],
+            "required_tools": [
+              "pytest",
+              "sandbox",
+              "scanner"
+            ],
+            "risk_flags": [
+              "lace",
+              "runtime",
+              "three_d"
+            ],
+            "score": 74
+          },
+          "uncertainty": {
+            "reasons": [
+              "incertidumbre baja"
+            ],
+            "required_tools": [],
+            "risk_flags": [],
+            "score": 0
+          }
+        },
+        "max_agents": 6,
+        "project_slug": "continuity-code-pf-003",
+        "reasoning": [
+          "prompt palabras=247",
+          "capas detectadas en prompt: frontend, runtime, lace, scanner, sandbox, three_d, tests, refactor",
+          "archivos materiales estimados=4",
+          "LACE.md presente",
+          "riesgo operativo: lace, runtime",
+          "expected_files=0",
+          "validation_commands=0",
+          "evidencia requerida: sandbox, scanner",
+          "sin fallos historicos relevantes",
+          "incertidumbre baja"
+        ],
+        "recommended_agents": 5,
+        "required_tools": [
+          "findings",
+          "integrity",
+          "pytest",
+          "sandbox",
+          "scanner"
+        ],
+        "risk_flags": [
+          "lace",
+          "lace_policy",
+          "runtime",
+          "three_d"
+        ],
+        "runtime_mode": "build",
+        "schema_version": 1
+      },
       "confidence": 88,
-      "difficulty": "medio",
-      "difficulty_label": "Medio",
+      "difficulty": "dificil",
+      "difficulty_label": "Dificil",
+      "early_exit_allowed": true,
       "estimate_type": "project_complexity_budget",
-      "generated_at": "2026-05-28T16:08:54.460049Z",
+      "estimated_minutes": 120,
+      "generated_at": "2026-06-04T02:06:46.620971Z",
+      "lace_max_cycles": 7,
+      "lace_min_cycles": 3,
+      "lace_target_cycles": 5,
       "launch_mode": "existing",
       "max_agents": 8,
       "max_lace_cycles": 10,
       "max_retries": 3,
-      "max_tasks": 8,
+      "max_tasks": 22,
       "min_lace_cycles": 2,
       "project_file_count": 4,
       "project_slug": "continuity-code-pf-003",
-      "prompt_word_count": 36,
+      "prompt_word_count": 247,
+      "quality_threshold": 85,
       "reasons": [
         "modo runtime solicitado: build",
-        "prompt medio: 36 palabras",
+        "prompt largo: 247 palabras",
         "archivos estimados del proyecto: 4",
+        "marcadores de trabajo puntual/minimo",
+        "toca runtime/estado persistido",
         "requiere evidencia auditable",
-        "incluye backend/API"
+        "declara pruebas o validacion",
+        "incluye capa visual/frontend",
+        "incluye 3D/WebGL",
+        "multiples capas tecnicas: 2"
       ],
-      "recommended_agents": 2,
-      "recommended_lace_cycles": 3,
-      "recovery_budget": 5,
+      "recommended_agents": 5,
+      "recommended_lace_cycles": 6,
+      "recovery_budget": 8,
       "required_tools": [
         "findings",
         "integrity",
         "pytest",
+        "sandbox",
         "scanner"
       ],
-      "risk_flags": [],
+      "risk_flags": [
+        "estado_persistido",
+        "visual_3d"
+      ],
       "runtime_mode": "build",
       "schema_version": 1,
-      "score": 31,
-      "timeout_seconds": 900
+      "score": 62,
+      "timeout_seconds": 1800
     },
     "reason": "complexity_estimate_created"
   }

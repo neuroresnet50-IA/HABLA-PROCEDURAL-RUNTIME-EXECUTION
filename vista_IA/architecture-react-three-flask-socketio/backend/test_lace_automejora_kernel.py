@@ -78,8 +78,9 @@ def prepare_project(root: Path, *, mode: str = "build", recommended: int = 8) ->
     state["failed_tasks"] = []
     state["blocked_tasks"] = []
     store.save_project_state(state)
+    difficulty = "facil" if recommended <= 2 else "medio" if recommended <= 4 else "dificil" if recommended <= 7 else "extradificil"
     (runtime_dir / "complexity_estimate.json").write_text(
-        json.dumps({"difficulty": "Extradificil", "recommended_lace_cycles": recommended, "max_tasks": 32}),
+        json.dumps({"difficulty": difficulty, "recommended_lace_cycles": recommended, "max_tasks": 32}),
         encoding="utf-8",
     )
     (project / "LACE_LOG.md").write_text(valid_lace_log(0, max(recommended, 1)), encoding="utf-8")
@@ -175,13 +176,43 @@ def seed_canonical_cycle(store: StateStore, project: Path, i: int, *, doc: bool 
         store.save_checkpoint(f"lace-cycle-{i:03d}-checkpoint", {"task_result": result, "validation": {"task_result": result}})
 
 
+def seed_clean_lace_quality_gates(project: Path) -> None:
+    artifacts = project / "runtime" / "artifacts"
+    artifacts.mkdir(parents=True, exist_ok=True)
+    (artifacts / "final_code_scanner_report.json").write_text(
+        json.dumps({
+            "scanner": {"visual_playback": "magnifier_line_by_line_to_last_line", "scrolls_to_last_line": True},
+            "validation": {"passed": True, "blockers": []},
+        }),
+        encoding="utf-8",
+    )
+    (artifacts / "file_integrity_report.json").write_text(
+        json.dumps({"summary": {"totalFindings": 0}, "validation": {"passed": True, "blockers": []}}),
+        encoding="utf-8",
+    )
+    (artifacts / "observer_findings.json").write_text(
+        json.dumps({"summary": {"activeFindings": 0}}),
+        encoding="utf-8",
+    )
+    (project / "runtime" / "sandbox.json").write_text(
+        json.dumps({
+            "running": True,
+            "ready": True,
+            "embedUrl": "http://127.0.0.1:5600",
+            "healthcheck": {"ready": True, "statusCode": 200},
+        }),
+        encoding="utf-8",
+    )
+
+
 class LaceAutomejoraKernelTest(unittest.TestCase):
     def test_01_build_requiere_lace(self):
         with TemporaryDirectory() as tmp:
             runtime, project, _ = prepare_project(Path(tmp), mode="build", recommended=8)
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=False)
             self.assertEqual(gate["status"], "blocked")
-            self.assertEqual(gate["required_cycles"], 8)
+            self.assertEqual(gate["required_cycles"], 5)
+            self.assertEqual(gate["max_cycles"], 8)
             self.assertEqual(gate["completed_cycles"], 0)
 
     def test_02_medium_requiere_lace(self):
@@ -212,8 +243,8 @@ class LaceAutomejoraKernelTest(unittest.TestCase):
 
     def test_06_lace_log_no_canonico(self):
         with TemporaryDirectory() as tmp:
-            runtime, project, _ = prepare_project(Path(tmp), mode="build", recommended=2)
-            (project / "LACE_LOG.md").write_text(valid_lace_log(2, 2), encoding="utf-8")
+            runtime, project, _ = prepare_project(Path(tmp), mode="build", recommended=4)
+            (project / "LACE_LOG.md").write_text(valid_lace_log(2, 4), encoding="utf-8")
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=False)
             self.assertEqual(gate["completed_cycles"], 0)
             self.assertTrue(gate["cycle_evidence"]["1"]["lace_log_only_valid"])
@@ -224,10 +255,10 @@ class LaceAutomejoraKernelTest(unittest.TestCase):
             seed_canonical_cycle(store, project, 1)
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=True)
             self.assertEqual(gate["status"], "enqueued")
-            self.assertEqual(gate["missing_cycles"], [2, 3])
+            self.assertEqual(gate["missing_cycles"], [2])
             ids = [task["id"] for task in TaskQueue(store).list()]
             self.assertTrue(any(task_id.endswith("-002") for task_id in ids if task_id.startswith("LACE-")))
-            self.assertTrue(any(task_id.endswith("-003") for task_id in ids if task_id.startswith("LACE-")))
+            self.assertFalse(any(task_id.endswith("-003") for task_id in ids if task_id.startswith("LACE-")))
 
     def test_08_doc_ciclo_requerido(self):
         with TemporaryDirectory() as tmp:
@@ -262,35 +293,33 @@ class LaceAutomejoraKernelTest(unittest.TestCase):
             runtime, project, store = prepare_project(Path(tmp), mode="build", recommended=2)
             seed_canonical_cycle(store, project, 1)
             seed_canonical_cycle(store, project, 2)
+            seed_clean_lace_quality_gates(project)
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=False)
             self.assertEqual(gate["status"], "clear")
             self.assertEqual(gate["closure_status"], "ok")
 
     def test_13_early_exit_justificada(self):
         with TemporaryDirectory() as tmp:
-            runtime, project, store = prepare_project(Path(tmp), mode="build", recommended=8)
+            runtime, project, store = prepare_project(Path(tmp), mode="build", recommended=4)
             for cycle in range(1, 4):
                 seed_canonical_cycle(store, project, cycle)
-            artifacts = project / "runtime" / "artifacts"
-            artifacts.mkdir(parents=True, exist_ok=True)
-            (artifacts / "final_code_scanner_report.json").write_text(json.dumps({"scanner": {"visual_playback": "magnifier_line_by_line_to_last_line", "scrolls_to_last_line": True}, "validation": {"passed": True, "blockers": []}}), encoding="utf-8")
-            (artifacts / "file_integrity_report.json").write_text(json.dumps({"summary": {"totalFindings": 0}, "validation": {"passed": True, "blockers": []}}), encoding="utf-8")
-            (artifacts / "observer_findings.json").write_text(json.dumps({"summary": {"activeFindings": 0}}), encoding="utf-8")
-            (project / "runtime" / "sandbox.json").write_text(json.dumps({"running": True, "ready": True, "embedUrl": "http://127.0.0.1:5600", "healthcheck": {"ready": True, "statusCode": 200}}), encoding="utf-8")
+            seed_clean_lace_quality_gates(project)
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=False)
             self.assertEqual(gate["status"], "clear")
             self.assertTrue(gate["adaptive_lace"]["early_exit"])
             self.assertEqual(gate["required_cycles"], 3)
+            self.assertEqual(gate["max_cycles"], 4)
 
     def test_14_early_exit_sin_justificacion_bloquea(self):
         with TemporaryDirectory() as tmp:
-            runtime, project, store = prepare_project(Path(tmp), mode="build", recommended=8)
+            runtime, project, store = prepare_project(Path(tmp), mode="build", recommended=4)
             for cycle in range(1, 4):
                 seed_canonical_cycle(store, project, cycle)
             gate = runtime._apply_lace_closure_gate(runtime_dir=project / "runtime", workspace=project, runtime_mode="build", session_id=None, allow_enqueue=False)
             self.assertEqual(gate["status"], "blocked")
-            self.assertEqual(gate["required_cycles"], 8)
+            self.assertEqual(gate["required_cycles"], 4)
             self.assertEqual(gate["completed_cycles"], 3)
+            self.assertFalse(gate["adaptive_lace"]["early_exit"])
 
 
 if __name__ == "__main__":

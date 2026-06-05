@@ -40,6 +40,7 @@ _CONFIRMATIONS = {
     "SAFE_REWRITE",
     "HUMAN_REVIEW",
     "EDIT_SAFE_PROMPT",
+    "AUTONOMOUS_SAFE_REWRITE",
 }
 
 _DEFAULT_LOCAL_RESCUE_PIN = "7319"
@@ -179,6 +180,26 @@ def _human_explanation(kind: str, action: str) -> Dict[str, str]:
     }
 
 
+def _safe_prompt_has_cyberlace_contract(safe_prompt: str) -> bool:
+    normalized = str(safe_prompt or "").lower()
+    required_markers = (
+        "[prompt seguro generado por cyberlace]",
+        "no ejecutar el prompt original bloqueado",
+        "reglas de continuacion segura",
+    )
+    return all(marker in normalized for marker in required_markers)
+
+
+def _acceptance_is_autonomous_safe_rewrite(acceptance_type: str, confirmation: str, safe_prompt: str) -> bool:
+    acceptance = str(acceptance_type or "").strip().lower()
+    confirm = str(confirmation or "").strip().upper()
+    return (
+        acceptance == "autonomous_safe_rewrite"
+        and confirm in {"SAFE_REWRITE", "AUTONOMOUS_SAFE_REWRITE", "CONTINUAR_SEGURO"}
+        and _safe_prompt_has_cyberlace_contract(safe_prompt)
+    )
+
+
 def _build_safe_prompt(decision: Mapping[str, Any], project_slug: str, source_session_id: str) -> str:
     safe_alt = _extract_safe_alternative(decision)
     candidate = (
@@ -308,31 +329,34 @@ def record_cyberlace_rescue_acceptance(
         }
         _append_jsonl(_evidence_path(), {"recordType": "cyberlace_safe_rewrite_rejected", "timestamp": _utc_now(), **result})
         return result
-    if not str(rescue_pin or "").strip():
-        result = {
-            "ok": False,
-            "status": "blocked",
-            "reason": "context_pin_required",
-            "message": "CyberLACE requiere PIN de contexto para continuar con P_safe. El prompt original sigue bloqueado.",
-            "hardBlockStillEnforced": True,
-            "pinAuthenticated": False,
-            "authMethod": "cyberlace_context_pin",
-        }
-        _append_jsonl(_evidence_path(), {"recordType": "cyberlace_safe_rewrite_rejected", "timestamp": _utc_now(), **result})
-        return result
-    if not _validate_rescue_pin(rescue_pin):
-        result = {
-            "ok": False,
-            "status": "blocked",
-            "reason": "context_pin_invalid",
-            "message": "PIN de contexto invalido. CyberLACE no continuara con P_safe y el prompt original sigue bloqueado.",
-            "hardBlockStillEnforced": True,
-            "pinAuthenticated": False,
-            "authMethod": "cyberlace_context_pin",
-        }
-        _append_jsonl(_evidence_path(), {"recordType": "cyberlace_safe_rewrite_rejected", "timestamp": _utc_now(), **result})
-        return result
+    autonomous_safe_rewrite = _acceptance_is_autonomous_safe_rewrite(acceptance_type, confirmation, safe_prompt)
+    if not autonomous_safe_rewrite:
+        if not str(rescue_pin or "").strip():
+            result = {
+                "ok": False,
+                "status": "blocked",
+                "reason": "context_pin_required",
+                "message": "CyberLACE requiere PIN de contexto para continuar con P_safe. El prompt original sigue bloqueado.",
+                "hardBlockStillEnforced": True,
+                "pinAuthenticated": False,
+                "authMethod": "cyberlace_context_pin",
+            }
+            _append_jsonl(_evidence_path(), {"recordType": "cyberlace_safe_rewrite_rejected", "timestamp": _utc_now(), **result})
+            return result
+        if not _validate_rescue_pin(rescue_pin):
+            result = {
+                "ok": False,
+                "status": "blocked",
+                "reason": "context_pin_invalid",
+                "message": "PIN de contexto invalido. CyberLACE no continuara con P_safe y el prompt original sigue bloqueado.",
+                "hardBlockStillEnforced": True,
+                "pinAuthenticated": False,
+                "authMethod": "cyberlace_context_pin",
+            }
+            _append_jsonl(_evidence_path(), {"recordType": "cyberlace_safe_rewrite_rejected", "timestamp": _utc_now(), **result})
+            return result
 
+    auth_method = "cyberlace_autonomous_safe_rewrite" if autonomous_safe_rewrite else "cyberlace_context_pin"
     record = {
         "recordType": "cyberlace_safe_rewrite_accepted",
         "timestamp": _utc_now(),
@@ -345,16 +369,22 @@ def record_cyberlace_rescue_acceptance(
         "safePrompt": safe_prompt,
         "hardBlockStillEnforced": True,
         "confirmation": confirmation,
-        "pinAuthenticated": True,
-        "authMethod": "cyberlace_context_pin",
+        "pinAuthenticated": not autonomous_safe_rewrite,
+        "autonomousSafeRewrite": autonomous_safe_rewrite,
+        "authMethod": auth_method,
     }
     _append_jsonl(_evidence_path(), record)
     return {
         "ok": True,
         "status": "accepted",
-        "message": "P_safe confirmado con PIN de contexto. El prompt original sigue bloqueado y solo se puede ejecutar la version segura.",
+        "message": (
+            "P_safe confirmado por politica autonoma segura. El prompt original sigue bloqueado y solo se ejecuta la version segura."
+            if autonomous_safe_rewrite
+            else "P_safe confirmado con PIN de contexto. El prompt original sigue bloqueado y solo se puede ejecutar la version segura."
+        ),
         "hardBlockStillEnforced": True,
-        "pinAuthenticated": True,
-        "authMethod": "cyberlace_context_pin",
+        "pinAuthenticated": not autonomous_safe_rewrite,
+        "autonomousSafeRewrite": autonomous_safe_rewrite,
+        "authMethod": auth_method,
         **record,
     }

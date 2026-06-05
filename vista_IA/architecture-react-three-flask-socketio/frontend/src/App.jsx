@@ -57,22 +57,45 @@ import {
 } from "./appUtils.js";
 
 const HABLA_AUTH_TOKEN_STORAGE_KEY = "hablaAuthToken";
+const HABLA_AUTONOMOUS_MODE_STORAGE_KEY = "hablaAutonomousMode";
 
 function readHablaAuthToken() {
   try {
-    return window.localStorage.getItem(HABLA_AUTH_TOKEN_STORAGE_KEY) || "";
+    return window.localStorage.getItem(HABLA_AUTH_TOKEN_STORAGE_KEY) || window.sessionStorage.getItem(HABLA_AUTH_TOKEN_STORAGE_KEY) || "";
   } catch {
     return "";
   }
 }
 
+function readAutonomousModePreference() {
+  try {
+    return window.localStorage.getItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeAutonomousModePreference(enabled) {
+  try {
+    if (enabled) {
+      window.localStorage.setItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY, "1");
+    } else {
+      window.localStorage.removeItem(HABLA_AUTONOMOUS_MODE_STORAGE_KEY);
+    }
+  } catch {
+    // The visual autonomy switch still works in-memory if storage is unavailable.
+  }
+}
+
 export default function App() {
+  const initialAutonomousMode = readAutonomousModePreference();
   const socketRef = useRef(null);
-  const autonomousModeRef = useRef(false);
+  const autonomousModeRef = useRef(initialAutonomousMode);
   const harnessTrainingAutomationRef = useRef({ active: false, autoAcceptSafeAlternative: false });
   const cyberlaceAutoAcceptKeyRef = useRef("");
+  const cyberlaceAutonomousRecoveryKeyRef = useRef("");
   const cyberlaceMathBoardRef = useRef(null);
-  const observerPinnedRef = useRef(false);
+  const observerPinnedRef = useRef(initialAutonomousMode);
   const agentPresenceModeTimerRef = useRef(null);
   const agentPresenceBurstTimerRef = useRef(null);
   const agentPresenceActionTimerRef = useRef(null);
@@ -97,7 +120,7 @@ export default function App() {
   const [agentPresenceActive, setAgentPresenceActive] = useState(false);
   const [agentPresenceStep, setAgentPresenceStep] = useState(0);
   const [agentPresenceMode, setAgentPresenceMode] = useState("");
-  const [autonomousMode, setAutonomousMode] = useState(false);
+  const [autonomousMode, setAutonomousMode] = useState(initialAutonomousMode);
   const [observerStatus, setObserverStatus] = useState(null);
   const [observerTimeline, setObserverTimeline] = useState([]);
   const [observerBehaviorTree, setObserverBehaviorTree] = useState(null);
@@ -413,7 +436,7 @@ export default function App() {
 
   async function continueCyberlaceSafeExecution(alert, accepted, safePrompt, acceptanceType) {
     const projectSlug = String(alert?.projectSlug || "").trim();
-    if (!projectSlug || acceptanceType !== "continue_safe") return null;
+    if (!projectSlug || !["continue_safe", "autonomous_safe_rewrite"].includes(acceptanceType)) return null;
     const response = await fetch(`${SOCKET_URL}/api/agent/projects/${encodeURIComponent(projectSlug)}/cyberlace-safe-continue`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -422,6 +445,7 @@ export default function App() {
         rescueId: accepted?.rescueId || alert?.safeRewrite?.rescueId || "",
         sourceSessionId: alert?.sessionId || accepted?.sourceSessionId || "",
         pinAuthenticated: Boolean(accepted?.pinAuthenticated),
+        autonomousSafeRewrite: Boolean(accepted?.autonomousSafeRewrite),
         hardBlockStillEnforced: true,
         runtimeMode: "build",
         forceClean: true,
@@ -438,6 +462,7 @@ export default function App() {
     const automation = harnessTrainingAutomationRef.current || {};
     const auto = options.auto ?? Boolean(automation.active && automation.autoAcceptSafeAlternative);
     const acceptanceType = options.acceptanceType || "continue_safe";
+    const autonomousSafeRewrite = acceptanceType === "autonomous_safe_rewrite";
     const alert = cyberlaceBlockingAlert;
     if (!alert) return;
     let workingAlert = alert;
@@ -467,9 +492,9 @@ export default function App() {
           safePrompt,
           projectSlug: alert.projectSlug,
           sourceSessionId: alert.sessionId,
-          confirmation: acceptanceType === "human_review" ? "HUMAN_REVIEW" : acceptanceType === "manual_edit" ? "EDIT_SAFE_PROMPT" : "CONTINUAR_SEGURO",
+          confirmation: autonomousSafeRewrite ? "AUTONOMOUS_SAFE_REWRITE" : acceptanceType === "human_review" ? "HUMAN_REVIEW" : acceptanceType === "manual_edit" ? "EDIT_SAFE_PROMPT" : "CONTINUAR_SEGURO",
           acceptanceType,
-          rescuePin: cyberlaceRescuePin,
+          rescuePin: autonomousSafeRewrite ? "" : cyberlaceRescuePin,
         }),
       });
       const accepted = await response.json().catch(() => ({}));
@@ -484,7 +509,7 @@ export default function App() {
       }
       const continuation = await continueCyberlaceSafeExecution(alert, accepted, safePrompt, acceptanceType);
       if (continuation?.session?.sessionId) {
-        setProjectActionStatus(`CyberLACE inicio continuacion segura con P_safe: ${continuation.session.sessionId}.`);
+        setProjectActionStatus(`${autonomousSafeRewrite ? "Autonomous Recovery Kernel" : "CyberLACE"} inicio continuacion segura con P_safe: ${continuation.session.sessionId}.`);
         setCyberlaceRescuePin("");
         setCyberlaceBlockingAlert(null);
         if (!auto) {
@@ -517,12 +542,16 @@ export default function App() {
   function syncObserverStatus(nextObserver) {
     if (!nextObserver || typeof nextObserver !== "object") return;
     setObserverStatus(nextObserver);
-    observerPinnedRef.current = Boolean(nextObserver.humanPinned);
+    observerPinnedRef.current = Boolean(nextObserver.humanPinned) || autonomousModeRef.current;
     if (nextObserver.enabled && nextObserver.humanPinned) {
       autonomousModeRef.current = true;
+      observerPinnedRef.current = true;
+      writeAutonomousModePreference(true);
       setAutonomousMode(true);
-    } else if (nextObserver.enabled === false && !nextObserver.humanPinned) {
+    } else if (nextObserver.enabled === false && !nextObserver.humanPinned && !autonomousModeRef.current) {
       autonomousModeRef.current = false;
+      observerPinnedRef.current = false;
+      writeAutonomousModePreference(false);
       setAutonomousMode(false);
     }
     if (Array.isArray(nextObserver.timeline)) {
@@ -736,6 +765,7 @@ export default function App() {
       const sourceLabel = source === "keyboard" ? "tecla A" : "boton Modo autonomo";
       autonomousModeRef.current = next;
       observerPinnedRef.current = next;
+      writeAutonomousModePreference(next);
       socketRef.current?.emit("observer:enabled", {
         enabled: next,
         source: "human",
@@ -772,6 +802,7 @@ export default function App() {
     }
     autonomousModeRef.current = false;
     observerPinnedRef.current = false;
+    writeAutonomousModePreference(false);
     setAutonomousMode(false);
     clearAgentPresenceTimers();
     setAgentPresenceActive(false);
@@ -882,6 +913,25 @@ export default function App() {
   }, [cyberlaceBlockingAlert, harnessTrainingAutomationState]);
 
   useEffect(() => {
+    if (!autonomousMode || !cyberlaceBlockingAlert?.safeRewrite?.rescueId) return undefined;
+    if (!cyberlaceBlockingAlert?.safeAlternative?.suggestedRequirement) return undefined;
+    if (cyberlaceSafeRewriteBusy) return undefined;
+    const recoveryKey = [
+      cyberlaceBlockingAlert.sessionId || "session",
+      cyberlaceBlockingAlert.projectSlug || "project",
+      cyberlaceBlockingAlert.timestamp || "time",
+      cyberlaceBlockingAlert.safeRewrite.rescueId || "rescue",
+    ].join("|");
+    if (cyberlaceAutonomousRecoveryKeyRef.current === recoveryKey) return undefined;
+    cyberlaceAutonomousRecoveryKeyRef.current = recoveryKey;
+    setProjectActionStatus("Autonomous Recovery Kernel: CyberLACE genero P_safe; continuacion segura automatica en preparacion.");
+    const timer = window.setTimeout(() => {
+      void acceptCyberlaceSafeAlternative({ auto: true, acceptanceType: "autonomous_safe_rewrite" });
+    }, 900);
+    return () => window.clearTimeout(timer);
+  }, [autonomousMode, cyberlaceBlockingAlert?.timestamp, cyberlaceBlockingAlert?.safeRewrite?.rescueId, cyberlaceSafeRewriteBusy]);
+
+  useEffect(() => {
     const socket = io(SOCKET_URL, {
       transports: ["polling"],
       upgrade: false,
@@ -892,6 +942,14 @@ export default function App() {
       setConnected(true);
       socket.emit("architecture:request");
       socket.emit("reverse:request");
+      if (autonomousModeRef.current) {
+        socket.emit("observer:enabled", {
+          enabled: true,
+          source: "human",
+          allowIdle: true,
+          reason: "Modo autonomo restaurado por preferencia humana.",
+        });
+      }
       loadObserverStatus();
       loadAgentProjects({ silent: true });
     });
@@ -978,22 +1036,24 @@ export default function App() {
       }
       if (payload.op === "observer_status") {
         setObserverStatus((current) => ({ ...(current || {}), enabled: payload.enabled, state: payload.state }));
-        if (payload.enabled === false && !payload.observer?.humanPinned) {
+        if (payload.enabled === false && !payload.observer?.humanPinned && !autonomousModeRef.current) {
           clearAgentPresenceTimers();
           setAgentPresenceActive(false);
           setAgentPresenceMode("");
           autonomousModeRef.current = false;
           observerPinnedRef.current = false;
+          writeAutonomousModePreference(false);
           setAutonomousMode(false);
         }
       }
       if (payload.op === "observer_auto_disabled") {
-        if (!payload.observer?.humanPinned) {
+        if (!payload.observer?.humanPinned && !autonomousModeRef.current) {
           clearAgentPresenceTimers();
           setAgentPresenceActive(false);
           setAgentPresenceMode("");
           autonomousModeRef.current = false;
           observerPinnedRef.current = false;
+          writeAutonomousModePreference(false);
           setAutonomousMode(false);
         }
         setObserverActionStatus(payload.message || "Observer Plane apagado por cierre del runtime.");
@@ -1001,6 +1061,7 @@ export default function App() {
       if (payload.op === "observer_auto_disable_skipped") {
         autonomousModeRef.current = true;
         observerPinnedRef.current = true;
+        writeAutonomousModePreference(true);
         setAutonomousMode(true);
         setObserverActionStatus(payload.message || "Observer Plane sigue activo por activacion humana.");
       }
@@ -2521,6 +2582,7 @@ export default function App() {
         onWorkspaceClean={handleWorkspaceClean}
         onCyberlaceBlock={showCyberlaceBlockingAlert}
         onRepairPresenceStart={triggerRepairPresence}
+        autonomousMode={autonomousMode}
         onToggleEditorExpanded={() => setEditorExpanded((current) => !current)}
       />
 

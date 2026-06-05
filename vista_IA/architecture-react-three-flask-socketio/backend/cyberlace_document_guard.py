@@ -32,6 +32,48 @@ MAX_REFERENCED_DOCUMENTS = 64
 MAX_WORKSPACE_DOCUMENTS = 1_000
 MAX_TOTAL_WORKSPACE_SCAN_BYTES = 10_000_000
 BLOCK_PATTERNS = {"api_key", "password", "pin", "cvv", "bank_account", "private_key"}
+SYNTHETIC_PLACEHOLDER_PATTERNS = {"api_key", "password"}
+SAFE_PLACEHOLDER_EXACT_VALUES = {
+    "redacted",
+    "masked",
+    "placeholder",
+    "example",
+    "demo",
+    "dummy",
+    "sample",
+    "synthetic",
+    "fixture",
+    "mock",
+    "test",
+    "none",
+    "null",
+    "undefined",
+    "not-secret",
+    "not-a-secret",
+    "not-written-to-log",
+    "not-written",
+    "safe-placeholder",
+}
+SAFE_PLACEHOLDER_MARKERS = (
+    "redacted",
+    "placeholder",
+    "synthetic",
+    "fixture",
+    "not-written",
+    "not-a-secret",
+    "not-secret",
+)
+SAFE_PLACEHOLDER_PREFIXES = (
+    "example-",
+    "demo-",
+    "dummy-",
+    "sample-",
+    "synthetic-",
+    "fixture-",
+    "mock-",
+    "test-",
+)
+MASKED_PLACEHOLDER_RE = re.compile(r"^[xX*•._-]{4,}$")
 TEXT_SUFFIXES = {
     ".txt", ".md", ".json", ".jsonl", ".yaml", ".yml", ".env", ".ini", ".cfg",
     ".py", ".js", ".jsx", ".ts", ".tsx", ".html", ".css", ".csv", ".xml",
@@ -183,10 +225,49 @@ def _has_financial_context(text: str, start: int, end: int) -> bool:
     return bool(FINANCIAL_CONTEXT_RE.search(window))
 
 
+def _extract_assignment_value_from_hit(hit: Dict[str, Any], text: str) -> str:
+    start = int(hit.get("start") or 0)
+    end = int(hit.get("end") or 0)
+    segment = (text or "")[max(0, start): max(start, end)]
+    if ":" in segment or "=" in segment:
+        separator = ":" if ":" in segment else "="
+        segment = segment.split(separator, 1)[1]
+    value = segment.strip().strip("\'\"` \t\r\n")
+    value = value.rstrip(";,)}]").strip().strip("\'\"`")
+    return value
+
+
+def _normalise_placeholder_value(value: str) -> str:
+    lowered = str(value or "").strip().lower()
+    lowered = lowered.strip("\'\"`[]{}()")
+    return re.sub(r"[^a-z0-9]+", "-", lowered).strip("-")
+
+
+def _is_safe_synthetic_secret_placeholder(value: str) -> bool:
+    stripped = str(value or "").strip()
+    if not stripped:
+        return False
+    if MASKED_PLACEHOLDER_RE.fullmatch(stripped):
+        return True
+    normalized = _normalise_placeholder_value(stripped)
+    if normalized in SAFE_PLACEHOLDER_EXACT_VALUES:
+        return True
+    if any(marker in normalized for marker in SAFE_PLACEHOLDER_MARKERS):
+        return True
+    return any(normalized.startswith(prefix) for prefix in SAFE_PLACEHOLDER_PREFIXES)
+
+
+def _hit_is_safe_synthetic_placeholder(hit: Dict[str, Any], text: str) -> bool:
+    pattern = str(hit.get("pattern") or "")
+    if pattern not in SYNTHETIC_PLACEHOLDER_PATTERNS:
+        return False
+    return _is_safe_synthetic_secret_placeholder(_extract_assignment_value_from_hit(hit, text))
+
+
 def _should_block_hit(hit: Dict[str, Any], text: str) -> bool:
     pattern = str(hit.get("pattern") or "")
     if pattern in BLOCK_PATTERNS:
-        return True
+        return not _hit_is_safe_synthetic_placeholder(hit, text)
     if pattern == "credit_card_like":
         return _has_financial_context(text, int(hit.get("start") or 0), int(hit.get("end") or 0))
     return False

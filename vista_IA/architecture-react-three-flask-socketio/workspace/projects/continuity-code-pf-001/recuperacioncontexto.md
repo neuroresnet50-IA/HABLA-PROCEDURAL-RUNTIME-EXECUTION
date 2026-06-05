@@ -1,58 +1,53 @@
-# Recuperacion de contexto Codex
+# Recuperacion de contexto
 
-## 2026-05-28T16:00:14Z - RUNTIME-20260528155229-001
+## 2026-06-04T01:54:30Z - RUNTIME-20260604014622-001
 
 Solicitud recibida:
-Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`, manteniendo el trabajo dentro de `/home/neurodriver/BASE _METACOGNICION_COLOMBIA/vista_IA/architecture-react-three-flask-socketio/workspace/projects/continuity-code-pf-001` y sin editar archivos internos del control plane como `runtime/project_state.json`, `runtime/task_queue.json`, historial, failures, checkpoints, directives o logs.
+- Disenar una cola FIFO persistente con estados `pending`, `running`, `completed` y `failed`.
+- Entregar evidencia en `runtime/complexity_audit.json` y `runtime/complexity_estimate.json`.
+- Respetar ownership del control plane y no editar `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
 
 Acciones realizadas:
-- Se leyo la memoria disponible: `LACE.md`, `LACE_LOG.md`, el documento principal, la leccion de blanqueo y los artefactos existentes.
-- `PLANS.md`, `recuperacioncontexto.md` y `ULTIMO_CONTEXTO_CODEX.md` no existian al inicio de la intervencion.
-- Se emitio bridge visual con `phase`, `upsert-node`, `connect-nodes`, `focus-node`, `upsert-step`, `connect-steps` y `sync-file`.
-- Se ejecuto `agent_tools.py findings continuity-code-pf-001`: `statusCode=200`, `ok=true`, con 1 finding activo de integridad antes de regenerar evidencia.
-- Se ejecuto `agent_tools.py integrity continuity-code-pf-001`: `statusCode=200`, `ok=true`, con reporte en `runtime/artifacts/file_integrity_report.json`; antes de regenerar baseline detecto divergencia en `docs/habla-session.md`.
-- Se intento `agent_tools.py scanner continuity-code-pf-001`: `statusCode=423`, `ok=false`, `error=project_locked` porque el proyecto tiene worker activo.
-- Se reemplazo el placeholder de `docs/advanced_programming_case_001.md` por un diseno verificable de cola FIFO persistente.
-- Se amplio `lessons_learned/blanqueo-2026-05-27.md` con aplicacion a colas persistentes y retries por tarea.
-- Se agrego el ciclo LACE acotado de esta tarea en `LACE_LOG.md`.
+- Se revisaron `runtime/project_state.json`, `runtime/task_queue.json`, `LACE.md`, `LACE_LOG.md` y los artefactos de complejidad existentes.
+- Se actualizo `runtime/complexity_audit.json` con el contrato de cola FIFO persistente, estados permitidos, transiciones validas/invalidas, persistencia, reanudacion y compuertas de evidencia.
+- Se actualizo `runtime/complexity_estimate.json` con presupuesto operativo, riesgo, alcance LACE y diseno de seleccion FIFO.
+- Se actualizo `LACE_LOG.md` con un ciclo LACE acotado a esta tarea.
+- Se invoco el bridge visual para phase, nodos, conexiones, focus, pasos y sync-file de archivos modificados.
+- Se ejecutaron herramientas internas desde el system root con cwd del proyecto para auditar en `runtime/agent_tool_invocations.jsonl`.
 
 Archivos creados o modificados:
-- Modificado: `docs/advanced_programming_case_001.md`
-- Modificado: `lessons_learned/blanqueo-2026-05-27.md`
-- Modificado: `LACE_LOG.md`
-- Creado: `recuperacioncontexto.md`
-- Creado: `ULTIMO_CONTEXTO_CODEX.md`
-- Regenerado: `runtime/artifacts/agent_file_manifest.json`
-- Regenerado: `runtime/artifacts/agent_file_manifest.seal.json`
-- Regenerado: `runtime/artifacts/file_integrity_report.json`
-- Regenerado: `runtime/artifacts/final_code_scanner_report.json`
-- Regenerado: `runtime/artifacts/final_typewriter_report.json`
-- Regenerado: `runtime/artifacts/frozen_sniper_recovery_report.json`
+- `runtime/complexity_audit.json`
+- `runtime/complexity_estimate.json`
+- `LACE_LOG.md`
+- `runtime/agent_tool_invocations.jsonl`
+- `runtime/artifacts/observer_findings.json`
+- `runtime/artifacts/file_integrity_report.json`
+- `recuperacioncontexto.md`
+- `ULTIMO_CONTEXTO_CODEX.md`
 
 Validacion corta ejecutada:
-- `python3 -B -c "from pathlib import Path; missing=[p for p in ['docs/advanced_programming_case_001.md', 'lessons_learned/blanqueo-2026-05-27.md', 'runtime/artifacts/agent_file_manifest.json', 'runtime/artifacts/agent_file_manifest.seal.json', 'runtime/artifacts/file_integrity_report.json', 'runtime/artifacts/final_code_scanner_report.json', 'runtime/artifacts/final_typewriter_report.json', 'runtime/artifacts/frozen_sniper_recovery_report.json'] if not Path(p).is_file()]; assert not missing, missing"`: codigo 0.
-- `python3 -B -c "from pathlib import Path; text=Path('docs/advanced_programming_case_001.md').read_text(encoding='utf-8'); required=['pending','running','completed','failed','claim_next','recover_stale','os.replace','TaskResult']; missing=[item for item in required if item not in text]; assert not missing, missing"`: codigo 0.
-- `python3 -m json.tool runtime/artifacts/agent_file_manifest.json`: codigo 0.
-- `python3 -m json.tool runtime/artifacts/final_code_scanner_report.json`: codigo 0.
-- `python3 -m json.tool runtime/artifacts/file_integrity_report.json`: codigo 0.
-- `python3 -m json.tool runtime/artifacts/frozen_sniper_recovery_report.json`: codigo 0.
-- `agent_tools.py integrity continuity-code-pf-001`: `statusCode=200`, `ok=true`, `totalFindings=0`.
-- `agent_tools.py findings continuity-code-pf-001`: `statusCode=200`, `ok=true`, `activeFindings=0`.
-- `agent_tools.py scanner continuity-code-pf-001`: `statusCode=423`, `ok=false`, `error=project_locked`.
-- `agent_tools.py sniper continuity-code-pf-001 --dry-run`: `statusCode=423`, `ok=false`, `error=project_locked`.
+- `python3 -m json.tool runtime/complexity_audit.json`
+- `python3 -m json.tool runtime/complexity_estimate.json`
+- `python3 -B -c "from pathlib import Path; missing=[p for p in ['runtime/complexity_audit.json', 'runtime/complexity_estimate.json'] if not Path(p).is_file()]; assert not missing, missing"`
+- Validacion semantica local de estados FIFO y herramientas requeridas.
+- `agent_tools.py findings continuity-code-pf-001`
+- `agent_tools.py integrity continuity-code-pf-001`
+- `agent_tools.py scanner continuity-code-pf-001`
+- `agent_tools.py observer-status`
 
 Resultado real de validacion:
-- Los ocho entregables declarados existen.
-- El documento principal contiene los estados requeridos, operaciones FIFO, persistencia atomica y criterio de cierre con `TaskResult`.
-- Los JSON de evidencia son parseables.
-- El integrity scan interno no reporta hallazgos activos despues de regenerar la baseline.
-- Findings del Observer reporta `activeFindings=0`.
+- JSON valido: OK.
+- Validacion esperada de existencia: OK.
+- Validacion semantica local: OK.
+- Findings: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/observer_findings.json`, `activeFindings=0`.
+- Integrity: `statusCode=200`, `ok=true`, `reportPath=runtime/artifacts/file_integrity_report.json`, `totalFindings=0`.
+- Scanner canonico: `statusCode=423`, `ok=false`, `error=project_locked`, sin `reportPath`.
+- Observer-status: `statusCode=200`, `ok=true`, estado `waiting_worker`, incidente con `rootCause=active_worker_running`.
 
 Blockers o riesgos:
-- El endpoint `agent_tools.py scanner` esta bloqueado durante la sesion activa con `project_locked`; no se invento aprobacion del endpoint.
-- El endpoint `agent_tools.py sniper --dry-run` tambien esta bloqueado por `project_locked`; se dejo reporte dry-run local de cero acciones.
-- La evidencia de scanner final queda como lectura local completa de archivos visibles para que el control plane pueda auditar el contenido al cerrar.
-- No se editaron `runtime/project_state.json`, `runtime/task_queue.json`, `runtime/task_history.jsonl`, `runtime/failures.jsonl`, `runtime/checkpoints/`, `runtime/directives/` ni `runtime/logs/`.
+- El scanner canonico no pudo completarse mientras el worker actual seguia activo; el backend bloqueo la ejecucion con `project_locked`.
+- No se edito `runtime/task_queue.json`; el diseno queda en los entregables declarados y la implementacion/documentacion extensa pertenece a la tarea dependiente `RUNTIME-20260604014622-002`.
 
 Punto de reanudacion:
-El control plane puede tomar el TaskResult y, cuando el worker cierre, ejecutar el scanner interno por endpoint si requiere reemplazar el fallback local generado durante la sesion activa.
+- Reintentar `python3 orchestrator/agent_tools.py scanner continuity-code-pf-001` cuando el control plane libere el lock del worker activo.
+- Si el scanner responde `ok=true`, el control plane puede evaluar cierre tecnico de esta tarea con los dos entregables ya presentes.

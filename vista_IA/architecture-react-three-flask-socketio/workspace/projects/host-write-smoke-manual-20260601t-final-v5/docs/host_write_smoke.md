@@ -1,1 +1,0 @@
-HOST_WRITE_OK

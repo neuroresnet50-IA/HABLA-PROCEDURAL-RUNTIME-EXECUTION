@@ -1,38 +1,60 @@
 {
   "blocked_tasks": [
-    "RUNTIME-20260527185027-001"
+    "lace_cycles_pending"
   ],
   "checkpoints": [
-    "session-preparing-agent-a20db45918",
+    "session-preparing-agent-a7a51bf6a3",
     "complexity-estimate",
-    "runtime-20260527185027-001-checkpoint",
-    "runtime-20260527185027-002-retry-0-recovery",
-    "runtime-20260527185027-002-split-001-retry-0-recovery",
-    "runtime-20260527185027-002-split-001-retry-1-recovery",
-    "runtime-20260527185027-002-split-001-retry-2-recovery",
-    "post-blanqueo-recovery-checkpoint",
-    "manual-stop-agent-a20db45918",
-    "runtime-20260527185027-002-split-001-stopped",
-    "session-preparing-agent-e1d3e10c09",
-    "runtime-20260527185027-002-split-001-checkpoint",
-    "runtime-20260527185027-002-checkpoint",
-    "runtime-20260527185027-002-split-002-checkpoint"
+    "manual-stop-agent-a7a51bf6a3",
+    "runtime-20260604020052-001-stopped",
+    "session-preparing-agent-2b8a910c8e",
+    "runtime-20260604020052-001-checkpoint",
+    "runtime-20260604020052-002-checkpoint",
+    "lace-closure-gate-pending",
+    "lace-20260604-001-retry-0-recovery",
+    "lace-closure-gate-blocked",
+    "session-preparing-agent-81f439d40c",
+    "session-cyberlace-document-blocked-20260604T143250Z",
+    "session-preparing-agent-ed3b45a14e",
+    "session-cyberlace-document-blocked-20260604T143336Z",
+    "session-preparing-agent-639b19f59a",
+    "session-cyberlace-document-blocked-20260604T143415Z",
+    "session-preparing-agent-1bb177882a",
+    "session-cyberlace-document-blocked-20260604T143459Z"
   ],
   "completed_tasks": [
-    "RUNTIME-20260527185027-001",
-    "POST-BLANQUEO-RECOVERY",
-    "RUNTIME-20260527185027-002-SPLIT-001",
-    "RUNTIME-20260527185027-002",
-    "RUNTIME-20260527185027-002-SPLIT-002"
+    "RUNTIME-20260604020052-001",
+    "RUNTIME-20260604020052-002"
   ],
-  "created_at": "2026-05-27T18:50:27.396263+00:00",
+  "created_at": "2026-06-04T02:00:47.149348+00:00",
   "current_task_id": null,
   "failed_tasks": [],
-  "last_preparing_at": "2026-05-28T16:08:53.951810+00:00",
+  "last_cyberlace_block_at": "2026-06-04T14:34:59.085787+00:00",
+  "last_cyberlace_block_paths": [
+    "workspace/projects/continuity-code-pf-003/docs/advanced_programming_case_003.md"
+  ],
+  "last_cyberlace_block_reason": "CyberLACE blocked unsafe payment-data handling intent: copying, collecting, storing or sending card/CVV/PIN/token data is denied. A safe tokenized payment architecture can be designed instead.",
+  "last_cyberlace_denied_action": "Copiar, recolectar, almacenar o enviar PAN/CVV/PIN/tokens de pago por correo, archivos, APIs o canales inseguros.",
+  "last_cyberlace_safe_alternative": {
+    "allowedActions": [
+      "Disenar un flujo PCI-style con tokenizacion de proveedor de pagos.",
+      "Usar enlaces seguros o checkout hospedado por el procesador de pagos.",
+      "Mostrar y enviar solo recibos, IDs de transaccion y ultimos 4 digitos.",
+      "Definir auditoria, cifrado de metadatos y controles de acceso sin manejar PAN/CVV completo.",
+      "Crear validaciones de arquitectura segura y pruebas con datos sinteticos."
+    ],
+    "suggestedRequirement": "Disenar una arquitectura segura de pagos con tokenizacion, checkout hospedado, recibos, auditoria y sin almacenar ni enviar PAN/CVV/PIN/tokens por canales inseguros.",
+    "summary": "HABLA no ayuda a copiar ni enviar datos de tarjetas/CVV. Si puede ayudar a disenar una arquitectura de pagos donde la aplicacion nunca vea ni almacene CVV, use tokenizacion y envie solo recibos o ultimos 4 digitos.",
+    "title": "Alternativa segura permitida"
+  },
+  "last_preparing_at": "2026-06-04T14:34:59.021785+00:00",
+  "last_queue_clear_at": "2026-06-04T14:34:59.005982+00:00",
+  "last_queue_clear_force": true,
+  "last_queue_clear_removed_task_ids": [],
   "mode": "build",
-  "preparing_session_id": "agent-e1d3e10c09",
+  "preparing_session_id": "agent-1bb177882a",
   "project_id": "continuity-code-pf-003",
   "schema_version": 1,
-  "status": "completed",
-  "updated_at": "2026-05-28T16:09:39.542953+00:00"
+  "status": "blocked",
+  "updated_at": "2026-06-04T14:34:59.085810+00:00"
 }

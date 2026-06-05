@@ -207,15 +207,12 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
 
   useEffect(() => {
     let cancelled = false;
-    if (uiRefreshCanSuppressAuthGate()) {
+    const refreshMaySkipIntro = uiRefreshCanSuppressAuthGate();
+    if (refreshMaySkipIntro) {
       sessionRemove(UI_REFRESH_SUPPRESS_AUTH_KEY);
       storageSet(AUTH_INTRO_STORAGE_KEY, "1");
-      setPhase("authenticated");
-      return () => {
-        cancelled = true;
-      };
     }
-    const existingToken = REMEMBER_SESSION_ENABLED ? storageGet(AUTH_TOKEN_STORAGE_KEY) : "";
+    const existingToken = REMEMBER_SESSION_ENABLED ? storageGet(AUTH_TOKEN_STORAGE_KEY) : sessionGet(AUTH_TOKEN_STORAGE_KEY);
     if (!REMEMBER_SESSION_ENABLED) {
       storageRemove(AUTH_TOKEN_STORAGE_KEY);
     }
@@ -248,6 +245,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
       const authServiceReady = await checkAuthService();
       if (cancelled || !authServiceReady) return;
       if (!existingToken) {
+        sessionRemove(AUTH_SESSION_READY_KEY);
         if (storageGet(AUTH_INTRO_STORAGE_KEY) === "1") {
           setPhase("setup");
         } else {
@@ -263,6 +261,7 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
         setPhase("authenticated");
       } catch {
         storageRemove(AUTH_TOKEN_STORAGE_KEY);
+        sessionRemove(AUTH_TOKEN_STORAGE_KEY);
         if (cancelled) return;
         setSessionToken("");
         setProfile(null);
@@ -313,8 +312,10 @@ export default function WelcomeAuthGate({ apiBaseUrl, logoSrc }) {
     if (payload.token) {
       if (REMEMBER_SESSION_ENABLED) {
         storageSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
+        sessionRemove(AUTH_TOKEN_STORAGE_KEY);
       } else {
         storageRemove(AUTH_TOKEN_STORAGE_KEY);
+        sessionSet(AUTH_TOKEN_STORAGE_KEY, payload.token);
       }
       setSessionToken(payload.token);
     }

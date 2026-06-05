@@ -208,6 +208,58 @@ class CyberLACEAgentRuntimeHooksTest(unittest.TestCase):
             self.assertFalse(decision["blocked"], decision)
             self.assertEqual(decision.get("blockedPaths"), [])
 
+    def test_document_guard_allows_synthetic_secret_placeholders_in_workspace_document(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = Path(tmpdir) / "app"
+            project = repo / "workspace" / "projects" / "demo"
+            frontend = project / "frontend"
+            frontend.mkdir(parents=True)
+            (frontend / "app.js").write_text(
+                "const requestBody = {\n"
+                "  password: \"not-written-to-log\",\n"
+                "  api_key: \"not-written-to-log\",\n"
+                "  cookie: \"[REDACTED]\"\n"
+                "};\n",
+                encoding="utf-8",
+            )
+
+            decision = inspect_runtime_document_inputs(
+                requirement="continuar con datos sinteticos y evidencia redactada",
+                project_dir=project,
+                repo_root=repo,
+                scan_workspace=True,
+            )
+
+            self.assertFalse(decision["blocked"], decision)
+            self.assertEqual(decision.get("blockedPaths"), [])
+
+    def test_document_guard_still_blocks_real_secret_values_in_workspace_document(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            repo = Path(tmpdir) / "app"
+            project = repo / "workspace" / "projects" / "demo"
+            frontend = project / "frontend"
+            frontend.mkdir(parents=True)
+            (frontend / "app.js").write_text(
+                "const requestBody = {\n"
+                "  password: \"Secret123\",\n"
+                "  api_key: \"sk_live_1234567890abcdef\"\n"
+                "};\n",
+                encoding="utf-8",
+            )
+
+            decision = inspect_runtime_document_inputs(
+                requirement="continuar proyecto",
+                project_dir=project,
+                repo_root=repo,
+                scan_workspace=True,
+            )
+
+            self.assertTrue(decision["blocked"], decision)
+            self.assertIn("workspace/projects/demo/frontend/app.js", decision.get("blockedPaths", []))
+            patterns = {item.get("pattern") for item in decision.get("evidence") or []}
+            self.assertIn("password", patterns)
+            self.assertIn("api_key", patterns)
+
     def test_document_guard_still_blocks_real_api_key_reassembly_intent(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             repo = Path(tmpdir) / "app"

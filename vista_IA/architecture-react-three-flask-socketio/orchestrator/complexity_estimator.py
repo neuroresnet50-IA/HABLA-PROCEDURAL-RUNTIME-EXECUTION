@@ -13,6 +13,11 @@ import unicodedata
 from datetime import datetime, timezone
 from typing import Any
 
+try:
+    from orchestrator.complexity_audit_kernel import audit_complexity
+except Exception:  # pragma: no cover - legacy estimator must remain usable alone.
+    audit_complexity = None  # type: ignore[assignment]
+
 MIN_LACE_CYCLES = 2
 MAX_LACE_CYCLES = 10
 MAX_SUBAGENTS = 8
@@ -151,6 +156,8 @@ def estimate_complexity(
     project_file_count: int = 0,
     launch_mode: str = "new",
     project_slug: str = "",
+    project_root: str | None = None,
+    task: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Return one auditable complexity and budget decision.
 
@@ -271,7 +278,7 @@ def estimate_complexity(
         required_tools.update({"sandbox", "findings"})
 
     confidence = _confidence(score, reasons, risk_flags, normalized_text)
-    return {
+    estimate = {
         "schema_version": 1,
         "estimate_type": "project_complexity_budget",
         "generated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
@@ -298,6 +305,30 @@ def estimate_complexity(
         "reasons": reasons,
         "confidence": confidence,
     }
+    if audit_complexity is not None:
+        try:
+            audit = audit_complexity(  # type: ignore[misc]
+                requirement,
+                project_root=project_root,
+                task=task,
+                runtime_mode=normalized_mode,
+                launch_mode=str(launch_mode or "new"),
+                project_slug=str(project_slug or ""),
+                project_file_count=file_count,
+                legacy_estimate=estimate,
+            )
+        except Exception:
+            audit = None
+        if isinstance(audit, dict):
+            estimate["complexity_audit"] = audit
+            estimate["audit_version"] = audit.get("audit_version")
+            estimate["lace_min_cycles"] = audit.get("lace_min_cycles")
+            estimate["lace_target_cycles"] = audit.get("lace_target_cycles")
+            estimate["lace_max_cycles"] = audit.get("lace_max_cycles")
+            estimate["early_exit_allowed"] = audit.get("early_exit_allowed")
+            estimate["quality_threshold"] = audit.get("quality_threshold", 85)
+            estimate["estimated_minutes"] = audit.get("estimated_minutes")
+    return estimate
 
 
 def _budget_for_score(score: int, difficulty: str, preset: dict[str, int | str]) -> dict[str, int]:

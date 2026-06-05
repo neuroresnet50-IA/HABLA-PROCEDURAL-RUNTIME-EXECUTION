@@ -7,7 +7,7 @@ from typing import Any
 
 
 ALLOWED_MODES = frozenset({"smoke", "build", "medium", "long-run"})
-ALLOWED_TASK_STATUSES = frozenset({"pending", "running", "completed", "failed", "blocked"})
+ALLOWED_TASK_STATUSES = frozenset({"pending", "running", "completed", "failed", "blocked", "deferred"})
 OPTIONAL_TASK_FIELDS = frozenset({"kind", "execution_strategy", "selector_reason"})
 ALLOWED_PROJECT_STATUSES = frozenset(
     {
